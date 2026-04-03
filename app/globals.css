@@ -1,19 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* ============================================================
+   TEMA PADRÃO (Dark Mode — padrão da aplicação)
+   ============================================================ */
 @theme {
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --color-bg: #0d1117;
+  /* Backgrounds */
+  --color-bg:   #0d1117;
   --color-bg-2: #161b22;
   --color-bg-3: #21262d;
-  --color-border: #30363d;
+
+  /* Borders */
+  --color-border:   #30363d;
   --color-border-2: #484f58;
-  --color-accent: #e05a2b;
-  --color-accent-2: #ff8c5a;
+
+  /* Accent (laranja — invariante entre temas) */
+  --color-accent:    #e05a2b;
+  --color-accent-2:  #ff8c5a;
   --color-accent-bg: rgba(224, 90, 43, 0.10);
   --color-accent-bd: rgba(224, 90, 43, 0.28);
+
+  /* Camadas OSI (cores semânticas — invariantes) */
   --color-layer-7: #ff8c5a;
   --color-layer-6: #a78bfa;
   --color-layer-5: #818cf8;
@@ -21,27 +31,68 @@
   --color-layer-3: #34d399;
   --color-layer-2: #9ca3af;
   --color-layer-1: #6b7280;
-  --color-ok: #34d399;
+
+  /* Status (invariantes) */
+  --color-ok:   #34d399;
   --color-warn: #fbbf24;
-  --color-err: #f85149;
+  --color-err:  #f85149;
   --color-info: #60a5fa;
-  --color-text: #e6edf3;
+
+  /* Textos */
+  --color-text:   #e6edf3;
   --color-text-2: #8b949e;
   --color-text-3: #7d8590;
 
+  /* Radii */
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
 
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-  --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
-  --shadow-lg: 0 16px 48px rgba(0,0,0,0.5);
+  /* Sombras */
+  --shadow-sm: 0 2px 8px  rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.40);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.50);
 }
 
+/* ============================================================
+   TEMA CLARO — sobrescreve APENAS as variáveis que mudam.
+   Ativado quando <html class="light"> está presente.
+   BUG CORRIGIDO: este bloco estava completamente ausente.
+   ============================================================ */
+html.light {
+  /* Backgrounds */
+  --color-bg:   #ffffff;
+  --color-bg-2: #f6f8fa;
+  --color-bg-3: #eaeef2;
+
+  /* Borders */
+  --color-border:   #d0d7de;
+  --color-border-2: #afb8c1;
+
+  /* Accent — ajuste de opacidade para fundo claro */
+  --color-accent-bg: rgba(224, 90, 43, 0.07);
+  --color-accent-bd: rgba(224, 90, 43, 0.20);
+
+  /* Textos — invertidos para escuro sobre branco */
+  --color-text:   #1f2328;
+  --color-text-2: #656d76;
+  --color-text-3: #818b98;
+
+  /* Sombras — mais suaves no tema claro */
+  --shadow-sm: 0 2px 8px  rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
 @layer base {
   body {
     @apply bg-bg text-text font-sans antialiased;
+    /* Transição suave ao trocar de tema */
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   code, pre {
@@ -49,6 +100,9 @@
   }
 }
 
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
 @layer components {
   .section-label {
     @apply font-mono text-[11px] font-semibold uppercase tracking-[2px] text-accent mb-2;
@@ -106,22 +160,26 @@
     @apply inline-block font-mono text-[11px] font-bold px-2.5 py-1 rounded-md whitespace-nowrap leading-none;
   }
 
-  .layer-badge.l7 { @apply bg-[rgba(255,140,90,0.15)] text-layer-7; }
+  .layer-badge.l7 { @apply bg-[rgba(255,140,90,0.15)]  text-layer-7; }
   .layer-badge.l6 { @apply bg-[rgba(167,139,250,0.15)] text-layer-6; }
   .layer-badge.l5 { @apply bg-[rgba(129,140,248,0.15)] text-layer-5; }
-  .layer-badge.l4 { @apply bg-[rgba(96,165,250,0.15)] text-layer-4; }
-  .layer-badge.l3 { @apply bg-[rgba(52,211,153,0.15)] text-layer-3; }
+  .layer-badge.l4 { @apply bg-[rgba(96,165,250,0.15)]  text-layer-4; }
+  .layer-badge.l3 { @apply bg-[rgba(52,211,153,0.15)]  text-layer-3; }
   .layer-badge.l2 { @apply bg-[rgba(156,163,175,0.15)] text-layer-2; }
   .layer-badge.l1 { @apply bg-[rgba(107,114,128,0.15)] text-layer-1; }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { @apply bg-bg; }
-::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+/* ============================================================
+   SCROLLBAR CUSTOMIZADA
+   ============================================================ */
+::-webkit-scrollbar            { width: 6px; height: 6px; }
+::-webkit-scrollbar-track      { @apply bg-bg; }
+::-webkit-scrollbar-thumb      { @apply bg-border rounded-full; }
 ::-webkit-scrollbar-thumb:hover { @apply bg-border-2; }
 
-/* Animations */
+/* ============================================================
+   ANIMAÇÕES
+   ============================================================ */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -131,4 +189,11 @@
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Garante que a transição de tema NÃO pisse no código de bloco */
+.code-block,
+.code-block pre,
+.code-header {
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
