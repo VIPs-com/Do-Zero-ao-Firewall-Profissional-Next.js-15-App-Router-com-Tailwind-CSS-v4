@@ -17,7 +17,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'quiz-expert':        { icon: '🥇', title: 'Expert',             desc: 'Score ≥ 80% no Quiz' },
   'quiz-master':        { icon: '🏆', title: 'Mestre',             desc: 'Score 100% no Quiz' },
   'explorer':           { icon: '🗺️', title: 'Explorador',         desc: 'Visitou 5+ páginas diferentes' },
-  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 15 páginas de conteúdo' },
+  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 16 páginas de conteúdo' },
   'night-owl':          { icon: '🦉', title: 'Coruja Noturna',     desc: 'Ativou o Dark Mode' },
   'searcher':           { icon: '🔍', title: 'Investigador',       desc: 'Usou a busca global' },
   'topology-pro':       { icon: '🖧', title: 'Topólogo',           desc: 'Clicou em 5+ elementos da topologia' },
@@ -42,7 +42,7 @@ export const ALL_CHECKLIST_IDS = [
 ]; // 26 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
- * PÁGINAS DE CONTEÚDO DO PROJETO (15 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
+ * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
  * Usadas como limiar para o badge 'deep-diver'.
  * Atualizar se novas rotas de conteúdo forem adicionadas.
  *
@@ -50,7 +50,7 @@ export const ALL_CHECKLIST_IDS = [
  * /dnat, /port-knocking, /vpn-ipsec, /ataques-avancados, /pivoteamento,
  * /audit-logs, /evolucao, /glossario, /cheat-sheet
  */
-const CONTENT_PAGES_COUNT = 15;
+const CONTENT_PAGES_COUNT = 16;
 
 interface BadgeContextType {
   unlockedBadges: Set<BadgeId>;

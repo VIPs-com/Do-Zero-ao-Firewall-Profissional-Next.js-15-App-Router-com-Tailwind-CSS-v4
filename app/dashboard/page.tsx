@@ -31,20 +31,22 @@ export default function DashboardPage() {
     trackPageVisit('dashboard');
   }, [trackPageVisit]);
 
-  const totalTopics = 28;
+  // FIX: era 28 → agora bate com TOPICS.length em topicos/page.tsx (24 tópicos)
+  const totalTopics = 24;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
-  
-  const checklistItemsCount = 8;
+
+  // FIX: era 8 → agora bate com ALL_CHECKLIST_IDS.length em BadgeContext.tsx (26 checkpoints)
+  const checklistItemsCount = 26;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 
   const overallProgress = Math.round((topicsProgress + checklistProgress + (quizScore > 0 ? 100 : 0)) / 3);
 
   const stats = [
-    { label: 'Tópicos Lidos', value: `${visitedPages.size}/${totalTopics}`, icon: <BookOpen />, color: 'text-info' },
-    { label: 'Labs Concluídos', value: `${checklistCompleted}/${checklistItemsCount}`, icon: <Shield />, color: 'text-ok' },
-    { label: 'Melhor Quiz', value: `${quizScore}%`, icon: <Zap />, color: 'text-accent' },
-    { label: 'Badges', value: `${unlockedBadges.size}/${Object.keys(BADGE_DEFS).length}`, icon: <Trophy />, color: 'text-warn' },
+    { label: 'Tópicos Lidos',    value: `${visitedPages.size}/${totalTopics}`,          icon: <BookOpen />, color: 'text-info' },
+    { label: 'Labs Concluídos',  value: `${checklistCompleted}/${checklistItemsCount}`, icon: <Shield />,   color: 'text-ok' },
+    { label: 'Melhor Quiz',      value: `${quizScore}%`,                                icon: <Zap />,      color: 'text-accent' },
+    { label: 'Badges',           value: `${unlockedBadges.size}/${Object.keys(BADGE_DEFS).length}`, icon: <Trophy />, color: 'text-warn' },
   ];
 
   return (
@@ -57,12 +59,13 @@ export default function DashboardPage() {
 
       <div className="grid lg:grid-cols-[1fr_350px] gap-8">
         <div className="space-y-8">
+
           {/* Hero Section */}
           <div className="bg-gradient-to-br from-bg-2 to-accent-bg/10 border border-border rounded-2xl p-8 relative overflow-hidden">
             <div className="relative z-10">
-              <h1 className="text-3xl font-bold mb-2">Olá, Administrador! 🐧</h1>
+              <h1 className="text-3xl font-bold mb-2">Olá, Administrador! 🧑</h1>
               <p className="text-text-2 mb-6">Aqui está o resumo da sua jornada rumo ao Firewall Profissional.</p>
-              
+
               <div className="flex items-center gap-6">
                 <div className="relative w-24 h-24">
                   <svg className="w-full h-full" viewBox="0 0 36 36">
@@ -89,7 +92,9 @@ export default function DashboardPage() {
                 <div>
                   <div className="text-sm font-bold uppercase tracking-widest text-text-3 mb-1">Progresso Geral</div>
                   <div className="text-xs text-text-2 max-w-[200px]">
-                    {overallProgress < 50 ? 'Você está no começo da jornada. Continue firme!' : 'Quase lá! Falta pouco para o certificado.'}
+                    {overallProgress < 50
+                      ? 'Você está no começo da jornada. Continue firme!'
+                      : 'Quase lá! Falta pouco para o certificado.'}
                   </div>
                 </div>
               </div>
@@ -123,12 +128,12 @@ export default function DashboardPage() {
               {Object.entries(BADGE_DEFS).map(([id, badge]) => {
                 const isUnlocked = unlockedBadges.has(id as BadgeId);
                 return (
-                  <div 
-                    key={id} 
+                  <div
+                    key={id}
                     className={cn(
                       "p-6 rounded-xl border text-center transition-all",
-                      isUnlocked 
-                        ? "bg-bg-2 border-accent/30 shadow-sm" 
+                      isUnlocked
+                        ? "bg-bg-2 border-accent/30 shadow-sm"
                         : "bg-bg-2/50 border-border opacity-40 grayscale"
                     )}
                   >
@@ -143,6 +148,7 @@ export default function DashboardPage() {
         </div>
 
         <aside className="space-y-6">
+
           {/* Checklist Summary */}
           <div className="bg-bg-2 border border-border rounded-xl p-6">
             <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
@@ -175,11 +181,11 @@ export default function DashboardPage() {
                 <>
                   <div className="p-3 rounded-lg bg-bg-3 border border-border text-[11px] leading-relaxed">
                     <strong className="text-accent block mb-1">Dica do Mestre:</strong>
-                    {visitedPages.size < 10 
-                      ? "Explore mais tópicos técnicos para entender a teoria por trás das regras." 
-                      : checklistProgress < 100 
-                        ? "Finalize as validações do laboratório para garantir que tudo está funcionando."
-                        : "Você está pronto para o Quiz final! Teste seus conhecimentos."}
+                    {visitedPages.size < 10
+                      ? 'Explore mais tópicos técnicos para entender a teoria por trás das regras.'
+                      : checklistProgress < 100
+                        ? 'Finalize as validações do laboratório para garantir que tudo está funcionando.'
+                        : 'Você está pronto para o Quiz final! Teste seus conhecimentos.'}
                   </div>
                   {quizScore < 80 && (
                     <Link href="/quiz" className="flex items-center justify-between p-3 rounded-lg hover:bg-bg-3 transition-colors group">
@@ -224,6 +230,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+
         </aside>
       </div>
     </div>
