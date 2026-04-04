@@ -50,8 +50,10 @@ O kernel Linux processa pacotes em 5 pontos estratégicos chamados "hooks":
 5. **POSTROUTING**: O último ponto antes do pacote sair. É aqui que o **SNAT** troca o IP de origem.
 
 **Por que o DNAT é no PREROUTING?** Porque a decisão de roteamento vem depois. Se trocar o IP depois, o kernel já teria decidido o destino errado.
+
+**Boa notícia:** iptables e nftables usam os mesmos 5 hooks — a lógica não muda, só a sintaxe.
     `,
-    tags: ['iptables', 'routing', 'nat']
+    tags: ['iptables', 'nftables', 'routing', 'nat']
   },
   {
     id: 'dns-failure-points',
@@ -112,5 +114,36 @@ O IKE (Internet Key Exchange) estabelece a VPN em duas fases distintas:
 **Dica de Ouro**: Se a Fase 1 sobe mas a Fase 2 cai, o problema geralmente é erro na máscara de rede ou redes não autorizadas no arquivo de configuração.
     `,
     tags: ['ipsec', 'vpn', 'strongswan']
-  }
+  },
+  {
+    id: 'nftables-vs-iptables',
+    title: 'nftables vs iptables — Por que migrar?',
+    icon: <Shield className="text-ok" />,
+    category: 'Kernel',
+    content: `
+### A mesma lógica, uma nova linguagem
+
+O **nftables** não reinventou o firewall — ele apenas modernizou a interface. Os 5 hooks do Netfilter continuam os mesmos (PREROUTING, INPUT, FORWARD, OUTPUT, POSTROUTING). O que mudou foi a sintaxe e a arquitetura interna.
+
+**Por que o iptables estava mostrando sua idade:**
+1. **4 ferramentas separadas**: iptables, ip6tables, arptables, ebtables — cada uma com sua própria sintaxe.
+2. **Sem sets nativos**: bloquear 1000 IPs = 1000 regras (lento).
+3. **Reload não-atômico**: durante a recarga de regras, há uma janela de exposição.
+
+**O que o nftables resolve:**
+1. **Uma ferramenta**: \`nft\` cuida de IPv4, IPv6, ARP e bridges.
+2. **Sets nativos**: \`nft add set ip filter blocklist { type ipv4_addr; }\` — busca em O(1).
+3. **Atomic reload**: \`nft -f arquivo.nft\` aplica tudo ou nada — sem janela de exposição.
+4. **Tabelas customizadas**: você nomeia suas tabelas e chains — sem nomes fixos obrigatórios.
+
+**Tradução automática para migração gradual:**
+\`\`\`
+iptables-translate -A INPUT -p tcp --dport 22 -j ACCEPT
+→ nft add rule ip filter input tcp dport 22 counter accept
+\`\`\`
+
+**Resumo**: Se você sabe iptables, já sabe nftables. É só aprender a nova sintaxe.
+    `,
+    tags: ['nftables', 'iptables', 'kernel', 'migration']
+  },
 ];
