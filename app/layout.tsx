@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import { Providers } from './providers';
 import { ClientLayout } from '@/components/ClientLayout';
@@ -108,11 +109,22 @@ const jsonLd = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  /*
+   * SPRINT E — Lê o nonce gerado pelo middleware.ts e aplica em ambos os
+   * <script> inline. Isso permite que o CSP use 'nonce-XXX' em vez de
+   * 'unsafe-inline', elevando a defesa contra XSS.
+   *
+   * Trade-off: chamar headers() torna o root layout dinâmico, e por
+   * consequência todas as rotas viram ƒ (Dynamic) no build. Para um site
+   * educacional leve sem necessidade de cache CDN, é um custo aceitável.
+   */
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
+
   return (
     /*
      * BUG CORRIGIDO #1: className="dark" foi removido.
@@ -127,6 +139,7 @@ export default function RootLayout({
     <html lang="pt-BR" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
       <head>
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: `
               try {
@@ -137,6 +150,7 @@ export default function RootLayout({
           }}
         />
         <script
+          nonce={nonce}
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />

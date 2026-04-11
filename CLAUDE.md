@@ -155,7 +155,7 @@ Toda configuração de metadata vive em **`src/lib/seo.ts`**:
 
 ---
 
-## PWA Lite & Headers de Segurança (Sprint D)
+## PWA Lite & Headers de Segurança (Sprint D + E)
 
 **PWA Lite — sem service worker.** O app é instalável ("Adicionar à tela inicial") via Web App Manifest gerado em `app/manifest.ts`, mas não funciona offline. Decisão deliberada: service worker adiciona complexidade desproporcional ao escopo educacional.
 
@@ -169,21 +169,50 @@ Toda configuração de metadata vive em **`src/lib/seo.ts`**:
 - `app/not-found.tsx` — 404 page com `robots: noindex`. Server Component (bundle mínimo para bots).
 - `app/loading.tsx` — Suspense fallback global com spinner + `role="status"` + `aria-busy`.
 
-**Headers de segurança em `next.config.ts`:**
+**Headers de segurança estáticos em `next.config.ts`:**
 
 | Header | Valor | Função |
 |--------|-------|--------|
 | `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Força HTTPS por 2 anos (HSTS preload-ready) |
-| `Content-Security-Policy` | ver `cspDirectives` | Mitiga XSS, clickjacking, injeção de assets |
 | `X-Frame-Options` | `DENY` | Bloqueia iframe (defesa adicional ao `frame-ancestors`) |
 | `X-Content-Type-Options` | `nosniff` | Impede MIME sniffing |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | Vaza apenas origem em navegação cross-origin |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | Desativa APIs sensíveis e FLoC |
 | `X-DNS-Prefetch-Control` | `on` | Acelera navegação via prefetch DNS |
 
-Também: `poweredByHeader: false` (não vaza versão do Next.js) e `compress: true` (gzip/brotli).
+Também: `poweredByHeader: false` (não vaza versão do Next.js), `compress: true` (gzip/brotli) e `turbopack: { root: __dirname }` (silencia o warning de múltiplos lockfiles em worktrees).
 
-**Trade-off do CSP:** `script-src 'unsafe-inline'` é necessário porque o root layout injeta o script anti-FOUC e o JSON-LD. Em um sprint futuro, podemos adotar nonces (requer middleware) para remover `'unsafe-inline'`. `'unsafe-eval'` é incluído apenas em dev (HMR do Turbopack).
+### Sprint E — CSP por requisição com nonce (`proxy.ts`)
+
+O `Content-Security-Policy` **não** é mais estático. Ele é gerado por requisição em **`proxy.ts`** (Next.js 16 renomeou `middleware.ts` → `proxy.ts`):
+
+1. `proxy.ts` gera um nonce criptográfico (16 bytes base64) por requisição
+2. Propaga via request header `x-nonce`
+3. `app/layout.tsx` lê com `await headers()` e aplica `nonce={nonce}` nos dois `<script>` inline (anti-FOUC + JSON-LD)
+4. O CSP da resposta inclui `'nonce-XXX' 'strict-dynamic'` em script-src — sem `'unsafe-inline'`
+
+**Diretivas finais do CSP (produção):**
+
+```
+default-src 'self';
+script-src 'self' 'nonce-XXX' 'strict-dynamic';
+style-src 'self' 'unsafe-inline';
+img-src 'self' data: blob:;
+font-src 'self' data:;
+connect-src 'self';
+frame-src 'none';
+frame-ancestors 'none';
+object-src 'none';
+base-uri 'self';
+form-action 'self';
+upgrade-insecure-requests
+```
+
+`style-src 'unsafe-inline'` permanece — Tailwind v4 e motion/react injetam `<style>` dinâmicos. Resolver isso exigiria ou hash de cada estilo (impraticável) ou nonce em styles (Next.js ainda não propaga nonce para styles).
+
+**Trade-off ACEITO no Sprint E:** ler `headers()` no root layout torna **todas as rotas dinâmicas** (`ƒ` em vez de `○`). Para um site educacional leve sem necessidade de cache CDN agressivo, o ganho de segurança (nota A+ no securityheaders.com) compensa.
+
+**Rotas estáticas após Sprint E:** apenas `/sitemap.xml`, `/robots.txt` e `/manifest.webmanifest` (não passam pelo proxy via matcher).
 
 ---
 
@@ -263,7 +292,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint A: Robustez — try/catch localStorage, next/font, share funcional
 - ✅ Sprint B: SEO — metadata por rota, sitemap.ts, robots.ts, OG image, JSON-LD
 - ✅ Sprint C: Acessibilidade WCAG 2.1 AA — modais (role/aria/focus trap), prefers-reduced-motion, ESLint jsx-a11y
-- ✅ Sprint D: PWA Lite + Headers — manifest.ts, icon/apple-icon dinâmicos, CSP/HSTS/Permissions-Policy no next.config, error/not-found/loading boundaries
+- ✅ Sprint D: PWA Lite + Headers — manifest.ts, icon/apple-icon dinâmicos, HSTS/Permissions-Policy no next.config, error/not-found/loading boundaries
+- ✅ Sprint E: CSP nonce per-request via proxy.ts (Next.js 16) — remove 'unsafe-inline' do script-src, todas as rotas viram dynamic (trade-off aceito)
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON se necessário.
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

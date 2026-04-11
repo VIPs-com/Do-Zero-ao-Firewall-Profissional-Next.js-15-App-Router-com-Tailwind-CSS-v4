@@ -1,73 +1,32 @@
 import type { NextConfig } from 'next';
+import path from 'node:path';
 
 /*
  * ============================================================================
- * SPRINT D — Headers de Segurança
+ * SPRINT D + E — Headers de Segurança
  * ============================================================================
  *
  * Defesa em profundidade no nível HTTP. Cada header bloqueia uma classe
  * inteira de ataques sem custo de runtime (todos são processados pelo browser).
  *
  * - Strict-Transport-Security: força HTTPS por 2 anos (HSTS preload-ready)
- * - Content-Security-Policy: mitiga XSS, clickjacking e injeção de assets
  * - X-Frame-Options: bloqueia iframe (defesa adicional ao frame-ancestors do CSP)
  * - X-Content-Type-Options: impede MIME sniffing
  * - Referrer-Policy: vaza apenas a origem em navegação cross-origin
  * - Permissions-Policy: desativa APIs sensíveis (geolocation, câmera, mic)
  * - X-DNS-Prefetch-Control: ativa prefetch para acelerar navegação
  *
- * NOTA SOBRE CSP:
- * 'unsafe-inline' em script-src é necessário porque o root layout injeta
- * o script anti-FOUC e o JSON-LD inline. Em um Sprint futuro, podemos
- * adotar nonces (requer middleware) para remover 'unsafe-inline'.
- * 'unsafe-eval' é necessário em dev (HMR do Turbopack); o bloco de prod
- * abaixo o omite.
+ * NOTA SOBRE CSP (Sprint E):
+ * O Content-Security-Policy NÃO é mais definido aqui. Ele é gerado por
+ * requisição em middleware.ts com um nonce criptográfico único, eliminando
+ * 'unsafe-inline' do script-src. Veja middleware.ts para detalhes.
  * ============================================================================
  */
-
-const isDev = process.env.NODE_ENV === 'development';
-
-/*
- * Content Security Policy.
- *
- * Sintaxe: cada diretiva separada por ;
- * 'self' = mesma origem
- * data:  = data URIs (necessário para SVGs inline e ImageResponse do next/og)
- * blob:  = blob URLs (next/image otimização)
- */
-const cspDirectives = [
-  `default-src 'self'`,
-  // Scripts: inline necessário para anti-FOUC + JSON-LD; eval só em dev
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
-  // Estilos: Tailwind v4 e motion/react injetam <style> dinâmicos
-  `style-src 'self' 'unsafe-inline'`,
-  // Imagens: incluindo /opengraph-image, /icon, /apple-icon (data URIs internos)
-  `img-src 'self' data: blob:`,
-  // Fontes: next/font self-host serve da própria origem
-  `font-src 'self' data:`,
-  // Conexões: nenhuma API externa neste sprint
-  `connect-src 'self'`,
-  // Frames: nenhum iframe permitido
-  `frame-src 'none'`,
-  `frame-ancestors 'none'`,
-  // Bloqueia <object>, <embed>, plugins legados
-  `object-src 'none'`,
-  // <base href> trancado na origem (impede base hijacking)
-  `base-uri 'self'`,
-  // Forms só podem postar para a própria origem
-  `form-action 'self'`,
-  // Força upgrade de http→https em sub-recursos
-  `upgrade-insecure-requests`,
-].join('; ');
 
 const securityHeaders = [
   {
     key: 'Strict-Transport-Security',
     value: 'max-age=63072000; includeSubDomains; preload',
-  },
-  {
-    key: 'Content-Security-Policy',
-    value: cspDirectives,
   },
   {
     key: 'X-Frame-Options',
@@ -108,7 +67,16 @@ const nextConfig: NextConfig = {
   // Compressão gzip/brotli das respostas HTML
   compress: true,
 
-  // Headers de segurança aplicados em todas as rotas
+  /*
+   * Trava o workspace root do Turbopack neste diretório.
+   * Resolve o warning "We detected multiple lockfiles" que aparecia quando
+   * existem worktrees em .claude/worktrees/* com seus próprios package-lock.json.
+   */
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
+
+  // Headers de segurança aplicados em todas as rotas (CSP fica no middleware)
   async headers() {
     return [
       {
