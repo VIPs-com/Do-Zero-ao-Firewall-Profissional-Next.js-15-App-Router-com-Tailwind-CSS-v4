@@ -1,6 +1,6 @@
 # 📖 Documentação Oficial — Do Zero ao Firewall Profissional
 
-> **Versão:** 2.0 · **Stack:** Next.js 16 · Tailwind CSS v4 · TypeScript 5.8  
+> **Versão:** 3.0 (pós-Sprint E) · **Stack:** Next.js 16 · Tailwind CSS v4 · TypeScript 5.8  
 > Este documento é o ponto único de verdade do projeto. Serve como manual de onboarding, guia de desenvolvimento, referência técnica do laboratório e roadmap estratégico.  
 > *Se você chegou agora na equipe, comece pela Seção 1. Se é um dev voltando após um tempo, vá direto à Seção 3.*
 
@@ -16,12 +16,16 @@
 6. [Busca Global](#6-busca-global)
 7. [Como Desenvolver — Tarefas Comuns](#7-como-desenvolver--tarefas-comuns)
 8. [Módulos do Laboratório Linux](#8-módulos-do-laboratório-linux)
-9. [Deploy & Infraestrutura](#9-deploy--infraestrutura)
-10. [Segurança & Manutenção Preventiva](#10-segurança--manutenção-preventiva)
-11. [Workflow Git do Projeto](#11-workflow-git-do-projeto)
-12. [Roadmap Técnico](#12-roadmap-técnico)
-13. [Glossário Técnico](#13-glossário-técnico)
-14. [Apresentação Executiva — Slide Deck](#14-apresentação-executiva--slide-deck)
+9. [SEO — Fonte Única (Sprint B)](#9-seo--fonte-única-sprint-b)
+10. [Acessibilidade — WCAG 2.1 AA (Sprint C)](#10-acessibilidade--wcag-21-aa-sprint-c)
+11. [PWA Lite & Boundaries (Sprint D)](#11-pwa-lite--boundaries-sprint-d)
+12. [Segurança — Headers e CSP Nonce (Sprint D + E)](#12-segurança--headers-e-csp-nonce-sprint-d--e)
+13. [Deploy & Infraestrutura](#13-deploy--infraestrutura)
+14. [Manutenção Preventiva](#14-manutenção-preventiva)
+15. [Workflow Git do Projeto](#15-workflow-git-do-projeto)
+16. [Roadmap Técnico](#16-roadmap-técnico)
+17. [Glossário Técnico](#17-glossário-técnico)
+18. [Apresentação Executiva — Slide Deck](#18-apresentação-executiva--slide-deck)
 
 ---
 
@@ -94,10 +98,16 @@ npm run start
 
 | Script | Comando | O que faz |
 |---|---|---|
-| `dev` | `next dev --port=3000` | Servidor local com hot-reload |
-| `build` | `next build` | Compila + gera 21 rotas estáticas |
+| `dev` | `next dev --port=3000` | Servidor local com hot-reload (Turbopack) |
+| `build` | `next build` | Compila + gera **28/28** páginas (21 próprias + assets SEO/PWA) |
 | `start` | `next start --port=3000` | Servidor de produção |
 | `lint` | `tsc --noEmit` | Valida TypeScript sem gerar arquivos |
+| `lint:eslint` | `eslint app src` | ESLint + `jsx-a11y` — acessibilidade WCAG 2.1 AA |
+| `lint:all` | `tsc --noEmit && eslint app src` | Roda lint + lint:eslint em sequência |
+
+> **Sem testes.** `npm run lint` (typecheck) e `npm run lint:eslint` (a11y) são as duas validações estáticas obrigatórias antes do build.
+
+> ⚠️ Após o Sprint E, **todas as rotas próprias são dinâmicas** (`ƒ`) porque o root layout lê `headers()` para aplicar o nonce CSP. Apenas `/sitemap.xml`, `/robots.txt` e `/manifest.webmanifest` permanecem estáticos.
 
 ### Stack completa
 
@@ -109,8 +119,9 @@ npm run start
 | Animações | Motion (Framer) | ^12.23.24 |
 | Ícones | Lucide React | ^0.546.0 |
 | Markdown | react-markdown | ^10.1.0 |
-| IA (futuro) | @google/genai | ^1.29.0 |
 | Runtime | React | ^19.0.0 |
+| Build | Turbopack | (built-in) |
+| A11y Lint | eslint-plugin-jsx-a11y | (flat config) |
 
 ---
 
@@ -120,22 +131,28 @@ npm run start
 
 ```
 Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
-                                         │
-                              ┌──────────▼──────────┐
-                              │   App Router /app    │
-                              │  (Rotas & Layouts)   │
-                              └──┬───────────────┬───┘
-                                 │               │
-                    Client Components       Server Components
-                    (Interatividade)        (Performance)
-                           │
-                    ┌──────▼──────┐
-                    │ BadgeContext │  ← Estado global
-                    │ LocalStorage │  ← "Banco de dados" atual
-                    └─────────────┘
+              │
+              ▼
+       proxy.ts (Sprint E)
+     gera nonce CSP per-request
+              │
+              ▼
+   ┌──────────────────────────┐
+   │    App Router /app       │
+   │  layout.tsx lê headers() │
+   │  e propaga nonce         │
+   └──┬────────────────────┬──┘
+      │                    │
+  Client Components    Server Components
+  (Interatividade)     (Performance)
+           │
+   ┌───────▼──────┐
+   │ BadgeContext │  ← Estado global
+   │ localStorage │  ← Persistência única (Backend descartado)
+   └──────────────┘
 ```
 
-> **Nota:** O LocalStorage é o armazenamento atual. A Fase 3 prevê migração para PostgreSQL/Supabase.
+> **Persistência:** `localStorage` é a fonte de verdade. Backend/Supabase foi **descartado** (localStorage atende ao escopo educacional; portabilidade via export/import JSON se necessário).
 
 ### Estrutura de pastas comentada
 
@@ -143,10 +160,19 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 📁 raiz/
 │
 ├── 📁 app/                          ← Coração do App Router
-│   ├── globals.css                  ← Tokens de cor dark/light + componentes
-│   ├── layout.tsx                   ← Root layout + script anti-FOUC
+│   ├── globals.css                  ← Tokens @theme dark/light + classes reutilizáveis
+│   ├── layout.tsx                   ← Root + anti-FOUC + JSON-LD + nonce CSP
 │   ├── page.tsx                     ← Home: hero, topologia, features
-│   ├── providers.tsx                ← BadgeProvider global
+│   ├── providers.tsx                ← <BadgeProvider> global
+│   ├── error.tsx                    ← Error boundary ('use client')
+│   ├── not-found.tsx                ← 404 (Server, robots noindex)
+│   ├── loading.tsx                  ← Suspense fallback global
+│   ├── manifest.ts                  ← Web App Manifest (PWA Lite)
+│   ├── sitemap.ts                   ← sitemap.xml dinâmico (lê ROUTE_SEO)
+│   ├── robots.ts                    ← robots.txt dinâmico
+│   ├── opengraph-image.tsx          ← OG 1200x630 via next/og (edge)
+│   ├── icon.tsx                     ← favicon 32x32 via next/og (edge)
+│   ├── apple-icon.tsx               ← apple-touch-icon 180x180 via next/og (edge)
 │   │
 │   ├── 📁 instalacao/               ← Módulo 1: Fundação & IP
 │   ├── 📁 wan-nat/                  ← Módulo 2: NAT & SNAT
@@ -157,40 +183,62 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 dnat/                     ← Módulo 6: DNAT & Port Forwarding
 │   ├── 📁 port-knocking/            ← Módulo 7: Port Knocking
 │   ├── 📁 vpn-ipsec/                ← Módulo 8: VPN IPSec
+│   ├── 📁 nftables/                 ← Módulo 9: nftables (sucessor iptables)
 │   ├── 📁 ataques-avancados/        ← Segurança ofensiva
 │   ├── 📁 pivoteamento/             ← Riscos DMZ & lateral movement
 │   ├── 📁 audit-logs/               ← Monitoramento & auditoria
 │   ├── 📁 evolucao/                 ← Roadmap visual
 │   ├── 📁 glossario/                ← Dicionário de termos
 │   ├── 📁 cheat-sheet/              ← Referência rápida de comandos
+│   ├── 📁 topicos/                  ← Índice dos 24 tópicos práticos
 │   ├── 📁 quiz/                     ← Avaliação gamificada
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   └── 📁 certificado/              ← Certificado de conclusão
 │
+├── 📄 proxy.ts                      ← Sprint E: CSP nonce per-request
+├── 📄 next.config.ts                ← Headers de segurança estáticos
+│
 └── 📁 src/
     ├── 📁 components/
-    │   ├── ClientLayout.tsx          ← Header, nav, dark/light toggle, footer
-    │   ├── TopologyInteractive.tsx   ← Diagrama de rede clicável (36KB — maior arquivo)
-    │   ├── GlobalSearch.tsx          ← Busca global ⌘K / Ctrl+K
-    │   ├── DeepDiveModal.tsx         ← Modais de aprofundamento técnico
-    │   ├── BadgeDisplay.tsx          ← Exibição de conquistas
-    │   ├── CodeBlock.tsx             ← Bloco de código com cabeçalho
-    │   ├── FluxoCard.tsx             ← Card de fluxo de dados
-    │   ├── Steps.tsx                 ← Passos numerados
-    │   ├── ProgressBar.tsx           ← Barra de progresso
-    │   ├── Boxes.tsx                 ← Info / Warn / Highlight boxes
-    │   └── LayerBadge.tsx            ← Badge de camada OSI colorido
+    │   ├── ClientLayout.tsx          ← Header, nav, dark/light toggle, busca global
+    │   ├── GlobalSearch.tsx          ← Busca global ⌘K (WAI-ARIA combobox)
+    │   ├── DeepDiveModal.tsx         ← Modais com role=dialog + focus trap
+    │   │
+    │   └── 📁 ui/                    ← Primitivos
+    │       ├── TopologyInteractive.tsx  ← Diagrama de rede clicável (36KB)
+    │       ├── CodeBlock.tsx            ← Bloco de código com cabeçalho
+    │       ├── Steps.tsx                ← Passos numerados
+    │       ├── Boxes.tsx                ← Info / Warn / Highlight boxes
+    │       ├── FluxoCard.tsx            ← Card de fluxo de dados
+    │       ├── LayerBadge.tsx           ← Badge de camada OSI
+    │       ├── ProgressBar.tsx          ← Barra de progresso
+    │       └── BadgeDisplay.tsx         ← Exibição de conquistas
     │
     ├── 📁 context/
     │   └── BadgeContext.tsx          ← Estado global: badges, visitas, checkpoints
     │
     ├── 📁 data/
-    │   ├── searchItems.ts            ← Índice da busca global (4 categorias)
-    │   └── deepDives.tsx             ← Conteúdo dos modais avançados (5 tópicos)
+    │   ├── searchItems.ts            ← Índice da busca global (44 itens)
+    │   └── deepDives.tsx             ← Conteúdo dos 6 modais avançados
     │
     └── 📁 lib/
-        └── utils.ts                  ← cn() helper: clsx + tailwind-merge
+        ├── seo.ts                    ← SITE_CONFIG, ROUTE_SEO, buildMetadata()
+        ├── useFocusTrap.ts           ← Hook a11y: focus trap, ESC, restore focus
+        └── utils.ts                  ← cn() helper (clsx + tailwind-merge)
 ```
+
+**Path alias:** `@/` resolve para `src/`. Todos os imports de `src/` usam esse alias.
+
+### Constantes críticas — manter em sincronia
+
+| Constante | Arquivo | Valor |
+|-----------|---------|-------|
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **16** (exclui home/quiz/dashboard/certificado/topicos) |
+| `totalTopics` | `app/dashboard/page.tsx` | **24** |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **26** (igual a `ALL_CHECKLIST_IDS.length`) |
+| Texto na Home | `app/page.tsx` | "24 tópicos práticos" |
+
+Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.
 
 ---
 
@@ -365,10 +413,13 @@ Arquivo: `src/data/deepDives.tsx`
 | ID | Título | Categoria |
 |---|---|---|
 | `knocking-vs-stateful` | Port Knocking vs Stateful Firewall | Firewall |
-| `kernel-hooks` | Os 5 Hooks do Netfilter (PREROUTING → POSTROUTING) | Kernel |
+| `kernel-hooks` | Os Hooks do Netfilter (Kernel) | Kernel |
 | `dns-failure-points` | Por que o DNS é a primeira coisa que quebra? | DNS |
-| `squid-https-filtering` | Squid Proxy e o desafio do HTTPS | Proxy |
-| `ipsec-ike-phases` | As Fases do IKE — Fase 1 (ISAKMP) e Fase 2 (IPSec SA) | VPN |
+| `squid-https-filtering` | Squid Proxy e o Desafio do HTTPS | Proxy |
+| `ipsec-ike-phases` | As Fases do IKE (IPSec) | VPN |
+| `nftables-vs-iptables` | nftables vs iptables — Por que migrar? | Firewall |
+
+Os modais seguem o padrão a11y (`role="dialog"` + focus trap) — veja Seção 10.
 
 ---
 
@@ -685,7 +736,251 @@ ping -c 4 10.0.0.1   # IP na rede da Filial a partir da Matriz
 
 ---
 
-## 9. Deploy & Infraestrutura
+### 🧱 Módulo 9 — nftables (sucessor moderno do iptables)
+
+**Conceito:** `nftables` unifica `iptables`, `ip6tables`, `arptables` e `ebtables` em um único framework com sintaxe mais limpa, tabelas multi-família e melhor performance via pattern matching compilado.
+
+**Por que importa:** É o **padrão oficial do kernel Linux moderno** — distribuições novas já migraram. `iptables` continua funcionando via `iptables-nft` (wrapper), mas entender nftables é essencial para operar ambientes atuais.
+
+**Exemplo prático:**
+```bash
+# Criar tabela e chain básica
+nft add table inet filter
+nft add chain inet filter input { type filter hook input priority 0 \; policy drop \; }
+
+# Permitir SSH e tráfego estabelecido
+nft add rule inet filter input ct state established,related accept
+nft add rule inet filter input tcp dport 22 accept
+
+# Listar tudo
+nft list ruleset
+
+# Salvar ruleset (Debian/Ubuntu)
+nft list ruleset > /etc/nftables.conf
+```
+
+**Checklist de validação:**
+- [ ] `nft list ruleset` mostra as tabelas e chains criadas?
+- [ ] Conexões estabelecidas sobrevivem a reloads (`ct state`)?
+- [ ] Regras persistem após reboot (`nftables.service` ativo)?
+
+**Erros comuns:**
+- **Priority errado:** A chain padrão filter tem `priority 0` (equivalente a INPUT do iptables). Priority menor executa antes.
+- **Misturar iptables-legacy e nft:** Em sistemas que usam `iptables-nft`, rodar `iptables-legacy` cria duas pilhas paralelas — confuso e instável.
+
+> Ver deep dive `nftables-vs-iptables` em `/nftables` para comparação completa.
+
+---
+
+## 9. SEO — Fonte Única (Sprint B)
+
+Toda a configuração de metadata vive em **`src/lib/seo.ts`**. Isso é essencial para manter consistência: todas as 21 rotas apontam para o mesmo helper e aparecem automaticamente no sitemap.
+
+### Arquivo central: `src/lib/seo.ts`
+
+- `SITE_CONFIG` — nome do site, URL base, keywords globais, theme color, autor
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 21 rotas
+- `buildMetadata(route)` — helper que gera `Metadata` completo com Open Graph + Twitter + canonical
+
+### Como adicionar SEO a uma nova rota
+
+1. Adicione a entrada em `src/lib/seo.ts`:
+   ```typescript
+   export const ROUTE_SEO = {
+     // ...
+     '/nova-rota': {
+       title: 'Título Humano — Workshop Linux',
+       description: 'Descrição concisa e rica em keywords (até 160 caracteres).',
+     },
+   };
+   ```
+
+2. Crie `app/nova-rota/layout.tsx` (Server Component):
+   ```tsx
+   import { buildMetadata } from '@/lib/seo';
+
+   export const metadata = buildMetadata('/nova-rota');
+
+   export default function Layout({ children }: { children: React.ReactNode }) {
+     return children;
+   }
+   ```
+
+3. A rota aparece automaticamente em `/sitemap.xml`.
+
+### Por que esse padrão Client + Server?
+
+Todas as páginas são Client Components (`'use client';`) para ter interatividade. Mas `metadata` só pode ser exportada de Server Components. A solução: cada rota tem um `layout.tsx` server-side que apenas repassa `children`. Isso dá o melhor dos dois mundos — estado reativo + metadata SEO.
+
+### Recursos SEO gerados automaticamente
+
+| Recurso | Arquivo | Como funciona |
+|---|---|---|
+| `/sitemap.xml` | `app/sitemap.ts` | Itera sobre `ROUTE_SEO` e emite `<url>` |
+| `/robots.txt` | `app/robots.ts` | Permite tudo + aponta para o sitemap |
+| `/opengraph-image` | `app/opengraph-image.tsx` | 1200x630 dinâmica via `next/og` (edge runtime) |
+| `/icon` | `app/icon.tsx` | favicon 32x32 dinâmico via `next/og` |
+| `/apple-icon` | `app/apple-icon.tsx` | apple-touch-icon 180x180 via `next/og` |
+| `/manifest.webmanifest` | `app/manifest.ts` | Web App Manifest (PWA Lite) |
+| JSON-LD `LearningResource` | `app/layout.tsx` (inline) | Schema.org injetado no `<head>` do root |
+
+### URL base
+
+Define via `NEXT_PUBLIC_SITE_URL` no `.env` (default: `https://workshop-linux.local`). Essa variável é lida por `SITE_CONFIG.url` e usada em canonical, OG, sitemap e robots.
+
+---
+
+## 10. Acessibilidade — WCAG 2.1 AA (Sprint C)
+
+O projeto tem conformidade **WCAG 2.1 AA** implementada e validada estaticamente pelo `eslint-plugin-jsx-a11y`.
+
+### Modais (`DeepDiveModal`, `GlobalSearch`)
+
+- `role="dialog"` + `aria-modal="true"` + `aria-labelledby` + `aria-describedby`
+- Focus trap via `useFocusTrap()` em `src/lib/useFocusTrap.ts`:
+  - Tab/Shift+Tab circulam entre elementos focáveis
+  - ESC fecha
+  - Foco retorna ao elemento que abriu o modal (WCAG 3.2.1)
+- `GlobalSearch` segue o padrão WAI-ARIA **combobox + listbox**:
+  - `aria-activedescendant`, `aria-expanded`, `aria-controls`
+  - Setas navegam resultados, Enter seleciona, ESC fecha
+
+### Animações
+
+- `useReducedMotion()` da `motion/react` aplicado nos modais
+- Bloco `@media (prefers-reduced-motion: reduce)` global em `globals.css` zera:
+  - `animation-duration`, `animation-iteration-count`
+  - `transition-duration`
+  - `scroll-behavior`
+- Atende WCAG 2.3.3 (Animation from Interactions)
+
+### Foco visível
+
+```css
+/* globals.css */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+```
+
+Atende WCAG 2.4.7 (Focus Visible). Usa `:focus-visible` (não `:focus`) para não poluir interações de mouse.
+
+### Lint estático
+
+`eslint.config.mjs` (flat config) ativa `eslint-plugin-jsx-a11y` com regras estritas:
+
+- `aria-props`, `aria-proptypes`, `aria-unsupported-elements`
+- `role-has-required-aria-props`, `role-supports-aria-props`
+- `tabindex-no-positive`
+- `label-has-associated-control`
+- `no-autofocus`, `no-redundant-roles`
+- `click-events-have-key-events`, `no-noninteractive-element-interactions`
+
+**Comando:** `npm run lint:eslint` — zero warnings é o alvo. Qualquer regressão de a11y é pega no CI antes do merge.
+
+---
+
+## 11. PWA Lite & Boundaries (Sprint D)
+
+### PWA Lite — sem service worker
+
+O app é **instalável** ("Adicionar à tela inicial") via Web App Manifest gerado em `app/manifest.ts`, mas **não funciona offline**. Decisão deliberada: service worker adiciona complexidade desproporcional ao escopo educacional.
+
+```typescript
+// app/manifest.ts (trecho)
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'Workshop Linux — Do Zero ao Firewall Profissional',
+    short_name: 'Workshop Linux',
+    description: '...',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#0d1117',
+    theme_color: '#e05a2b',
+    icons: [
+      { src: '/icon', sizes: '32x32', type: 'image/png' },
+      { src: '/apple-icon', sizes: '180x180', type: 'image/png' },
+    ],
+  };
+}
+```
+
+- `display: 'standalone'` — abre como app sem chrome do browser
+- Ícones servidos pelas rotas dinâmicas `/icon` e `/apple-icon` (`next/og` edge runtime — sem PNGs binários no repo)
+- `theme_color: '#e05a2b'` (laranja accent) · `background_color: '#0d1117'` (dark)
+
+### Boundaries do App Router
+
+| Arquivo | Propósito | Notas |
+|---|---|---|
+| `app/error.tsx` | Captura runtime errors, exibe UI amigável + botão "Tentar novamente" via `reset()` | **Obrigatoriamente `'use client'`** |
+| `app/not-found.tsx` | 404 page com `robots: noindex` | Server Component (bundle mínimo para bots) |
+| `app/loading.tsx` | Suspense fallback global com spinner + `role="status"` + `aria-busy` | Server Component |
+
+---
+
+## 12. Segurança — Headers e CSP Nonce (Sprint D + E)
+
+### Headers estáticos em `next.config.ts`
+
+| Header | Valor | Função |
+|--------|-------|--------|
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Força HTTPS por 2 anos (HSTS preload-ready) |
+| `X-Frame-Options` | `DENY` | Bloqueia iframe (defesa adicional ao `frame-ancestors`) |
+| `X-Content-Type-Options` | `nosniff` | Impede MIME sniffing |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Vaza apenas origem em navegação cross-origin |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | Desativa APIs sensíveis e FLoC |
+| `X-DNS-Prefetch-Control` | `on` | Acelera navegação via prefetch DNS |
+
+Também: `poweredByHeader: false` (não vaza versão do Next.js) e `compress: true` (gzip/brotli).
+
+### CSP per-request com nonce (Sprint E — `proxy.ts`)
+
+O `Content-Security-Policy` **não é estático**. Ele é gerado por requisição em **`proxy.ts`** (Next.js 16 renomeou `middleware.ts` → `proxy.ts`):
+
+1. `proxy.ts` gera um nonce criptográfico (16 bytes base64) por requisição
+2. Propaga via request header `x-nonce`
+3. `app/layout.tsx` lê com `await headers()` e aplica `nonce={nonce}` nos dois `<script>` inline (anti-FOUC + JSON-LD)
+4. A resposta recebe CSP com `'nonce-XXX' 'strict-dynamic'` em `script-src` — **sem `'unsafe-inline'`**
+
+**Diretivas finais do CSP (produção):**
+
+```
+default-src 'self';
+script-src 'self' 'nonce-XXX' 'strict-dynamic';
+style-src 'self' 'unsafe-inline';
+img-src 'self' data: blob:;
+font-src 'self' data:;
+connect-src 'self';
+frame-src 'none';
+frame-ancestors 'none';
+object-src 'none';
+base-uri 'self';
+form-action 'self';
+upgrade-insecure-requests
+```
+
+> `style-src 'unsafe-inline'` **permanece** — Tailwind v4 e motion/react injetam `<style>` dinâmicos. Resolver isso exigiria ou hash de cada estilo (impraticável) ou nonce em styles (Next.js ainda não propaga nonce para styles).
+
+### Trade-off aceito
+
+Ler `headers()` no root layout torna **todas as rotas dinâmicas** (`ƒ` em vez de `○`). Para um site educacional leve sem necessidade de cache CDN agressivo, o ganho de segurança (nota **A+** no securityheaders.com) compensa.
+
+**Rotas estáticas após Sprint E:** apenas `/sitemap.xml`, `/robots.txt` e `/manifest.webmanifest` (não passam pelo proxy via matcher).
+
+### Regras de ouro na aplicação
+
+| Área | Prática |
+|---|---|
+| Variáveis | `NEXT_PUBLIC_` apenas para o que o browser precisa ler |
+| Secrets | Nunca no código — `.env` no `.gitignore` |
+| Inputs | Sanitização de XSS antes de qualquer `localStorage.setItem` |
+| Dependências | `npm audit` mensal |
+
+---
+
+## 13. Deploy & Infraestrutura
 
 ### Opção 1 — Deploy Dinâmico (Node.js + PM2) — Padrão atual
 
@@ -712,63 +1007,28 @@ server {
 }
 ```
 
-### Opção 2 — Static Export (GitHub Pages / S3 / Nginx puro)
-
-```typescript
-// next.config.ts — adicionar para exportação estática
-const nextConfig = {
-  output: 'export',
-};
-```
-
-```nginx
-server {
-    listen 80;
-    server_name workshop-static.seudominio.com;
-    root /var/www/workshop-linux/out;
-    index index.html;
-
-    location / {
-        try_files $uri $uri.html $uri/ =404;
-    }
-
-    location /_next/static/ {
-        expires 365d;
-        access_log off;
-    }
-}
-```
-
-> **Limitação:** Static Export não suporta API Routes dinâmicas nem SSR. Adequado para o projeto atual (21 rotas estáticas).
-
-### Opção 3 — Vercel (mais simples)
+### Opção 2 — Vercel (mais simples)
 
 Conectar o repositório GitHub na Vercel. O Next.js é detectado automaticamente, zero configuração.
+
+> ⚠️ **Static Export não é mais viável** após o Sprint E. O root layout lê `headers()` para o nonce CSP, o que torna todas as rotas dinâmicas. `output: 'export'` falharia.
 
 ### Checklist de deploy
 
 - [ ] `npm install` sem erros
 - [ ] `npm run lint` — zero erros TypeScript
-- [ ] `npm run build` — 21 rotas geradas com sucesso
-- [ ] `.env.production` configurado no servidor
+- [ ] `npm run lint:eslint` — zero warnings de acessibilidade
+- [ ] `npm run build` — **28/28 páginas** (21 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + `_not-found`)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 16`, `totalTopics = 24`, `checklistItemsCount = 26`)
+- [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2 ou Docker configurado para restart automático
-- [ ] SSL/HTTPS ativo no Nginx (Certbot recomendado)
+- [ ] SSL/HTTPS ativo no Nginx (Certbot recomendado) — HSTS já é emitido pelo `next.config.ts`
 - [ ] Porta 3000 não exposta diretamente (apenas via Nginx)
+- [ ] Validar CSP em produção via [securityheaders.com](https://securityheaders.com) — meta: nota A+
 
 ---
 
-## 10. Segurança & Manutenção Preventiva
-
-### Princípios aplicados
-
-| Área | Prática |
-|---|---|
-| Variáveis | `NEXT_PUBLIC_` apenas para o que o browser precisa ler |
-| Secrets | Nunca no código — `.env` no `.gitignore` |
-| Inputs | Sanitização de XSS antes de qualquer `localStorage.setItem` |
-| Servidor | `iptables -P INPUT DROP` em produção (deny-all por padrão) |
-| Dependências | `npm audit` mensal |
-| Certificados | Renovação trimestral (ou automática via Certbot/Let's Encrypt) |
+## 14. Manutenção Preventiva
 
 ### Cronograma de auditoria
 
@@ -789,7 +1049,7 @@ Conectar o repositório GitHub na Vercel. O Next.js é detectado automaticamente
 
 ---
 
-## 11. Workflow Git do Projeto
+## 15. Workflow Git do Projeto
 
 ### Regra de ouro: nunca commitar direto na `main`
 
@@ -843,32 +1103,58 @@ Se ficar preso no modo multilinha (`>>`), pressione `Ctrl+C` para cancelar e ten
 
 ---
 
-## 12. Roadmap Técnico
+## 16. Roadmap Técnico
 
 ```
-Fase 1 ✅ Concluída
+Fase 1 ✅ Concluída — Fundação
   ├── Migração Vite → Next.js App Router
   ├── Sistema de Badges & Busca Global (⌘K)
   ├── 21 rotas com conteúdo técnico completo
   ├── Topologia interativa clicável
   └── Dark Mode corrigido (4 bugs resolvidos)
 
-Fase 2 🔄 Em andamento
-  ├── Server Components (reduzir bundle client-side)
-  ├── SEO & Metadata API (Open Graph, sitemap)
-  ├── Performance Core Web Vitals
-  └── Otimizar TopologyInteractive.tsx (36KB — maior arquivo)
+Sprint A ✅ Robustez
+  ├── try/catch em todos os acessos a localStorage
+  ├── next/font (Space Grotesk + JetBrains Mono) — self-hosted, zero CLS, LGPD-safe
+  └── Web Share API funcional com fallback
 
-Fase 3 🔮 Futuro
-  ├── Backend Node.js com API Routes
-  ├── PostgreSQL / Supabase (substituir LocalStorage)
-  ├── Autenticação multi-usuário
-  └── Suporte a múltiplos workshops simultâneos
+Sprint B ✅ SEO
+  ├── src/lib/seo.ts — fonte única (SITE_CONFIG, ROUTE_SEO, buildMetadata)
+  ├── Metadata por rota via layout.tsx Server Component
+  ├── sitemap.ts + robots.ts dinâmicos
+  ├── opengraph-image + icon + apple-icon via next/og (edge runtime)
+  └── JSON-LD LearningResource no root layout
+
+Sprint C ✅ Acessibilidade WCAG 2.1 AA
+  ├── Modais: role="dialog" + aria-modal + focus trap (useFocusTrap)
+  ├── GlobalSearch: padrão WAI-ARIA combobox + listbox
+  ├── prefers-reduced-motion global + useReducedMotion nos modais
+  ├── :focus-visible com outline accent
+  └── ESLint jsx-a11y como gate estático
+
+Sprint D ✅ PWA Lite + Headers de Segurança
+  ├── manifest.ts — PWA Lite (instalável, sem service worker)
+  ├── Icons dinâmicos via next/og edge runtime
+  ├── HSTS, X-Frame-Options, Permissions-Policy via next.config.ts
+  └── Boundaries: error.tsx, not-found.tsx, loading.tsx
+
+Sprint E ✅ CSP nonce per-request (Next.js 16)
+  ├── middleware.ts → proxy.ts (renomeação Next.js 16)
+  ├── Nonce criptográfico propagado via x-nonce header
+  ├── script-src 'self' 'nonce-XXX' 'strict-dynamic' — sem 'unsafe-inline'
+  └── Trade-off: todas as rotas viram dynamic (aceito — nota A+ securityheaders.com)
+
+❌ Backend/Supabase — DESCARTADO
+   localStorage atende ao escopo educacional.
+   Portabilidade via export/import JSON se necessário.
+
+⏸️ Service Worker offline — AVALIAR DEPOIS
+   Complexidade desproporcional ao caso de uso.
 ```
 
 ---
 
-## 13. Glossário Técnico
+## 17. Glossário Técnico
 
 **App Router** — Sistema de roteamento do Next.js baseado em pastas. Cada pasta com `page.tsx` vira uma rota pública automaticamente.
 
@@ -898,9 +1184,23 @@ Fase 3 🔮 Futuro
 
 **SSL Bump** — Técnica avançada do Squid que intercepta e decripta tráfego HTTPS para inspeção de conteúdo. Exige instalar um certificado do Proxy em todas as máquinas da rede.
 
+**CSP nonce** — Valor criptográfico aleatório gerado por requisição, aplicado como atributo `nonce=` em scripts inline e declarado no header CSP. Permite scripts inline confiáveis sem precisar de `'unsafe-inline'` (que derrotaria o CSP).
+
+**`'strict-dynamic'`** — Diretiva CSP moderna que permite scripts confiáveis (com nonce) carregarem dinamicamente outros scripts, sem precisar manter uma allowlist de domínios. Substitui `script-src 'self' https://cdn...` por uma cadeia de confiança baseada em nonce.
+
+**`proxy.ts`** — Arquivo renomeado do antigo `middleware.ts` no Next.js 16. Roda na edge antes do render, ideal para headers dinâmicos como CSP nonce.
+
+**HSTS** (HTTP Strict Transport Security) — Header que instrui o browser a só acessar o site via HTTPS por um período definido (aqui: 2 anos). Com `preload`, pode ser inscrito na lista do Chromium para proteção no primeiro acesso.
+
+**FOUC** (Flash of Unstyled Content) — Piscada visual quando o estilo é aplicado depois da renderização inicial. No Dark Mode, manifesta como flash branco antes do tema escuro carregar. Resolvido por script síncrono no `<head>` que aplica a classe antes do primeiro paint.
+
+**WCAG 2.1 AA** — Web Content Accessibility Guidelines. Nível AA é o padrão de conformidade exigido pela maioria das legislações (LBI no Brasil, ADA nos EUA, EN 301 549 na UE).
+
+**next/og** — API do Next.js que gera imagens dinamicamente (OG, ícones) usando JSX no edge runtime. Substitui PNGs binários no repositório.
+
 ---
 
-## 14. Apresentação Executiva — Slide Deck
+## 18. Apresentação Executiva — Slide Deck
 
 *Use este conteúdo para apresentações rápidas. Copie para PowerPoint, Google Slides ou qualquer visualizador Markdown.*
 
@@ -908,39 +1208,49 @@ Fase 3 🔮 Futuro
 
 **Slide 1 — Visão Geral**
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
-- **Stack:** Next.js 16, Tailwind CSS v4, TypeScript 5.8
+- **Stack:** Next.js 16, Tailwind CSS v4, TypeScript 5.8, React 19
 - **Missão:** Democratizar infraestrutura Linux com experiência gamificada e imersiva
-- **Escopo:** 21 páginas, 8 módulos técnicos, 17 badges, laboratório Linux real
+- **Escopo:** 21 rotas, 9 módulos técnicos, 17 badges, laboratório Linux real
 
 ---
 
-**Slide 2 — Arquitetura e Escalabilidade**
-- **Frontend:** Interface reativa (Client + Server Components, Framer Motion)
-- **Dados:** LocalStorage hoje → PostgreSQL/Supabase na Fase 3
-- **Performance:** 21 rotas estáticas, Turbopack, build em 2.8s
+**Slide 2 — Arquitetura**
+- **Frontend:** Client + Server Components híbridos (estado reativo + metadata SEO)
+- **Persistência:** `localStorage` como fonte única (Backend descartado — escopo educacional)
+- **Build:** Turbopack · 28/28 páginas · Sprint E torna tudo dynamic (trade-off CSP)
 - **Infraestrutura:** Nginx como Proxy Reverso + PM2 para alta disponibilidade
 
 ---
 
-**Slide 3 — Governança e Segurança**
-- **Auditoria:** Checklists semanais, mensais e trimestrais
-- **Código:** Sanitização de XSS, isolamento de secrets via `.env`
-- **Rede:** Princípio do Menor Privilégio via iptables (`-P INPUT DROP`)
-- **Dependências:** `npm audit` como gate de segurança mensal
+**Slide 3 — Segurança (Sprint D + E)**
+- **Headers:** HSTS (2y preload), X-Frame-Options DENY, Permissions-Policy restritiva
+- **CSP:** Nonce per-request via `proxy.ts` — `'strict-dynamic'` sem `'unsafe-inline'`
+- **A11y:** WCAG 2.1 AA com ESLint `jsx-a11y` como gate estático
+- **Meta:** Nota A+ no securityheaders.com
 
 ---
 
-**Slide 4 — Roadmap**
-- **Fase 1 ✅:** Arquitetura estável, Dark Mode corrigido, 21 rotas prontas
-- **Fase 2 🔄:** Server Components, SEO, Performance Core Web Vitals
-- **Fase 3 🔮:** Backend, autenticação multi-usuário, múltiplos workshops
+**Slide 4 — SEO & Performance (Sprint B)**
+- **Fonte única:** `src/lib/seo.ts` com `ROUTE_SEO` e `buildMetadata()`
+- **Geração automática:** sitemap, robots, OG image, favicon, apple-icon, manifest — todos via `next/og` edge
+- **Fontes:** `next/font` self-hospedado (zero CLS, LGPD-safe)
+- **JSON-LD:** `LearningResource` no root layout
 
 ---
 
-**Slide 5 — Mensagens-Chave**
-- **Hoje:** Arquitetura sólida, rápida e gamificada
-- **Amanhã:** Escalável com banco de dados real e multi-usuário
-- **Sempre:** Segurança por design, auditoria contínua, código limpo
+**Slide 5 — Sprints Concluídos**
+- **Sprint A ✅** Robustez (localStorage try/catch, next/font, Web Share)
+- **Sprint B ✅** SEO (seo.ts, sitemap, OG, JSON-LD)
+- **Sprint C ✅** A11y WCAG 2.1 AA (focus trap, aria-*, prefers-reduced-motion)
+- **Sprint D ✅** PWA Lite + Headers de segurança
+- **Sprint E ✅** CSP nonce per-request via `proxy.ts` (Next.js 16)
+
+---
+
+**Slide 6 — Mensagens-Chave**
+- **Seguro por design:** CSP nonce + HSTS + ESLint a11y como gate
+- **Escopo honesto:** Sem backend, sem SW — localStorage e PWA Lite bastam
+- **Educacional primeiro:** Toda decisão técnica prioriza clareza de aprendizado
 
 ---
 
