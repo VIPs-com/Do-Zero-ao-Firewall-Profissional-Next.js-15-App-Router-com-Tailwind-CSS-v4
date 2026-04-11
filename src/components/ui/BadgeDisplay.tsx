@@ -10,15 +10,22 @@ interface BadgeDisplayProps {
   badge: BadgeDef;
   unlocked: boolean;
   className?: string;
+  /**
+   * Sprint M — se `true`, aplica uma animação de brilho (shine) sutil
+   * sobre o card. Feita para ser disparada no momento do desbloqueio.
+   * Respeita `prefers-reduced-motion` via regra global em globals.css.
+   */
+  justUnlocked?: boolean;
 }
 
-export const BadgeDisplay: React.FC<BadgeDisplayProps> = ({ badge, unlocked, className }) => {
+export const BadgeDisplay: React.FC<BadgeDisplayProps> = ({ badge, unlocked, className, justUnlocked }) => {
   return (
     <div className={cn(
       "relative group p-4 rounded-xl border transition-all duration-300",
-      unlocked 
-        ? "bg-accent/5 border-accent/30 shadow-sm" 
+      unlocked
+        ? "bg-accent/5 border-accent/30 shadow-sm"
         : "bg-bg-2 border-border opacity-60 grayscale",
+      unlocked && justUnlocked && "badge-unlock-glow",
       className
     )}>
       <div className="flex items-center gap-4">

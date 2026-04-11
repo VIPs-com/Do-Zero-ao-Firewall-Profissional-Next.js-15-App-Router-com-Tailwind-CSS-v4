@@ -285,6 +285,52 @@ O Tailwind CSS v4 usa `@theme` para definir tokens. O bloco `html.light {}` no `
 | `--color-ok/warn/err/info` | — | — | ❌ invariante |
 | Camadas OSI (layer-1 a 7) | — | — | ❌ invariante |
 
+### Tokens de módulo (Sprint M — Cyber-Industrial)
+
+Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e alimentam as utility classes `.module-accent-<slug>`. A aplicação nas páginas é **opt-in e incremental** (cada rota migra em um PR de polish posterior — nada quebra sem a classe):
+
+| Slug | Token CSS | Cor | Módulo |
+|---|---|---|---|
+| `instalacao` | `--module-instalacao` | `#9ca3af` | Instalação (neutro-tech) |
+| `wan-nat` | `--module-wan-nat` | `#60a5fa` | WAN & NAT |
+| `dns` | `--module-dns` | `#22d3ee` | DNS (BIND9) |
+| `nginx-ssl` | `--module-nginx-ssl` | `#34d399` | Nginx + SSL/TLS |
+| `lan-proxy` | `--module-lan-proxy` | `#fbbf24` | LAN + Squid Proxy |
+| `dnat` | `--module-dnat` | `#a78bfa` | DNAT |
+| `port-knocking` | `--module-port-knocking` | `#fb923c` | Port Knocking |
+| `vpn-ipsec` | `--module-vpn-ipsec` | `#3b82f6` | VPN IPSec |
+| `nftables` | `--module-nftables` | `#f85149` | nftables (firewall) |
+| `ataques-avancados` | `--module-ataques-avancados` | `#ec4899` | Ataques avançados |
+| `pivoteamento` | `--module-pivoteamento` | `#dc2626` | Pivoteamento |
+| `web-server` | `--module-web-server` | `#67e8f9` | Web Server |
+| `evolucao` | `--module-evolucao` | `#f59e0b` | Evolução |
+| `audit-logs` | `--module-audit-logs` | `#14b8a6` | Audit logs |
+| `cheat-sheet` | `--module-cheat-sheet` | `#818cf8` | Cheat sheet |
+| `glossario` | `--module-glossario` | `#94a3b8` | Glossário |
+
+**Como usar numa rota:**
+
+```tsx
+// app/dns/page.tsx
+return (
+  <div className="module-accent-dns">
+    <section className="module-hero">…conteúdo do hero…</section>
+    {/* resto da página inalterado */}
+  </div>
+);
+```
+
+A classe raiz define `--mod` e qualquer `.module-hero` descendente recebe automaticamente a borda superior colorida e um halo radial difuso. Sem JS, sem wrapping extra.
+
+**Micro-interações globais adicionadas (`globals.css`):**
+
+- `.code-block:hover` → borda anima para `color-mix(accent 55%, border)` + box-shadow `--glow-accent`
+- `.info-box/.warn-box/.highlight-box` → gradiente lateral de aura (`::after`, opacity 0.04, z-index -1)
+- `.fluxo-card:hover` → box-shadow duplo (halo + elevação)
+- `.badge-unlock-glow` → animação `badge-unlock-shine` de 1.1s ao desbloquear (ver `BadgeDisplay` prop `justUnlocked`)
+
+**WCAG 2.3.3:** todas as animações são zeradas pelo bloco `@media (prefers-reduced-motion: reduce)` já existente — não é necessário tratamento por componente.
+
 ### ⚠️ Bugs históricos (já corrigidos — não repetir)
 
 | Bug | Causa | Correção aplicada |

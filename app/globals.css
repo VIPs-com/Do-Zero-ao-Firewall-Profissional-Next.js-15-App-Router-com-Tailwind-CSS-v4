@@ -58,6 +58,40 @@
   --shadow-sm: 0 2px 8px  rgba(0, 0, 0, 0.30);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.40);
   --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.50);
+
+  /* ============================================================
+     SPRINT M — Maquiagem Cyber-Industrial
+     ============================================================
+     Tokens de cor por módulo. Cada rota de conteúdo tem um accent
+     dedicado que é usado pela utility class `.module-accent-<slug>`
+     (ver bloco @layer components abaixo). Aplicação nas páginas é
+     incremental — páginas antigas continuam funcionando sem tocar.
+
+     Paleta pensada para o tema dark (AA). O tema light herda os
+     mesmos hex porque todos têm luminosidade suficiente contra
+     ambos os backgrounds. */
+  --module-instalacao:       #9ca3af;  /* neutro-tech  */
+  --module-wan-nat:          #60a5fa;  /* azul         */
+  --module-dns:              #22d3ee;  /* ciano        */
+  --module-nginx-ssl:        #34d399;  /* verde-neon   */
+  --module-lan-proxy:        #fbbf24;  /* amarelo      */
+  --module-dnat:             #a78bfa;  /* roxo         */
+  --module-port-knocking:    #fb923c;  /* laranja      */
+  --module-vpn-ipsec:        #3b82f6;  /* azul profundo */
+  --module-nftables:         #f85149;  /* vermelho (firewall) */
+  --module-ataques-avancados:#ec4899;  /* magenta      */
+  --module-pivoteamento:     #dc2626;  /* vermelho-carmim */
+  --module-web-server:       #67e8f9;  /* ciano suave  */
+  --module-evolucao:         #f59e0b;  /* amber        */
+  --module-audit-logs:       #14b8a6;  /* teal         */
+  --module-cheat-sheet:      #818cf8;  /* indigo       */
+  --module-glossario:        #94a3b8;  /* slate        */
+
+  /* Auras/brilhos cyber — sombras suaves reutilizáveis */
+  --glow-accent: 0 0 0 1px rgba(224, 90, 43, 0.28), 0 0 24px rgba(224, 90, 43, 0.18);
+  --glow-ok:     0 0 0 1px rgba(52, 211, 153, 0.25), 0 0 20px rgba(52, 211, 153, 0.15);
+  --glow-warn:   0 0 0 1px rgba(251, 191, 36, 0.25), 0 0 20px rgba(251, 191, 36, 0.15);
+  --glow-info:   0 0 0 1px rgba(96, 165, 250, 0.25), 0 0 20px rgba(96, 165, 250, 0.15);
 }
 
 /* ============================================================
@@ -172,6 +206,132 @@ html.light {
   .layer-badge.l3 { @apply bg-[rgba(52,211,153,0.15)]  text-layer-3; }
   .layer-badge.l2 { @apply bg-[rgba(156,163,175,0.15)] text-layer-2; }
   .layer-badge.l1 { @apply bg-[rgba(107,114,128,0.15)] text-layer-1; }
+
+  /* ============================================================
+     SPRINT M — .module-accent-<slug>
+     ============================================================
+     Classe opt-in aplicada no container raiz de uma rota para
+     colorir o hero com o accent daquele módulo. Usada incrementalmente
+     (cada rota migra em um PR de polish posterior).
+
+     Ela define três variáveis consumíveis:
+       --mod         → cor principal do módulo
+       --mod-glow    → halo sutil derivado
+       --mod-surface → superfície fraca (bg de heros, chips) */
+  .module-accent-instalacao       { --mod: var(--module-instalacao); }
+  .module-accent-wan-nat          { --mod: var(--module-wan-nat); }
+  .module-accent-dns              { --mod: var(--module-dns); }
+  .module-accent-nginx-ssl        { --mod: var(--module-nginx-ssl); }
+  .module-accent-lan-proxy        { --mod: var(--module-lan-proxy); }
+  .module-accent-dnat             { --mod: var(--module-dnat); }
+  .module-accent-port-knocking    { --mod: var(--module-port-knocking); }
+  .module-accent-vpn-ipsec        { --mod: var(--module-vpn-ipsec); }
+  .module-accent-nftables         { --mod: var(--module-nftables); }
+  .module-accent-ataques-avancados{ --mod: var(--module-ataques-avancados); }
+  .module-accent-pivoteamento     { --mod: var(--module-pivoteamento); }
+  .module-accent-web-server       { --mod: var(--module-web-server); }
+  .module-accent-evolucao         { --mod: var(--module-evolucao); }
+  .module-accent-audit-logs       { --mod: var(--module-audit-logs); }
+  .module-accent-cheat-sheet      { --mod: var(--module-cheat-sheet); }
+  .module-accent-glossario        { --mod: var(--module-glossario); }
+
+  /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
+     recebe automaticamente a borda superior colorida + halo difuso.
+     Zero mudança no JSX da página — só aplicar a classe na div raiz. */
+  [class*="module-accent-"] .module-hero {
+    position: relative;
+    border-top: 2px solid var(--mod, var(--color-accent));
+    box-shadow: 0 -1px 0 0 var(--mod, var(--color-accent));
+  }
+  [class*="module-accent-"] .module-hero::before {
+    content: "";
+    position: absolute;
+    inset: -2px 0 auto 0;
+    height: 120px;
+    background: radial-gradient(ellipse at top, color-mix(in srgb, var(--mod, var(--color-accent)) 20%, transparent) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+/* ============================================================
+   SPRINT M — Micro-interações cyber-industrial
+   ============================================================
+   Realces sutis aplicados SOMENTE nos primitivos globais.
+   Todas as transições são governadas pelo bloco
+   `@media (prefers-reduced-motion: reduce)` mais abaixo — não
+   quebram WCAG 2.3.3. */
+
+/* CodeBlock: halo suave no hover + borda animada */
+.code-block {
+  position: relative;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.code-block:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+  box-shadow: var(--glow-accent);
+}
+
+/* Boxes: gradiente sutil de aura na lateral — reforça a identidade
+   sem quebrar legibilidade. */
+.info-box,
+.highlight-box,
+.warn-box {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.info-box::after,
+.highlight-box::after,
+.warn-box::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 60%;
+  background: linear-gradient(90deg, currentColor 0%, transparent 100%);
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: -1;
+}
+.info-box::after      { color: var(--color-info); }
+.highlight-box::after { color: var(--color-accent); }
+.warn-box::after      { color: var(--color-warn); }
+
+/* BadgeDisplay: partícula de brilho ao desbloquear.
+   Opt-in via classe .badge-unlock-glow adicionada quando
+   `justUnlocked` é true. A animação é uma passada curta que
+   anima um gradiente translúcido atravessando o card. */
+@keyframes badge-unlock-shine {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateX(200%); opacity: 0; }
+}
+.badge-unlock-glow {
+  position: relative;
+  overflow: hidden;
+}
+.badge-unlock-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 70%
+  );
+  animation: badge-unlock-shine 1.1s ease-out 1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* FluxoCard: borda que acende sutilmente no hover — nota cyber sem distração */
+.fluxo-card {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.fluxo-card:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 20%, transparent),
+              0 12px 32px rgba(0, 0, 0, 0.25);
 }
 
 /* ============================================================

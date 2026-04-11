@@ -20,7 +20,7 @@ interface FluxoCardProps {
 
 export const FluxoCard: React.FC<FluxoCardProps> = ({ steps, direction = 'horizontal', title, className }) => {
   return (
-    <div className={cn("bg-bg-2 border border-border rounded-xl p-6 my-8", className)}>
+    <div className={cn("fluxo-card bg-bg-2 border border-border rounded-xl p-6 my-8", className)}>
       {title && <h4 className="text-xs font-bold text-text-3 uppercase tracking-widest mb-6 text-center">{title}</h4>}
       <div className={cn(
         "flex items-center justify-center gap-4",
