@@ -188,7 +188,22 @@ export const TopologyInteractive: React.FC = memo(() => {
 
       {/* Desktop SVG View */}
       <div className="hidden lg:block p-4 md:p-8 overflow-x-auto relative">
-        <svg viewBox="0 0 760 900" className="min-w-[600px] w-full h-auto" xmlns="http://www.w3.org/2000/svg">
+        <svg
+          viewBox="0 0 760 900"
+          className="min-w-[600px] w-full h-auto"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-labelledby="topology-title"
+          aria-describedby="topology-desc"
+        >
+          <title id="topology-title">Topologia de rede do laboratório Workshop Linux</title>
+          <desc id="topology-desc">
+            Diagrama interativo mostrando a Internet (WAN) conectada a um Firewall gateway,
+            que isola a Zona DMZ (contendo DNS Server, Web Server e FTP Server) da Zona LAN
+            (contendo o Cliente). Três pontos de risco estão destacados com triângulos de alerta:
+            Pivoteamento entre DMZ e LAN, Timing Attack no Port Knocking e DNS Rebinding no proxy.
+            Todos os nós e alertas são botões navegáveis por teclado (Tab para mover, Enter ou Espaço para ativar).
+          </desc>
           <defs>
             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
               <polygon points="0 0, 10 3.5, 0 7" fill="#484f58" />
@@ -212,7 +227,12 @@ export const TopologyInteractive: React.FC = memo(() => {
             onMouseEnter={() => setHoveredNode({ node: NODES.internet, x: 380, y: 55 })}
             onMouseLeave={() => setHoveredNode(null)}
             onClick={() => handleNodeClick(NODES.internet)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNodeClick(NODES.internet)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleNodeClick(NODES.internet);
+              }
+            }}
             tabIndex={0}
             role="button"
             aria-label="Informações sobre Internet (WAN)"
@@ -228,7 +248,12 @@ export const TopologyInteractive: React.FC = memo(() => {
             onMouseEnter={() => setHoveredNode({ node: NODES.firewall, x: 380, y: 190 })}
             onMouseLeave={() => setHoveredNode(null)}
             onClick={() => handleNodeClick(NODES.firewall)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNodeClick(NODES.firewall)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleNodeClick(NODES.firewall);
+              }
+            }}
             tabIndex={0}
             role="button"
             aria-label="Informações sobre Firewall Gateway"
@@ -245,7 +270,12 @@ export const TopologyInteractive: React.FC = memo(() => {
             onMouseEnter={() => setHoveredNode({ node: NODES.dns, x: 135, y: 425 })}
             onMouseLeave={() => setHoveredNode(null)}
             onClick={() => handleNodeClick(NODES.dns)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNodeClick(NODES.dns)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleNodeClick(NODES.dns);
+              }
+            }}
             tabIndex={0}
             role="button"
             aria-label="Informações sobre DNS Server"
@@ -262,7 +292,12 @@ export const TopologyInteractive: React.FC = memo(() => {
             onMouseEnter={() => setHoveredNode({ node: NODES.web, x: 315, y: 425 })}
             onMouseLeave={() => setHoveredNode(null)}
             onClick={() => handleNodeClick(NODES.web)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNodeClick(NODES.web)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleNodeClick(NODES.web);
+              }
+            }}
             tabIndex={0}
             role="button"
             aria-label="Informações sobre Web Server"
@@ -279,7 +314,12 @@ export const TopologyInteractive: React.FC = memo(() => {
             onMouseEnter={() => setHoveredNode({ node: NODES.ftp, x: 220, y: 540 })}
             onMouseLeave={() => setHoveredNode(null)}
             onClick={() => handleNodeClick(NODES.ftp)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNodeClick(NODES.ftp)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleNodeClick(NODES.ftp);
+              }
+            }}
             tabIndex={0}
             role="button"
             aria-label="Informações sobre FTP Server"
@@ -294,7 +334,12 @@ export const TopologyInteractive: React.FC = memo(() => {
             onMouseEnter={() => setHoveredNode({ node: NODES.client, x: 580, y: 455 })}
             onMouseLeave={() => setHoveredNode(null)}
             onClick={() => handleNodeClick(NODES.client)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNodeClick(NODES.client)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleNodeClick(NODES.client);
+              }
+            }}
             tabIndex={0}
             role="button"
             aria-label="Informações sobre Cliente LAN"
@@ -320,7 +365,8 @@ export const TopologyInteractive: React.FC = memo(() => {
                 trackRiskClick(risk.id);
               }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
                   setSelectedRisk(risk);
                   setSelectedNode(null);
                   trackRiskClick(risk.id);
