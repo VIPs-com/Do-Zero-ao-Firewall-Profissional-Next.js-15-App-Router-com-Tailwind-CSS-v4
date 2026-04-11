@@ -9,13 +9,15 @@ Plataforma educacional interativa em português que ensina segurança de redes L
 ## Comandos
 
 ```bash
-npm run dev      # servidor local em http://localhost:3000
-npm run lint     # tsc --noEmit — SEMPRE rodar antes do build
-npm run build    # valida TypeScript + gera 23 rotas estáticas
-npm run start    # servidor de produção na porta 3000
+npm run dev          # servidor local em http://localhost:3000
+npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
+npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
+npm run lint:all     # roda lint + lint:eslint em sequência
+npm run build        # valida TypeScript + gera 21 rotas próprias (build reporta 28/28 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest)
+npm run start        # servidor de produção na porta 3000
 ```
 
-> Não há testes. `npm run lint` é a única validação estática configurada.
+> Não há testes. `npm run lint` (typecheck) e `npm run lint:eslint` (a11y) são as duas validações estáticas obrigatórias antes do build.
 
 ---
 
@@ -23,10 +25,20 @@ npm run start    # servidor de produção na porta 3000
 
 ```
 app/                        # App Router — cada pasta = 1 rota pública
-  layout.tsx                # root layout + script anti-FOUC (lê localStorage antes do React hidratar)
+  layout.tsx                # root layout + next/font + JSON-LD + metadata global
   globals.css               # tokens de cor dark/light — @theme block, sem tailwind.config.js
   providers.tsx             # wraps tree em <BadgeProvider>
-  [rota]/page.tsx           # 23 rotas — todas 'use client'
+  error.tsx                 # error boundary global ('use client' obrigatório)
+  not-found.tsx             # 404 page (Server Component, robots noindex)
+  loading.tsx               # Suspense fallback global (Server Component)
+  manifest.ts               # Web App Manifest — PWA Lite (sem service worker)
+  sitemap.ts                # sitemap.xml dinâmico gerado a partir de ROUTE_SEO
+  robots.ts                 # robots.txt dinâmico
+  opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
+  icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
+  apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
+  [rota]/page.tsx           # 21 rotas — todas 'use client'
+  [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
   components/
@@ -38,7 +50,10 @@ src/
     searchItems.ts          # 44 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge
-  lib/utils.ts              # re-exporta cn() — clsx + tailwind-merge
+  lib/
+    utils.ts                # re-exporta cn() — clsx + tailwind-merge
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (21 rotas), buildMetadata()
+    useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 ```
 
 **Path alias:** `@/` resolve para `src/`. Todos os imports de `src/` usam esse alias.
@@ -93,10 +108,82 @@ NUNCA criar arquivos CSS separados — usar classes Tailwind diretamente no JSX.
 
 ## Fonts e Icones
 
-- Space Grotesk — fonte sans-serif do corpo
-- JetBrains Mono — fonte monospace e codigo
+- Space Grotesk — fonte sans-serif do corpo (via `next/font/google`, self-hosted)
+- JetBrains Mono — fonte monospace e codigo (via `next/font/google`, self-hosted)
 - Lucide React — todos os icones
 - motion/react (Framer Motion v12) — animacoes
+
+> **NUNCA** voltar a usar `@import url('fonts.googleapis.com/...')` em `globals.css`.
+> next/font self-hospeda, elimina layout shift e mantém conformidade LGPD/GDPR.
+
+---
+
+## SEO — Fonte Única de Verdade
+
+Toda configuração de metadata vive em **`src/lib/seo.ts`**:
+
+- `SITE_CONFIG` — nome, URL base, keywords globais, theme color
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 21 rotas
+- `buildMetadata(route)` — helper que gera objeto `Metadata` completo com OG + Twitter + canonical
+
+**Para adicionar SEO a uma nova rota:**
+
+1. Adicione a entrada em `ROUTE_SEO['/nova-rota']`
+2. Crie `app/nova-rota/layout.tsx`:
+   ```tsx
+   import { buildMetadata } from '@/lib/seo';
+   export const metadata = buildMetadata('/nova-rota');
+   export default function Layout({ children }: { children: React.ReactNode }) {
+     return children;
+   }
+   ```
+3. A rota aparece automaticamente no `sitemap.xml`
+
+**Como funciona com `'use client'`:** todas as páginas são Client Components. Metadata só é exportável de Server Components, então cada rota tem um `layout.tsx` server-side que apenas repassa `children`. Isso dá o melhor dos dois mundos: estado reativo nas páginas + metadata SEO.
+
+**URL base:** define via `NEXT_PUBLIC_SITE_URL` no `.env` (default: `https://workshop-linux.local`).
+
+**Recursos gerados automaticamente:**
+
+- `/sitemap.xml` — via `app/sitemap.ts` (lê `ROUTE_SEO`)
+- `/robots.txt` — via `app/robots.ts`
+- `/opengraph-image` — imagem 1200x630 dinâmica via `app/opengraph-image.tsx` (edge runtime)
+- `/icon` — favicon 32x32 dinâmico via `app/icon.tsx` (edge runtime)
+- `/apple-icon` — apple-touch-icon 180x180 via `app/apple-icon.tsx` (edge runtime)
+- `/manifest.webmanifest` — Web App Manifest via `app/manifest.ts`
+- JSON-LD `LearningResource` — injetado no `<head>` do root layout
+
+---
+
+## PWA Lite & Headers de Segurança (Sprint D)
+
+**PWA Lite — sem service worker.** O app é instalável ("Adicionar à tela inicial") via Web App Manifest gerado em `app/manifest.ts`, mas não funciona offline. Decisão deliberada: service worker adiciona complexidade desproporcional ao escopo educacional.
+
+- `display: 'standalone'` — abre como app sem chrome do browser
+- Ícones servidos pelas rotas dinâmicas `/icon` e `/apple-icon` (`next/og` edge runtime, sem PNGs binários)
+- `theme_color: '#e05a2b'` (laranja accent), `background_color: '#0d1117'` (dark)
+
+**Boundaries do App Router:**
+
+- `app/error.tsx` — captura runtime errors, mostra UI amigável + botão "Tentar novamente" via `reset()`. Obrigatoriamente `'use client'`.
+- `app/not-found.tsx` — 404 page com `robots: noindex`. Server Component (bundle mínimo para bots).
+- `app/loading.tsx` — Suspense fallback global com spinner + `role="status"` + `aria-busy`.
+
+**Headers de segurança em `next.config.ts`:**
+
+| Header | Valor | Função |
+|--------|-------|--------|
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Força HTTPS por 2 anos (HSTS preload-ready) |
+| `Content-Security-Policy` | ver `cspDirectives` | Mitiga XSS, clickjacking, injeção de assets |
+| `X-Frame-Options` | `DENY` | Bloqueia iframe (defesa adicional ao `frame-ancestors`) |
+| `X-Content-Type-Options` | `nosniff` | Impede MIME sniffing |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Vaza apenas origem em navegação cross-origin |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | Desativa APIs sensíveis e FLoC |
+| `X-DNS-Prefetch-Control` | `on` | Acelera navegação via prefetch DNS |
+
+Também: `poweredByHeader: false` (não vaza versão do Next.js) e `compress: true` (gzip/brotli).
+
+**Trade-off do CSP:** `script-src 'unsafe-inline'` é necessário porque o root layout injeta o script anti-FOUC e o JSON-LD. Em um sprint futuro, podemos adotar nonces (requer middleware) para remover `'unsafe-inline'`. `'unsafe-eval'` é incluído apenas em dev (HMR do Turbopack).
 
 ---
 
@@ -137,19 +224,47 @@ git commit -m "fix(tema): descricao curta e direta"
 
 ---
 
+## Acessibilidade — WCAG 2.1 AA
+
+Conformidade implementada no Sprint C:
+
+**Modais (DeepDiveModal, GlobalSearch):**
+- `role="dialog"` + `aria-modal="true"` + `aria-labelledby` + `aria-describedby`
+- Focus trap via `useFocusTrap()` em `src/lib/useFocusTrap.ts` (Tab/Shift+Tab circulam, ESC fecha, foco restaurado ao desmontar)
+- Padrão WAI-ARIA combobox + listbox no GlobalSearch (`aria-activedescendant`, `aria-expanded`, `aria-controls`)
+
+**Animações:**
+- `useReducedMotion()` da `motion/react` aplicado nos modais
+- Bloco `@media (prefers-reduced-motion: reduce)` global em `globals.css` zera animações/transições/scroll-behavior
+- WCAG 2.3.3 (Animation from Interactions)
+
+**Foco visível:**
+- `:focus-visible` global com outline `var(--color-accent)` em `globals.css`
+- WCAG 2.4.7 (Focus Visible)
+
+**Lint estático:**
+- `eslint-plugin-jsx-a11y` configurado em `eslint.config.mjs` (flat config)
+- Regras estritas: `aria-props`, `aria-proptypes`, `role-has-required-aria-props`, `tabindex-no-positive`, `label-has-associated-control`, etc.
+- `npm run lint:eslint` — zero warnings é o alvo, qualquer regressão a11y é pega no CI
+
+---
+
 ## Checklist Antes de Qualquer Commit
 
 1. `npm run lint` — zero erros TypeScript
-2. `npm run build` — 23 rotas como Static
-3. Verificar consistência dos números da tabela de constantes
+2. `npm run lint:eslint` — zero warnings de acessibilidade
+3. `npm run build` — 28/28 páginas (21 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
+4. Verificar consistência dos números da tabela de constantes
 
 ---
 
 ## Roadmap
 
-- Sprint 4A (proximo): PWA — manifest.json, service worker, modo offline
-- Sprint 4B: SEO — sitemap.ts, robots.ts, Schema.org, OG image
-- Sprint 4C: Acessibilidade — WCAG 2.1, prefers-reduced-motion
-- Fase 3 (futuro): Backend + Supabase substituindo localStorage
+- ✅ Sprint A: Robustez — try/catch localStorage, next/font, share funcional
+- ✅ Sprint B: SEO — metadata por rota, sitemap.ts, robots.ts, OG image, JSON-LD
+- ✅ Sprint C: Acessibilidade WCAG 2.1 AA — modais (role/aria/focus trap), prefers-reduced-motion, ESLint jsx-a11y
+- ✅ Sprint D: PWA Lite + Headers — manifest.ts, icon/apple-icon dinâmicos, CSP/HSTS/Permissions-Policy no next.config, error/not-found/loading boundaries
+- ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON se necessário.
+- ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
 Para detalhes completos: DOCUMENTATION.md (v2.0) · QUICKSTART.md · README.md

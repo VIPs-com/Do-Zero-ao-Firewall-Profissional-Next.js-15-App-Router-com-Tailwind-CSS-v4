@@ -108,9 +108,10 @@ export default function CertificatePage() {
       ) : (
         <div className="space-y-12">
           <div className="max-w-md mx-auto space-y-4 no-print">
-            <label className="block text-sm font-bold text-text-3 uppercase tracking-widest text-center">Seu Nome Completo</label>
-            <input 
-              type="text" 
+            <label htmlFor="cert-name" className="block text-sm font-bold text-text-3 uppercase tracking-widest text-center">Seu Nome Completo</label>
+            <input
+              id="cert-name"
+              type="text"
               value={name}
               onChange={handleNameChange}
               placeholder="Digite como aparecerá no certificado"

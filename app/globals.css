@@ -1,12 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+/*
+ * Fontes carregadas via next/font em app/layout.tsx (self-hosted).
+ * As variáveis --font-space-grotesk e --font-jetbrains-mono são
+ * injetadas no <html> e consumidas pelo @theme abaixo.
+ */
 
 /* ============================================================
    TEMA PADRÃO (Dark Mode — padrão da aplicação)
    ============================================================ */
 @theme {
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
 
   /* Backgrounds */
   --color-bg:   #0d1117;
@@ -196,4 +201,48 @@ html.light {
 .code-block pre,
 .code-header {
   transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* ============================================================
+   ACESSIBILIDADE — prefers-reduced-motion (WCAG 2.3.3)
+   ============================================================
+   Quando o usuário pedir "reduzir movimento" no SO, zeramos
+   animações, transições e scroll suave globalmente. Componentes
+   que usam motion/react já respeitam useReducedMotion(); este
+   bloco cobre CSS puro, animate-in do Tailwind e bibliotecas
+   terceiras que escapam do controle do React. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   ACESSIBILIDADE — foco visível (WCAG 2.4.7)
+   ============================================================
+   Anel de foco visível para navegação por teclado. Aplicado
+   apenas quando o foco vem de teclado (:focus-visible), não
+   quando vem de mouse — preserva a estética do hover. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Utilitário sr-only — esconde visualmente mas mantém para leitores de tela */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }

@@ -112,7 +112,7 @@ export default function QuizPage() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResult, setShowResult] = useState(false);
-  const { unlockBadge, updateQuizScore, trackPageVisit } = useBadges();
+  const { updateQuizScore, trackPageVisit } = useBadges();
 
   useEffect(() => {
     trackPageVisit('quiz');
@@ -135,8 +135,10 @@ export default function QuizPage() {
 
   const finishQuiz = () => {
     setShowResult(true);
+    // updateQuizScore() já dispara o useEffect no BadgeContext que desbloqueia
+    // 'quiz-beginner' (>0), 'quiz-expert' (≥80) e 'quiz-master' (===100).
+    // Não precisa chamar unlockBadge aqui — evita duplicidade.
     updateQuizScore(percentage);
-    unlockBadge('quiz-beginner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

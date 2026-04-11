@@ -179,8 +179,10 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
       {/* Menu mobile */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-30 lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          <button
+            type="button"
+            aria-label="Fechar menu"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm w-full h-full"
             onClick={() => setIsMenuOpen(false)}
           />
           <nav className="absolute top-16 left-0 right-0 bg-bg-2 border-b border-border p-4 flex flex-col gap-1 animate-in slide-in-from-top-10">

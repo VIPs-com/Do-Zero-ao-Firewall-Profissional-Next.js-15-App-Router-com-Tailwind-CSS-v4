@@ -79,21 +79,56 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [quizScore, setQuizScore] = useState(0);
   const [lastNotification, setLastNotification] = useState<BadgeId | null>(null);
 
-  // Hidratação do localStorage
+  // Hidratação do localStorage — cada read é defensivo:
+  // se o JSON estiver corrompido (manipulação manual, versão antiga, etc.),
+  // logamos o erro e descartamos a chave em vez de quebrar a árvore React.
   useEffect(() => {
-    const savedBadges    = localStorage.getItem('workshop-badges');
-    const savedPages     = localStorage.getItem('workshop-visited-pages');
-    const savedClicks    = localStorage.getItem('workshop-topo-clicks');
-    const savedRisks     = localStorage.getItem('workshop-clicked-risks');
-    const savedChecklist = localStorage.getItem('workshop-checklist-v2');
-    const savedScore     = localStorage.getItem('workshop-quiz-score');
+    const safeParseArray = <T,>(key: string): T[] | null => {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? (parsed as T[]) : null;
+      } catch (err) {
+        console.warn(`[BadgeContext] localStorage corrompido em "${key}", descartando.`, err);
+        localStorage.removeItem(key);
+        return null;
+      }
+    };
 
-    if (savedBadges)    setUnlockedBadges(new Set(JSON.parse(savedBadges)));
-    if (savedPages)     setVisitedPages(new Set(JSON.parse(savedPages)));
-    if (savedClicks)    setTopologyClicks(parseInt(savedClicks, 10));
-    if (savedRisks)     setClickedRisks(new Set(JSON.parse(savedRisks)));
-    if (savedChecklist) setChecklist(JSON.parse(savedChecklist));
-    if (savedScore)     setQuizScore(parseInt(savedScore, 10));
+    const safeParseObject = <T extends object>(key: string): T | null => {
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? (parsed as T) : null;
+      } catch (err) {
+        console.warn(`[BadgeContext] localStorage corrompido em "${key}", descartando.`, err);
+        localStorage.removeItem(key);
+        return null;
+      }
+    };
+
+    const safeParseInt = (key: string): number | null => {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      const n = parseInt(raw, 10);
+      return Number.isFinite(n) ? n : null;
+    };
+
+    const badges    = safeParseArray<BadgeId>('workshop-badges');
+    const pages     = safeParseArray<string>('workshop-visited-pages');
+    const clicks    = safeParseInt('workshop-topo-clicks');
+    const risks     = safeParseArray<string>('workshop-clicked-risks');
+    const checklistData = safeParseObject<Record<string, boolean>>('workshop-checklist-v2');
+    const score     = safeParseInt('workshop-quiz-score');
+
+    if (badges)        setUnlockedBadges(new Set(badges));
+    if (pages)         setVisitedPages(new Set(pages));
+    if (clicks !== null) setTopologyClicks(clicks);
+    if (risks)         setClickedRisks(new Set(risks));
+    if (checklistData) setChecklist(checklistData);
+    if (score !== null)  setQuizScore(score);
   }, []);
 
   useEffect(() => {
