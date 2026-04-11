@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Laptop, Shield, Globe, Terminal, Lock, ArrowRight, ChevronRight, AlertTriangle, BookOpen, Filter, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { DeepDiveModal } from '@/components/DeepDiveModal';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';

@@ -1,5 +1,15 @@
 import type { NextConfig } from 'next';
 import path from 'node:path';
+import createBundleAnalyzer from '@next/bundle-analyzer';
+
+/*
+ * Sprint F — bundle-analyzer condicional.
+ * Rode `ANALYZE=1 npm run build` para gerar os relatórios HTML em .next/analyze/.
+ */
+const withBundleAnalyzer = createBundleAnalyzer({
+  enabled: process.env.ANALYZE === '1' || process.env.ANALYZE === 'true',
+  openAnalyzer: false,
+});
 
 /*
  * ============================================================================
@@ -87,4 +97,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

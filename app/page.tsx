@@ -2,10 +2,35 @@
 
 import React from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { motion } from 'motion/react';
 import { Shield, Terminal, BookOpen, Zap, Award, Lock, Globe, Server, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { TopologyInteractive } from '@/components/ui/TopologyInteractive';
+
+/*
+ * Sprint F — code splitting.
+ * TopologyInteractive é o maior componente do projeto (36 KB + motion/react pesado).
+ * Carregar via next/dynamic tira do bundle inicial da home; o skeleton preserva
+ * o espaço visual para evitar Cumulative Layout Shift.
+ */
+const TopologyInteractive = dynamic(
+  () => import('@/components/ui/TopologyInteractive').then((m) => ({ default: m.TopologyInteractive })),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        role="status"
+        aria-label="Carregando diagrama de topologia"
+        className="relative bg-bg-2 border border-border rounded-xl overflow-hidden shadow-lg min-h-[420px] lg:min-h-[720px] flex items-center justify-center"
+      >
+        <div className="flex items-center gap-3 text-text-3 text-xs font-mono uppercase tracking-widest">
+          <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+          carregando topologia…
+        </div>
+      </div>
+    ),
+  },
+);
 
 const FEATURES = [
   {

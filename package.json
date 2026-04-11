@@ -22,6 +22,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.3",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^22.14.0",
     "@typescript-eslint/parser": "^8.58.1",

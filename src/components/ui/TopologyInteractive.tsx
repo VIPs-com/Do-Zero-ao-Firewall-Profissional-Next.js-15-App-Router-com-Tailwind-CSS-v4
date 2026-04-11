@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Info, Terminal, Shield, Globe, Server, Laptop, Lock, AlertTriangle, ShieldAlert, ArrowRight, BookOpen, Zap, Award } from 'lucide-react';
 import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
-import { DeepDiveModal } from '@/components/DeepDiveModal';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { cn } from '@/lib/utils';
 import { ProgressBar } from './ProgressBar';

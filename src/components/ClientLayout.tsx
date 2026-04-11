@@ -2,11 +2,20 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Sun, Moon, Search, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
-import { GlobalSearch } from './GlobalSearch';
+
+/*
+ * Sprint F — GlobalSearch só entra em cena quando o usuário aperta ⌘K / clica em Buscar.
+ * next/dynamic remove o bundle (fuse.js + listbox) do carregamento inicial.
+ */
+const GlobalSearch = dynamic(
+  () => import('./GlobalSearch').then((m) => ({ default: m.GlobalSearch })),
+  { ssr: false },
+);
 
 const NAV_LINKS = [
   { href: '/',            label: 'Início',      icon: '🏠' },
