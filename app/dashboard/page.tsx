@@ -3,29 +3,52 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { 
-  Trophy, 
-  CheckCircle2, 
-  BookOpen, 
-  Target, 
-  Award, 
-  ChevronRight, 
-  Shield, 
+import {
+  Trophy,
+  CheckCircle2,
+  BookOpen,
+  Target,
+  Award,
+  ChevronRight,
+  Shield,
   Zap,
   Activity,
-  Layout
+  Layout,
+  Download,
+  Upload,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
 
 export default function DashboardPage() {
-  const { 
-    unlockedBadges, 
-    visitedPages, 
-    checklist, 
+  const {
+    unlockedBadges,
+    visitedPages,
+    checklist,
     quizScore,
-    trackPageVisit
+    trackPageVisit,
+    exportProgress,
+    importProgress,
   } = useBadges();
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [importStatus, setImportStatus] = React.useState<{ ok: boolean; msg: string } | null>(null);
+
+  const handleImportFile = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const result = importProgress(ev.target?.result as string);
+      setImportStatus(result.ok
+        ? { ok: true,  msg: 'Progresso importado com sucesso!' }
+        : { ok: false, msg: result.error ?? 'Erro ao importar' });
+      setTimeout(() => setImportStatus(null), 4000);
+    };
+    reader.readAsText(file);
+    // Reset input para permitir re-importar o mesmo arquivo
+    e.target.value = '';
+  }, [importProgress]);
 
   React.useEffect(() => {
     trackPageVisit('dashboard');
@@ -210,6 +233,51 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Portabilidade do Progresso */}
+          <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-3">
+            <h3 className="font-bold text-sm mb-1 flex items-center gap-2">
+              <Download className="text-info" size={16} />
+              Portabilidade
+            </h3>
+            <p className="text-[10px] text-text-3 leading-relaxed">
+              Salve ou restaure todo o seu progresso (badges, checklist, quiz) como arquivo JSON.
+            </p>
+
+            <button
+              onClick={exportProgress}
+              className="btn-outline w-full py-2 text-xs flex items-center justify-center gap-2"
+            >
+              <Download size={14} aria-hidden="true" />
+              Exportar Progresso
+            </button>
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="btn-outline w-full py-2 text-xs flex items-center justify-center gap-2"
+            >
+              <Upload size={14} aria-hidden="true" />
+              Importar Progresso
+            </button>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json,application/json"
+              className="sr-only"
+              aria-label="Selecionar arquivo de progresso para importar"
+              onChange={handleImportFile}
+            />
+
+            {importStatus && (
+              <p className={cn(
+                'text-[10px] font-medium text-center pt-1',
+                importStatus.ok ? 'text-ok' : 'text-err',
+              )}>
+                {importStatus.msg}
+              </p>
+            )}
           </div>
 
           {/* Certificate Status */}

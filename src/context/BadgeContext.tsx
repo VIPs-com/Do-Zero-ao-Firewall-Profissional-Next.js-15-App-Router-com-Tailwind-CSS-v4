@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 
-export type BadgeId = 
+export type BadgeId =
   | 'quiz-beginner' | 'quiz-expert' | 'quiz-master'
   | 'explorer' | 'deep-diver' | 'night-owl' | 'searcher' | 'topology-pro'
   | 'firewall-master' | 'dns-master' | 'ssl-master' | 'vpn-master'
-  | 'proxy-master' | 'knocking-master' | 'certificado' | 'linux-ninja' | 'pivoting-master' | 'defensor-topologia';
+  | 'proxy-master' | 'knocking-master' | 'certificado' | 'linux-ninja' | 'pivoting-master' | 'defensor-topologia'
+  | 'time-traveler';
 
 export interface BadgeDef {
   icon: string;
@@ -31,6 +32,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'linux-ninja':        { icon: '🥷', title: 'Linux Ninja',        desc: 'Completou todos os desafios do workshop' },
   'pivoting-master':    { icon: '💀', title: 'Pivoting Master',    desc: 'Entendeu os riscos de pivoteamento na DMZ' },
   'defensor-topologia': { icon: '🛡️', title: 'Defensor da Topologia', desc: 'Identificou todos os riscos críticos na rede' },
+  'time-traveler':      { icon: '⏳', title: 'Viajante do Tempo',     desc: 'Importou um snapshot de progresso' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -66,6 +68,8 @@ interface BadgeContextType {
   checklistPercentage: number;
   quizScore: number;
   updateQuizScore: (score: number) => void;
+  exportProgress: () => void;
+  importProgress: (json: string) => { ok: boolean; error?: string };
 }
 
 const BadgeContext = createContext<BadgeContextType | undefined>(undefined);
@@ -221,6 +225,77 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setQuizScore(score);
   }, []);
 
+  const exportProgress = useCallback(() => {
+    const snapshot = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      badges: Array.from(unlockedBadges),
+      visitedPages: Array.from(visitedPages),
+      topologyClicks,
+      clickedRisks: Array.from(clickedRisks),
+      checklist,
+      quizScore,
+      theme: localStorage.getItem('workshop-theme'),
+    };
+    const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `workshop-linux-progress-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [unlockedBadges, visitedPages, topologyClicks, clickedRisks, checklist, quizScore]);
+
+  const importProgress = useCallback((json: string): { ok: boolean; error?: string } => {
+    try {
+      const data = JSON.parse(json) as Record<string, unknown>;
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
+        throw new Error('Formato inválido');
+      }
+
+      if (Array.isArray(data.badges)) {
+        const badges = data.badges as BadgeId[];
+        setUnlockedBadges(new Set(badges));
+        localStorage.setItem('workshop-badges', JSON.stringify(badges));
+      }
+      if (Array.isArray(data.visitedPages)) {
+        const pages = data.visitedPages as string[];
+        setVisitedPages(new Set(pages));
+        localStorage.setItem('workshop-visited-pages', JSON.stringify(pages));
+      }
+      if (typeof data.topologyClicks === 'number') {
+        setTopologyClicks(data.topologyClicks);
+        localStorage.setItem('workshop-topo-clicks', String(data.topologyClicks));
+      }
+      if (Array.isArray(data.clickedRisks)) {
+        const risks = data.clickedRisks as string[];
+        setClickedRisks(new Set(risks));
+        localStorage.setItem('workshop-clicked-risks', JSON.stringify(risks));
+      }
+      if (data.checklist && typeof data.checklist === 'object' && !Array.isArray(data.checklist)) {
+        const cl = data.checklist as Record<string, boolean>;
+        setChecklist(cl);
+        localStorage.setItem('workshop-checklist-v2', JSON.stringify(cl));
+      }
+      if (typeof data.quizScore === 'number') {
+        setQuizScore(data.quizScore);
+        localStorage.setItem('workshop-quiz-score', String(data.quizScore));
+      }
+      if (typeof data.theme === 'string') {
+        localStorage.setItem('workshop-theme', data.theme);
+      }
+
+      // Concede o badge após importação bem-sucedida
+      unlockBadge('time-traveler');
+
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: err instanceof Error ? err.message : 'Erro desconhecido' };
+    }
+  }, [unlockBadge]);
+
   return (
     <BadgeContext.Provider value={{
       unlockedBadges,
@@ -236,6 +311,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklistPercentage,
       quizScore,
       updateQuizScore,
+      exportProgress,
+      importProgress,
     }}>
       {children}
       {lastNotification && (
