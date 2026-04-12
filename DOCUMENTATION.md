@@ -1,6 +1,6 @@
 # 📖 Documentação Oficial — Do Zero ao Firewall Profissional
 
-> **Versão:** 3.0 (pós-Sprint E) · **Stack:** Next.js 16 · Tailwind CSS v4 · TypeScript 5.8  
+> **Versão:** 4.0 (pós-Sprint I.2 + Polish — v2.1 completa) · **Stack:** Next.js 16 · Tailwind CSS v4 · TypeScript 5.8  
 > Este documento é o ponto único de verdade do projeto. Serve como manual de onboarding, guia de desenvolvimento, referência técnica do laboratório e roadmap estratégico.  
 > *Se você chegou agora na equipe, comece pela Seção 1. Se é um dev voltando após um tempo, vá direto à Seção 3.*
 
@@ -43,7 +43,7 @@ Democratizar o conhecimento de infraestrutura Linux através de uma plataforma g
 
 | Perfil | O que encontra aqui |
 |---|---|
-| **Aluno/Estudante** | 8 módulos técnicos progressivos com lab real |
+| **Aluno/Estudante** | 11 módulos técnicos progressivos com lab real |
 | **Dev Frontend** | Componentes Next.js, sistema de badges, busca global |
 | **Dev Full-stack** | Arquitetura, deploy, segurança da aplicação |
 | **Novo integrante** | Este documento completo + QUICKSTART.md |
@@ -99,13 +99,15 @@ npm run start
 | Script | Comando | O que faz |
 |---|---|---|
 | `dev` | `next dev --port=3000` | Servidor local com hot-reload (Turbopack) |
-| `build` | `next build` | Compila + gera **28/28** páginas (21 próprias + assets SEO/PWA) |
+| `build` | `next build` | Compila + gera **30/30** páginas (23 próprias + assets SEO/PWA) |
 | `start` | `next start --port=3000` | Servidor de produção |
 | `lint` | `tsc --noEmit` | Valida TypeScript sem gerar arquivos |
 | `lint:eslint` | `eslint app src` | ESLint + `jsx-a11y` — acessibilidade WCAG 2.1 AA |
 | `lint:all` | `tsc --noEmit && eslint app src` | Roda lint + lint:eslint em sequência |
+| `test` | `vitest run` | Testes automatizados (BadgeContext, ClientLayout, GlobalSearch, SEO) |
+| `test:watch` | `vitest` | Vitest em modo watch |
 
-> **Sem testes.** `npm run lint` (typecheck) e `npm run lint:eslint` (a11y) são as duas validações estáticas obrigatórias antes do build.
+> `npm run lint` (typecheck), `npm run lint:eslint` (a11y) e `npm test` (vitest) são as três validações obrigatórias antes do build.
 
 > ⚠️ Após o Sprint E, **todas as rotas próprias são dinâmicas** (`ƒ`) porque o root layout lê `headers()` para aplicar o nonce CSP. Apenas `/sitemap.xml`, `/robots.txt` e `/manifest.webmanifest` permanecem estáticos.
 
@@ -190,7 +192,9 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 evolucao/                 ← Roadmap visual
 │   ├── 📁 glossario/                ← Dicionário de termos
 │   ├── 📁 cheat-sheet/              ← Referência rápida de comandos
-│   ├── 📁 topicos/                  ← Índice dos 24 tópicos práticos
+│   ├── 📁 wireguard/                ← Módulo 10: WireGuard VPN (Sprint I.1)
+│   ├── 📁 fail2ban/                 ← Módulo 11: Fail2ban (Sprint I.2)
+│   ├── 📁 topicos/                  ← Índice dos 26 tópicos práticos
 │   ├── 📁 quiz/                     ← Avaliação gamificada
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   └── 📁 certificado/              ← Certificado de conclusão
@@ -215,16 +219,22 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │       └── BadgeDisplay.tsx         ← Exibição de conquistas
     │
     ├── 📁 context/
-    │   └── BadgeContext.tsx          ← Estado global: badges, visitas, checkpoints
+    │   ├── BadgeContext.tsx          ← Estado global: badges, visitas, checkpoints
+    │   └── BadgeContext.test.tsx    ← Testes vitest (Sprint T₀)
+    │
+    ├── 📁 test/
+    │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── searchItems.ts            ← Índice da busca global (44 itens)
-    │   └── deepDives.tsx             ← Conteúdo dos 6 modais avançados
+    │   ├── quizQuestions.ts         ← Perguntas do quiz extraídas (Sprint F)
+    │   ├── searchItems.ts           ← Índice da busca global (47 itens)
+    │   └── deepDives.tsx            ← Conteúdo dos 6 modais avançados
     │
     └── 📁 lib/
-        ├── seo.ts                    ← SITE_CONFIG, ROUTE_SEO, buildMetadata()
-        ├── useFocusTrap.ts           ← Hook a11y: focus trap, ESC, restore focus
-        └── utils.ts                  ← cn() helper (clsx + tailwind-merge)
+        ├── seo.ts                   ← SITE_CONFIG, ROUTE_SEO, buildMetadata()
+        ├── seo.test.ts              ← Testes de SEO (Sprint T₁)
+        ├── useFocusTrap.ts          ← Hook a11y: focus trap, ESC, restore focus
+        └── utils.ts                 ← cn() helper (clsx + tailwind-merge)
 ```
 
 **Path alias:** `@/` resolve para `src/`. Todos os imports de `src/` usam esse alias.
@@ -233,10 +243,10 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **16** (exclui home/quiz/dashboard/certificado/topicos) |
-| `totalTopics` | `app/dashboard/page.tsx` | **24** |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | **26** (igual a `ALL_CHECKLIST_IDS.length`) |
-| Texto na Home | `app/page.tsx` | "24 tópicos práticos" |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **18** (exclui home/quiz/dashboard/certificado/topicos) |
+| `totalTopics` | `app/dashboard/page.tsx` | **26** |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **32** (igual a `ALL_CHECKLIST_IDS.length`) |
+| Texto na Home | `app/page.tsx` | "26 tópicos práticos" |
 
 Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.
 
@@ -287,7 +297,7 @@ O Tailwind CSS v4 usa `@theme` para definir tokens. O bloco `html.light {}` no `
 
 ### Tokens de módulo (Sprint M — Cyber-Industrial)
 
-Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e alimentam as utility classes `.module-accent-<slug>`. A aplicação nas páginas é **opt-in e incremental** (cada rota migra em um PR de polish posterior — nada quebra sem a classe):
+Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e alimentam as utility classes `.module-accent-<slug>`. Todas as 18 páginas de conteúdo já aplicam `module-accent-<slug>` + `module-hero` (Sprint Polish concluído):
 
 | Slug | Token CSS | Cor | Módulo |
 |---|---|---|---|
@@ -307,6 +317,8 @@ Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e ali
 | `audit-logs` | `--module-audit-logs` | `#14b8a6` | Audit logs |
 | `cheat-sheet` | `--module-cheat-sheet` | `#818cf8` | Cheat sheet |
 | `glossario` | `--module-glossario` | `#94a3b8` | Glossário |
+| `wireguard` | `--module-wireguard` | `#2dd4bf` | WireGuard VPN |
+| `fail2ban` | `--module-fail2ban` | `#f87171` | Fail2ban |
 
 **Como usar numa rota:**
 
@@ -347,9 +359,9 @@ A classe raiz define `--mod` e qualquer `.module-hero` descendente recebe automa
 ### Arquivo central: `src/context/BadgeContext.tsx`
 
 Gerencia três dimensões de progresso:
-- **Badges** — conquistas desbloqueáveis (17 total)
+- **Badges** — conquistas desbloqueáveis (21 total)
 - **Páginas visitadas** — para badges de exploração
-- **Checkpoints** — validações técnicas concluídas (26 total)
+- **Checkpoints** — validações técnicas concluídas (32 total)
 
 ### Tabela de badges
 
@@ -372,6 +384,10 @@ Gerencia três dimensões de progresso:
 | 🎓 | Graduado | `certificado` | Gerar o certificado de conclusão |
 | 🥷 | Linux Ninja | `linux-ninja` | Completar todos os desafios |
 | 💀 | Pivoting Master | `pivoting-master` | Entender os riscos de pivoteamento |
+| 🛡️ | Defensor da Topologia | `defensor-topologia` | Clicar em todos os riscos da topologia |
+| ⏳ | Time Traveler | `time-traveler` | Importar progresso via JSON (Sprint J) |
+| 🔐 | WireGuard Master | `wireguard-master` | Completar checklist do WireGuard |
+| 🚫 | Fail2ban Master | `fail2ban-master` | Completar checklist do Fail2ban |
 
 ### Como adicionar um novo badge
 
@@ -413,7 +429,7 @@ export default function MeuComponente() {
 }
 ```
 
-### Checkpoints de validação (26 IDs)
+### Checkpoints de validação (32 IDs)
 
 ```typescript
 // src/context/BadgeContext.tsx — ALL_CHECKLIST_IDS
@@ -424,7 +440,11 @@ export default function MeuComponente() {
   'dns-recursivo', 'dns-reverso', 'dns-firewall', 'dnat-web',
   'dnat-ssh', 'forward-web', 'forward-ssh', 'knocking-timeout',
   'knocking-stealth', 'proxy-log', 'vpn-up', 'vpn-ping',
-  'vpn-psk', 'pivoting-risk'
+  'vpn-psk', 'pivoting-risk',
+  // Sprint I.1 — WireGuard
+  'wg-keys', 'wg-server', 'wg-tunnel',
+  // Sprint I.2 — Fail2ban
+  'f2b-install', 'f2b-sshd', 'f2b-ban-test',
 ]
 ```
 
@@ -820,12 +840,12 @@ nft list ruleset > /etc/nftables.conf
 
 ## 9. SEO — Fonte Única (Sprint B)
 
-Toda a configuração de metadata vive em **`src/lib/seo.ts`**. Isso é essencial para manter consistência: todas as 21 rotas apontam para o mesmo helper e aparecem automaticamente no sitemap.
+Toda a configuração de metadata vive em **`src/lib/seo.ts`**. Isso é essencial para manter consistência: todas as 23 rotas apontam para o mesmo helper e aparecem automaticamente no sitemap.
 
 ### Arquivo central: `src/lib/seo.ts`
 
 - `SITE_CONFIG` — nome do site, URL base, keywords globais, theme color, autor
-- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 21 rotas
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 23 rotas
 - `buildMetadata(route)` — helper que gera `Metadata` completo com Open Graph + Twitter + canonical
 
 ### Como adicionar SEO a uma nova rota
@@ -1190,9 +1210,49 @@ Sprint E ✅ CSP nonce per-request (Next.js 16)
   ├── script-src 'self' 'nonce-XXX' 'strict-dynamic' — sem 'unsafe-inline'
   └── Trade-off: todas as rotas viram dynamic (aceito — nota A+ securityheaders.com)
 
+Sprint G ✅ A11y do TopologyInteractive
+  ├── SVG <title> + <desc> descrevendo a topologia
+  ├── Nós clicáveis acessíveis por teclado (Enter/Space)
+  └── Focus ring visível via :focus-visible
+
+Sprint F ✅ Performance & Code Splitting
+  ├── TopologyInteractive, GlobalSearch, DeepDive → next/dynamic lazy
+  ├── Quiz: dados extraídos para src/data/quizQuestions.ts
+  └── @next/bundle-analyzer condicional (ANALYZE=1)
+
+Sprint M ✅ Maquiagem Cyber-Industrial
+  ├── Tokens de cor por módulo (--module-<slug>) em globals.css
+  ├── Utility classes .module-accent-<slug> + .module-hero
+  └── Micro-interações: CodeBlock hover glow, badge unlock shine
+
+Sprint T₀ ✅ Testes BadgeContext (vitest)
+  ├── vitest + @testing-library/react + happy-dom
+  └── 10 testes cobrindo badges, checklist, persistência
+
+Sprint T₁ ✅ Testes ClientLayout + GlobalSearch + SEO
+  └── 18 testes adicionais (nav, tema, busca, metadata)
+
+Sprint J ✅ Export/Import de Progresso
+  ├── exportProgress() / importProgress() no BadgeContext
+  ├── Botões Download/Upload no Dashboard
+  └── Badge time-traveler na primeira importação
+
+Sprint I.1 ✅ WireGuard (/wireguard)
+  ├── Rota completa: teoria, config servidor/cliente, iptables
+  ├── Badge wireguard-master + 3 checkpoints
+  └── CONTENT_PAGES_COUNT 16 → 17
+
+Sprint I.2 ✅ Fail2ban (/fail2ban)
+  ├── Rota completa: jails, filtros, monitoramento
+  ├── Badge fail2ban-master + 3 checkpoints
+  └── CONTENT_PAGES_COUNT 17 → 18
+
+Polish ✅ Module-accent em 18 páginas
+  └── Border-top colorida + radial-gradient glow no hero de cada rota
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
-   Portabilidade via export/import JSON se necessário.
+   Portabilidade via export/import JSON implementada (Sprint J).
 
 ⏸️ Service Worker offline — AVALIAR DEPOIS
    Complexidade desproporcional ao caso de uso.
@@ -1256,14 +1316,14 @@ Sprint E ✅ CSP nonce per-request (Next.js 16)
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
 - **Stack:** Next.js 16, Tailwind CSS v4, TypeScript 5.8, React 19
 - **Missão:** Democratizar infraestrutura Linux com experiência gamificada e imersiva
-- **Escopo:** 21 rotas, 9 módulos técnicos, 17 badges, laboratório Linux real
+- **Escopo:** 23 rotas, 11 módulos técnicos, 21 badges, laboratório Linux real
 
 ---
 
 **Slide 2 — Arquitetura**
 - **Frontend:** Client + Server Components híbridos (estado reativo + metadata SEO)
 - **Persistência:** `localStorage` como fonte única (Backend descartado — escopo educacional)
-- **Build:** Turbopack · 28/28 páginas · Sprint E torna tudo dynamic (trade-off CSP)
+- **Build:** Turbopack · 30/30 páginas · Sprint E torna tudo dynamic (trade-off CSP)
 - **Infraestrutura:** Nginx como Proxy Reverso + PM2 para alta disponibilidade
 
 ---
@@ -1290,6 +1350,14 @@ Sprint E ✅ CSP nonce per-request (Next.js 16)
 - **Sprint C ✅** A11y WCAG 2.1 AA (focus trap, aria-*, prefers-reduced-motion)
 - **Sprint D ✅** PWA Lite + Headers de segurança
 - **Sprint E ✅** CSP nonce per-request via `proxy.ts` (Next.js 16)
+- **Sprint G ✅** A11y TopologyInteractive (SVG acessível, teclado)
+- **Sprint F ✅** Code Splitting (lazy load, quiz data, bundle-analyzer)
+- **Sprint M ✅** Maquiagem Cyber-Industrial (tokens por módulo)
+- **Sprint T₀/T₁ ✅** Testes vitest (BadgeContext, ClientLayout, GlobalSearch, SEO)
+- **Sprint J ✅** Export/Import JSON (portabilidade + badge time-traveler)
+- **Sprint I.1 ✅** WireGuard (/wireguard + badge + checkpoints)
+- **Sprint I.2 ✅** Fail2ban (/fail2ban + badge + checkpoints)
+- **Polish ✅** Module-accent glow em 18 páginas de conteúdo
 
 ---
 

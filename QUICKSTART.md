@@ -9,17 +9,19 @@
 ```bash
 npm install        # instalar dependências
 npm run dev        # http://localhost:3000
-npm run build      # build de produção — 28/28 páginas (21 próprias + assets SEO/PWA)
+npm test           # vitest — testes automatizados
+npm run build      # build de produção — 30/30 páginas (23 próprias + assets SEO/PWA)
 ```
 
 ---
 
-## 🔍 Validação Estática (sem testes — rodar antes de qualquer commit)
+## 🔍 Validação (rodar antes de qualquer commit)
 
 ```bash
 npm run lint         # tsc --noEmit — typecheck TypeScript
 npm run lint:eslint  # ESLint + jsx-a11y — acessibilidade WCAG 2.1 AA
-npm run lint:all     # roda os dois em sequência
+npm run lint:all     # roda lint + lint:eslint em sequência
+npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalSearch, SEO)
 ```
 
 ---
@@ -28,7 +30,7 @@ npm run lint:all     # roda os dois em sequência
 
 | Pasta / Arquivo | O que é |
 |---|---|
-| `/app` | Rotas e Layouts (App Router) — 21 rotas próprias |
+| `/app` | Rotas e Layouts (App Router) — 23 rotas próprias |
 | `/app/globals.css` | Tokens de cor dark/light + classes reutilizáveis |
 | `/app/layout.tsx` | Root layout + anti-FOUC + JSON-LD + nonce CSP |
 | `/app/providers.tsx` | `<BadgeProvider>` global |
@@ -40,7 +42,8 @@ npm run lint:all     # roda os dois em sequência
 | `/src/components/ui/` | Primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge… |
 | `/src/components/ClientLayout.tsx` | Header, nav, toggle dark/light, busca global |
 | `/src/context/BadgeContext.tsx` | Estado global: badges, progresso, checkpoints |
-| `/src/data/searchItems.ts` | Índice da busca global ⌘K (44 itens) |
+| `/src/data/quizQuestions.ts` | Perguntas do quiz extraídas (Sprint F) |
+| `/src/data/searchItems.ts` | Índice da busca global ⌘K (47 itens) |
 | `/src/data/deepDives.tsx` | Conteúdo dos 6 modais avançados |
 | `/src/lib/seo.ts` | **Fonte única** — `SITE_CONFIG`, `ROUTE_SEO`, `buildMetadata()` |
 | `/src/lib/useFocusTrap.ts` | Hook a11y — focus trap + ESC + restore focus |
@@ -84,8 +87,9 @@ npm run lint:all     # roda os dois em sequência
 - [ ] `npm install` — sem erros
 - [ ] `npm run lint` — zero erros TypeScript
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
-- [ ] `npm run build` — 28/28 páginas (21 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 16`, `totalTopics = 24`, `checklistItemsCount = 26`)
+- [ ] `npm test` — vitest passando
+- [ ] `npm run build` — 30/30 páginas (23 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 18`, `totalTopics = 26`, `checklistItemsCount = 32`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)
@@ -200,4 +204,4 @@ node_modules/
 
 `Next.js 16.2.2` · `React 19` · `TypeScript 5.8` · `Tailwind CSS v4` · `Turbopack` · `motion/react 12` · `Lucide React`
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce via proxy.ts)
+**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent)

@@ -56,7 +56,7 @@ Este projeto é uma **plataforma educacional completa** que ensina segurança de
 | Runtime | React | ^19.0.0 |
 | Build | Turbopack | (built-in) |
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce via `proxy.ts`).
+**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent).
 
 ---
 
@@ -95,7 +95,9 @@ Este projeto é uma **plataforma educacional completa** que ensina segurança de
 │   ├── 📁 evolucao/                ← Roadmap visual
 │   ├── 📁 glossario/               ← Dicionário técnico
 │   ├── 📁 cheat-sheet/             ← Referência rápida de comandos
-│   ├── 📁 topicos/                 ← Índice de todos os 24 tópicos práticos
+│   ├── 📁 wireguard/               ← Módulo 10: WireGuard VPN (Sprint I.1)
+│   ├── 📁 fail2ban/                ← Módulo 11: Fail2ban (Sprint I.2)
+│   ├── 📁 topicos/                 ← Índice de todos os 26 tópicos práticos
 │   ├── 📁 quiz/                    ← Avaliação gamificada
 │   ├── 📁 dashboard/               ← Progresso + badges
 │   └── 📁 certificado/             ← Certificado de conclusão
@@ -120,14 +122,20 @@ Este projeto é uma **plataforma educacional completa** que ensina segurança de
     │       └── BadgeDisplay.tsx         ← Exibição de conquistas
     │
     ├── 📁 context/
-    │   └── BadgeContext.tsx         ← Estado global: badges, progresso, checkpoints
+    │   ├── BadgeContext.tsx         ← Estado global: badges, progresso, checkpoints
+    │   └── BadgeContext.test.tsx    ← Testes vitest (Sprint T₀)
+    │
+    ├── 📁 test/
+    │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── searchItems.ts           ← Índice da busca global (44 itens)
+    │   ├── quizQuestions.ts         ← Perguntas do quiz extraídas (Sprint F)
+    │   ├── searchItems.ts           ← Índice da busca global (47 itens)
     │   └── deepDives.tsx            ← Conteúdo dos 6 modais avançados
     │
     └── 📁 lib/
         ├── seo.ts                   ← SITE_CONFIG, ROUTE_SEO, buildMetadata()
+        ├── seo.test.ts              ← Testes de SEO (Sprint T₁)
         ├── useFocusTrap.ts          ← Hook a11y — focus trap, ESC, restore focus
         └── utils.ts                 ← cn() helper (clsx + tailwind-merge)
 ```
@@ -145,19 +153,20 @@ npm install
 # 2. Rodar em desenvolvimento (http://localhost:3000)
 npm run dev
 
-# 3. Validação estática (sem testes — obrigatória antes do build)
+# 3. Validação (obrigatória antes do build)
 npm run lint         # tsc --noEmit — typecheck TypeScript
 npm run lint:eslint  # ESLint + jsx-a11y — acessibilidade WCAG 2.1 AA
-npm run lint:all     # roda os dois em sequência
+npm run lint:all     # roda lint + lint:eslint em sequência
+npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalSearch, SEO)
 
-# 4. Build de produção (28/28 páginas — 21 próprias + assets SEO/PWA)
+# 4. Build de produção (30/30 páginas — 23 próprias + assets SEO/PWA)
 npm run build
 
 # 5. Rodar em produção
 npm run start
 ```
 
-> **Sem testes.** `npm run lint` (typecheck) e `npm run lint:eslint` (a11y) são as duas validações estáticas obrigatórias antes do build.
+> `npm run lint` (typecheck), `npm run lint:eslint` (a11y) e `npm test` (vitest) são as três validações obrigatórias antes do build.
 
 ---
 
@@ -206,7 +215,7 @@ O tema é controlado pela classe `light` no elemento `<html>`. Por padrão, sem 
 
 ## 🏆 Sistema de Gamificação (Badges)
 
-### Badges disponíveis (17 total)
+### Badges disponíveis (21 total)
 
 | Badge | ID | Condição de Desbloqueio |
 |---|---|---|
@@ -227,6 +236,10 @@ O tema é controlado pela classe `light` no elemento `<html>`. Por padrão, sem 
 | 🎓 Graduado | `certificado` | Gerar o certificado de conclusão |
 | 🥷 Linux Ninja | `linux-ninja` | Completar todos os desafios |
 | 💀 Pivoting Master | `pivoting-master` | Entender os riscos de pivoteamento |
+| 🛡️ Defensor da Topologia | `defensor-topologia` | Clicar em todos os riscos da topologia |
+| ⏳ Time Traveler | `time-traveler` | Importar progresso via JSON (Sprint J) |
+| 🔐 WireGuard Master | `wireguard-master` | Completar checklist do WireGuard |
+| 🚫 Fail2ban Master | `fail2ban-master` | Completar checklist do Fail2ban |
 
 ### Como adicionar um novo badge
 
@@ -244,7 +257,7 @@ const { unlockBadge } = useBadges();
 unlockBadge('novo-badge');
 ```
 
-### Checkpoints de progresso (26 total)
+### Checkpoints de progresso (32 total)
 
 ```typescript
 // src/context/BadgeContext.tsx
@@ -252,7 +265,7 @@ export const ALL_CHECKLIST_IDS = [
   'ping-internet', 'dns-resolve', 'dns-interno', 'proxy-funciona',
   'proxy-bloqueio', 'web-server', 'dnat-funciona', 'port-knocking',
   'snat-config', 'established-config', 'forward-config', 'audit-log',
-  // ... (26 IDs no total)
+  // ... 26 base + 3 WireGuard + 3 Fail2ban = 32 IDs no total
 ];
 ```
 
@@ -294,6 +307,8 @@ Para adicionar um novo item ao índice de busca:
 | + | Ataques Avançados | `/ataques-avancados` | Reconhecimento ofensivo |
 | + | Pivoteamento | `/pivoteamento` | Riscos de lateral movement |
 | + | Audit Logs | `/audit-logs` | `tcpdump`, syslog, auditd |
+| 10 | WireGuard | `/wireguard` | Curve25519, wg-quick, peers |
+| 11 | Fail2ban | `/fail2ban` | jails, filtros regex, iptables |
 
 ---
 
@@ -399,8 +414,9 @@ server {
 - [ ] `npm install` executado sem erros
 - [ ] `npm run lint` — zero erros TypeScript
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
-- [ ] `npm run build` — **28/28 páginas** (21 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + `_not-found`)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 16`, `totalTopics = 24`, `checklistItemsCount = 26`)
+- [ ] `npm test` — vitest passando
+- [ ] `npm run build` — **30/30 páginas** (23 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + `_not-found`)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 18`, `totalTopics = 26`, `checklistItemsCount = 32`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2 ou Docker configurado para restart automático
 - [ ] SSL/HTTPS configurado no Nginx (HSTS já é emitido pelo `next.config.ts`)
@@ -473,7 +489,7 @@ O app é instalável ("Adicionar à tela inicial") via Web App Manifest gerado e
 Toda a metadata vive em **`src/lib/seo.ts`**:
 
 - `SITE_CONFIG` — nome, URL base, keywords globais, theme color
-- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 21 rotas
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 23 rotas
 - `buildMetadata(route)` — helper que gera `Metadata` completo (OG + Twitter + canonical)
 
 **Para adicionar SEO a uma nova rota:**
@@ -545,9 +561,49 @@ Sprint E ✅ CSP nonce per-request (Next.js 16)
   ├── script-src 'self' 'nonce-XXX' 'strict-dynamic' — sem 'unsafe-inline'
   └── Trade-off: todas as rotas viram dynamic (aceito em troca de nota A+)
 
+Sprint G ✅ A11y do TopologyInteractive
+  ├── SVG <title> + <desc> descrevendo a topologia
+  ├── Nós clicáveis acessíveis por teclado (Enter/Space)
+  └── Focus ring visível via :focus-visible
+
+Sprint F ✅ Performance & Code Splitting
+  ├── TopologyInteractive, GlobalSearch, DeepDive → next/dynamic lazy
+  ├── Quiz: dados extraídos para src/data/quizQuestions.ts
+  └── @next/bundle-analyzer condicional (ANALYZE=1)
+
+Sprint M ✅ Maquiagem Cyber-Industrial
+  ├── Tokens de cor por módulo (--module-<slug>) em globals.css
+  ├── Utility classes .module-accent-<slug> + .module-hero
+  └── Micro-interações: CodeBlock hover glow, badge unlock shine
+
+Sprint T₀ ✅ Testes BadgeContext (vitest)
+  ├── vitest + @testing-library/react + happy-dom
+  └── 10 testes cobrindo badges, checklist, persistência
+
+Sprint T₁ ✅ Testes ClientLayout + GlobalSearch + SEO
+  └── 18 testes adicionais (nav, tema, busca, metadata)
+
+Sprint J ✅ Export/Import de Progresso
+  ├── exportProgress() / importProgress() no BadgeContext
+  ├── Botões Download/Upload no Dashboard
+  └── Badge time-traveler na primeira importação
+
+Sprint I.1 ✅ WireGuard (/wireguard)
+  ├── Rota completa: teoria, config servidor/cliente, iptables
+  ├── Badge wireguard-master + 3 checkpoints
+  └── CONTENT_PAGES_COUNT 16 → 17
+
+Sprint I.2 ✅ Fail2ban (/fail2ban)
+  ├── Rota completa: jails, filtros, monitoramento
+  ├── Badge fail2ban-master + 3 checkpoints
+  └── CONTENT_PAGES_COUNT 17 → 18
+
+Polish ✅ Module-accent em 18 páginas
+  └── Border-top colorida + radial-gradient glow no hero de cada rota
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
-   Portabilidade via export/import JSON se necessário.
+   Portabilidade via export/import JSON implementada (Sprint J).
 
 ⏸️ Service Worker offline — AVALIAR DEPOIS
    Complexidade desproporcional ao caso de uso.

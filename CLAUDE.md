@@ -13,11 +13,13 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run build        # valida TypeScript + gera 21 rotas próprias (build reporta 28/28 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest)
+npm run test         # vitest run — suíte de testes (BadgeContext, ClientLayout, GlobalSearch, SEO)
+npm run test:watch   # vitest watch mode
+npm run build        # valida TypeScript + gera 23 rotas próprias (build reporta 30/30 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest)
 npm run start        # servidor de produção na porta 3000
 ```
 
-> Não há testes. `npm run lint` (typecheck) e `npm run lint:eslint` (a11y) são as duas validações estáticas obrigatórias antes do build.
+> `npm run lint` (typecheck), `npm run lint:eslint` (a11y) e `npm test` (vitest) são as três validações obrigatórias antes do build.
 
 ---
 
@@ -37,7 +39,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 21 rotas — todas 'use client'
+  [rota]/page.tsx           # 23 rotas — todas 'use client'
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -46,13 +48,17 @@ src/
     TopologyInteractive.tsx # diagrama de rede interativo (36KB — maior arquivo)
   context/
     BadgeContext.tsx        # fonte única de verdade para todo o progresso do usuário
+    BadgeContext.test.tsx   # testes vitest do BadgeContext (Sprint T₀)
+  test/
+    setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    searchItems.ts          # 44 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting)
+    searchItems.ts          # 47 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (21 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (23 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 ```
 
@@ -82,10 +88,10 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 16 (exclui home/quiz/dashboard/certificado/topicos) |
-| `totalTopics` | `app/dashboard/page.tsx` | 24 |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 26 (deve igualar ALL_CHECKLIST_IDS.length) |
-| Texto na Home | `app/page.tsx` | "24 topicos praticos" |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 18 (exclui home/quiz/dashboard/certificado/topicos) |
+| `totalTopics` | `app/dashboard/page.tsx` | 26 |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 32 (deve igualar ALL_CHECKLIST_IDS.length) |
+| Texto na Home | `app/page.tsx` | "26 topicos praticos" |
 
 ---
 
@@ -123,7 +129,7 @@ NUNCA criar arquivos CSS separados — usar classes Tailwind diretamente no JSX.
 Toda configuração de metadata vive em **`src/lib/seo.ts`**:
 
 - `SITE_CONFIG` — nome, URL base, keywords globais, theme color
-- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 21 rotas
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 23 rotas
 - `buildMetadata(route)` — helper que gera objeto `Metadata` completo com OG + Twitter + canonical
 
 **Para adicionar SEO a uma nova rota:**
@@ -282,8 +288,9 @@ Conformidade implementada no Sprint C:
 
 1. `npm run lint` — zero erros TypeScript
 2. `npm run lint:eslint` — zero warnings de acessibilidade
-3. `npm run build` — 28/28 páginas (21 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
-4. Verificar consistência dos números da tabela de constantes
+3. `npm test` — suíte vitest passando
+4. `npm run build` — 30/30 páginas (23 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
+5. Verificar consistência dos números da tabela de constantes
 
 ---
 
@@ -294,7 +301,16 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint C: Acessibilidade WCAG 2.1 AA — modais (role/aria/focus trap), prefers-reduced-motion, ESLint jsx-a11y
 - ✅ Sprint D: PWA Lite + Headers — manifest.ts, icon/apple-icon dinâmicos, HSTS/Permissions-Policy no next.config, error/not-found/loading boundaries
 - ✅ Sprint E: CSP nonce per-request via proxy.ts (Next.js 16) — remove 'unsafe-inline' do script-src, todas as rotas viram dynamic (trade-off aceito)
-- ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON se necessário.
+- ✅ Sprint G: A11y do TopologyInteractive — SVG title/desc, nós teclado-acessíveis, focus ring
+- ✅ Sprint F: Performance & Code Splitting — TopologyInteractive/GlobalSearch/DeepDive lazy, quizQuestions.ts extraído, bundle-analyzer
+- ✅ Sprint M: Maquiagem Cyber-Industrial — tokens de cor por módulo, micro-interações globais, module-accent-<slug>
+- ✅ Sprint T₀: Testes BadgeContext — vitest + @testing-library/react + happy-dom (10 testes)
+- ✅ Sprint T₁: Testes ClientLayout + GlobalSearch + SEO — 18 testes adicionais
+- ✅ Sprint J: Export/Import de progresso via JSON + badge time-traveler
+- ✅ Sprint I.1: WireGuard — rota /wireguard, badge wireguard-master, 3 checkpoints, deep dive
+- ✅ Sprint I.2: Fail2ban — rota /fail2ban, badge fail2ban-master, 3 checkpoints
+- ✅ Polish: module-accent glow aplicado em todas as 18 páginas de conteúdo
+- ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
-Para detalhes completos: DOCUMENTATION.md (v2.0) · QUICKSTART.md · README.md
+Para detalhes completos: DOCUMENTATION.md (v4.0) · QUICKSTART.md · README.md
