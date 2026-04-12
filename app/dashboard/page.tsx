@@ -54,12 +54,12 @@ export default function DashboardPage() {
     trackPageVisit('dashboard');
   }, [trackPageVisit]);
 
-  // FIX: era 28 → agora bate com TOPICS.length em topicos/page.tsx (24 tópicos)
-  const totalTopics = 24;
+  // Sprint I.1: +wireguard → 25 tópicos
+  const totalTopics = 25;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
-  // FIX: era 8 → agora bate com ALL_CHECKLIST_IDS.length em BadgeContext.tsx (26 checkpoints)
-  const checklistItemsCount = 26;
+  // Sprint I.1: +wg-keys/wg-server/wg-tunnel → 29 checkpoints
+  const checklistItemsCount = 29;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 

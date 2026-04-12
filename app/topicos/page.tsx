@@ -61,6 +61,7 @@ const TOPICS: Topic[] = [
   // ── VPN & IPSec ───────────────────────────────────────────────────────────────
   { id: '20', num: '20', title: 'O que é IPSec? Autenticação, criptografia, integridade e proteção anti-replay.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/vpn-ipsec#ipsec', group: 'VPN & IPSec' },
   { id: '28', num: '28', title: 'Configuração prática de VPN Site-to-Site com StrongSwan e iptables.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/vpn-ipsec#configuracao', group: 'VPN & IPSec' },
+  { id: '25', num: '25', title: 'WireGuard: VPN moderna com Curve25519, configuração de servidor e cliente, integração com iptables.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/wireguard', group: 'VPN & IPSec' },
 
   // ── Segurança Avançada ────────────────────────────────────────────────────────
   { id: '21', num: '21', title: 'Pivoteamento DMZ → LAN: como um invasor usa o Web Server para atacar a rede interna.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/pivoteamento#cenario', group: 'Segurança Avançada' },

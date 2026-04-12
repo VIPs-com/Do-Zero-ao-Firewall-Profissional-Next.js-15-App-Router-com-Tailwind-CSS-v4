@@ -6,6 +6,7 @@ import {
   BadgeProvider,
   useBadges,
   CONTENT_PAGES_COUNT,
+  ALL_CHECKLIST_IDS,
   type BadgeId,
 } from './BadgeContext';
 
@@ -157,7 +158,7 @@ describe('BadgeContext', () => {
       result.current.updateChecklist('dns-resolve', true);
     });
 
-    // 2 de 26 checkpoints
-    expect(result.current.checklistPercentage).toBe(Math.round((2 / 26) * 100));
+    // 2 de ALL_CHECKLIST_IDS.length checkpoints (sobe conforme novas rotas são adicionadas)
+    expect(result.current.checklistPercentage).toBe(Math.round((2 / ALL_CHECKLIST_IDS.length) * 100));
   });
 });

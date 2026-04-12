@@ -5,7 +5,8 @@ export type BadgeId =
   | 'explorer' | 'deep-diver' | 'night-owl' | 'searcher' | 'topology-pro'
   | 'firewall-master' | 'dns-master' | 'ssl-master' | 'vpn-master'
   | 'proxy-master' | 'knocking-master' | 'certificado' | 'linux-ninja' | 'pivoting-master' | 'defensor-topologia'
-  | 'time-traveler';
+  | 'time-traveler'
+  | 'wireguard-master';
 
 export interface BadgeDef {
   icon: string;
@@ -18,7 +19,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'quiz-expert':        { icon: '🥇', title: 'Expert',             desc: 'Score ≥ 80% no Quiz' },
   'quiz-master':        { icon: '🏆', title: 'Mestre',             desc: 'Score 100% no Quiz' },
   'explorer':           { icon: '🗺️', title: 'Explorador',         desc: 'Visitou 5+ páginas diferentes' },
-  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 16 páginas de conteúdo' },
+  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 17 páginas de conteúdo' },
   'night-owl':          { icon: '🦉', title: 'Coruja Noturna',     desc: 'Ativou o Dark Mode' },
   'searcher':           { icon: '🔍', title: 'Investigador',       desc: 'Usou a busca global' },
   'topology-pro':       { icon: '🖧', title: 'Topólogo',           desc: 'Clicou em 5+ elementos da topologia' },
@@ -33,6 +34,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'pivoting-master':    { icon: '💀', title: 'Pivoting Master',    desc: 'Entendeu os riscos de pivoteamento na DMZ' },
   'defensor-topologia': { icon: '🛡️', title: 'Defensor da Topologia', desc: 'Identificou todos os riscos críticos na rede' },
   'time-traveler':      { icon: '⏳', title: 'Viajante do Tempo',     desc: 'Importou um snapshot de progresso' },
+  'wireguard-master':   { icon: '🔐', title: 'WireGuard Master',      desc: 'Configurou um túnel WireGuard do zero' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -40,8 +42,10 @@ export const ALL_CHECKLIST_IDS = [
   'web-server', 'dnat-funciona', 'port-knocking', 'snat-config', 'established-config',
   'forward-config', 'audit-log', 'dns-recursivo', 'dns-reverso', 'dns-firewall',
   'dnat-web', 'dnat-ssh', 'forward-web', 'forward-ssh', 'knocking-timeout',
-  'knocking-stealth', 'proxy-log', 'vpn-up', 'vpn-ping', 'vpn-psk', 'pivoting-risk'
-]; // 26 checkpoints — deve bater com checklistItemsCount no dashboard
+  'knocking-stealth', 'proxy-log', 'vpn-up', 'vpn-ping', 'vpn-psk', 'pivoting-risk',
+  // Sprint I.1 — WireGuard
+  'wg-keys', 'wg-server', 'wg-tunnel',
+]; // 29 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
@@ -52,7 +56,7 @@ export const ALL_CHECKLIST_IDS = [
  * /dnat, /port-knocking, /vpn-ipsec, /ataques-avancados, /pivoteamento,
  * /audit-logs, /evolucao, /glossario, /cheat-sheet
  */
-export const CONTENT_PAGES_COUNT = 16;
+export const CONTENT_PAGES_COUNT = 17; // Sprint I.1: +/wireguard
 
 interface BadgeContextType {
   unlockedBadges: Set<BadgeId>;
@@ -166,6 +170,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['vpn-up'] && checklist['vpn-ping'])               unlockBadge('vpn-master');
     if (checklist['snat-config'] && checklist['established-config']) unlockBadge('firewall-master');
     if (checklist['pivoting-risk'])                                  unlockBadge('pivoting-master');
+    if (checklist['wg-keys'] && checklist['wg-server'] && checklist['wg-tunnel']) unlockBadge('wireguard-master');
 
     if (Object.values(checklist).filter(v => v).length >= 15) unlockBadge('linux-ninja');
   }, [checklist]);

@@ -168,6 +168,11 @@ export const ROUTE_SEO = {
     description:
       'Referência rápida dos comandos mais usados no workshop: iptables, nftables, tcpdump, dig, nmap, ss, ipsec, nginx, squid e sysctl.',
   },
+  '/wireguard': {
+    title: 'WireGuard — VPN Moderna com Curve25519',
+    description:
+      'Configure uma VPN WireGuard do zero: geração de chaves, wg0.conf servidor e cliente, integração com iptables e roteamento entre peers.',
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;
