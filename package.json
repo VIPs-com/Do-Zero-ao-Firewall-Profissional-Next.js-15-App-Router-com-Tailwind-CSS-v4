@@ -9,7 +9,9 @@
     "start": "next start --port=3000",
     "lint": "tsc --noEmit",
     "lint:eslint": "eslint app src",
-    "lint:all": "tsc --noEmit && eslint app src"
+    "lint:all": "tsc --noEmit && eslint app src",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -24,13 +26,18 @@
   "devDependencies": {
     "@next/bundle-analyzer": "^16.2.3",
     "@tailwindcss/postcss": "^4.2.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^22.14.0",
     "@typescript-eslint/parser": "^8.58.1",
+    "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.3",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "happy-dom": "^20.8.9",
     "tailwindcss": "^4.1.14",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "vitest": "^4.1.4"
   }
 }

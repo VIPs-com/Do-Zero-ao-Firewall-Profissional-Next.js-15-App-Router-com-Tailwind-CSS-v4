@@ -50,7 +50,7 @@ export const ALL_CHECKLIST_IDS = [
  * /dnat, /port-knocking, /vpn-ipsec, /ataques-avancados, /pivoteamento,
  * /audit-logs, /evolucao, /glossario, /cheat-sheet
  */
-const CONTENT_PAGES_COUNT = 16;
+export const CONTENT_PAGES_COUNT = 16;
 
 interface BadgeContextType {
   unlockedBadges: Set<BadgeId>;
