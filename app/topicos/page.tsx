@@ -63,6 +63,9 @@ const TOPICS: Topic[] = [
   { id: '28', num: '28', title: 'Configuração prática de VPN Site-to-Site com StrongSwan e iptables.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/vpn-ipsec#configuracao', group: 'VPN & IPSec' },
   { id: '25', num: '25', title: 'WireGuard: VPN moderna com Curve25519, configuração de servidor e cliente, integração com iptables.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/wireguard', group: 'VPN & IPSec' },
 
+  // ── Defesa Ativa ─────────────────────────────────────────────────────────────
+  { id: '26', num: '26', title: 'Fail2ban: proteção contra brute force em SSH e Nginx com jails, filtros regex e ações iptables.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/fail2ban', group: 'Segurança Avançada' },
+
   // ── Segurança Avançada ────────────────────────────────────────────────────────
   { id: '21', num: '21', title: 'Pivoteamento DMZ → LAN: como um invasor usa o Web Server para atacar a rede interna.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/pivoteamento#cenario', group: 'Segurança Avançada' },
   { id: '22', num: '22', title: 'Mitigação de Pivoteamento: regras de FORWARD e isolamento de estado no iptables.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/pivoteamento#mitigacao', group: 'Segurança Avançada' },

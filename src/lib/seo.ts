@@ -173,6 +173,11 @@ export const ROUTE_SEO = {
     description:
       'Configure uma VPN WireGuard do zero: geração de chaves, wg0.conf servidor e cliente, integração com iptables e roteamento entre peers.',
   },
+  '/fail2ban': {
+    title: 'Fail2ban — Proteção contra Brute Force',
+    description:
+      'Proteja SSH, Nginx e outros serviços com Fail2ban: jails, filtros regex, ações de ban, integração com iptables e monitoramento de logs.',
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;
