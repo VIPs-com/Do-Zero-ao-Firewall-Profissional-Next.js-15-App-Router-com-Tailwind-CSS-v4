@@ -86,8 +86,8 @@ export default function GlossaryPage() {
   }, [searchQuery, activeCategory]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="breadcrumb mb-8">
+    <div className="max-w-7xl mx-auto px-4 py-12 module-accent-glossario">
+      <div className="breadcrumb mb-8 module-hero">
         <Link href="/">Início</Link>
         <span>/</span>
         <span className="text-text-2">Glossário</span>

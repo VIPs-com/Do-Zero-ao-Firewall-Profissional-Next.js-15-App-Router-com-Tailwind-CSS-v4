@@ -32,8 +32,8 @@ export default function VpnIpsecPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="breadcrumb mb-8">
+    <div className="max-w-7xl mx-auto px-4 py-12 module-accent-vpn-ipsec">
+      <div className="breadcrumb mb-8 module-hero">
         <Link href="/">Início</Link>
         <span>/</span>
         <Link href="/topicos">Tópicos</Link>
