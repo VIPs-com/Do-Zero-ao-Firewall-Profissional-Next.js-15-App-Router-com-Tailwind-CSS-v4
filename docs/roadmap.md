@@ -79,6 +79,13 @@ Sprint I.2 ✅ Fail2ban (/fail2ban)
 Polish ✅ Module-accent em 18 paginas
   └── Border-top colorida + radial-gradient glow no hero de cada rota
 
+Sprint T₂ ✅ E2E Playwright (12 testes)
+  ├── playwright.config.ts — build prod + start (CSP nonce real)
+  ├── e2e/fixtures.ts — resetStorage auto fixture (isolamento entre testes)
+  ├── 7 arquivos spec: home topology, explorer badge, quiz, global search,
+  │   theme toggle, export/import time-traveler, dashboard counters
+  └── npm run test:e2e / test:e2e:ui / test:e2e:headed
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

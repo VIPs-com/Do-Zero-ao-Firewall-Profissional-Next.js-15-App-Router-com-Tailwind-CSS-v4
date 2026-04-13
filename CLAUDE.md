@@ -15,6 +15,9 @@ npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
 npm run test         # vitest run — suíte de testes (BadgeContext, ClientLayout, GlobalSearch, SEO)
 npm run test:watch   # vitest watch mode
+npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
+npm run test:e2e:ui  # Playwright com UI interativa
+npm run test:e2e:headed # Playwright com browser visível
 npm run build        # valida TypeScript + gera 23 rotas próprias (build reporta 30/30 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest)
 npm run start        # servidor de produção na porta 3000
 ```
@@ -60,6 +63,17 @@ src/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
     seo.ts                  # SITE_CONFIG, ROUTE_SEO (23 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
+
+e2e/                        # Playwright E2E (Sprint T₂)
+  fixtures.ts               # resetStorage auto fixture — limpa localStorage antes de cada teste
+  01-home-topology.spec.ts  # SVG role=img + aria-labelledby
+  02-explorer-badge.spec.ts # seed direto + trackPageVisit smoke test
+  03-quiz-expert-badge.spec.ts # clique completo + seed score=100
+  04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
+  05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
+  06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
+  07-dashboard-counters.spec.ts # 3/32 checklist + 75% quiz + 0/21 badges
+playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
 
 **Path alias:** `@/` resolve para `src/`. Todos os imports de `src/` usam esse alias.
@@ -310,6 +324,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint I.1: WireGuard — rota /wireguard, badge wireguard-master, 3 checkpoints, deep dive
 - ✅ Sprint I.2: Fail2ban — rota /fail2ban, badge fail2ban-master, 3 checkpoints
 - ✅ Polish: module-accent glow aplicado em todas as 18 páginas de conteúdo
+- ✅ Sprint T₂: E2E Playwright — 12 testes em 7 specs, build prod + start, resetStorage fixture, CSP nonce real
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

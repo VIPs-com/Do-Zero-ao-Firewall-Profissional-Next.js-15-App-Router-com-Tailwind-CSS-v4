@@ -72,6 +72,17 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │
 ├── 📄 proxy.ts                      ← Sprint E: CSP nonce per-request
 ├── 📄 next.config.ts                ← Headers de segurança estáticos
+├── 📄 playwright.config.ts          ← E2E: build prod + start, chromium, webServer
+│
+├── 📁 e2e/                          ← Playwright E2E (Sprint T₂ — 12 testes)
+│   ├── fixtures.ts                  ← resetStorage auto fixture (isola localStorage)
+│   ├── 01-home-topology.spec.ts     ← SVG a11y: role=img + aria-labelledby
+│   ├── 02-explorer-badge.spec.ts    ← Badge seed-direto + trackPageVisit smoke
+│   ├── 03-quiz-expert-badge.spec.ts ← Clique completo no quiz + seed score=100
+│   ├── 04-global-search.spec.ts     ← ⌘K abre, navega, ESC fecha
+│   ├── 05-theme-persistence.spec.ts ← Toggle dark/light + badge night-owl
+│   ├── 06-export-import-time-traveler.spec.ts ← Download + upload + badge
+│   └── 07-dashboard-counters.spec.ts ← 3/32 checklist, 75% quiz, 0/21 badges
 │
 └── 📁 src/
     ├── 📁 components/
