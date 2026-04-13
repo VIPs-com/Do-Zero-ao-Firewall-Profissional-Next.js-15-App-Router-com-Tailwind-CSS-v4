@@ -313,4 +313,4 @@ Conformidade implementada no Sprint C:
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
-Para detalhes completos: DOCUMENTATION.md (v4.0) · QUICKSTART.md · README.md
+Para detalhes completos: docs/ (índice em docs/README.md) · QUICKSTART.md · README.md

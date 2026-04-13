@@ -1,6 +1,6 @@
 # ⚡ Quick Start Guide — Do Zero ao Firewall Profissional
 
-> Resumo de 1 página para devs e novos integrantes. Para referência completa: `DOCUMENTATION.md`.
+> Resumo de 1 página para devs e novos integrantes. Para referência completa: [`docs/README.md`](docs/README.md).
 
 ---
 
