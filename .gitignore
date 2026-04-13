@@ -11,3 +11,7 @@ next-env.d.ts
 tsconfig.tsbuildinfo
 
 .claude/
+
+# Playwright
+playwright-report/
+test-results/
