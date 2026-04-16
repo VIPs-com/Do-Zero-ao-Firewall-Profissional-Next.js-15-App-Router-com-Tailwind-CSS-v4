@@ -43,7 +43,7 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 | `/src/components/ClientLayout.tsx` | Header, nav, toggle dark/light, busca global |
 | `/src/context/BadgeContext.tsx` | Estado global: badges, progresso, checkpoints |
 | `/src/data/quizQuestions.ts` | Perguntas do quiz extraídas (Sprint F) |
-| `/src/data/searchItems.ts` | Índice da busca global ⌘K (47 itens) |
+| `/src/data/searchItems.ts` | Índice da busca global ⌘K (54 itens) |
 | `/src/data/deepDives.tsx` | Conteúdo dos 6 modais avançados |
 | `/src/lib/seo.ts` | **Fonte única** — `SITE_CONFIG`, `ROUTE_SEO`, `buildMetadata()` |
 | `/src/lib/useFocusTrap.ts` | Hook a11y — focus trap + ESC + restore focus |
@@ -89,7 +89,7 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — vitest passando
 - [ ] `npm run build` — 30/30 páginas (23 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 18`, `totalTopics = 26`, `checklistItemsCount = 32`)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 18`, `totalTopics = 26`, `checklistItemsCount = 35`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)
@@ -204,4 +204,4 @@ node_modules/
 
 `Next.js 16.2.2` · `React 19` · `TypeScript 5.8` · `Tailwind CSS v4` · `Turbopack` · `motion/react 12` · `Lucide React`
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent)
+**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo)

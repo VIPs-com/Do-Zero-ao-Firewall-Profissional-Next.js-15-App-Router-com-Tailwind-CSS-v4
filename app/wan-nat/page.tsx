@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Globe, Shield, Zap, Terminal, RefreshCw, CheckCircle2, Save, Power, BookOpen, ArrowRight, Circle, Activity, Network } from 'lucide-react';
+import { Globe, Shield, Zap, Terminal, RefreshCw, CheckCircle2, Save, Power, BookOpen, ArrowRight, Circle, Activity, Network, FileText, Mail, AlertTriangle, ClipboardList } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
@@ -11,15 +11,21 @@ import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
 
+// Checklist espelhando os 13 itens da Aula 2 do Professor Vagner
 const FIREWALL_CHECKLIST = [
   { id: 'lan-internet', text: 'Rede LAN pode sair para Internet' },
   { id: 'lan-dmz', text: 'Rede LAN pode acessar DNS e WEB na DMZ' },
   { id: 'lan-ping', text: 'Rede LAN pode pingar na Internet e na DMZ' },
+  { id: 'lan-email', text: 'Rede LAN pode sair para serviço de E-mail' },
   { id: 'dmz-internet', text: 'DMZ pode sair para Internet (DNS/HTTP/HTTPS)' },
   { id: 'web-lan', text: 'WEB pode ser acessado pela Rede LAN' },
   { id: 'web-internet', text: 'WEB pode ser acessado pela Internet' },
+  { id: 'firewall-log-80', text: 'Todo acesso à porta 80 do FIREWALL é registrado (LOG)' },
   { id: 'firewall-ping', text: 'FIREWALL pode ser pingado pela Rede LAN e DMZ' },
-  { id: 'firewall-ssh', text: 'FIREWALL pode ser acessado via SSH (LAN/DMZ/Internet*)' },
+  { id: 'firewall-ssh-lan', text: 'FIREWALL pode ser acessado via SSH pela Rede LAN' },
+  { id: 'firewall-ssh-dmz', text: 'FIREWALL pode ser acessado via SSH pela DMZ' },
+  { id: 'firewall-ssh-wan', text: 'FIREWALL pode ser acessado via SSH pela Internet*' },
+  { id: 'port-knocking-required', text: 'SSH só pode ser acessado depois de abrir porta específica (Port Knocking)' },
 ];
 
 export default function WanNatPage() {
@@ -237,11 +243,157 @@ export default function WanNatPage() {
               <p className="text-xs text-text-3 mb-4 leading-relaxed">
                 Crie o arquivo <code>/etc/systemd/system/firewall.service</code> para automatizar o processo.
               </p>
-              <CodeBlock 
-                title="firewall.service"
-                code={`[Unit]\nDescription=Firewall Service\nAfter=network-online.target\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/local/bin/start-firewall\nExecStop=/usr/local/bin/stop-firewall\n\n[Install]\nWantedBy=multi-user.target`} 
-                lang="ini" 
+              <CodeBlock
+                title="/etc/systemd/system/firewall.service"
+                code={`[Unit]\nDescription=Firewall\nAfter=network-online.target\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/local/bin/start-firewall\nExecStop=/usr/local/bin/stop-firewall\n\n[Install]\nWantedBy=multi-user.target`}
+                lang="ini"
               />
+            </InfoBox>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              <CodeBlock
+                title="/usr/local/bin/start-firewall"
+                code={`#!/bin/bash\n/usr/sbin/iptables-restore /etc/firewall/regras.ipt`}
+                lang="bash"
+              />
+              <CodeBlock
+                title="/usr/local/bin/stop-firewall"
+                code={`#!/bin/bash\n/usr/sbin/iptables-restore /etc/firewall/sem-regras.ipt`}
+                lang="bash"
+              />
+            </div>
+
+            <CodeBlock
+              title="Ativando o serviço"
+              code={`chmod 755 /usr/local/bin/start-firewall\nchmod 755 /usr/local/bin/stop-firewall\nsystemctl daemon-reload\nsystemctl enable firewall.service`}
+              lang="bash"
+            />
+
+            <WarnBox title="Arquivo de Emergência: sem-regras.ipt">
+              <p className="text-[10px] text-text-2 leading-relaxed mb-3">
+                Se algo der errado, o <code>stop-firewall</code> restaura este arquivo que zera tudo — política ACCEPT, sem nenhuma regra.
+                Sempre crie este arquivo <strong>antes</strong> de aplicar regras restritivas!
+              </p>
+              <CodeBlock
+                title="/etc/firewall/sem-regras.ipt"
+                code={`*filter\n:INPUT ACCEPT [0:0]\n:FORWARD ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\nCOMMIT\n*nat\n:PREROUTING ACCEPT [0:0]\n:INPUT ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\n:POSTROUTING ACCEPT [0:0]\nCOMMIT`}
+                lang="bash"
+              />
+            </WarnBox>
+
+            <div className="mt-8 p-5 rounded-xl bg-bg-2 border border-border">
+              <h4 className="font-bold text-sm mb-3 flex items-center gap-2">
+                <CheckCircle2 size={14} className="text-ok" />
+                Checkpoints de Persistência
+              </h4>
+              <div className="space-y-3">
+                {[
+                  { id: 'firewall-persistence', text: 'Salvou regras com iptables-save' },
+                  { id: 'firewall-service', text: 'Criou o firewall.service no systemd' },
+                  { id: 'firewall-log', text: 'Configurou LOG para porta 80' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className="w-full flex items-start gap-3 text-left group"
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 size={14} className="text-ok shrink-0 mt-0.5" />
+                    ) : (
+                      <Circle size={14} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                    )}
+                    <span className={cn(
+                      "text-xs leading-tight transition-colors",
+                      checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                    )}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 5: E-mail FORWARD rules */}
+          <section id="forward-email">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
+                <Mail size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">5. Regras FORWARD para E-mail</h2>
+            </div>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Para que a rede LAN acesse serviços de e-mail na internet, o firewall precisa liberar múltiplas portas de uma vez.
+              O módulo <code>multiport</code> evita criar 7 regras separadas.
+            </p>
+
+            <CodeBlock
+              title="Liberar portas de E-mail para a LAN"
+              code="iptables -A FORWARD -p tcp -s 192.168.57.0/24 -m multiport --dports 25,110,143,465,587,993,995 -j ACCEPT"
+              lang="bash"
+            />
+
+            <div className="bg-bg-2 border border-border rounded-xl overflow-hidden mt-6">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-bg-3 border-b border-border text-[10px] uppercase font-bold text-text-3">
+                  <tr>
+                    <th className="px-6 py-3">Porta</th>
+                    <th className="px-6 py-3">Protocolo</th>
+                    <th className="px-6 py-3">Segurança</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {[
+                    { port: '25', proto: 'SMTP', sec: 'Envio sem criptografia' },
+                    { port: '110', proto: 'POP3', sec: 'Recebimento sem criptografia' },
+                    { port: '143', proto: 'IMAP', sec: 'Recebimento sem criptografia' },
+                    { port: '465', proto: 'SMTPS', sec: 'Envio com SSL/TLS implícito' },
+                    { port: '587', proto: 'Submission', sec: 'Envio com STARTTLS' },
+                    { port: '993', proto: 'IMAPS', sec: 'Recebimento com SSL/TLS' },
+                    { port: '995', proto: 'POP3S', sec: 'Recebimento com SSL/TLS' },
+                  ].map(row => (
+                    <tr key={row.port}>
+                      <td className="px-6 py-3 font-mono text-xs text-accent">{row.port}</td>
+                      <td className="px-6 py-3 text-text-2">{row.proto}</td>
+                      <td className="px-6 py-3 text-text-3">{row.sec}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* Section 6: LOG */}
+          <section id="log-rules">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <FileText size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">6. LOG — Registrando Acessos</h2>
+            </div>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              O target <code>LOG</code> do iptables registra pacotes no syslog <strong>sem interromper o processamento</strong>.
+              Diferente de ACCEPT e DROP, o LOG é um <em>target não-terminante</em> — o pacote continua para a próxima regra.
+            </p>
+
+            <CodeBlock
+              title="Registrar e bloquear acesso à porta 80"
+              code={`# LOG registra o pacote no syslog com o prefixo "Acesso-80 "\niptables -A INPUT -p tcp --dport 80 -j LOG --log-prefix "Acesso-80 "\n\n# DROP descarta o pacote (regra seguinte obrigatória!)\niptables -A INPUT -p tcp --dport 80 -j DROP`}
+              lang="bash"
+            />
+
+            <WarnBox title="LOG não é terminal!">
+              <p className="text-[10px] text-text-2 leading-relaxed">
+                Se você colocar só o LOG sem DROP depois, o pacote será logado <strong>e aceito</strong> (se não houver mais regras restritivas).
+                Sempre coloque ACCEPT ou DROP logo após o LOG.
+              </p>
+            </WarnBox>
+
+            <InfoBox title="Onde ver os logs?" className="mt-4">
+              <p className="text-xs text-text-3 leading-relaxed">
+                Os logs aparecem em <code>/var/log/syslog</code> ou via <code>journalctl -k | grep &quot;Acesso-80&quot;</code>.
+                Veja como analisar na página <Link href="/audit-logs" className="text-accent hover:underline">Auditoria &amp; Logs</Link>.
+              </p>
             </InfoBox>
           </section>
         </div>

@@ -14,7 +14,7 @@
 
 ## Funcionalidades
 
-- [Gamificacao & Badges](gamificacao.md) — 21 badges, 32 checkpoints, como adicionar novos
+- [Gamificacao & Badges](gamificacao.md) — 21 badges, 35 checkpoints, como adicionar novos
 - [Busca Global](busca-global.md) — CMD+K, searchItems, deep dives
 - [SEO — Fonte Unica](seo.md) — ROUTE_SEO, buildMetadata(), sitemap, OG image, JSON-LD
 - [Acessibilidade — WCAG 2.1 AA](acessibilidade.md) — modais, focus trap, reduced motion, ESLint jsx-a11y

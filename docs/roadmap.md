@@ -86,6 +86,17 @@ Sprint T₂ ✅ E2E Playwright (12 testes)
   │   theme toggle, export/import time-traveler, dashboard counters
   └── npm run test:e2e / test:e2e:ui / test:e2e:headed
 
+Sprint R ✅ Realismo — Alinhamento com Material Original (Aula 1+2)
+  ├── /wan-nat expandido: scripts start/stop-firewall, sem-regras.ipt,
+  │   LOG porta 80, regras FORWARD e-mail (multiport), 3 novos checkpoints
+  ├── Cheat-sheet: +15 comandos (iptables-save/restore, systemd, WireGuard,
+  │   Fail2ban, tcpdump, openssl, conntrack, nft)
+  ├── Glossário: +11 termos (iptables-save, ip_forward, systemd, journalctl,
+  │   Fail2ban, WireGuard, SOA, Vim, tcpdump, multiport, iptables-restore)
+  ├── Quiz: +6 perguntas procedurais (persistência, systemd, multiport, LOG)
+  ├── Search index: +7 itens (iptables-restore, systemctl, wg, f2b, conntrack…)
+  └── ALL_CHECKLIST_IDS: 32 → 35 (+firewall-persistence/service/log)
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

@@ -64,7 +64,20 @@ const GLOSSARY: Term[] = [
   { term: "eBPF", definition: "Extended Berkeley Packet Filter — tecnologia que permite executar código seguro no kernel Linux. Usada em firewalls modernos.", category: "Evolução", icon: <Activity size={14} /> },
   { term: "nftables", definition: "Sucessor do iptables, unifica as tabelas em uma sintaxe única e oferece melhor performance.", category: "Evolução", icon: <Activity size={14} /> },
   { term: "OPNsense", definition: "Firewall de borda baseado em FreeBSD, com interface web, suporte a VPN e IDS/IPS.", category: "Evolução", icon: <Activity size={14} /> },
-  { term: "Pi-hole", definition: "Servidor DNS que bloqueia anúncios e rastreadores em toda a rede. Funciona como um filtro de DNS.", category: "Evolução", icon: <Activity size={14} /> }
+  { term: "Pi-hole", definition: "Servidor DNS que bloqueia anúncios e rastreadores em toda a rede. Funciona como um filtro de DNS.", category: "Evolução", icon: <Activity size={14} /> },
+
+  // Sprint R — Termos do material original
+  { term: "iptables-save", definition: "Comando que exporta todas as regras iptables ativas em formato texto. Usado com iptables-restore para persistência.", category: "Firewall", icon: <Shield size={14} /> },
+  { term: "iptables-restore", definition: "Comando que importa regras de um arquivo gerado por iptables-save. Aplica as regras atomicamente (tudo ou nada).", category: "Firewall", icon: <Shield size={14} /> },
+  { term: "multiport", definition: "Módulo do iptables (-m multiport) que permite especificar múltiplas portas (--dports 25,110,143) em uma única regra.", category: "Firewall", icon: <Shield size={14} /> },
+  { term: "ip_forward", definition: "Parâmetro do kernel (net.ipv4.ip_forward) que ativa o roteamento de pacotes entre interfaces. Essencial para qualquer firewall.", category: "Redes", icon: <Globe size={14} /> },
+  { term: "systemd", definition: "Sistema de inicialização do Linux que gerencia serviços. Usa units (.service) para iniciar, parar e monitorar processos.", category: "Sistema", icon: <Terminal size={14} /> },
+  { term: "journalctl", definition: "Comando para consultar logs do systemd. Ex: journalctl -u nginx mostra logs do Nginx.", category: "Sistema", icon: <Terminal size={14} /> },
+  { term: "Fail2ban", definition: "Ferramenta que monitora logs e bane IPs que ultrapassam um limite de tentativas falhas (ex: SSH brute force).", category: "Segurança", icon: <Lock size={14} /> },
+  { term: "WireGuard", definition: "VPN moderna com criptografia Curve25519, ~4000 linhas de código. Mais rápida e simples que IPSec e OpenVPN.", category: "VPN", icon: <Zap size={14} /> },
+  { term: "SOA", definition: "Start of Authority — registro DNS obrigatório que define parâmetros da zona: serial, refresh, retry, expire e TTL negativo.", category: "DNS", icon: <Terminal size={14} /> },
+  { term: "Vim", definition: "Editor de texto modal do terminal Linux. Modo inserção (i), sair sem salvar (:q!), sair salvando (:wq), apagar linha (dd).", category: "Sistema", icon: <Terminal size={14} /> },
+  { term: "tcpdump", definition: "Ferramenta de captura de pacotes no terminal. Salva em formato PCAP para análise posterior no Wireshark.", category: "Diagnóstico", icon: <Search size={14} /> },
 ];
 
 export default function GlossaryPage() {

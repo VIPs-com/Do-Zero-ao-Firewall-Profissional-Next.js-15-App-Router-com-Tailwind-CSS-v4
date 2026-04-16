@@ -58,8 +58,8 @@ export default function DashboardPage() {
   const totalTopics = 26;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
-  // Sprint I.2: +f2b-install/f2b-sshd/f2b-ban-test → 32 checkpoints
-  const checklistItemsCount = 32;
+  // Sprint R: +firewall-persistence/firewall-service/firewall-log → 35 checkpoints
+  const checklistItemsCount = 35;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 

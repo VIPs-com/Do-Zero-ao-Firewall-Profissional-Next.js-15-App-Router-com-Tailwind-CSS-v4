@@ -49,7 +49,9 @@ export const ALL_CHECKLIST_IDS = [
   'wg-keys', 'wg-server', 'wg-tunnel',
   // Sprint I.2 — Fail2ban
   'f2b-install', 'f2b-sshd', 'f2b-ban-test',
-]; // 32 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint R — Alinhamento com material original (Aula 2)
+  'firewall-persistence', 'firewall-service', 'firewall-log',
+]; // 35 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
@@ -255,7 +257,9 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // Delay revocation to give the browser time to start the download.
+    // Without this, Chromium may cancel the blob download if revoked synchronously.
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }, [unlockedBadges, visitedPages, topologyClicks, clickedRisks, checklist, quizScore]);
 
   const importProgress = useCallback((json: string): { ok: boolean; error?: string } => {

@@ -9,6 +9,7 @@ import { test, expect } from './fixtures';
  * Os botões de opção têm: aria-pressed={answers[currentIdx] === i}
  */
 test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é desbloqueado', async ({ page }) => {
+  test.setTimeout(60_000); // 32 perguntas × ~350ms animação + cliques = precisa de mais tempo
   await page.goto('/quiz');
 
   // Tela inicial

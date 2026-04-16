@@ -82,7 +82,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 04-global-search.spec.ts     ← ⌘K abre, navega, ESC fecha
 │   ├── 05-theme-persistence.spec.ts ← Toggle dark/light + badge night-owl
 │   ├── 06-export-import-time-traveler.spec.ts ← Download + upload + badge
-│   └── 07-dashboard-counters.spec.ts ← 3/32 checklist, 75% quiz, 0/21 badges
+│   └── 07-dashboard-counters.spec.ts ← 3/35 checklist, 75% quiz, 0/21 badges
 │
 └── 📁 src/
     ├── 📁 components/
@@ -109,7 +109,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │
     ├── 📁 data/
     │   ├── quizQuestions.ts         ← Perguntas do quiz extraídas (Sprint F)
-    │   ├── searchItems.ts           ← Índice da busca global (47 itens)
+    │   ├── searchItems.ts           ← Índice da busca global (54 itens)
     │   └── deepDives.tsx            ← Conteúdo dos 6 modais avançados
     │
     └── 📁 lib/
@@ -127,7 +127,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **18** (exclui home/quiz/dashboard/certificado/topicos) |
 | `totalTopics` | `app/dashboard/page.tsx` | **26** |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | **32** (igual a `ALL_CHECKLIST_IDS.length`) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **35** (igual a `ALL_CHECKLIST_IDS.length`) |
 | Texto na Home | `app/page.tsx` | "26 tópicos práticos" |
 
 Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.

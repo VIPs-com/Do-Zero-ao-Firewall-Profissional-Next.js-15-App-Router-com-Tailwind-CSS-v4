@@ -289,4 +289,78 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 0,
     explanation: 'MOBIKE (Mobility and Multihoming) é uma extensão do IKEv2 que permite que a VPN mantenha a conexão ativa mesmo quando o dispositivo muda de rede (ex: Wi-Fi para 4G).',
   },
+
+  // ========== Persistência & Operações (Sprint R) ==========
+  {
+    text: 'Qual comando salva todas as regras iptables ativas em um arquivo?',
+    badge: '🛡️ Firewall',
+    options: [
+      'iptables -L > /etc/firewall/regras.ipt',
+      'iptables-save > /etc/firewall/regras.ipt',
+      'iptables --export /etc/firewall/regras.ipt',
+      'cp /proc/net/ip_tables /etc/firewall/regras.ipt',
+    ],
+    correct: 1,
+    explanation: 'iptables-save exporta todas as regras no formato que iptables-restore consegue reimportar.',
+  },
+  {
+    text: 'Qual comando restaura regras iptables a partir de um arquivo salvo?',
+    badge: '🛡️ Firewall',
+    options: [
+      'iptables -F < regras.ipt',
+      'iptables --import regras.ipt',
+      'iptables-restore < /etc/firewall/regras.ipt',
+      'source /etc/firewall/regras.ipt',
+    ],
+    correct: 2,
+    explanation: 'iptables-restore lê o formato gerado por iptables-save e aplica todas as regras atomicamente.',
+  },
+  {
+    text: 'No systemd, qual diretiva garante que o serviço de firewall inicie APÓS a rede estar disponível?',
+    badge: '⚙️ systemd',
+    options: [
+      'Requires=network.target',
+      'After=network-online.target',
+      'WantedBy=network.target',
+      'Before=networking.service',
+    ],
+    correct: 1,
+    explanation: 'After=network-online.target garante que a rede esteja plenamente funcional antes do serviço iniciar.',
+  },
+  {
+    text: 'Qual flag do iptables permite especificar múltiplas portas em uma única regra?',
+    badge: '🛡️ Firewall',
+    options: [
+      '--dports (sem módulo)',
+      '-m multiport --dports',
+      '-p tcp --dport 25,110,143',
+      '-m portrange --range 25:995',
+    ],
+    correct: 1,
+    explanation: 'O módulo multiport (-m multiport) permite listar várias portas com --dports em uma regra só.',
+  },
+  {
+    text: 'O que acontece quando um pacote atinge uma regra LOG no iptables?',
+    badge: '🛡️ Firewall',
+    options: [
+      'O pacote é logado e descartado automaticamente',
+      'O pacote é logado e aceito automaticamente',
+      'O pacote é logado e continua para a próxima regra (LOG não é terminal)',
+      'O pacote é duplicado — um vai pro log, outro segue',
+    ],
+    correct: 2,
+    explanation: 'LOG é um target não-terminante: registra o pacote no syslog e continua avaliando as regras seguintes. Você precisa de um DROP ou ACCEPT depois.',
+  },
+  {
+    text: 'Para que serve o RemainAfterExit=yes no firewall.service?',
+    badge: '⚙️ systemd',
+    options: [
+      'Reinicia o serviço automaticamente se ele falhar',
+      'Mantém o serviço como "active" mesmo após o script oneshot terminar',
+      'Impede que o serviço seja parado manualmente',
+      'Executa o ExecStop quando o sistema desliga',
+    ],
+    correct: 1,
+    explanation: 'Com Type=oneshot e RemainAfterExit=yes, o systemd marca o serviço como "active (exited)" após o script terminar. Sem isso, o status ficaria "inactive" e systemctl stop não chamaria o ExecStop.',
+  },
 ];

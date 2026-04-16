@@ -5,7 +5,7 @@
 Gerencia três dimensões de progresso:
 - **Badges** — conquistas desbloqueáveis (21 total)
 - **Páginas visitadas** — para badges de exploração
-- **Checkpoints** — validações técnicas concluídas (32 total)
+- **Checkpoints** — validações técnicas concluídas (35 total)
 
 ## Tabela de badges
 
@@ -73,7 +73,7 @@ export default function MeuComponente() {
 }
 ```
 
-## Checkpoints de validação (32 IDs)
+## Checkpoints de validação (35 IDs)
 
 ```typescript
 // src/context/BadgeContext.tsx — ALL_CHECKLIST_IDS
@@ -89,6 +89,8 @@ export default function MeuComponente() {
   'wg-keys', 'wg-server', 'wg-tunnel',
   // Sprint I.2 — Fail2ban
   'f2b-install', 'f2b-sshd', 'f2b-ban-test',
+  // Sprint R — Alinhamento com material original (Aula 2)
+  'firewall-persistence', 'firewall-service', 'firewall-log',
 ]
 ```
 

@@ -41,6 +41,33 @@ const COMMANDS: Command[] = [
   { id: 'strongswan-status', cmd: 'swanctl --list-sas', desc: 'Lista as Security Associations (SAs) da VPN IPSec.', layer: 'Camada 3', layerClass: 'l3', category: 'VPN' },
   { id: 'knock-test', cmd: 'knock 192.168.20.200 7000 8000 9000', desc: 'Envia sequência de batidas para o Port Knocking.', layer: 'Camada 4', layerClass: 'l4', category: 'Segurança' },
   { id: 'openssl-cert', cmd: 'openssl x509 -in cert.pem -text -noout', desc: 'Lê o conteúdo de um certificado SSL.', layer: 'Camada 6', layerClass: 'l6', category: 'SSL/TLS' },
+
+  // Persistência & systemd (Sprint R)
+  { id: 'ipt-save', cmd: 'iptables-save > /etc/firewall/regras.ipt', desc: 'Salva todas as regras iptables em arquivo (formato restaurável).', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
+  { id: 'ipt-restore', cmd: 'iptables-restore < /etc/firewall/regras.ipt', desc: 'Restaura regras iptables atomicamente a partir de um arquivo.', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
+  { id: 'systemctl-enable-fw', cmd: 'systemctl enable firewall.service', desc: 'Habilita o serviço de firewall para iniciar no boot.', layer: 'Camada 7', layerClass: 'l7', category: 'systemd' },
+  { id: 'systemctl-status-fw', cmd: 'systemctl status firewall', desc: 'Verifica o estado atual do serviço de firewall.', layer: 'Camada 7', layerClass: 'l7', category: 'systemd' },
+  { id: 'conntrack-list', cmd: 'conntrack -L', desc: 'Lista todas as conexões rastreadas pelo kernel (conntrack table).', layer: 'Camada 4', layerClass: 'l4', category: 'Diagnóstico' },
+
+  // WireGuard (Sprint R)
+  { id: 'wg-show', cmd: 'wg show', desc: 'Mostra interfaces WireGuard ativas, peers e tráfego.', layer: 'Camada 3', layerClass: 'l3', category: 'VPN' },
+  { id: 'wg-quick-up', cmd: 'wg-quick up wg0', desc: 'Levanta a interface WireGuard wg0 usando configuração em /etc/wireguard/.', layer: 'Camada 3', layerClass: 'l3', category: 'VPN' },
+
+  // Fail2ban (Sprint R)
+  { id: 'f2b-status', cmd: 'fail2ban-client status sshd', desc: 'Mostra IPs banidos e estatísticas da jail SSH.', layer: 'Camada 7', layerClass: 'l7', category: 'Segurança' },
+  { id: 'f2b-banip', cmd: 'fail2ban-client set sshd banip 192.168.1.100', desc: 'Bane manualmente um IP na jail SSH.', layer: 'Camada 7', layerClass: 'l7', category: 'Segurança' },
+
+  // Diagnóstico avançado (Sprint R)
+  { id: 'tcpdump-443', cmd: 'tcpdump -i any -nn port 443 -w captura.pcap', desc: 'Captura tráfego HTTPS em formato PCAP para análise no Wireshark.', layer: 'Camada 4', layerClass: 'l4', category: 'Diagnóstico' },
+  { id: 'journalctl-f2b', cmd: 'journalctl -u fail2ban --no-pager -n 50', desc: 'Últimas 50 linhas de log do Fail2ban via journald.', layer: 'Camada 7', layerClass: 'l7', category: 'Logs' },
+
+  // SSL workflow completo (Sprint R)
+  { id: 'openssl-genrsa', cmd: 'openssl genrsa -out key.pem 2048', desc: 'Gera uma chave privada RSA de 2048 bits.', layer: 'Camada 6', layerClass: 'l6', category: 'SSL/TLS' },
+  { id: 'openssl-req', cmd: 'openssl req -new -key key.pem -out req.csr', desc: 'Cria uma requisição de assinatura de certificado (CSR).', layer: 'Camada 6', layerClass: 'l6', category: 'SSL/TLS' },
+  { id: 'openssl-sclient', cmd: 'openssl s_client -connect host:443', desc: 'Testa o handshake SSL/TLS e exibe certificado do servidor.', layer: 'Camada 6', layerClass: 'l6', category: 'SSL/TLS' },
+
+  // nftables (Sprint R)
+  { id: 'nft-list', cmd: 'nft list ruleset', desc: 'Lista todas as tabelas, chains e regras nftables ativas.', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
 ];
 
 export default function CheatSheetPage() {

@@ -56,7 +56,7 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting)
-    searchItems.ts          # 47 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 54 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge
   lib/
@@ -72,7 +72,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
-  07-dashboard-counters.spec.ts # 3/32 checklist + 75% quiz + 0/21 badges
+  07-dashboard-counters.spec.ts # 3/35 checklist + 75% quiz + 0/21 badges
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
 
@@ -104,7 +104,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 18 (exclui home/quiz/dashboard/certificado/topicos) |
 | `totalTopics` | `app/dashboard/page.tsx` | 26 |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 32 (deve igualar ALL_CHECKLIST_IDS.length) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 35 (deve igualar ALL_CHECKLIST_IDS.length) |
 | Texto na Home | `app/page.tsx` | "26 topicos praticos" |
 
 ---
@@ -325,6 +325,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint I.2: Fail2ban — rota /fail2ban, badge fail2ban-master, 3 checkpoints
 - ✅ Polish: module-accent glow aplicado em todas as 18 páginas de conteúdo
 - ✅ Sprint T₂: E2E Playwright — 12 testes em 7 specs, build prod + start, resetStorage fixture, CSP nonce real
+- ✅ Sprint R: Realismo — alinhamento com material original (Aula 1+2), persistência iptables, systemd scripts, LOG, regras e-mail, +6 quiz, +15 cheat-sheet, +11 glossário
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
