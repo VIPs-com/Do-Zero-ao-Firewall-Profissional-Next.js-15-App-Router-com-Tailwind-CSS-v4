@@ -127,6 +127,27 @@ Sprint L ✅ Legacy Gold — Resgate Técnico + Profundidade de Elite
 fix(wan-nat) ✅ Revisão de aluno — numeração duplicada
   └── Seção 7 "Erros Comuns" renomeada para "8. Erros Comuns" (conflito com nova Seção 7 Diagnóstico Avançado)
 
+Sprint SIGMA ✅ Resgate Total + Elite Lab
+  ├── Eixo 1 — Ambientes de Laboratório (2 novas páginas):
+  │   ├── /laboratorio: hub comparativo VirtualBox vs KVM vs Proxmox,
+  │   │   KVM/libvirt completo (virt-install, virsh, redes XML, snapshots),
+  │   │   tabela de pacotes por VM, 3 checkpoints
+  │   └── /proxmox: Proxmox VE instalação, bridges vmbr0/1/2 (/etc/network/interfaces),
+  │       criação de VMs via qm, snapshots qm snapshot/rollback, vzdump backup,
+  │       cluster HA (pvecm), badge proxmox-pioneer (4 checkpoints)
+  ├── Eixo 2 — Certbot Completo para Produção:
+  │   └── /nginx-ssl: Seção 3 nova com certbot --nginx, certbot certificates,
+  │       certbot renew --dry-run, systemd timer, FluxoCard HTTP-01 challenge,
+  │       WarnBox "lab IP privado não funciona", 3 checkpoints
+  ├── Eixo 3 — Conteúdo Bonus (20 arquivos integrados):
+  │   ├── Navegação: +6 entradas no /topicos para páginas antes invisíveis
+  │   │   (/web-server, /nftables, /glossario, /evolucao + novos grupos)
+  │   └── Search: +6 itens em searchItems.ts (laboratorio, proxmox, kvm, certbot x2, qm)
+  └── Eixo 4 — Badges & Constantes:
+      ├── Badge proxmox-pioneer (🖥️): 4 checkpoints Proxmox concluídos
+      ├── Badge resgate-gold (🏅): visitar /laboratorio + /proxmox
+      └── CONTENT_PAGES_COUNT: 18→20 · checklistItemsCount: 35→45 · totalTopics: 26→38
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

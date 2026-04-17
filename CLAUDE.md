@@ -303,7 +303,7 @@ Conformidade implementada no Sprint C:
 1. `npm run lint` — zero erros TypeScript
 2. `npm run lint:eslint` — zero warnings de acessibilidade
 3. `npm test` — suíte vitest passando
-4. `npm run build` — 31/31 páginas (24 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
+4. `npm run build` — 33/33 páginas (26 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
 5. Verificar consistência dos números da tabela de constantes
 
 ---
@@ -328,6 +328,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint R: Realismo — alinhamento com material original (Aula 1+2), persistência iptables, systemd scripts, LOG, regras e-mail, +6 quiz, +15 cheat-sheet, +11 glossário
 - ✅ Sprint P: Diamond Polish — FluxoCard em 5 páginas (dns, dnat, port-knocking, vpn-ipsec, nginx-ssl), "Erros Comuns" em 10 páginas, saídas esperadas em 3 páginas, audit-logs refatorado com componentes UI, certificado com 10 competências
 - ✅ Sprint L: Legacy Gold — TroubleshootingCard (OSI Ladder interativo), zona DNS reversa, FTP DNAT (21+50000:51000), SSH 2222, /proc/net/xt_recent, IPSec iptables prereqs, dhparam+TLS hardening, MSS Clamping, conntrack tuning, tcpdump duplo, Netplan YAML, scripts bash para download, página /offline terminal-style
+- ✅ Sprint SIGMA: Resgate Total + Elite Lab — /laboratorio (VirtualBox vs KVM vs Proxmox, KVM/libvirt completo), /proxmox (VE produção: bridges vmbr, VMs, snapshots, cluster HA), Certbot + HTTP-01 challenge em /nginx-ssl, badges proxmox-pioneer + resgate-gold, CONTENT_PAGES_COUNT 18→20, checklistItemsCount 35→45, totalTopics 26→38
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

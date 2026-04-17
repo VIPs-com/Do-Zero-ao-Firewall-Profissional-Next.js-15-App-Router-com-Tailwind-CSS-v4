@@ -43,7 +43,7 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 | `/src/components/ClientLayout.tsx` | Header, nav, toggle dark/light, busca global |
 | `/src/context/BadgeContext.tsx` | Estado global: badges, progresso, checkpoints |
 | `/src/data/quizQuestions.ts` | Perguntas do quiz extraídas (Sprint F) |
-| `/src/data/searchItems.ts` | Índice da busca global ⌘K (54 itens) |
+| `/src/data/searchItems.ts` | Índice da busca global ⌘K (60 itens) |
 | `/src/data/deepDives.tsx` | Conteúdo dos 6 modais avançados |
 | `/src/lib/seo.ts` | **Fonte única** — `SITE_CONFIG`, `ROUTE_SEO`, `buildMetadata()` |
 | `/src/lib/useFocusTrap.ts` | Hook a11y — focus trap + ESC + restore focus |
@@ -88,8 +88,8 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 - [ ] `npm run lint` — zero erros TypeScript
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — vitest passando
-- [ ] `npm run build` — 30/30 páginas (23 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 18`, `totalTopics = 26`, `checklistItemsCount = 35`)
+- [ ] `npm run build` — 32/32 páginas (25 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 20`, `totalTopics = 38`, `checklistItemsCount = 45`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)
