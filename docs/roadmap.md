@@ -124,6 +124,9 @@ Sprint L ✅ Legacy Gold — Resgate Técnico + Profundidade de Elite
   │   Remote Access vs Site-to-Site HighlightBox, página /offline terminal-style
   └── Novo componente: TroubleshootingCard.tsx (OSI Ladder expand/collapse, aria-*)
 
+fix(wan-nat) ✅ Revisão de aluno — numeração duplicada
+  └── Seção 7 "Erros Comuns" renomeada para "8. Erros Comuns" (conflito com nova Seção 7 Diagnóstico Avançado)
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
