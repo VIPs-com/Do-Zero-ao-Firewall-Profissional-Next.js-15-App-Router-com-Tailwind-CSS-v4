@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Eye, FileText, Ban, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
+import { Shield, Eye, FileText, Ban, ArrowRight, CheckCircle2, Circle, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
@@ -279,6 +279,37 @@ export default function Fail2banPage() {
                 </div>
               ))}
             </div>
+          </section>
+
+          {/* Section 5: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com Fail2ban">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>fail2ban-server não inicia após editar jail.local</strong> → erro de sintaxe na configuração
+                  → testar com: <code className="text-xs">fail2ban-client -t</code> e verificar saída
+                </li>
+                <li>
+                  <strong>IP banido mas ainda consegue conectar</strong> → banaction não está usando iptables corretamente
+                  → verificar com <code className="text-xs">fail2ban-client status sshd</code> e <code className="text-xs">iptables -L f2b-sshd -n -v</code>
+                </li>
+                <li>
+                  <strong>SSH ban não funciona mas não há erros</strong> → logpath errado — journald vs arquivo
+                  → em sistemas com journald: <code className="text-xs">backend = systemd</code> em vez de <code className="text-xs">backend = auto</code>
+                </li>
+                <li>
+                  <strong>Baniu o próprio IP de gerência</strong> → ignoreip não configurado
+                  → adicionar em [DEFAULT]: <code className="text-xs">ignoreip = 127.0.0.1/8 192.168.57.0/24</code> e <code className="text-xs">fail2ban-client set sshd unbanip SEU-IP</code>
+                </li>
+              </ul>
+            </WarnBox>
           </section>
 
         </div>

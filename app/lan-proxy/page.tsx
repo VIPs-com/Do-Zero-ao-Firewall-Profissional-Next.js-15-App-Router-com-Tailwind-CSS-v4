@@ -178,6 +178,37 @@ export default function LanProxyPage() {
               </HighlightBox>
             </div>
           </section>
+
+          {/* Section 4: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com Squid Proxy">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>Cliente não consegue navegar com proxy configurado</strong> → <code className="text-xs">http_access deny all</code> está antes de <code className="text-xs">http_access allow lan</code>
+                  → verificar ordem: allow deve vir antes de deny; Squid lê de cima para baixo
+                </li>
+                <li>
+                  <strong>Sites liberados ainda bloqueados</strong> → arquivo <code className="text-xs">liberados.txt</code> não encontrado
+                  → usar caminho absoluto: <code className="text-xs">/etc/squid/liberados.txt</code> e verificar permissão <code className="text-xs">chmod 644</code>
+                </li>
+                <li>
+                  <strong>Squid inicia mas logs ficam em branco</strong> → cliente não está usando o proxy
+                  → verificar configuração de proxy no browser (IP:3128) ou configurar proxy transparente com iptables REDIRECT
+                </li>
+                <li>
+                  <strong>squid -k reconfigure falha</strong> → erro de sintaxe no squid.conf
+                  → testar com <code className="text-xs">squid -k parse</code> antes de recarregar
+                </li>
+              </ul>
+            </WarnBox>
+          </section>
         </div>
 
         <aside className="space-y-6">

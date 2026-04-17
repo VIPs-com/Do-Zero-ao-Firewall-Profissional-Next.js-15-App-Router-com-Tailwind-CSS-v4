@@ -97,6 +97,19 @@ Sprint R ✅ Realismo — Alinhamento com Material Original (Aula 1+2)
   ├── Search index: +7 itens (iptables-restore, systemctl, wg, f2b, conntrack…)
   └── ALL_CHECKLIST_IDS: 32 → 35 (+firewall-persistence/service/log)
 
+Sprint P ✅ Diamond Polish — Visual, Textos, Diagramas & Experiência do Aluno
+  ├── FluxoCard adicionado a 5 páginas: dns, dnat, port-knocking, vpn-ipsec, nginx-ssl
+  ├── "Erros Comuns" (WarnBox) adicionado a 10 páginas: dns, dnat, port-knocking,
+  │   vpn-ipsec, nginx-ssl, wireguard, fail2ban, wan-nat, lan-proxy, nftables
+  ├── Saídas esperadas de comandos: dns (dig), wireguard (wg show), vpn-ipsec (ipsec statusall)
+  ├── "Pulo do Gato" (HighlightBox) adicionado em: dns (serial), port-knocking (--reap),
+  │   audit-logs (log-prefix), nftables (bytecode BPF)
+  ├── /audit-logs refatorado: usa CodeBlock/InfoBox/WarnBox em vez de divs raw,
+  │   adicionado checklist, Section 3 journalctl, trackPageVisit
+  ├── /certificado: 5 competências genéricas → grid de 10 competências com ícones
+  ├── /dns: adicionado apt install bind9, Section 2 renomeada "Instalação e Configuração"
+  └── /nginx-ssl: adicionado trackPageVisit (estava ausente)
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

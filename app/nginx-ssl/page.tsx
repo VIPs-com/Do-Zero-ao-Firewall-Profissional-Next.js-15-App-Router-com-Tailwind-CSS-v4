@@ -1,14 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Terminal, Lock, ArrowRight, Server } from 'lucide-react';
+import { Shield, Terminal, Lock, ArrowRight, Server, Globe, AlertTriangle } from 'lucide-react';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
 
 export default function NginxSslPage() {
-  const { checklist, updateChecklist } = useBadges();
+  const { checklist, updateChecklist, trackPageVisit } = useBadges();
+
+  useEffect(() => {
+    trackPageVisit('nginx-ssl');
+  }, [trackPageVisit]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 module-accent-nginx-ssl">
@@ -27,6 +32,16 @@ export default function NginxSslPage() {
         como o Nginx atua como <strong>Reverse Proxy</strong> — recebendo conexões externas,
         encerrando o SSL e encaminhando o tráfego para servidores internos de forma segura.
       </p>
+
+      <FluxoCard
+        title="HTTPS Termination — Nginx como Reverse Proxy"
+        steps={[
+          { label: 'Browser', sub: 'HTTPS :443', icon: <Globe className="w-4 h-4" />, color: 'border-[var(--color-layer-6)]' },
+          { label: 'Nginx DMZ', sub: 'TLS handshake + decrypt', icon: <Shield className="w-4 h-4" />, color: 'border-[var(--color-layer-7)]' },
+          { label: 'proxy_pass', sub: 'HTTP interno :8080', icon: <ArrowRight className="w-4 h-4" />, color: 'border-accent/50' },
+          { label: 'App Server', sub: 'resposta plaintext', icon: <Server className="w-4 h-4" />, color: 'border-ok/50' },
+        ]}
+      />
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
@@ -130,6 +145,37 @@ export default function NginxSslPage() {
               Depois de ativar o HSTS com <code>max-age=31536000</code>, o browser se recusa
               a carregar o site via HTTP por 1 ano. Teste em ambiente de lab antes de usar em
               produção — remover o HSTS não é imediato.
+            </WarnBox>
+          </section>
+
+          {/* Section 4: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com Nginx SSL">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>nginx -t falha com &quot;SSL_CTX_use_PrivateKey&quot;</strong> → chave privada não corresponde ao certificado
+                  → verificar: <code className="text-xs">openssl x509 -noout -modulus -in cert.pem | md5sum</code> e <code className="text-xs">openssl rsa -noout -modulus -in key.pem | md5sum</code> (devem ser iguais)
+                </li>
+                <li>
+                  <strong>Certificado mostra como &quot;não confiável&quot; no browser</strong> → CA root não instalada no cliente
+                  → copiar <code className="text-xs">ca.crt</code> para <code className="text-xs">/usr/local/share/ca-certificates/</code> e executar <code className="text-xs">update-ca-certificates</code>
+                </li>
+                <li>
+                  <strong>proxy_pass retorna 502 Bad Gateway</strong> → aplicação não está rodando na porta configurada
+                  → verificar: <code className="text-xs">ss -tlnp | grep 8080</code> e <code className="text-xs">curl http://localhost:8080</code>
+                </li>
+                <li>
+                  <strong>curl -I mostra headers duplicados</strong> → add_header duplicado no nginx.conf e em site.conf
+                  → usar <code className="text-xs">always</code> apenas no bloco de site e remover do nginx.conf global
+                </li>
+              </ul>
             </WarnBox>
           </section>
 

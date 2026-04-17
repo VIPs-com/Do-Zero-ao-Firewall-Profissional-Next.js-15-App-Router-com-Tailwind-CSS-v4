@@ -9,7 +9,7 @@ import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
-
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle, CheckCircle2 } from 'lucide-react';
 
@@ -47,6 +47,16 @@ export default function VpnIpsecPage() {
         <strong>IPSec (Internet Protocol Security)</strong> é um conjunto de protocolos que autentica e criptografa 
         pacotes IP para garantir comunicação segura entre dois pontos. É a base das VPNs corporativas.
       </p>
+
+      <FluxoCard
+        title="Handshake IKE — Estabelecimento do Túnel"
+        steps={[
+          { label: 'IKE Fase 1', sub: 'ISAKMP SA (identidade)', icon: <Shield className="w-4 h-4" />, color: 'border-[var(--color-layer-4)]' },
+          { label: 'IKE Fase 2', sub: 'IPSec SA (dados)', icon: <Lock className="w-4 h-4" />, color: 'border-[var(--color-layer-5)]' },
+          { label: 'Túnel ESP', sub: 'pacotes criptografados', icon: <Globe className="w-4 h-4" />, color: 'border-[var(--color-layer-6)]' },
+          { label: 'Ping remoto', sub: 'ipsec statusall', icon: <CheckCircle2 className="w-4 h-4" />, color: 'border-ok/50' },
+        ]}
+      />
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
@@ -133,8 +143,12 @@ export default function VpnIpsecPage() {
               </div>
               <h2 className="text-2xl font-bold">3. Configurando StrongSwan</h2>
             </div>
-            
-            <div className="space-y-8">
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Instale o StrongSwan em ambos os gateways antes de configurar:
+            </p>
+            <CodeBlock title="Instalação" lang="bash" code="apt install strongswan strongswan-pki -y" />
+
+            <div className="space-y-8 mt-6">
               <CodeBlock 
                 title="/etc/ipsec.conf — Configuração Site-to-Site"
                 code={`config setup\n    charondebug="all"\n    uniqueids=yes\n\nconn matriz-filial\n    type=tunnel\n    keyexchange=ikev2\n    authby=secret\n    left=200.200.200.1          # IP público da Matriz\n    leftsubnet=192.168.1.0/24   # Rede interna da Matriz\n    right=200.200.200.2         # IP público da Filial\n    rightsubnet=192.168.2.0/24  # Rede interna da Filial\n    ike=aes256-sha256-modp2048\n    esp=aes256-sha256\n    auto=start`} 
@@ -153,6 +167,37 @@ export default function VpnIpsecPage() {
                 </p>
               </WarnBox>
             </div>
+          </section>
+
+          {/* Section 4: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com IPSec">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>ipsec up falha com &quot;no proposal chosen&quot;</strong> → parâmetros IKE/ESP divergem entre os dois gateways
+                  → verificar que <code className="text-xs">ike=</code> e <code className="text-xs">esp=</code> são idênticos nos dois lados
+                </li>
+                <li>
+                  <strong>Túnel sobe (ESTABLISHED) mas ping não passa</strong> → regra FORWARD bloqueada pelo firewall
+                  → <code className="text-xs">iptables -A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT</code> (e vice-versa)
+                </li>
+                <li>
+                  <strong>ipsec statusall mostra ESTABLISHED mas sem tráfego</strong> → rota não configurada no OS
+                  → <code className="text-xs">ip route add 192.168.2.0/24 dev eth0</code> ou verificar leftsubnet/rightsubnet
+                </li>
+                <li>
+                  <strong>Túnel cai após alguns minutos</strong> → DPD (Dead Peer Detection) expira
+                  → adicionar <code className="text-xs">dpdaction=restart</code> e <code className="text-xs">dpdtimeout=30s</code> na configuração
+                </li>
+              </ul>
+            </WarnBox>
           </section>
         </div>
 
@@ -194,6 +239,8 @@ export default function VpnIpsecPage() {
             <div className="space-y-4">
               <CodeBlock title="Iniciar IPSec" code="ipsec start" lang="bash" />
               <CodeBlock title="Verificar Status" code="ipsec statusall" lang="bash" />
+              <p className="text-[10px] text-text-3 mt-1 mb-2">Saída esperada (túnel estabelecido):</p>
+              <CodeBlock code={`Security Associations (1 up, 0 connecting):\nmatriz-filial[1]: ESTABLISHED 2 minutes ago\nmatriz-filial{'{'}1{'}'}: INSTALLED, TUNNEL, reqid 1\nmatriz-filial{'{'}1{'}'}: 192.168.1.0/24 === 192.168.2.0/24`} lang="log" />
               <CodeBlock title="Reiniciar" code="ipsec restart" lang="bash" />
             </div>
           </div>

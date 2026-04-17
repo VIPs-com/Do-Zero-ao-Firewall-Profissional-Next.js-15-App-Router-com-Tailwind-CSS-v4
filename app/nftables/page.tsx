@@ -257,6 +257,45 @@ export default function NftablesPage() {
               </HighlightBox>
             </div>
           )}
+
+          {/* Erros Comuns */}
+          <section id="erros-comuns" className="mt-16">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">Erros Comuns</h2>
+            </div>
+
+            <HighlightBox title="💡 Pulo do Gato">
+              <p className="text-sm text-text-2">
+                O nftables substitui iptables, ip6tables, arptables e ebtables com <strong>uma única ferramenta</strong>.
+                Regras são compiladas em bytecode similar ao BPF — mais eficiente e com menos overhead no kernel.
+                Se você usar nftables, desative o iptables.service para evitar conflitos.
+              </p>
+            </HighlightBox>
+
+            <WarnBox title="⚠️ Problemas frequentes com nftables" className="mt-6">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>nft falha com &quot;syntax error&quot; nas portas</strong> → vírgula sem espaços em sets
+                  → usar <code className="text-xs">{"{ 80, 443 }"}</code> com espaços antes e após chaves
+                </li>
+                <li>
+                  <strong>Regras aplicadas mas somem após reboot</strong> → ruleset não salvo
+                  → <code className="text-xs">nft list ruleset &gt; /etc/nftables.conf</code> e <code className="text-xs">systemctl enable nftables</code>
+                </li>
+                <li>
+                  <strong>iptables e nftables em conflito</strong> → ambos ativos ao mesmo tempo
+                  → <code className="text-xs">systemctl disable --now iptables</code> antes de usar nftables
+                </li>
+                <li>
+                  <strong>nft list ruleset vazio após reboot</strong> → nftables.service não está carregando o arquivo
+                  → verificar <code className="text-xs">/etc/nftables.conf</code> e se <code className="text-xs">systemctl is-enabled nftables</code> retorna <em>enabled</em>
+                </li>
+              </ul>
+            </WarnBox>
+          </section>
         </div>
 
         {/* Sidebar */}

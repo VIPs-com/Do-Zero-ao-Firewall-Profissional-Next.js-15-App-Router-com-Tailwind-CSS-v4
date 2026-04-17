@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Target, ArrowRight, Shield, Terminal, AlertCircle, ChevronRight, BookOpen } from 'lucide-react';
+import { Target, ArrowRight, Shield, Terminal, AlertCircle, ChevronRight, Globe, Server, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
@@ -47,6 +47,16 @@ export default function DnatPage() {
         DNAT (Destination NAT) permite que alguém de fora da rede acesse um servidor que está
         dentro da DMZ. O Firewall recebe o pacote e troca o IP de destino.
       </p>
+
+      <FluxoCard
+        title="Fluxo DNAT: Internet → Servidor DMZ"
+        steps={[
+          { label: 'Internet', sub: 'IP público :80', icon: <Globe className="w-4 h-4" />, color: 'border-[var(--color-layer-3)]' },
+          { label: 'PREROUTING', sub: 'iptables -t nat', icon: <Shield className="w-4 h-4" />, color: 'border-[var(--color-layer-4)]' },
+          { label: 'Firewall', sub: 'Traduz destino', icon: <ArrowRight className="w-4 h-4" />, color: 'border-accent/50' },
+          { label: 'Servidor DMZ', sub: '192.168.56.120:80', icon: <Server className="w-4 h-4" />, color: 'border-ok/50' },
+        ]}
+      />
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
@@ -140,6 +150,37 @@ export default function DnatPage() {
                 <p className="text-[10px] text-text-3">Usa o IP <strong>antes do DNAT</strong> (192.168.20.200). Nunca combina.</p>
               </div>
             </div>
+          </section>
+
+          {/* Section 4: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com DNAT">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>curl no IP público falha de dentro da LAN</strong> → Hairpin NAT não configurado
+                  → DNAT só funciona para tráfego externo; de dentro da rede use o IP interno direto (192.168.56.120)
+                </li>
+                <li>
+                  <strong>Pacotes chegam ao servidor mas resposta não volta</strong> → regra FORWARD de retorno ausente
+                  → adicionar <code className="text-xs">iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT</code>
+                </li>
+                <li>
+                  <strong>dnat-web funciona mas dnat-ssh não</strong> → porta diferente ou SSH não está rodando na DMZ
+                  → verificar se <code className="text-xs">-p tcp --dport 2222</code> aponta para porta correta e <code className="text-xs">ss -tlnp | grep 22</code>
+                </li>
+                <li>
+                  <strong>iptables -t nat -L mostra a regra mas não funciona</strong> → ip_forward desabilitado
+                  → <code className="text-xs">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</code> e verificar <code className="text-xs">sysctl net.ipv4.ip_forward</code>
+                </li>
+              </ul>
+            </WarnBox>
           </section>
         </div>
 

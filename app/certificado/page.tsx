@@ -7,6 +7,19 @@ import { Award, Download, Share2, CheckCircle2, AlertCircle, Printer, Terminal, 
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 
+const COMPETENCIAS = [
+  { icon: '🛡️', text: 'Configuração de firewall iptables (SNAT, DNAT, FORWARD, INPUT, OUTPUT)' },
+  { icon: '🌐', text: 'Administração de DNS com BIND9 (zonas diretas, reversas, forwarders)' },
+  { icon: '🔒', text: 'Implementação de SSL/TLS com OpenSSL e Nginx como reverse proxy' },
+  { icon: '🔀', text: 'Roteamento NAT/WAN e segmentação de redes (WAN, DMZ, LAN)' },
+  { icon: '🌍', text: 'Proxy corporativo com Squid e controle de acesso por ACL' },
+  { icon: '🚪', text: 'Port Knocking para acesso SSH stealth com iptables recent' },
+  { icon: '🔐', text: 'VPN IPSec com StrongSwan e WireGuard (geração de chaves, túneis)' },
+  { icon: '📋', text: 'Persistência de firewall via systemd e regras nftables' },
+  { icon: '🔍', text: 'Auditoria de logs com journalctl, iptables LOG e Fail2ban' },
+  { icon: '⚡', text: 'Detecção e mitigação de ataques: scan, pivoting, brute-force' },
+];
+
 export default function CertificatePage() {
   const [name, setName] = useState('');
   const { checklistPercentage, quizScore, unlockBadge } = useBadges();
@@ -175,9 +188,16 @@ export default function CertificatePage() {
                 concluiu com distinção o treinamento intensivo <br />
                 <strong className="text-slate-900 font-bold uppercase tracking-wide text-sm">Do Zero ao Firewall Profissional</strong>
                 <p className="text-sm mt-4 text-slate-500">
-                  Demonstrando proficiência avançada em infraestrutura de redes Linux, segurança com iptables, 
-                  serviços DNS BIND9, Nginx com SSL/TLS e túneis VPN IPSec.
+                  Demonstrando proficiência avançada nas seguintes competências:
                 </p>
+                <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 mt-4 text-left">
+                  {COMPETENCIAS.map((c, i) => (
+                    <div key={i} className="flex items-start gap-2 text-[10px] text-slate-600">
+                      <span className="shrink-0 mt-0.5">{c.icon}</span>
+                      <span>{c.text}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 

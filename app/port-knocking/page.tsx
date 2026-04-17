@@ -2,12 +2,13 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Key, Lock, ArrowRight, Terminal, Shield, BookOpen, Zap, EyeOff } from 'lucide-react';
+import { Key, Lock, ArrowRight, Terminal, Shield, Zap, EyeOff, Unlock, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle, CheckCircle2 } from 'lucide-react';
 
@@ -45,6 +46,16 @@ export default function PortKnockingPage() {
         Segurança por obscuridade que funciona. Mantenha suas portas administrativas (como SSH)
         totalmente fechadas para o mundo, abrindo-as apenas para quem conhece a "batida secreta".
       </p>
+
+      <FluxoCard
+        title="Sequência de Batidas — Port Knocking"
+        steps={[
+          { label: 'Bate :1000', sub: 'iptables recent add FASE1', icon: <Lock className="w-4 h-4" />, color: 'border-[var(--color-layer-4)]' },
+          { label: 'Bate :2000', sub: 'verifica lista FASE1', icon: <Key className="w-4 h-4" />, color: 'border-accent/50' },
+          { label: 'Aguarda <30s', sub: 'janela de tempo', icon: <Shield className="w-4 h-4" />, color: 'border-[var(--color-layer-5)]' },
+          { label: 'SSH Aberto!', sub: 'porta 22 liberada', icon: <Unlock className="w-4 h-4" />, color: 'border-ok/50' },
+        ]}
+      />
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
@@ -116,8 +127,8 @@ export default function PortKnockingPage() {
               </div>
               <h2 className="text-2xl font-bold">3. Por que isso é seguro?</h2>
             </div>
-            
-            <div className="grid md:grid-cols-2 gap-6">
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
               <HighlightBox title="Invisibilidade">
                 <p className="text-xs text-text-2">
                   Um port scan (nmap) verá a porta 22 como <code>filtered</code> ou <code>closed</code>. Não há como saber que ela pode ser aberta.
@@ -129,6 +140,45 @@ export default function PortKnockingPage() {
                 </p>
               </HighlightBox>
             </div>
+
+            <HighlightBox title="💡 Pulo do Gato">
+              <p className="text-sm text-text-2">
+                Use <strong>--seconds 30 --reap</strong> nas regras de timeout.
+                O <code className="text-xs">--reap</code> remove automaticamente entradas expiradas da lista <code className="text-xs">recent</code> no kernel.
+                Sem ele, a lista cresce indefinidamente na memória até o próximo reboot — potencial vetor de DoS em produção.
+              </p>
+            </HighlightBox>
+          </section>
+
+          {/* Section 4: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com Port Knocking">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>Knock correto mas SSH não abre</strong> → pacotes enviados muito rápido (sem delay entre portas)
+                  → aguardar 200-500ms entre cada porta: <code className="text-xs">nmap -p 1000 IP; sleep 0.5; nmap -p 2000 IP; sleep 0.5; ssh user@IP</code>
+                </li>
+                <li>
+                  <strong>Porta abre mas fecha imediatamente</strong> → <code className="text-xs">--seconds</code> muito curto
+                  → aumentar para 30s: <code className="text-xs">-m recent --rcheck --seconds 30 --name FASE2</code>
+                </li>
+                <li>
+                  <strong>iptables: No chain/target/match by that name</strong> → módulo <code className="text-xs">recent</code> não carregado
+                  → <code className="text-xs">modprobe xt_recent</code> e adicionar ao <code className="text-xs">/etc/modules</code>
+                </li>
+                <li>
+                  <strong>Sessão SSH cai após o timeout do knocking</strong> → regra ESTABLISHED ausente
+                  → adicionar <strong>antes</strong> do knocking: <code className="text-xs">iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT</code>
+                </li>
+              </ul>
+            </WarnBox>
           </section>
         </div>
 

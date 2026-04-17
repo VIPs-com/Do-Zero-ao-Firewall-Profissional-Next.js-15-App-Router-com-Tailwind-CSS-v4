@@ -396,6 +396,37 @@ export default function WanNatPage() {
               </p>
             </InfoBox>
           </section>
+
+          {/* Section 7: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">7. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com Firewall & NAT">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>MASQUERADE funciona mas regras somem após reboot</strong> → firewall.service não habilitado
+                  → <code className="text-xs">systemctl enable firewall.service</code> e verificar se <code className="text-xs">start-firewall</code> está em <code className="text-xs">/usr/local/bin/</code>
+                </li>
+                <li>
+                  <strong>Pacotes FORWARD caem mesmo com MASQUERADE correto</strong> → política FORWARD DROP sem regra ESTABLISHED
+                  → adicionar <code className="text-xs">iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT</code> antes das regras específicas
+                </li>
+                <li>
+                  <strong>start-firewall: Permission denied</strong> → chmod 755 ausente nos scripts
+                  → <code className="text-xs">chmod 755 /usr/local/bin/start-firewall /usr/local/bin/stop-firewall</code>
+                </li>
+                <li>
+                  <strong>iptables-restore falha com &quot;table does not exist&quot;</strong> → arquivo .ipt gerado em kernel diferente
+                  → recriar o arquivo com <code className="text-xs">iptables-save &gt; /etc/firewall/regras.ipt</code> na máquina atual
+                </li>
+              </ul>
+            </WarnBox>
+          </section>
         </div>
 
         <aside className="space-y-6">

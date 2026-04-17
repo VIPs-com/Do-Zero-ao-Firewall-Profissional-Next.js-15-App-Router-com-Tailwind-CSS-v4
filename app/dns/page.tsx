@@ -2,12 +2,13 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Terminal, Search, CheckCircle2, AlertCircle, BookOpen, ArrowRight } from 'lucide-react';
+import { Terminal, Search, CheckCircle2, BookOpen, ArrowRight, Globe, Server, Database, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle } from 'lucide-react';
 
@@ -47,6 +48,16 @@ export default function DnsPage() {
         No modelo OSI, o DNS opera na Camada 7 (Aplicação).
       </p>
 
+      <FluxoCard
+        title="Fluxo de Resolução DNS"
+        steps={[
+          { label: 'Cliente', sub: 'dig workshop.lab', icon: <Globe className="w-4 h-4" />, color: 'border-[var(--color-layer-4)]' },
+          { label: 'BIND9 :53', sub: 'named em 0.0.0.0', icon: <Server className="w-4 h-4" />, color: 'border-[var(--color-layer-5)]' },
+          { label: 'Zona Local?', sub: 'named.conf.local', icon: <Database className="w-4 h-4" />, color: 'border-[var(--color-layer-7)]' },
+          { label: 'Resposta A', sub: '192.168.57.x', icon: <CheckCircle2 className="w-4 h-4" />, color: 'border-ok/50' },
+        ]}
+      />
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
           {/* Section 1: How it works */}
@@ -85,10 +96,15 @@ export default function DnsPage() {
               <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
                 <Terminal size={24} />
               </div>
-              <h2 className="text-2xl font-bold">2. Arquivos de Configuração</h2>
+              <h2 className="text-2xl font-bold">2. Instalação e Configuração</h2>
             </div>
 
             <div className="space-y-8">
+              <CodeBlock
+                title="Instalar BIND9 e utilitários"
+                lang="bash"
+                code={`apt install bind9 bind9utils dnsutils -y\nsystemctl enable named\nsystemctl start named\nsystemctl status named`}
+              />
               <CodeBlock 
                 title="/etc/bind/named.conf.options"
                 code={`options {\n  directory "/var/cache/bind";\n  forwarders { 8.8.8.8; 9.9.9.9; };\n  dnssec-validation yes;\n  listen-on-v6 { none; };\n  listen-on { any; };\n  allow-recursion { any; };\n  allow-query { any; };\n};`} 
@@ -133,10 +149,51 @@ export default function DnsPage() {
                 <div className="flex-1">
                   <h4 className="font-bold text-sm mb-1">Testar Resolução</h4>
                   <p className="text-xs text-text-3 mb-3">Use o dig para consultas detalhadas.</p>
-                  <CodeBlock code={`dig @DNS-SERVER www.workshop.local\ndig @DNS-SERVER -x 192.168.56.120`} lang="bash" />
+                  <CodeBlock code={`dig @127.0.0.1 www.workshop.local\ndig @127.0.0.1 -x 192.168.56.120`} lang="bash" />
+                  <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução bem-sucedida):</p>
+                  <CodeBlock code={`;; ANSWER SECTION:\nwww.workshop.local. 3600 IN A 192.168.56.120\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
                 </div>
               </div>
             </div>
+          </section>
+
+          {/* Section 4: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+            </div>
+
+            <HighlightBox title="💡 Pulo do Gato">
+              <p className="text-sm text-text-2">
+                Sempre incremente o <strong>serial</strong> da zona (formato YYYYMMDDNN) antes de recarregar o BIND9.
+                Sem isso, servidores secundários e resolvedores externos ignoram as mudanças.
+                O serial <code className="text-xs">2026030901</code> significa: 2026-03-09, revisão 01.
+              </p>
+            </HighlightBox>
+
+            <WarnBox title="⚠️ Problemas frequentes com BIND9">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>named não inicia após editar zona</strong> → erro de sintaxe na zona
+                  → <code className="text-xs">named-checkzone workshop.local /var/cache/bind/db.workshop.local</code>
+                </li>
+                <li>
+                  <strong>dig retorna SERVFAIL</strong> → named não está autoridade para a zona
+                  → verificar <code className="text-xs">type master</code> no named.conf.local e reiniciar com <code className="text-xs">systemctl restart named</code>
+                </li>
+                <li>
+                  <strong>Resolução interna funciona, reversa falha</strong> → zona reversa não configurada
+                  → criar <code className="text-xs">db.192</code> e adicionar ao named.conf.local: <code className="text-xs">zone &quot;57.168.192.in-addr.arpa&quot;</code>
+                </li>
+                <li>
+                  <strong>dig funciona mas Windows não resolve</strong> → cliente usando DNS do DHCP em vez do seu BIND9
+                  → configurar DNS primário como 192.168.57.254 no adaptador de rede do Windows
+                </li>
+              </ul>
+            </WarnBox>
           </section>
         </div>
 

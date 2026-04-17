@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Key, Server, Laptop, ArrowRight, CheckCircle2, Circle } from 'lucide-react';
+import { Shield, Key, Server, Laptop, ArrowRight, CheckCircle2, Circle, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
@@ -257,6 +257,10 @@ export default function WireGuardPage() {
             <div className="mt-6">
               <CodeBlock lang="bash" title="Ativar e testar o cliente" code={CLIENT_UP} />
             </div>
+            <div className="mt-4">
+              <p className="text-[10px] text-text-3 mb-2">Saída esperada de <code>wg show</code> com peer conectado:</p>
+              <CodeBlock lang="log" code={`interface: wg0\n  public key: <sua-chave-pública>\n  private key: (hidden)\n  listening port: 51820\n\npeer: <chave-pública-do-cliente>\n  endpoint: 203.0.113.x:51820\n  allowed ips: 10.0.0.2/32\n  latest handshake: 30 seconds ago\n  transfer: 1.23 MiB received, 456 KiB sent`} />
+            </div>
           </section>
 
           {/* Section 5: Firewall */}
@@ -300,6 +304,37 @@ export default function WireGuardPage() {
                 </div>
               ))}
             </div>
+          </section>
+
+          {/* Section 6: Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">6. Erros Comuns</h2>
+            </div>
+
+            <WarnBox title="⚠️ Problemas frequentes com WireGuard">
+              <ul className="space-y-3 text-sm">
+                <li>
+                  <strong>wg-quick up wg0 falha</strong> → arquivo de config com permissão aberta
+                  → <code className="text-xs">chmod 600 /etc/wireguard/wg0.conf</code>
+                </li>
+                <li>
+                  <strong>Peer conecta mas sem rota para a internet</strong> → AllowedIPs incorreto
+                  → para Full Tunnel usar <code className="text-xs">AllowedIPs = 0.0.0.0/0, ::/0</code>; para Split Tunnel usar a subnet específica
+                </li>
+                <li>
+                  <strong>HandshakeTime mostra &quot;(none)&quot;</strong> → firewall bloqueando UDP 51820
+                  → <code className="text-xs">iptables -A INPUT -p udp --dport 51820 -j ACCEPT</code>
+                </li>
+                <li>
+                  <strong>Ping para peers funciona mas internet não</strong> → MASQUERADE ausente
+                  → verificar <code className="text-xs">iptables -t nat -L POSTROUTING</code> — deve ter regra MASQUERADE para a interface externa
+                </li>
+              </ul>
+            </WarnBox>
           </section>
 
         </div>
