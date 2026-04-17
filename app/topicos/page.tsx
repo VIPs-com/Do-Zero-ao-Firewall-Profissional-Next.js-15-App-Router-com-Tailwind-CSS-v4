@@ -71,6 +71,18 @@ const TOPICS: Topic[] = [
   { id: '22', num: '22', title: 'Mitigação de Pivoteamento: regras de FORWARD e isolamento de estado no iptables.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/pivoteamento#mitigacao', group: 'Segurança Avançada' },
   { id: '23', num: '23', title: 'Ataques Avançados: Fragmentação, Timing Attacks e DNS Rebinding na prática.', layer: 'Camadas 3-7 · Multi-layer', layerClass: 'l7', href: '/ataques-avancados', group: 'Segurança Avançada' },
   { id: '24', num: '24', title: 'Análise Forense de Logs: identificando ataques e acessos legítimos no kernel.', layer: 'Forense · Logs', layerClass: 'l4', href: '/audit-logs', group: 'Segurança Avançada' },
+
+  // ── Web Server & PKI ──────────────────────────────────────────────────────────
+  { id: '27', num: '27', title: 'Web Server na DMZ: Cadeia de Confiança PKI, certificados autoassinados com OpenSSL e Nginx com HTTPS.', layer: 'Camada 6 · Apresentação', layerClass: 'l6', href: '/web-server', group: 'Web Server & PKI' },
+  { id: '27b', num: '27', title: 'Gerando certificados com OpenSSL: chave privada, CSR e certificado autoassinado passo a passo.', layer: 'Camada 6 · Apresentação', layerClass: 'l6', href: '/web-server#certificados', group: 'Web Server & PKI' },
+
+  // ── nftables ──────────────────────────────────────────────────────────────────
+  { id: '29', num: '29', title: 'nftables: o sucessor moderno do iptables. Tables, chains, rules e por que migrar agora.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/nftables', group: 'nftables' },
+  { id: '30', num: '30', title: 'Sets no nftables: bloqueio eficiente de múltiplos IPs. Tabela de equivalência iptables ↔ nftables.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/nftables#sets', group: 'nftables' },
+
+  // ── Referência ────────────────────────────────────────────────────────────────
+  { id: '31', num: '31', title: 'Glossário Hacker: dicionário técnico com termos de redes, segurança, firewall e criptografia.', layer: 'Referência · Consulta', layerClass: 'l7', href: '/glossario', group: 'Referência' },
+  { id: '32', num: '32', title: 'Evolução do Laboratório: próximos módulos, roadmap técnico e o caminho para o nível profissional.', layer: 'Sobre o Projeto', layerClass: 'l7', href: '/evolucao', group: 'Referência' },
 ];
 
 export default function TopicsPage() {
@@ -183,7 +195,7 @@ export default function TopicsPage() {
           <div key={groupName} className="bg-bg-2 border border-border rounded-xl overflow-hidden flex flex-col hover:border-accent/30 transition-colors">
             <div className="px-5 py-4 border-b border-border bg-bg-3 flex items-center gap-3">
               <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center text-accent text-lg">
-                {groupName.includes('LAN') ? '💻' : groupName.includes('WAN') ? '🌐' : groupName.includes('DNS') ? '📖' : '🛡️'}
+                {groupName.includes('LAN') ? '💻' : groupName.includes('WAN') ? '🌐' : groupName.includes('DNS') ? '📖' : groupName.includes('Web Server') ? '🖥️' : groupName.includes('nftables') ? '🔥' : groupName.includes('Referência') ? '📚' : '🛡️'}
               </div>
               <h3 className="font-bold text-sm">{groupName}</h3>
             </div>

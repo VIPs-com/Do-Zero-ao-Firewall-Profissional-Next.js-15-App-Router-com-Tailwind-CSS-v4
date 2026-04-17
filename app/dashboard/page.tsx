@@ -54,8 +54,8 @@ export default function DashboardPage() {
     trackPageVisit('dashboard');
   }, [trackPageVisit]);
 
-  // Sprint I.2: +fail2ban → 26 tópicos
-  const totalTopics = 26;
+  // Sprint L: +web-server(×2), +nftables(×2), +glossario, +evolucao → 33 tópicos
+  const totalTopics = 33;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Sprint R: +firewall-persistence/firewall-service/firewall-log → 35 checkpoints
