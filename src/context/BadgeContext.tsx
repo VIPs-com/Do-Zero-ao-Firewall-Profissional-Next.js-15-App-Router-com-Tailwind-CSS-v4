@@ -7,7 +7,9 @@ export type BadgeId =
   | 'proxy-master' | 'knocking-master' | 'certificado' | 'linux-ninja' | 'pivoting-master' | 'defensor-topologia'
   | 'time-traveler'
   | 'wireguard-master'
-  | 'fail2ban-master';
+  | 'fail2ban-master'
+  | 'proxmox-pioneer'
+  | 'resgate-gold';
 
 export interface BadgeDef {
   icon: string;
@@ -37,6 +39,8 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'time-traveler':      { icon: '⏳', title: 'Viajante do Tempo',     desc: 'Importou um snapshot de progresso' },
   'wireguard-master':   { icon: '🔐', title: 'WireGuard Master',      desc: 'Configurou um túnel WireGuard do zero' },
   'fail2ban-master':    { icon: '🚫', title: 'Fail2ban Master',       desc: 'Protegeu serviços com Fail2ban' },
+  'proxmox-pioneer':    { icon: '🖥️', title: 'Proxmox Pioneer',      desc: 'Configurou um laboratório completo no Proxmox VE' },
+  'resgate-gold':       { icon: '🏅', title: 'Agente de Resgate',     desc: 'Explorou os ambientes de laboratório avançados' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -51,7 +55,13 @@ export const ALL_CHECKLIST_IDS = [
   'f2b-install', 'f2b-sshd', 'f2b-ban-test',
   // Sprint R — Alinhamento com material original (Aula 2)
   'firewall-persistence', 'firewall-service', 'firewall-log',
-]; // 35 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint SIGMA — Ambientes de Laboratório
+  'lab-comparison-read', 'lab-kvm-installed', 'lab-kvm-vm',
+  // Sprint SIGMA — Proxmox VE
+  'proxmox-iso', 'proxmox-bridges', 'proxmox-vms', 'proxmox-snapshot',
+  // Sprint SIGMA — Certbot para Produção
+  'certbot-installed', 'certbot-certificate', 'certbot-renewal',
+]; // 45 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
@@ -62,7 +72,7 @@ export const ALL_CHECKLIST_IDS = [
  * /dnat, /port-knocking, /vpn-ipsec, /ataques-avancados, /pivoteamento,
  * /audit-logs, /evolucao, /glossario, /cheat-sheet
  */
-export const CONTENT_PAGES_COUNT = 18; // Sprint I.2: +/fail2ban
+export const CONTENT_PAGES_COUNT = 20; // Sprint SIGMA: +/laboratorio +/proxmox
 
 interface BadgeContextType {
   unlockedBadges: Set<BadgeId>;
@@ -152,7 +162,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem('workshop-visited-pages', JSON.stringify(Array.from(visitedPages)));
     if (visitedPages.size >= 5)                  unlockBadge('explorer');
-    if (visitedPages.size >= CONTENT_PAGES_COUNT) unlockBadge('deep-diver'); // FIX: era 12 (arbitrário) → agora 15 (todas as páginas de conteúdo)
+    if (visitedPages.size >= CONTENT_PAGES_COUNT) unlockBadge('deep-diver');
+    if (visitedPages.has('laboratorio') && visitedPages.has('proxmox')) unlockBadge('resgate-gold');
   }, [visitedPages]);
 
   useEffect(() => {
@@ -178,6 +189,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['pivoting-risk'])                                  unlockBadge('pivoting-master');
     if (checklist['wg-keys'] && checklist['wg-server'] && checklist['wg-tunnel']) unlockBadge('wireguard-master');
     if (checklist['f2b-install'] && checklist['f2b-sshd'] && checklist['f2b-ban-test']) unlockBadge('fail2ban-master');
+    if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
 
     if (Object.values(checklist).filter(v => v).length >= 15) unlockBadge('linux-ninja');
   }, [checklist]);

@@ -83,6 +83,13 @@ const TOPICS: Topic[] = [
   // ── Referência ────────────────────────────────────────────────────────────────
   { id: '31', num: '31', title: 'Glossário Hacker: dicionário técnico com termos de redes, segurança, firewall e criptografia.', layer: 'Referência · Consulta', layerClass: 'l7', href: '/glossario', group: 'Referência' },
   { id: '32', num: '32', title: 'Evolução do Laboratório: próximos módulos, roadmap técnico e o caminho para o nível profissional.', layer: 'Sobre o Projeto', layerClass: 'l7', href: '/evolucao', group: 'Referência' },
+
+  // ── Ambientes de Lab ──────────────────────────────────────────────────────────
+  { id: '33', num: '33', title: 'VirtualBox vs KVM vs Proxmox: qual ambiente de laboratório usar em cada estágio da carreira?', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/laboratorio', group: 'Ambientes de Lab' },
+  { id: '34', num: '34', title: 'KVM / libvirt: criar e gerenciar VMs no Linux com virt-install, virsh, snapshots e redes virtuais.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/laboratorio#kvm', group: 'Ambientes de Lab' },
+  { id: '35', num: '35', title: 'Proxmox VE: instalação, bridges vmbr, criação das 4 VMs do laboratório e snapshots profissionais.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox', group: 'Ambientes de Lab' },
+  { id: '36', num: '36', title: 'Cluster Proxmox: Live Migration de VMs, Alta Disponibilidade (HA) e storage compartilhado com Ceph.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox#cluster', group: 'Ambientes de Lab' },
+  { id: '37', num: '37', title: 'vzdump e backups agendados: proteja seu lab com backups completos de VMs no Proxmox VE.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox#backup', group: 'Ambientes de Lab' },
 ];
 
 export default function TopicsPage() {
@@ -195,7 +202,7 @@ export default function TopicsPage() {
           <div key={groupName} className="bg-bg-2 border border-border rounded-xl overflow-hidden flex flex-col hover:border-accent/30 transition-colors">
             <div className="px-5 py-4 border-b border-border bg-bg-3 flex items-center gap-3">
               <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center text-accent text-lg">
-                {groupName.includes('LAN') ? '💻' : groupName.includes('WAN') ? '🌐' : groupName.includes('DNS') ? '📖' : groupName.includes('Web Server') ? '🖥️' : groupName.includes('nftables') ? '🔥' : groupName.includes('Referência') ? '📚' : '🛡️'}
+                {groupName.includes('LAN') ? '💻' : groupName.includes('WAN') ? '🌐' : groupName.includes('DNS') ? '📖' : groupName.includes('Web Server') ? '🖥️' : groupName.includes('nftables') ? '🔥' : groupName.includes('Referência') ? '📚' : groupName.includes('Ambientes') ? '⚡' : '🛡️'}
               </div>
               <h3 className="font-bold text-sm">{groupName}</h3>
             </div>

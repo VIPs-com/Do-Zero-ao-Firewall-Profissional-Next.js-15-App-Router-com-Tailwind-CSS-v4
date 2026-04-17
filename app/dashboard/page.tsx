@@ -54,12 +54,12 @@ export default function DashboardPage() {
     trackPageVisit('dashboard');
   }, [trackPageVisit]);
 
-  // Sprint L: +web-server(×2), +nftables(×2), +glossario, +evolucao → 33 tópicos
-  const totalTopics = 33;
+  // Sprint SIGMA: +laboratorio, +proxmox + novos tópicos → 38 tópicos
+  const totalTopics = 38;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
-  // Sprint R: +firewall-persistence/firewall-service/firewall-log → 35 checkpoints
-  const checklistItemsCount = 35;
+  // Sprint SIGMA: +lab-comparison-read/lab-kvm-installed/lab-kvm-vm/proxmox-iso/proxmox-bridges/proxmox-vms/proxmox-snapshot/certbot-installed/certbot-certificate/certbot-renewal → 45 checkpoints
+  const checklistItemsCount = 45;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 

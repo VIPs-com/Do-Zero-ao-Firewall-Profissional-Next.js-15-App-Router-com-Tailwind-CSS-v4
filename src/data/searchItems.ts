@@ -93,4 +93,11 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'c-conntrack',   title: 'conntrack -L',           description: 'Listar conexões rastreadas pelo kernel',           category: 'Comando', href: '/wan-nat',     icon: Terminal },
   { id: 'c-openssl-gen', title: 'openssl genrsa',         description: 'Gerar chave privada RSA para certificado SSL',     category: 'Comando', href: '/web-server',  icon: Terminal },
   { id: 'c-tcpdump-pcap', title: 'tcpdump -w captura.pcap', description: 'Capturar tráfego de rede em formato PCAP',       category: 'Comando', href: '/cheat-sheet', icon: Terminal },
+  // Sprint SIGMA — Ambientes de Lab + Certbot
+  { id: 'p-laboratorio',  title: 'Ambientes de Laboratório', description: 'VirtualBox vs KVM vs Proxmox — qual usar para cada cenário', category: 'Tópico', href: '/laboratorio', icon: Server },
+  { id: 'p-proxmox',      title: 'Proxmox VE',               description: 'Lab profissional: bridges, VMs, snapshots e cluster HA',    category: 'Tópico', href: '/proxmox',     icon: Server },
+  { id: 'p-kvm',          title: 'KVM / libvirt',            description: 'Hypervisor nativo do Linux — virt-install e virsh',          category: 'Tópico', href: '/laboratorio', icon: Server },
+  { id: 'c-certbot',      title: 'certbot --nginx',          description: 'Obter certificado Let\'s Encrypt com plugin Nginx',          category: 'Comando',        href: '/nginx-ssl',   icon: Terminal },
+  { id: 'c-certbot-renew', title: 'certbot renew --dry-run', description: 'Testar renovação automática de certificado Let\'s Encrypt',  category: 'Comando',        href: '/nginx-ssl',   icon: Terminal },
+  { id: 'c-qm',           title: 'qm snapshot / rollback',  description: 'Criar e reverter snapshots de VMs no Proxmox',               category: 'Comando',        href: '/proxmox',     icon: Terminal },
 ];

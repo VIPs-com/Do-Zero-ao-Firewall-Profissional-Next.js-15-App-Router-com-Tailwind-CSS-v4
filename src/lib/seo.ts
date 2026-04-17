@@ -182,6 +182,18 @@ export const ROUTE_SEO = {
     title: 'Sem conexão',
     description: 'Você está offline. Verifique sua conexão de rede.',
   },
+  '/laboratorio': {
+    title: 'Ambientes de Laboratório — VirtualBox, KVM e Proxmox',
+    description:
+      'Compare VirtualBox, KVM e Proxmox para montar seu laboratório Linux. Guia completo com instalação do KVM/libvirt, criação de VMs e tabela de equivalência.',
+    keywords: ['VirtualBox', 'KVM', 'libvirt', 'Proxmox', 'virtualização', 'laboratório Linux'],
+  },
+  '/proxmox': {
+    title: 'Proxmox VE — Laboratório de Produção',
+    description:
+      'Monte um laboratório profissional com Proxmox VE: instalação, bridges de rede (vmbr0/vmbr1/vmbr2), criação das 4 VMs, snapshots e backup com vzdump.',
+    keywords: ['Proxmox', 'Proxmox VE', 'virtualização', 'vmbr', 'snapshot', 'vzdump', 'laboratório'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

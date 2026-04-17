@@ -102,10 +102,10 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 18 (exclui home/quiz/dashboard/certificado/topicos) |
-| `totalTopics` | `app/dashboard/page.tsx` | 33 (inclui web-server×2, nftables×2, glossario, evolucao) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 35 (deve igualar ALL_CHECKLIST_IDS.length) |
-| Texto na Home | `app/page.tsx` | "33 topicos praticos" |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 20 (+ /laboratorio + /proxmox) |
+| `totalTopics` | `app/dashboard/page.tsx` | 38 (+ entradas Ambientes de Lab) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 45 (ALL_CHECKLIST_IDS.length — inclui Sprint SIGMA) |
+| Texto na Home | `app/page.tsx` | "40+ topicos praticos" |
 
 ---
 

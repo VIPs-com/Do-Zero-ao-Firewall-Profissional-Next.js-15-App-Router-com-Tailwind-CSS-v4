@@ -130,16 +130,6 @@ export default function NginxSslPage() {
               code={`server {\n    listen 443 ssl;\n    server_name www.workshop.local;\n\n    # Certificados gerados no módulo Web Server & PKI\n    ssl_certificate     /etc/ssl/workshop/www.workshop.local.crt;\n    ssl_certificate_key /etc/ssl/workshop/www.workshop.local.pem;\n\n    # Parâmetros DH — proteção contra ataque Logjam\n    ssl_dhparam          /etc/ssl/workshop/dhparam.pem;\n\n    # Restringir versões TLS (desabilitar TLS 1.0 e 1.1)\n    ssl_protocols        TLSv1.2 TLSv1.3;\n    ssl_ciphers          ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305;\n    ssl_prefer_server_ciphers on;\n\n    location / {\n        proxy_pass         http://192.168.56.120:8080;\n        proxy_set_header   Host $host;\n        proxy_set_header   X-Real-IP $remote_addr;\n        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header   X-Forwarded-Proto $scheme;\n    }\n}\n\n# Redirecionar HTTP → HTTPS\nserver {\n    listen 80;\n    server_name www.workshop.local;\n    return 301 https://$host$request_uri;\n}`}
             />
 
-            <InfoBox title="Let's Encrypt para produção (domínio público real)">
-              <p className="text-sm text-text-2 mb-2">
-                Para servidores com domínio público, substitua os certificados autoassinados por Let's Encrypt:
-              </p>
-              <CodeBlock
-                lang="bash"
-                code={`apt install certbot python3-certbot-nginx -y\ncertbot --nginx -d seudominio.com\n# Renovação automática já configurada via systemd timer`}
-              />
-            </InfoBox>
-
             <InfoBox title="X-Forwarded-For — Por que é importante?">
               Sem esse header, o App Server vê apenas o IP do Nginx como origem de todas as
               requisições. Com ele, o servidor interno consegue logar o IP real do cliente
@@ -147,13 +137,121 @@ export default function NginxSslPage() {
             </InfoBox>
           </section>
 
-          {/* Section 3: Headers de Segurança */}
+          {/* Section 3: Certbot — Let's Encrypt para Produção */}
+          <section id="certbot">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                <Shield size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">3. Certbot — Let&apos;s Encrypt para Produção</h2>
+            </div>
+
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Para servidores com domínio público real, o Let&apos;s Encrypt emite certificados
+              gratuitos e confiáveis em todos os browsers. O Certbot automatiza todo o processo —
+              da obtenção à renovação.
+            </p>
+
+            <WarnBox title="Pré-requisitos obrigatórios">
+              <ul className="text-sm space-y-1">
+                <li>• <strong>Domínio público</strong> com registro A apontando para o IP do servidor</li>
+                <li>• <strong>Porta 80 aberta</strong> no firewall (HTTP-01 challenge precisa ser alcançado pela internet)</li>
+                <li>• <strong>Nginx instalado e ativo</strong> na porta 80</li>
+              </ul>
+              <p className="text-xs text-text-3 mt-2">Em laboratório com IP privado (192.168.x.x), o challenge falha — use certificados autoassinados para estudo.</p>
+            </WarnBox>
+
+            <CodeBlock
+              title="Instalar Certbot e obter certificado"
+              lang="bash"
+              code={`# Instalar Certbot com plugin Nginx:
+apt install certbot python3-certbot-nginx -y
+
+# Obter e instalar certificado (reconfigura o Nginx automaticamente):
+certbot --nginx -d seudominio.com -d www.seudominio.com
+# Interativo: email para alertas de expiração, aceitar termos, redirecionar HTTP→HTTPS
+
+# O Certbot adiciona ao nginx.conf automaticamente:
+# ssl_certificate     /etc/letsencrypt/live/seudominio.com/fullchain.pem;
+# ssl_certificate_key /etc/letsencrypt/live/seudominio.com/privkey.pem;
+# include             /etc/letsencrypt/options-ssl-nginx.conf;
+# ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;`}
+            />
+
+            <CodeBlock
+              title="Verificar certificado obtido"
+              lang="bash"
+              code={`# Listar certificados e datas de expiração:
+certbot certificates
+# Output esperado:
+# Certificate Name: seudominio.com
+#   Domains: seudominio.com www.seudominio.com
+#   Expiry Date: 2026-07-17 (VALID: 89 days)
+#   Certificate Path: /etc/letsencrypt/live/seudominio.com/fullchain.pem
+
+# Verificar detalhes via OpenSSL:
+openssl s_client -connect seudominio.com:443 < /dev/null | grep "subject\\|issuer"
+# issuer=C=US, O=Let's Encrypt, CN=R10
+
+# Verificar via curl:
+curl -vI https://seudominio.com 2>&1 | grep "SSL certificate"
+# SSL certificate verify ok.`}
+            />
+
+            <CodeBlock
+              title="Testar renovação automática (dry-run)"
+              lang="bash"
+              code={`# Simular renovação sem aplicar (para testar configuração):
+certbot renew --dry-run
+# Output esperado:
+# Congratulations, all simulated renewals succeeded:
+#   /etc/letsencrypt/live/seudominio.com/fullchain.pem (success)
+
+# Ver o timer systemd que renova automaticamente (2x por dia):
+systemctl status certbot.timer
+systemctl list-timers | grep certbot
+# O Let's Encrypt renova quando faltam < 30 dias — certificados expiram em 90 dias.
+# Com o timer ativo, o certificado nunca expira.
+
+# Forçar renovação imediata (quando necessário):
+certbot renew --force-renewal`}
+            />
+
+            <FluxoCard title="Let's Encrypt — HTTP-01 Challenge" steps={[
+              { label: 'Certbot solicita', sub: 'POST /acme/new-order', icon: <Lock size={16} />, color: 'border-ok/50' },
+              { label: 'Cria arquivo token', sub: '/.well-known/acme-challenge/', icon: <Shield size={16} />, color: 'border-info/50' },
+              { label: 'Let\'s Encrypt verifica', sub: 'GET http://seudominio.com/...', icon: <Globe size={16} />, color: 'border-accent/50' },
+              { label: 'Certificado emitido', sub: 'válido por 90 dias', icon: <Lock size={16} />, color: 'border-ok/50' },
+            ]} />
+
+            <div className="flex flex-col gap-2 mt-4">
+              {[
+                { id: 'certbot-installed',   label: 'Certbot instalado (apt install certbot python3-certbot-nginx)' },
+                { id: 'certbot-certificate', label: 'Certificado Let\'s Encrypt obtido e Nginx configurado' },
+                { id: 'certbot-renewal',     label: 'certbot renew --dry-run executado com sucesso' },
+              ].map(item => (
+                <label key={item.id} className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={!!checklist[item.id]}
+                    onChange={e => updateChecklist(item.id, e.target.checked)}
+                    className="mt-0.5 accent-accent"
+                  />
+                  <span className={`text-xs leading-relaxed transition-colors ${checklist[item.id] ? 'text-ok line-through' : 'text-text-2 group-hover:text-text'}`}>
+                    {item.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </section>
+
+          {/* Section 4: Headers de Segurança */}
           <section id="security-headers">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-layer-6/10 flex items-center justify-center text-layer-6">
                 <Shield size={24} />
               </div>
-              <h2 className="text-2xl font-bold">3. Headers de Segurança HTTP</h2>
+              <h2 className="text-2xl font-bold">4. Headers de Segurança HTTP</h2>
             </div>
 
             <p className="text-text-2 mb-6 leading-relaxed">
@@ -180,7 +278,7 @@ export default function NginxSslPage() {
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com Nginx SSL">
