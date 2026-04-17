@@ -55,7 +55,7 @@ Este projeto é uma **plataforma educacional completa** que ensina segurança de
 | Runtime | React | ^19.0.0 |
 | Build | Turbopack | (built-in) |
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (vitest) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo — alinhamento material original).
+**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (vitest) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo — alinhamento material original) · **P (Diamond Polish — FluxoCard, Erros Comuns, saídas esperadas)**.
 
 ---
 

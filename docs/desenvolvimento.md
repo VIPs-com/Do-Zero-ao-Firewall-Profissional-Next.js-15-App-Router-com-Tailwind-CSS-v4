@@ -37,17 +37,35 @@ const NAV_LINKS = [
 ## Usar componentes existentes
 
 ```tsx
-import { CodeBlock }    from '@/components/ui/CodeBlock';
-import { Steps }        from '@/components/ui/Steps';
-import { ProgressBar }  from '@/components/ui/ProgressBar';
-import { FluxoCard }    from '@/components/ui/FluxoCard';
-import { LayerBadge }   from '@/components/ui/LayerBadge';
+import { CodeBlock }                        from '@/components/ui/CodeBlock';
+import { InfoBox, WarnBox, HighlightBox }   from '@/components/ui/Boxes';
+import { FluxoCard }                        from '@/components/ui/FluxoCard';
+import { Steps }                            from '@/components/ui/Steps';
+import { ProgressBar }                      from '@/components/ui/ProgressBar';
+import { LayerBadge }                       from '@/components/ui/LayerBadge';
 
-// Classes de box (definidas em globals.css)
-<div className="info-box">     Informação azul      </div>
-<div className="warn-box">     Aviso amarelo         </div>
-<div className="highlight-box"> Destaque laranja     </div>
+// Boxes de conteúdo (preferir os componentes em vez das classes brutas)
+<InfoBox title="Título">Informação azul</InfoBox>
+<WarnBox title="⚠️ Atenção">Aviso amarelo</WarnBox>
+<HighlightBox title="💡 Pulo do Gato">Destaque laranja</HighlightBox>
+
+// FluxoCard — diagrama de fluxo horizontal com setas automáticas
+<FluxoCard
+  title="Título opcional"
+  steps={[
+    { label: 'Passo 1', sub: 'detalhe', icon: <Icon className="w-4 h-4" />, color: 'border-ok/50' },
+    { label: 'Passo 2', sub: 'detalhe', icon: <Icon className="w-4 h-4" />, color: 'border-accent/50' },
+  ]}
+/>
+
+// Cores disponíveis para FluxoCard.steps[].color (classes Tailwind):
+// 'border-ok/50'    → verde (sucesso)
+// 'border-accent/50' → laranja (destaque)
+// 'border-err/50'   → vermelho (erro/risco)
+// 'border-[var(--color-layer-N)]' onde N = 3, 4, 5, 6, 7 (camadas OSI)
 ```
+
+> **Regra de ouro:** sempre usar os componentes importados, nunca `<div className="code-block">` ou `<div className="info-box">` diretamente — garante consistência visual e facilita refatorações futuras.
 
 ## Variáveis de ambiente
 
