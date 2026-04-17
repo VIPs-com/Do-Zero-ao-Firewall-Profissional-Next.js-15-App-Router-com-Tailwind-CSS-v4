@@ -110,6 +110,20 @@ Sprint P ✅ Diamond Polish — Visual, Textos, Diagramas & Experiência do Alun
   ├── /dns: adicionado apt install bind9, Section 2 renomeada "Instalação e Configuração"
   └── /nginx-ssl: adicionado trackPageVisit (estava ausente)
 
+Sprint L ✅ Legacy Gold — Resgate Técnico + Profundidade de Elite
+  ├── Eixo 1 — Diagnóstico: TroubleshootingCard (OSI Ladder interativo L1-L7),
+  │   anatomia visual de linha de log iptables (IN/OUT/SRC/DST/TTL/DPT/SYN)
+  ├── Eixo 2 — Profundidade: zona DNS reversa (db.56.168.192 + PTR records),
+  │   /proc/net/xt_recent manipulation, IPSec iptables prereqs (UDP 500/4500/ESP),
+  │   dhparam.pem + ssl_protocols TLSv1.2/1.3 + Certbot, TTL fingerprinting
+  ├── Eixo 3 — Ferramentas: FTP DNAT (portas 21 + 50000:51000) + SSH porta 2222,
+  │   MSS Clamping (TCPMSS), conntrack tuning, tcpdump duplo (LAN vs WAN),
+  │   Netplan YAML 3-interface, tabela de pacotes por VM, Squid deny-all/admin-only,
+  │   scripts /public/scripts/entrar.sh + knock-monitor.sh (download direto)
+  ├── Eixo 4 — UX Premium: FluxoCard TLS Handshake 4-etapas, VIM mini-guia,
+  │   Remote Access vs Site-to-Site HighlightBox, página /offline terminal-style
+  └── Novo componente: TroubleshootingCard.tsx (OSI Ladder expand/collapse, aria-*)
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

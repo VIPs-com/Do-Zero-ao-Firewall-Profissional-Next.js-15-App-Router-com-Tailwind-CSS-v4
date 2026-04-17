@@ -179,13 +179,40 @@ export default function LanProxyPage() {
             </div>
           </section>
 
-          {/* Section 4: Erros Comuns */}
+          {/* Section 4: ACL Privilégio Mínimo */}
+          <section id="privilegio-minimo">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                <Lock size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. ACL Avançada — Princípio do Privilégio Mínimo</h2>
+            </div>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              A configuração padrão do Squid é permissiva para a rede interna. Em ambientes corporativos, o padrão deve ser <strong>deny-all</strong> com exceções explícitas — liberar apenas o que é necessário para cada IP ou grupo.
+            </p>
+
+            <CodeBlock
+              title="/etc/squid/squid.conf — Privilégio Mínimo por IP"
+              lang="bash"
+              code={`# Definir grupos de acesso\nacl admin     src 192.168.57.10/32   # IP do administrador\nacl lan_users src 192.168.57.0/24    # LAN inteira\n\n# Lógica: admin tem acesso total, LAN é bloqueada\nhttp_access allow admin       # admin: libera tudo\nhttp_access deny  lan_users   # LAN: nega tudo\nhttp_access deny  all         # padrão final: nega\n\n# Aplicar sem reiniciar\nsquid -k reconfigure`}
+            />
+
+            <InfoBox title="Por que esse padrão é mais seguro?">
+              <p className="text-sm text-text-2">
+                Esta configuração implementa <strong>deny-all com exceções explícitas</strong> — o oposto do padrão permissivo.
+                Se um novo usuário ou dispositivo entrar na LAN, ele <em>não terá acesso</em> até que uma regra explícita o libere.
+                Em produção, use grupos LDAP ou certificados ao invés de IPs fixos para maior escabilidade.
+              </p>
+            </InfoBox>
+          </section>
+
+          {/* Section 5: Erros Comuns (renumbered from 4) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com Squid Proxy">

@@ -7,7 +7,8 @@ import { Terminal, Copy, Check, Search, Filter, BookOpen, Shield, Zap, Globe, Lo
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { TroubleshootingCard, TroubleshootingStep } from '@/components/ui/TroubleshootingCard';
 
 interface Command {
   id: string;
@@ -70,6 +71,58 @@ const COMMANDS: Command[] = [
   { id: 'nft-list', cmd: 'nft list ruleset', desc: 'Lista todas as tabelas, chains e regras nftables ativas.', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
 ];
 
+const SOS_STEPS: TroubleshootingStep[] = [
+  {
+    layer: 1,
+    name: 'Física',
+    symptom: 'sem link / cabo desconectado',
+    command: 'ip link show',
+    detail: 'Verifique se a interface está UP. No VirtualBox, confirme que o adaptador de rede está conectado e o cabo virtual ativo. "state DOWN" indica problema físico ou driver.',
+  },
+  {
+    layer: 2,
+    name: 'Enlace',
+    symptom: 'ARP sem resposta / MAC não resolve',
+    command: 'ip neigh show',
+    detail: 'Lista a tabela ARP. Se o gateway não aparecer ou mostrar FAILED, há problema de L2. Verifique VLAN, modo bridge do hypervisor e se os hosts estão na mesma rede L2.',
+  },
+  {
+    layer: 3,
+    name: 'Rede',
+    symptom: 'ping falha / rota ausente',
+    command: 'ip route show && ip addr show',
+    detail: 'Verifique se existe rota default (0.0.0.0/0 via ...) e se o IP da interface está correto. ip_forward deve estar = 1 no firewall: sysctl net.ipv4.ip_forward',
+  },
+  {
+    layer: 4,
+    name: 'Transporte',
+    symptom: 'conexão recusada / porta fechada',
+    command: 'ss -tlnp | grep :PORTA && nc -zv HOST PORTA',
+    detail: 'ss mostra quem está ouvindo. nc -zv testa se a porta está acessível. Se a porta está aberta localmente mas nc falha remotamente, há regra de firewall bloqueando.',
+  },
+  {
+    layer: 5,
+    name: 'Sessão',
+    symptom: 'TLS falha / conexão cai',
+    command: 'openssl s_client -connect HOST:443',
+    detail: 'Verifica o handshake TLS completo e exibe a cadeia de certificados. Útil para detectar certificado expirado, CA não confiável ou cipher mismatch.',
+  },
+  {
+    layer: 6,
+    name: 'Apresentação',
+    symptom: 'certificado inválido / encoding',
+    command: 'openssl x509 -in cert.pem -text -noout | grep -E "Subject|Issuer|Not"',
+    detail: 'Inspeciona o certificado: subject (para quem), issuer (quem assinou), datas de validade. Certificado autoassinado sempre gerará aviso no browser a menos que a CA seja importada.',
+  },
+  {
+    layer: 7,
+    name: 'Aplicação',
+    symptom: 'HTTP erro / serviço não responde',
+    command: 'curl -Iv http://HOST && journalctl -u nginx -f',
+    detail: 'curl -I mostra headers HTTP de resposta. journalctl -u SERVICE -f acompanha logs em tempo real. nginx -t valida a sintaxe antes de recarregar. systemctl status SERVICE mostra o estado atual.',
+  },
+];
+
 export default function CheatSheetPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
@@ -100,6 +153,9 @@ export default function CheatSheetPage() {
       <p className="section-sub">
         Uma coleção dos comandos mais utilizados durante o workshop, organizados por camada OSI e categoria.
       </p>
+
+      {/* SOS Troubleshooting */}
+      <TroubleshootingCard steps={SOS_STEPS} />
 
       {/* Search and Filters */}
       <div className="space-y-6 mb-12">
@@ -185,6 +241,62 @@ export default function CheatSheetPage() {
           Você pode usar o atalho <code>Ctrl + K</code> em qualquer página para abrir a busca global e encontrar comandos rapidamente.
         </p>
       </HighlightBox>
+
+      {/* VIM Guide */}
+      <div className="mt-12 p-6 rounded-xl bg-bg-2 border border-border">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Terminal size={20} className="text-accent" aria-hidden="true" />
+          Sobrevivência no Terminal — Guia VIM
+        </h2>
+        <p className="text-sm text-text-2 mb-6">
+          VIM é o editor padrão em servidores Linux. Conheça os comandos mínimos para não ficar preso.
+        </p>
+        <CodeBlock
+          lang="bash"
+          code={`# Modos principais\ni          → entrar no modo INSERT (começar a digitar)\nESC        → voltar ao modo NORMAL (parar de digitar)\n\n# Salvar e sair (modo NORMAL)\n:w         → salvar\n:q         → sair (falha se há mudanças não salvas)\n:wq        → salvar e sair\n:q!        → sair SEM salvar (forçar)\n\n# Edição básica\ndd         → deletar (cortar) linha atual\nyy         → copiar linha atual\np          → colar abaixo da linha atual\nu          → desfazer (undo)\nCtrl+r     → refazer (redo)\n\n# Navegação e busca\n/termo     → buscar no arquivo (Enter confirma)\nn          → próxima ocorrência\nN          → ocorrência anterior\n:%s/velho/novo/g → substituir todas as ocorrências no arquivo`}
+        />
+        <InfoBox title="Dica: Se você ficou preso no VIM">
+          <p className="text-sm text-text-2">
+            Pressione <strong>ESC</strong> (várias vezes se necessário) para garantir que está no modo NORMAL,
+            depois digite <strong>:q!</strong> e pressione Enter. Isso sai sem salvar e nunca falha.
+          </p>
+        </InfoBox>
+      </div>
+
+      {/* Scripts para Download */}
+      <div className="mt-8 p-6 rounded-xl bg-bg-2 border border-border">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Terminal size={20} className="text-ok" aria-hidden="true" />
+          Scripts do Laboratório
+        </h2>
+        <p className="text-sm text-text-2 mb-6">
+          Scripts prontos para uso no laboratório. Baixe e adapte conforme o seu ambiente.
+        </p>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="p-4 rounded-lg bg-bg-3 border border-border">
+            <h3 className="font-bold text-sm mb-2">entrar.sh</h3>
+            <p className="text-xs text-text-3 mb-3">Auto-knock (Port Knocking automático) + conexão SSH em sequência.</p>
+            <a
+              href="/scripts/entrar.sh"
+              download
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-ok/10 hover:bg-ok/20 border border-ok/30 rounded-lg text-xs font-bold text-ok transition-all"
+            >
+              ⬇ Baixar entrar.sh
+            </a>
+          </div>
+          <div className="p-4 rounded-lg bg-bg-3 border border-border">
+            <h3 className="font-bold text-sm mb-2">knock-monitor.sh</h3>
+            <p className="text-xs text-text-3 mb-3">Monitora a lista <code>/proc/net/xt_recent</code> em tempo real com watch.</p>
+            <a
+              href="/scripts/knock-monitor.sh"
+              download
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-ok/10 hover:bg-ok/20 border border-ok/30 rounded-lg text-xs font-bold text-ok transition-all"
+            >
+              ⬇ Baixar knock-monitor.sh
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

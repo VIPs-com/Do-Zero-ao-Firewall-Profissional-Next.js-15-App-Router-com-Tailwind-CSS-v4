@@ -7,7 +7,8 @@ import { CheckCircle2, Terminal, Info, Package, Laptop, Shield } from 'lucide-re
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { StepItem, ChecklistItem } from '@/components/ui/Steps';
-import { InfoBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox } from '@/components/ui/Boxes';
+import { CodeBlock } from '@/components/ui/CodeBlock';
 
 const CHECKLIST_ITEMS = [
   { id: 'ping-internet', text: '🌍 Ping Internet', sub: 'ping -c 3 8.8.8.8 funciona', layer: 'Camada 3' },
@@ -145,6 +146,68 @@ export default function InstallationPage() {
               Use <code>sysctl -w net.ipv4.ip_forward=1</code> para teste imediato.
             </p>
           </InfoBox>
+
+          {/* Netplan YAML */}
+          <section id="netplan">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <Terminal size={24} className="text-accent" />
+              Configuração de Rede — Netplan (Ubuntu 22.04+)
+            </h2>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              O Ubuntu Server 22.04+ usa o Netplan para configurar interfaces de rede. O arquivo YAML abaixo configura as três interfaces do Firewall (WAN, DMZ e LAN) com IPs fixos.
+            </p>
+            <CodeBlock
+              title="/etc/netplan/00-installer-config.yaml (Firewall)"
+              lang="yaml"
+              code={`network:\n  version: 2\n  renderer: networkd\n  ethernets:\n    enp0s3:             # Interface WAN (NAT para internet)\n      dhcp4: no\n      addresses: [192.168.20.200/24]\n      routes:\n        - to: default\n          via: 192.168.20.1\n      nameservers:\n        addresses: [8.8.8.8, 9.9.9.9]\n    enp0s8:             # Interface DMZ\n      dhcp4: no\n      addresses: [192.168.56.250/24]\n    enp0s9:             # Interface LAN\n      dhcp4: no\n      addresses: [192.168.57.250/24]`}
+            />
+            <CodeBlock
+              title="Aplicar e verificar"
+              lang="bash"
+              code={`sudo netplan apply\nip addr show      # verificar IPs\nip route show     # verificar rotas`}
+            />
+          </section>
+
+          {/* Pacotes por VM */}
+          <section id="pacotes-vm">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <Package size={24} className="text-info" />
+              Pacotes por Papel de VM
+            </h2>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Cada VM do laboratório tem um papel específico. Instale apenas os pacotes necessários para cada função (princípio do privilégio mínimo aplicado ao software).
+            </p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-bg-3 border border-border">
+                    <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">VM</th>
+                    <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">Função</th>
+                    <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">Pacotes</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {[
+                    { vm: '🔥 Firewall', func: 'Gateway, NAT, iptables', pkgs: 'iptables iptables-persistent squid curl tcpdump conntrack net-tools' },
+                    { vm: '📖 DNS Server', func: 'BIND9 autoritativo', pkgs: 'bind9 bind9utils dnsutils' },
+                    { vm: '🌐 Web Server', func: 'Nginx + SSL', pkgs: 'nginx openssl certbot python3-certbot-nginx' },
+                    { vm: '💻 Cliente LAN', func: 'Testes e diagnóstico', pkgs: 'curl wget telnet dnsutils netcat-openbsd' },
+                  ].map(row => (
+                    <tr key={row.vm} className="bg-bg-2 hover:bg-bg-3 transition-colors">
+                      <td className="p-3 font-bold text-xs">{row.vm}</td>
+                      <td className="p-3 text-xs text-text-2">{row.func}</td>
+                      <td className="p-3 font-mono text-[10px] text-accent-2">{row.pkgs}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <CodeBlock
+              title="Instalar pacotes de uma VM (ex: Firewall)"
+              lang="bash"
+              code={`apt update && apt install -y iptables iptables-persistent squid curl tcpdump conntrack net-tools`}
+            />
+          </section>
         </div>
 
         {/* Sticky Checklist */}

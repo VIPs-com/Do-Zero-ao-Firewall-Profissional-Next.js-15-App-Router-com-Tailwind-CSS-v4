@@ -43,6 +43,7 @@ import { FluxoCard }                        from '@/components/ui/FluxoCard';
 import { Steps }                            from '@/components/ui/Steps';
 import { ProgressBar }                      from '@/components/ui/ProgressBar';
 import { LayerBadge }                       from '@/components/ui/LayerBadge';
+import { TroubleshootingCard }              from '@/components/ui/TroubleshootingCard';
 
 // Boxes de conteúdo (preferir os componentes em vez das classes brutas)
 <InfoBox title="Título">Informação azul</InfoBox>
@@ -63,6 +64,23 @@ import { LayerBadge }                       from '@/components/ui/LayerBadge';
 // 'border-accent/50' → laranja (destaque)
 // 'border-err/50'   → vermelho (erro/risco)
 // 'border-[var(--color-layer-N)]' onde N = 3, 4, 5, 6, 7 (camadas OSI)
+
+// TroubleshootingCard — escada OSI interativa (expand/collapse por camada)
+// Props: steps: TroubleshootingStep[]
+//   { layer: 1..7, name: string, symptom: string, command: string, detail?: string }
+// Cada step: badge colorido (--color-layer-N) + sintoma + comando + detalhe expansível
+// aria-expanded/aria-controls, role="list"/"listitem" — totalmente acessível
+<TroubleshootingCard
+  steps={[
+    { layer: 1, name: 'Física',     symptom: 'sem link',   command: 'ip link show',       detail: 'cabo / VM conectada?' },
+    { layer: 2, name: 'Enlace',     symptom: 'sem ARP',    command: 'ip neigh show',      detail: 'bridge/switch OK?' },
+    { layer: 3, name: 'Rede',       symptom: 'sem rota',   command: 'ip route show',      detail: 'rota default existe?' },
+    { layer: 4, name: 'Transporte', symptom: 'porta fecha', command: 'ss -tlnp',           detail: 'nc -zv HOST PORTA' },
+    { layer: 5, name: 'Sessão',     symptom: 'TLS falha',  command: 'openssl s_client',   detail: 'curl -v URL' },
+    { layer: 6, name: 'Apresentação', symptom: 'erro cert', command: 'openssl x509 -text', detail: 'validade e CN' },
+    { layer: 7, name: 'Aplicação',  symptom: 'HTTP 5xx',   command: 'curl -I URL',        detail: 'nginx -t; journalctl' },
+  ]}
+/>
 ```
 
 > **Regra de ouro:** sempre usar os componentes importados, nunca `<div className="code-block">` ou `<div className="info-box">` diretamente — garante consistência visual e facilita refatorações futuras.

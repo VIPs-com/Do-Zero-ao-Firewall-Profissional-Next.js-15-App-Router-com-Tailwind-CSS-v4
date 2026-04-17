@@ -59,6 +59,24 @@ export default function AuditLogsPage() {
               <h2 className="text-2xl font-bold">1. Anatomia de uma linha de log</h2>
             </div>
 
+            <HighlightBox title="💡 Anatomia Completa — Decodificando Cada Campo">
+              <p className="text-sm text-text-2 mb-3">
+                Uma linha de log do iptables carrega toda a informação do pacote capturado. Aqui está uma linha real de ataque com cada campo explicado:
+              </p>
+              <code className="text-[10px] block bg-bg-3 p-3 rounded border border-border font-mono leading-6 text-ok">
+                Jan 15 10:23:45 fw kernel: [IPTABLES DROP] IN=enp0s3 OUT= MAC=aa:bb:cc:dd:ee:ff SRC=185.234.12.43 DST=192.168.56.250 LEN=44 TOS=0x00 TTL=118 ID=1234 DF PROTO=TCP SPT=51234 DPT=22 WINDOW=1024 RES=0x00 SYN URGP=0
+              </code>
+              <ul className="mt-3 space-y-1 text-sm text-text-2">
+                <li><code className="text-xs text-accent-2">IN=enp0s3</code> → interface de entrada (WAN — veio da internet)</li>
+                <li><code className="text-xs text-accent-2">OUT=</code> → vazio = pacote DROP antes de rotear</li>
+                <li><code className="text-xs text-accent-2">SRC=185.234.12.43</code> → IP do atacante</li>
+                <li><code className="text-xs text-accent-2">DST=192.168.56.250</code> → IP destino (firewall)</li>
+                <li><code className="text-xs text-accent-2">TTL=118</code> → fingerprint SO: ≈ Windows (128 - 10 hops)</li>
+                <li><code className="text-xs text-accent-2">PROTO=TCP DPT=22</code> → tentativa de SSH direto (sem Port Knocking)</li>
+                <li><code className="text-xs text-accent-2">SYN</code> → início de conexão TCP (handshake fase 1)</li>
+              </ul>
+            </HighlightBox>
+
             <CodeBlock
               title="Exemplo de log do iptables (syslog)"
               lang="log"

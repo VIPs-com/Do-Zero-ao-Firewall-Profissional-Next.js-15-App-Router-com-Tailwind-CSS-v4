@@ -152,13 +152,47 @@ export default function DnatPage() {
             </div>
           </section>
 
-          {/* Section 4: Erros Comuns */}
+          {/* Section 4: Múltiplos Serviços */}
+          <section id="multiplos-servicos">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
+                <Globe size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Múltiplos Serviços no Mesmo IP Público</h2>
+            </div>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Com um único IP público você pode expor vários serviços da DMZ usando portas diferentes. O Firewall redireciona cada porta para o servidor correto.
+            </p>
+
+            <div className="space-y-6">
+              <CodeBlock
+                title="HTTPS, FTP e SSH alternativo via DNAT"
+                lang="bash"
+                code={`# HTTPS para Web Server (DMZ)\niptables -t nat -A PREROUTING -p tcp -d IP-WAN --dport 443 \\\n  -j DNAT --to-destination 192.168.56.120:443\n\n# FTP Controle — conexão de comando (porta 21)\niptables -t nat -A PREROUTING -p tcp -d IP-WAN --dport 21 \\\n  -j DNAT --to-destination 192.168.56.200:21\n\n# FTP Passivo — portas de transferência de dados\niptables -t nat -A PREROUTING -p tcp -d IP-WAN --dport 50000:51000 \\\n  -j DNAT --to-destination 192.168.56.200\n\n# SSH via porta alternativa (obscurece a porta 22 no scan)\niptables -t nat -A PREROUTING -p tcp -d IP-WAN --dport 2222 \\\n  -j DNAT --to-destination 192.168.56.250:22\n\n# FORWARD para cada serviço (IP APÓS o DNAT)\niptables -A FORWARD -p tcp -d 192.168.56.120 --dport 443 -j ACCEPT\niptables -A FORWARD -p tcp -d 192.168.56.200 --dport 21 -j ACCEPT\niptables -A FORWARD -p tcp -d 192.168.56.200 --dport 50000:51000 -j ACCEPT\niptables -A FORWARD -p tcp -d 192.168.56.250 --dport 22 -j ACCEPT`}
+              />
+
+              <InfoBox title="Por que FTP precisa de duas faixas de porta?">
+                <p className="text-sm text-text-2">
+                  O FTP em modo passivo usa a <strong>porta 21</strong> para o canal de controle (comandos) e portas efêmeras altas (ex: 50000-51000) para os canais de dados.
+                  Configure o servidor FTP com <code className="text-xs">PassivePorts 50000 51000</code> e exponha ambas as faixas via DNAT.
+                </p>
+              </InfoBox>
+
+              <CodeBlock
+                title="Monitorar tabela NAT em tempo real"
+                lang="bash"
+                code={`watch -n 1 'iptables -t nat -L PREROUTING -vnv'`}
+              />
+            </div>
+          </section>
+
+          {/* Section 5: Erros Comuns */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com DNAT">

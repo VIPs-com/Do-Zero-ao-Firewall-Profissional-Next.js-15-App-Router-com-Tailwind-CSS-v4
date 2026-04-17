@@ -133,6 +133,21 @@ export default function VpnIpsecPage() {
                 </div>
               </div>
             </div>
+
+            <HighlightBox title="💡 Site-to-Site vs Remote Access — Quando usar cada um?">
+              <ul className="space-y-2 text-sm text-text-2">
+                <li>
+                  <strong>Site-to-Site</strong> — Conecta <em>permanentemente</em> duas filiais (gateway ↔ gateway).
+                  Configuração no ipsec.conf com <code className="text-xs">right=IP-PUBLICO-FILIAL</code>.
+                  Ambos os lados precisam ter IP fixo ou DDNS.
+                </li>
+                <li>
+                  <strong>Remote Access</strong> — Funcionário remoto conecta do notebook ou celular.
+                  Requer autenticação por usuário (EAP-MSCHAPv2 ou certificado X.509).
+                  StrongSwan suporta, mas a configuração é substancialmente mais complexa que Site-to-Site.
+                </li>
+              </ul>
+            </HighlightBox>
           </section>
 
           {/* Section 3: Configuration */}
@@ -147,6 +162,19 @@ export default function VpnIpsecPage() {
               Instale o StrongSwan em ambos os gateways antes de configurar:
             </p>
             <CodeBlock title="Instalação" lang="bash" code="apt install strongswan strongswan-pki -y" />
+
+            <div className="mt-6 space-y-4">
+              <WarnBox title="⚠️ Pré-requisito: Abrir portas IPSec no Firewall">
+                <p className="text-sm text-text-2 mb-3">
+                  Sem essas 3 regras de INPUT, o handshake IKE nunca será completado — mesmo com o StrongSwan corretamente configurado.
+                </p>
+                <CodeBlock
+                  title="Regras iptables obrigatórias para IPSec"
+                  lang="bash"
+                  code={`# IKE — troca de chaves (Internet Key Exchange)\niptables -A INPUT -p udp --dport 500 -j ACCEPT\n\n# NAT-T — IPSec atravessando NAT (encapsula ESP em UDP)\niptables -A INPUT -p udp --dport 4500 -j ACCEPT\n\n# ESP — protocolo de dados criptografados (não é TCP/UDP)\niptables -A INPUT -p esp -j ACCEPT\n\n# FORWARD entre as subredes das duas filiais\niptables -A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT\niptables -A FORWARD -s 192.168.2.0/24 -d 192.168.1.0/24 -j ACCEPT\n\n# Monitorar logs do charon (daemon IPSec do StrongSwan)\njournalctl -u strongswan -f`}
+                />
+              </WarnBox>
+            </div>
 
             <div className="space-y-8 mt-6">
               <CodeBlock 

@@ -108,11 +108,37 @@ export default function NginxSslPage() {
               servidor de aplicação interno.
             </p>
 
+            <FluxoCard
+              title="Handshake TLS 1.3 — 4 Etapas"
+              steps={[
+                { label: 'ClientHello', sub: 'cipher suites + random', icon: <Globe className="w-4 h-4" />, color: 'border-[var(--color-layer-6)]' },
+                { label: 'ServerHello', sub: 'certificado X.509', icon: <Server className="w-4 h-4" />, color: 'border-[var(--color-layer-5)]' },
+                { label: 'Key Exchange', sub: 'ECDHE Curve25519', icon: <Lock className="w-4 h-4" />, color: 'border-accent/50' },
+                { label: 'App Data', sub: 'AES-256-GCM cifrado', icon: <Shield className="w-4 h-4" />, color: 'border-ok/50' },
+              ]}
+            />
+
+            <CodeBlock
+              title="Gerar parâmetros Diffie-Hellman (proteção anti-Logjam)"
+              lang="bash"
+              code={`openssl dhparam -out /etc/ssl/workshop/dhparam.pem 2048\n# Atenção: leva 2-5 minutos — é normal, não cancele`}
+            />
+
             <CodeBlock
               title="/etc/nginx/sites-available/reverse-proxy.conf"
               lang="nginx"
-              code={`server {\n    listen 443 ssl;\n    server_name www.workshop.local;\n\n    # Certificados gerados no módulo Web Server & PKI\n    ssl_certificate     /etc/ssl/workshop/www.workshop.local.crt;\n    ssl_certificate_key /etc/ssl/workshop/www.workshop.local.pem;\n\n    location / {\n        proxy_pass         http://192.168.56.120:8080;\n        proxy_set_header   Host $host;\n        proxy_set_header   X-Real-IP $remote_addr;\n        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header   X-Forwarded-Proto $scheme;\n    }\n}\n\n# Redirecionar HTTP → HTTPS\nserver {\n    listen 80;\n    server_name www.workshop.local;\n    return 301 https://$host$request_uri;\n}`}
+              code={`server {\n    listen 443 ssl;\n    server_name www.workshop.local;\n\n    # Certificados gerados no módulo Web Server & PKI\n    ssl_certificate     /etc/ssl/workshop/www.workshop.local.crt;\n    ssl_certificate_key /etc/ssl/workshop/www.workshop.local.pem;\n\n    # Parâmetros DH — proteção contra ataque Logjam\n    ssl_dhparam          /etc/ssl/workshop/dhparam.pem;\n\n    # Restringir versões TLS (desabilitar TLS 1.0 e 1.1)\n    ssl_protocols        TLSv1.2 TLSv1.3;\n    ssl_ciphers          ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305;\n    ssl_prefer_server_ciphers on;\n\n    location / {\n        proxy_pass         http://192.168.56.120:8080;\n        proxy_set_header   Host $host;\n        proxy_set_header   X-Real-IP $remote_addr;\n        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header   X-Forwarded-Proto $scheme;\n    }\n}\n\n# Redirecionar HTTP → HTTPS\nserver {\n    listen 80;\n    server_name www.workshop.local;\n    return 301 https://$host$request_uri;\n}`}
             />
+
+            <InfoBox title="Let's Encrypt para produção (domínio público real)">
+              <p className="text-sm text-text-2 mb-2">
+                Para servidores com domínio público, substitua os certificados autoassinados por Let's Encrypt:
+              </p>
+              <CodeBlock
+                lang="bash"
+                code={`apt install certbot python3-certbot-nginx -y\ncertbot --nginx -d seudominio.com\n# Renovação automática já configurada via systemd timer`}
+              />
+            </InfoBox>
 
             <InfoBox title="X-Forwarded-For — Por que é importante?">
               Sem esse header, o App Server vê apenas o IP do Nginx como origem de todas as

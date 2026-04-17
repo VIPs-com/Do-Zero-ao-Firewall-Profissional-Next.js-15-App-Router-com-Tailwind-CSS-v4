@@ -111,16 +111,43 @@ export default function DnsPage() {
                 lang="bind" 
               />
 
-              <CodeBlock 
+              <CodeBlock
                 title="/etc/bind/named.conf.local"
-                code={`zone "workshop.local" {\n  type master;\n  file "db.workshop.local";\n};`} 
-                lang="bind" 
+                code={`zone "workshop.local" {\n  type master;\n  file "db.workshop.local";\n};\n\n# Zona Reversa — resolve IP → nome (PTR records)\nzone "56.168.192.in-addr.arpa" {\n  type master;\n  file "db.56.168.192";\n};`}
+                lang="bind"
               />
 
-              <CodeBlock 
+              <CodeBlock
                 title="/var/cache/bind/db.workshop.local (Zona Direta)"
                 code={`$TTL 3600\n@ IN SOA ns1.workshop.local. admin.workshop.local. (\n  2026030901 ; Serial\n  3600 ; refresh\n  1800 ; retry\n  604800 ; expire\n  3600 ) ; ttl negativo\n\n@ IN NS ns1.workshop.local.\n\nns1      IN A     192.168.56.100\nfirewall IN A     192.168.56.250\nwww      IN A     192.168.56.120\nwindows  IN A     192.168.57.50\nweb      IN CNAME www`} 
                 lang="bind" 
+              />
+
+              <CodeBlock
+                title="/var/cache/bind/db.56.168.192 (Zona Reversa — Registros PTR)"
+                code={`$TTL 3600
+@ IN SOA ns1.workshop.local. admin.workshop.local. (
+  2026030901 ; Serial
+  3600       ; Refresh
+  1800       ; Retry
+  604800     ; Expire
+  3600 )     ; TTL Negativo
+
+@ IN NS ns1.workshop.local.
+
+100 IN PTR ns1.workshop.local.
+120 IN PTR www.workshop.local.
+250 IN PTR firewall.workshop.local.`}
+                lang="bind"
+              />
+
+              <CodeBlock
+                title="Validar zonas e recarregar BIND9"
+                lang="bash"
+                code={`named-checkconf
+named-checkzone workshop.local /var/cache/bind/db.workshop.local
+named-checkzone 56.168.192.in-addr.arpa /var/cache/bind/db.56.168.192
+systemctl reload named`}
               />
             </div>
           </section>
@@ -150,8 +177,19 @@ export default function DnsPage() {
                   <h4 className="font-bold text-sm mb-1">Testar Resolução</h4>
                   <p className="text-xs text-text-3 mb-3">Use o dig para consultas detalhadas.</p>
                   <CodeBlock code={`dig @127.0.0.1 www.workshop.local\ndig @127.0.0.1 -x 192.168.56.120`} lang="bash" />
-                  <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução bem-sucedida):</p>
+                  <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução direta):</p>
                   <CodeBlock code={`;; ANSWER SECTION:\nwww.workshop.local. 3600 IN A 192.168.56.120\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
+                  <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução reversa — dig -x):</p>
+                  <CodeBlock code={`;; ANSWER SECTION:\n120.56.168.192.in-addr.arpa. 3600 IN PTR www.workshop.local.\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
+                </div>
+              </div>
+
+              <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
+                <Terminal size={20} className="text-accent shrink-0 mt-1" />
+                <div className="flex-1">
+                  <h4 className="font-bold text-sm mb-1">Monitorar Logs do BIND9</h4>
+                  <p className="text-xs text-text-3 mb-3">Acompanhe erros em tempo real durante a configuração:</p>
+                  <CodeBlock code={`journalctl -u named -f`} lang="bash" />
                 </div>
               </div>
             </div>

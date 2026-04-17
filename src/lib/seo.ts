@@ -178,6 +178,10 @@ export const ROUTE_SEO = {
     description:
       'Proteja SSH, Nginx e outros serviços com Fail2ban: jails, filtros regex, ações de ban, integração com iptables e monitoramento de logs.',
   },
+  '/offline': {
+    title: 'Sem conexão',
+    description: 'Você está offline. Verifique sua conexão de rede.',
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

@@ -397,7 +397,43 @@ export default function WanNatPage() {
             </InfoBox>
           </section>
 
-          {/* Section 7: Erros Comuns */}
+          {/* Section 7: Diagnóstico Avançado */}
+          <section id="diagnostico-avancado">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
+                <Activity size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">7. Diagnóstico Avançado</h2>
+            </div>
+
+            <div className="space-y-6">
+              <CodeBlock
+                title="MSS Clamping — evita quebra de pacotes em PPPoE/VPN"
+                lang="bash"
+                code={`# Necessário quando MTU da WAN < 1500 (ex: PPPoE usa MTU 1492)\n# Sem isso, pacotes TCP grandes são fragmentados ou descartados\niptables -t mangle -A POSTROUTING -p tcp \\\n  --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu\n\n# Verificar MTU de cada interface\nip link show | grep mtu`}
+              />
+
+              <CodeBlock
+                title="Conntrack — monitorar limite de conexões"
+                lang="bash"
+                code={`# Ver limite atual\nsysctl net.netfilter.nf_conntrack_max\n\n# Aumentar (ex: servidor com muitos clientes simultâneos)\nsysctl -w net.netfilter.nf_conntrack_max=65536\n\n# Persistir após reboot\necho "net.netfilter.nf_conntrack_max=65536" >> /etc/sysctl.conf\n\n# Monitorar uso atual\nconntrack -L | wc -l\nconntrack -L | grep ESTABLISHED | wc -l`}
+              />
+
+              <CodeBlock
+                title="tcpdump duplo — ver o SNAT em ação em tempo real"
+                lang="bash"
+                code={`# Terminal 1: captura na LAN — pacote com IP PRIVADO de origem\ntcpdump -i enp0s9 -nn host 8.8.8.8\n# Você verá:  192.168.57.50 > 8.8.8.8\n\n# Terminal 2: captura na WAN — pacote com IP PÚBLICO após SNAT\ntcpdump -i enp0s3 -nn host 8.8.8.8\n# Você verá:  192.168.20.200 > 8.8.8.8\n\n# Se SNAT estiver correto: origem no terminal 2 será o IP da WAN`}
+              />
+
+              <InfoBox title="Interpretando o tcpdump duplo">
+                <p className="text-sm text-text-2">
+                  Se o IP de origem no terminal 2 ainda for 192.168.57.x (IP privado), o SNAT não está aplicado — verifique a regra MASQUERADE e se a interface correta está especificada no <code className="text-xs">-o</code> da regra.
+                </p>
+              </InfoBox>
+            </div>
+          </section>
+
+          {/* Section 8: Erros Comuns */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">

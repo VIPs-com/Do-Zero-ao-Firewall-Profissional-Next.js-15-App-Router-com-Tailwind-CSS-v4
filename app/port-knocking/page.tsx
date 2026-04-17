@@ -150,13 +150,59 @@ export default function PortKnockingPage() {
             </HighlightBox>
           </section>
 
-          {/* Section 4: Erros Comuns */}
+          {/* Section 4: Gerenciando a Lista recent */}
+          <section id="proc-recent">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                <Terminal size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Gerenciando a Lista recent</h2>
+            </div>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              O módulo <code>xt_recent</code> expõe as listas de IPs como arquivos em <code>/proc/net/xt_recent/</code>. Você pode inspecionar e manipular essas listas diretamente — útil em situações de emergência ou para depuração.
+            </p>
+
+            <div className="space-y-6">
+              <CodeBlock
+                title="Inspecionar e manipular /proc/net/xt_recent/"
+                lang="bash"
+                code={`# Ver IPs que bateram nas portas (campos: src, ttl, last_seen, oldest_pkt, count)\ncat /proc/net/xt_recent/FASE1\ncat /proc/net/xt_recent/FASE2\n\n# Adicionar IP manualmente (acesso de emergência — bypass do knock)\necho "+192.168.57.50" > /proc/net/xt_recent/FASE2\n\n# Remover IP específico (revogar acesso)\necho "-185.234.12.43" > /proc/net/xt_recent/FASE2\n\n# Limpar lista completa (reset total)\necho "/" > /proc/net/xt_recent/FASE2`}
+              />
+
+              <InfoBox title="Lendo o arquivo /proc/net/xt_recent/FASE1">
+                <p className="text-sm text-text-2 mb-2">Cada linha representa um IP e seus metadados:</p>
+                <code className="text-xs block bg-bg-3 p-2 rounded">src=185.234.12.43 ttl: 118 last_seen: 123456789 oldest_pkt: 123456700 count: 3</code>
+                <ul className="mt-3 space-y-1 text-sm text-text-2 list-disc pl-4">
+                  <li><strong>src</strong> → IP de origem do atacante</li>
+                  <li><strong>ttl</strong> → TTL do pacote — revela o sistema operacional</li>
+                  <li><strong>last_seen</strong> → timestamp da última batida (jiffies)</li>
+                  <li><strong>count</strong> → número de pacotes registrados</li>
+                </ul>
+              </InfoBox>
+
+              <HighlightBox title="💡 TTL como Fingerprint de SO">
+                <p className="text-sm text-text-2">
+                  O campo <strong>ttl</strong> no arquivo <code>/proc/net/xt_recent</code> revela o sistema operacional de quem está batendo nas portas:
+                </p>
+                <ul className="mt-2 space-y-1 text-sm text-text-2 list-disc pl-4">
+                  <li><strong>64</strong> → Linux / macOS</li>
+                  <li><strong>128</strong> → Windows</li>
+                  <li><strong>255</strong> → equipamento de rede (roteador, switch gerenciável)</li>
+                </ul>
+                <p className="text-sm text-text-2 mt-2">
+                  TTL entre esses valores (ex: 118) indica que o pacote passou por alguns roteadores antes de chegar. 118 ≈ Windows (128 - 10 hops).
+                </p>
+              </HighlightBox>
+            </div>
+          </section>
+
+          {/* Section 5: Erros Comuns */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com Port Knocking">
@@ -215,10 +261,26 @@ export default function PortKnockingPage() {
           <div className="p-6 rounded-xl bg-bg-2 border border-border shadow-sm">
             <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
               <Zap size={16} className="text-accent" />
-              Comando para "Bater"
+              Comando para &quot;Bater&quot;
             </h3>
             <p className="text-[10px] text-text-3 mb-4">Use o nmap ou telnet para enviar os pacotes:</p>
             <CodeBlock code={`nmap -p 1000 IP-FIREWALL\nnmap -p 2000 IP-FIREWALL\nssh user@IP-FIREWALL`} lang="bash" />
+            <div className="mt-4 space-y-2">
+              <a
+                href="/scripts/entrar.sh"
+                download
+                className="flex items-center gap-2 px-3 py-2 bg-ok/10 hover:bg-ok/20 border border-ok/30 rounded-lg text-xs font-bold text-ok transition-all"
+              >
+                ⬇ entrar.sh (auto-knock)
+              </a>
+              <a
+                href="/scripts/knock-monitor.sh"
+                download
+                className="flex items-center gap-2 px-3 py-2 bg-info/10 hover:bg-info/20 border border-info/30 rounded-lg text-xs font-bold text-info transition-all"
+              >
+                ⬇ knock-monitor.sh
+              </a>
+            </div>
           </div>
 
           <WarnBox title="Dica de Ouro">
