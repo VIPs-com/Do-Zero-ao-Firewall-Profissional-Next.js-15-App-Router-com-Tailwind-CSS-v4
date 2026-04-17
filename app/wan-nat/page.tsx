@@ -439,7 +439,7 @@ export default function WanNatPage() {
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">7. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">8. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com Firewall & NAT">
