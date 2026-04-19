@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { ShieldAlert, ShieldCheck, Zap, Terminal, Info, AlertTriangle, ArrowRightLeft, Skull } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function PivotingPage() {
   const { trackPageVisit, unlockBadge } = useBadges();
@@ -188,6 +189,9 @@ export default function PivotingPage() {
           </div>
         </aside>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/pivoteamento" />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { RosettaStone } from '@/components/ui/RosettaStone';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 const CHECKLIST_ITEMS = [
   // Sprint W — Terminal & Mindset
@@ -487,6 +488,9 @@ export default function InstallationPage() {
           </div>
         </aside>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/instalacao" />
     </div>
   );
 }

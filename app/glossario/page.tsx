@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Search, Book, Hash, Shield, Globe, Lock, Terminal, Zap, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 interface Term {
   term: string;
@@ -173,6 +174,9 @@ export default function GlossaryPage() {
           <p className="text-text-3">Tente buscar por outra palavra ou limpe os filtros.</p>
         </div>
       )}
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/glossario" />
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { CheckCircle2, XCircle, RefreshCw, Award, ChevronRight, ChevronLeft, Tro
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { QUIZ_QUESTIONS, type QuizQuestion } from '@/data/quizQuestions';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 /* Sprint F — perguntas extraídas para src/data/quizQuestions.ts (reduz o bundle da rota /quiz). */
 const QUESTIONS: QuizQuestion[] = QUIZ_QUESTIONS;
@@ -251,6 +252,9 @@ export default function QuizPage() {
           </div>
         </motion.div>
       </AnimatePresence>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/quiz" />
     </div>
   );
 }

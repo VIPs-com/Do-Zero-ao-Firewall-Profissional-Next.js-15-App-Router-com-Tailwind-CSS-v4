@@ -7,6 +7,7 @@ import { StepItem } from '@/components/ui/Steps';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
 const MOCK_LOGS = [
@@ -529,6 +530,9 @@ tail -f /var/log/auditoria/knock.log`} />
           </div>
         </aside>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/audit-logs" />
     </div>
   );
 }

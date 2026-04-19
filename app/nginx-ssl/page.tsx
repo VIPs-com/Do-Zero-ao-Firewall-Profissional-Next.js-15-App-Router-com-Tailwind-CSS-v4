@@ -6,6 +6,7 @@ import { Shield, Terminal, Lock, ArrowRight, Server, Globe, AlertTriangle } from
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
 export default function NginxSslPage() {
@@ -178,6 +179,7 @@ certbot --nginx -d seudominio.com -d www.seudominio.com
 # ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;`}
             />
 
+            <p className="text-xs text-text-3 mt-4 mb-1 font-mono">▶ Saída esperada — certbot certificates:</p>
             <CodeBlock
               title="Verificar certificado obtido"
               lang="bash"
@@ -198,6 +200,7 @@ curl -vI https://seudominio.com 2>&1 | grep "SSL certificate"
 # SSL certificate verify ok.`}
             />
 
+            <p className="text-xs text-text-3 mt-4 mb-1 font-mono">▶ Saída esperada — certbot renew --dry-run:</p>
             <CodeBlock
               title="Testar renovação automática (dry-run)"
               lang="bash"
@@ -357,23 +360,11 @@ certbot renew --force-renewal`}
             </div>
           </div>
 
-          {/* Link para módulo anterior */}
-          <div className="p-5 rounded-xl bg-bg-2 border border-border">
-            <p className="text-xs text-text-3 mb-3">Módulo anterior</p>
-            <Link
-              href="/web-server"
-              className="flex items-center gap-2 text-sm font-medium text-accent-2 hover:text-accent transition-colors"
-            >
-              🔒 Web Server & PKI
-              <ArrowRight size={14} />
-            </Link>
-            <p className="text-[10px] text-text-3 mt-1">
-              Geração de certificados e configuração base do Nginx
-            </p>
-          </div>
-
         </aside>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/nginx-ssl" />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { CodeBlock } from '@/components/ui/CodeBlock';
 import { StepItem } from '@/components/ui/Steps';
 import { InfoBox, WarnBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function ProxmoxPage() {
   const { trackPageVisit, updateChecklist, checklist, unlockBadge } = useBadges();
@@ -443,6 +444,9 @@ qm migrate 100 node2 --online`}
           </div>
         </div>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/proxmox" />
     </div>
   );
 }

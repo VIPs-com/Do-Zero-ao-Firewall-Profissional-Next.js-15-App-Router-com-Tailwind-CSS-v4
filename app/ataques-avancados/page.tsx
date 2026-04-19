@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ShieldAlert, Zap, Terminal, Info, AlertTriangle, ShieldCheck, Bug, Clock, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function AdvancedAttacksPage() {
   const { trackPageVisit } = useBadges();
@@ -138,6 +139,9 @@ export default function AdvancedAttacksPage() {
           <Link href="/cheat-sheet" className="btn-secondary px-8 py-3">Ver Cheat Sheet</Link>
         </div>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/ataques-avancados" />
     </div>
   );
 }

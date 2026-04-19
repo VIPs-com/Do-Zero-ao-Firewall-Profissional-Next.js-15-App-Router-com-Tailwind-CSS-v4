@@ -7,6 +7,7 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { StepItem } from '@/components/ui/Steps';
 import { InfoBox } from '@/components/ui/Boxes';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function LaboratorioPage() {
   const { trackPageVisit, updateChecklist, checklist } = useBadges();
@@ -391,6 +392,9 @@ virsh net-list --all`}
           Instale com <code className="font-mono bg-bg-3 px-1 rounded">apt install &lt;pacotes&gt; -y</code> em cada VM após o primeiro boot.
         </p>
       </section>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/laboratorio" />
     </div>
   );
 }

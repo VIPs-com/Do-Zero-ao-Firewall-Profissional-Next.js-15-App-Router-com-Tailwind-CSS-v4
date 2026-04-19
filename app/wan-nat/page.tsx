@@ -9,6 +9,7 @@ import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
 // Checklist espelhando os 13 itens da Aula 2 do Professor Vagner
@@ -627,10 +628,13 @@ cat /proc/net/xt_recent/abre-ssh     # Função 5: IPs autorizados ao SSH`} />
         </aside>
       </div>
 
-      <DeepDiveModal 
-        dive={activeDeepDive} 
-        onClose={() => setActiveDeepDive(null)} 
+      <DeepDiveModal
+        dive={activeDeepDive}
+        onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/wan-nat" />
     </div>
   );
 }

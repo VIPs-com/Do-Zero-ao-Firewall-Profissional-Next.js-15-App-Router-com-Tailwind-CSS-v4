@@ -6,6 +6,7 @@ import { Shield, Key, Server, Laptop, ArrowRight, CheckCircle2, Circle, AlertTri
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
 const WG_CHECKLIST = [
@@ -418,6 +419,9 @@ export default function WireGuardPage() {
 
         </aside>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/wireguard" />
     </div>
   );
 }

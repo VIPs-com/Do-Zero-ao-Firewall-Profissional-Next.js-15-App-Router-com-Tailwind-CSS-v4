@@ -6,6 +6,7 @@ import { Shield, Terminal, ArrowRight, Zap, AlertTriangle } from 'lucide-react';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
 import { LayerBadge } from '@/components/ui/LayerBadge';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
 const EQUIVALENCIA = [
@@ -366,6 +367,9 @@ export default function NftablesPage() {
 
         </aside>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/nftables" />
     </div>
   );
 }

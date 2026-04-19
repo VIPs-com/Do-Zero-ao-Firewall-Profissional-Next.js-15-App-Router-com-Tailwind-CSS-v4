@@ -11,6 +11,7 @@ import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
 
 import { useBadges } from '@/context/BadgeContext';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { Circle, CheckCircle2 } from 'lucide-react';
 
 const PROXY_CHECKLIST = [
@@ -418,10 +419,13 @@ acl negados dstdomain "/etc/squid/negados.txt"
         </aside>
       </div>
 
-      <DeepDiveModal 
-        dive={activeDeepDive} 
-        onClose={() => setActiveDeepDive(null)} 
+      <DeepDiveModal
+        dive={activeDeepDive}
+        onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/lan-proxy" />
     </div>
   );
 }

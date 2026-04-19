@@ -10,6 +10,7 @@ import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { Circle, CheckCircle2 } from 'lucide-react';
 
 const DNAT_CHECKLIST = [
@@ -412,10 +413,13 @@ curl -k https://192.168.20.200`} />
         </aside>
       </div>
 
-      <DeepDiveModal 
-        dive={activeDeepDive} 
-        onClose={() => setActiveDeepDive(null)} 
+      <DeepDiveModal
+        dive={activeDeepDive}
+        onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/dnat" />
     </div>
   );
 }

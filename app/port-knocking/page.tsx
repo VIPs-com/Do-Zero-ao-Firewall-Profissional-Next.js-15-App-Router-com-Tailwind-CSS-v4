@@ -9,6 +9,7 @@ import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle, CheckCircle2 } from 'lucide-react';
 
@@ -408,10 +409,13 @@ grep "Failed password" /var/log/auth.log | wc -l
         </aside>
       </div>
 
-      <DeepDiveModal 
-        dive={activeDeepDive} 
-        onClose={() => setActiveDeepDive(null)} 
+      <DeepDiveModal
+        dive={activeDeepDive}
+        onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/port-knocking" />
     </div>
   );
 }

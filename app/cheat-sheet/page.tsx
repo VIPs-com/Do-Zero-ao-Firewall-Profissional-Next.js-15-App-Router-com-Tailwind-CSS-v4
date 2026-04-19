@@ -9,6 +9,7 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
 import { TroubleshootingCard, TroubleshootingStep } from '@/components/ui/TroubleshootingCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 interface Command {
   id: string;
@@ -397,6 +398,9 @@ export default function CheatSheetPage() {
           </div>
         </div>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/cheat-sheet" />
     </div>
   );
 }

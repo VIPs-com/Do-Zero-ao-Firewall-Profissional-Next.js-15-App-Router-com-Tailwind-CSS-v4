@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import { Award, Download, Share2, CheckCircle2, AlertCircle, Printer, Terminal, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 const COMPETENCIAS = [
   { icon: '🛡️', text: 'Configuração de firewall iptables (SNAT, DNAT, FORWARD, INPUT, OUTPUT)' },
@@ -301,6 +302,9 @@ export default function CertificatePage() {
           </p>
         </div>
       </section>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/certificado" />
     </div>
   );
 }

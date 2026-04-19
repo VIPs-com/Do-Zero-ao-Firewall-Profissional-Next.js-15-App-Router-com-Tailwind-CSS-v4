@@ -9,6 +9,7 @@ import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle } from 'lucide-react';
 
@@ -296,10 +297,13 @@ systemctl reload named`}
         </aside>
       </div>
 
-      <DeepDiveModal 
-        dive={activeDeepDive} 
-        onClose={() => setActiveDeepDive(null)} 
+      <DeepDiveModal
+        dive={activeDeepDive}
+        onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/dns" />
     </div>
   );
 }

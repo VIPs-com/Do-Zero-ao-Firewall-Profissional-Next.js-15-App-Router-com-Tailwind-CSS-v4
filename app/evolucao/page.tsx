@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Rocket, Zap, Shield, Globe, Terminal, Cpu, Layout, Server } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function EvolutionPage() {
   return (
@@ -81,6 +82,9 @@ export default function EvolutionPage() {
           ))}
         </div>
       </section>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/evolucao" />
     </div>
   );
 }

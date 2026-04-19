@@ -6,6 +6,7 @@ import { Shield, Eye, FileText, Ban, ArrowRight, CheckCircle2, Circle, AlertTria
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
 const F2B_CHECKLIST = [
@@ -393,6 +394,9 @@ export default function Fail2banPage() {
 
         </aside>
       </div>
+
+      {/* Navegação sequencial */}
+      <ModuleNav currentPath="/fail2ban" />
     </div>
   );
 }
