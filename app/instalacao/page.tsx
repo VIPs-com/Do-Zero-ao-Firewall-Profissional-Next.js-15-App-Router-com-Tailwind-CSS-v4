@@ -7,10 +7,15 @@ import { CheckCircle2, Terminal, Info, Package, Laptop, Shield } from 'lucide-re
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { StepItem, ChecklistItem } from '@/components/ui/Steps';
-import { InfoBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 
 const CHECKLIST_ITEMS = [
+  // Sprint W — Terminal & Mindset
+  { id: 'terminal-basico', text: '💻 Terminal Básico', sub: 'Executei pwd, ls, cd e cat no terminal', layer: 'Fundação' },
+  { id: 'sudo-entendido', text: '🔑 Sudo = Admin', sub: 'Entendi que sudo = Executar como Administrador', layer: 'Fundação' },
+  { id: 'sysadmin-mindset', text: '🧠 Mindset SysAdmin', sub: 'Li o comparativo Windows vs Linux — systemctl/journalctl', layer: 'Fundação' },
+  // Validação do lab
   { id: 'ping-internet', text: '🌍 Ping Internet', sub: 'ping -c 3 8.8.8.8 funciona', layer: 'Camada 3' },
   { id: 'dns-resolve', text: '📖 DNS Resolve', sub: 'ping -c 3 google.com funciona', layer: 'Camada 7' },
   { id: 'dns-interno', text: '🏠 DNS Interno', sub: 'dig @DNS-SERVER www.workshop.local resolve', layer: 'Camada 7' },
@@ -112,6 +117,158 @@ export default function InstallationPage() {
               icon={<Package size={20} />} 
             />
           </div>
+
+          {/* Terminal do Zero */}
+          <section id="terminal-do-zero">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <Terminal size={24} className="text-accent" />
+              0. Terminal do Zero — Linux para quem vem do Windows
+            </h2>
+
+            <WarnBox title="Atenção antes de começar">
+              <p className="text-sm text-text-2">
+                O terminal do Linux <strong>NÃO é</strong> o Prompt de Comando do Windows.
+                Maiúsculas e minúsculas importam: <code>Arquivo.txt</code> ≠ <code>arquivo.txt</code>.
+                <strong> Ctrl+C CANCELA</strong> um comando (não copia!) — use <strong>Ctrl+Shift+C</strong> para copiar.
+              </p>
+            </WarnBox>
+
+            <WindowsComparisonBox
+              windowsCode={`dir              ← listar arquivos\ncd C:\\Users      ← navegar pasta\ntype arquivo.txt ← ler arquivo\nipconfig         ← ver IP\nping -n 4 8.8.8.8`}
+              linuxCode={`ls -la           # listar arquivos\ncd /home/user    # navegar pasta\ncat arquivo.txt  # ler arquivo\nip addr          # ver IP\nping -c 4 8.8.8.8`}
+            />
+
+            <div className="highlight-box mt-4">
+              <div className="flex items-center gap-2 mb-2 text-accent font-bold uppercase tracking-widest text-[10px]">
+                <span aria-hidden="true">💡</span>
+                3 atalhos que salvam vidas
+              </div>
+              <div className="grid sm:grid-cols-3 gap-3 mt-3">
+                {[
+                  { key: 'Tab', desc: 'Autocompleta nomes (não existe no CMD!)' },
+                  { key: '↑ / ↓', desc: 'Navega pelo histórico de comandos' },
+                  { key: 'Ctrl+L', desc: 'Limpa a tela (= cls no Windows)' },
+                ].map(tip => (
+                  <div key={tip.key} className="p-3 rounded-lg bg-bg-3 border border-border">
+                    <kbd className="inline-block px-2 py-1 rounded bg-bg-2 border border-border text-accent font-mono text-sm mb-2">{tip.key}</kbd>
+                    <p className="text-xs text-text-2">{tip.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <CodeBlock
+              title="Seus primeiros 5 comandos no terminal Linux"
+              lang="bash"
+              code={`pwd                    # onde estou? (= "C:\\Users\\..." no Windows)\nls -la                 # o que tem aqui? (= dir)\ncd ~                   # ir para home (= cd %USERPROFILE%)\nmkdir ~/lab-testes     # criar pasta (= mkdir)\ncat /etc/hostname      # ler arquivo (= type)`}
+            />
+
+            <WarnBox title="sudo = 'Executar como Administrador'">
+              <p className="text-sm text-text-2 mb-3">
+                Toda vez que vir <strong>"Permission denied"</strong>, adicione <code>sudo</code> antes do comando.
+                <br />
+                <strong>sudo</strong> = Super User DO. É o equivalente de clicar com botão direito
+                → <em>"Executar como administrador"</em> no Windows.
+              </p>
+              <CodeBlock
+                lang="bash"
+                code={`# Windows: botão direito → "Executar como administrador"\n# Linux:\nsudo apt update                    # atualizar lista de pacotes\nsudo systemctl restart nginx       # reiniciar serviço\nsudo nano /etc/hosts               # editar arquivo do sistema`}
+              />
+            </WarnBox>
+
+            <div className="mt-4 space-y-2">
+              {(['terminal-basico', 'sudo-entendido'] as const).map(id => {
+                const item = CHECKLIST_ITEMS.find(i => i.id === id)!;
+                return (
+                  <ChecklistItem
+                    key={id}
+                    text={item.text}
+                    sub={item.sub}
+                    layer={item.layer}
+                    checked={!!checklist[id]}
+                    onToggle={() => toggleCheck(id)}
+                  />
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Mindset SysAdmin */}
+          <section id="sysadmin-mindset">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <Shield size={24} className="text-ok" />
+              0.1 Mindset SysAdmin — De Usuário Windows a Administrador Linux
+            </h2>
+
+            <div className="info-box mb-4">
+              <div className="flex items-center gap-2 mb-2 text-info font-bold uppercase tracking-widest text-[10px]">
+                <Info size={14} />
+                Como o Linux pensa
+              </div>
+              <p className="text-sm text-text-2">
+                No Windows, você <strong>clica</strong> para configurar.
+                No Linux, você <strong>edita arquivos de texto</strong> em <code>/etc/</code> e usa comandos no terminal.
+                Cada serviço tem um arquivo de configuração — isso é uma vantagem: tudo é versionável com Git.
+              </p>
+            </div>
+
+            <WindowsComparisonBox
+              linuxLabel="Linux (systemd / bash)"
+              windowsLabel="Windows (GUI / cmd)"
+              windowsCode={`Serviços (services.msc)\nVisualizador de Eventos\nFirewall do Windows\nGerenciador de Tarefas\nPainel de Controle → Rede\nAgendador de Tarefas`}
+              linuxCode={`systemctl list-units --type=service\njournalctl -u nginx -f\niptables -L  /  nft list ruleset\nhtop  /  ps aux\nip addr  /  nmcli\ncron  /  systemd timers`}
+            />
+
+            <CodeBlock
+              title="Gerenciar serviços (= Serviços do Windows)"
+              lang="bash"
+              code={`systemctl status nginx      # ver estado do serviço\nsystemctl start nginx       # iniciar\nsystemctl stop nginx        # parar\nsystemctl enable nginx      # iniciar automaticamente no boot\nsystemctl restart nginx     # reiniciar (ex: após editar config)`}
+            />
+
+            <CodeBlock
+              title="Ver logs (= Visualizador de Eventos do Windows)"
+              lang="bash"
+              code={`journalctl -u nginx -f              # logs do Nginx em tempo real\njournalctl --since "1 hour ago"     # última hora\ntail -f /var/log/syslog             # syslog geral`}
+            />
+
+            <InfoBox title="Onde ficam as configurações (= C:\\Program Files\\... no Windows)">
+              <div className="font-mono text-xs space-y-1 mt-2">
+                {[
+                  ['/etc/nginx/nginx.conf', 'configuração do Nginx'],
+                  ['/etc/bind/named.conf', 'configuração do BIND9'],
+                  ['/etc/iptables/rules.v4', 'regras do firewall persistidas'],
+                  ['/var/log/', 'logs de todos os serviços'],
+                ].map(([path, desc]) => (
+                  <div key={path} className="flex flex-wrap gap-2">
+                    <code className="text-accent-2">{path}</code>
+                    <span className="text-text-3">← {desc}</span>
+                  </div>
+                ))}
+              </div>
+            </InfoBox>
+
+            <div className="highlight-box mt-4">
+              <div className="flex items-center gap-2 mb-2 text-accent font-bold uppercase tracking-widest text-[10px]">
+                <span aria-hidden="true">💡</span>
+                A regra de ouro do Linux
+              </div>
+              <p className="text-sm text-text-2">
+                <strong>Um arquivo de texto em <code>/etc/</code> controla cada serviço.</strong>
+                <br />
+                Edite, salve e reinicie o serviço com <code>systemctl restart</code>. Simples assim.
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <ChecklistItem
+                text={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.text}
+                sub={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.sub}
+                layer={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.layer}
+                checked={!!checklist['sysadmin-mindset']}
+                onToggle={() => toggleCheck('sysadmin-mindset')}
+              />
+            </div>
+          </section>
 
           {/* IP Architecture */}
           <section id="arquitetura">

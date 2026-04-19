@@ -263,6 +263,91 @@ export default function CheatSheetPage() {
         </InfoBox>
       </div>
 
+      {/* Windows → Linux: Tabela de Equivalências */}
+      <section id="windows-linux" className="mt-8 p-6 rounded-xl bg-bg-2 border border-border">
+        <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <span aria-hidden="true">🪟→🐧</span>
+          Windows → Linux — Tabela de Equivalências
+        </h2>
+        <p className="text-sm text-text-2 mb-6">
+          Referência rápida para quem migra do Windows para administração Linux.
+        </p>
+
+        {[
+          {
+            group: 'Navegação e Arquivos',
+            rows: [
+              ['Listar arquivos',    'dir',            'ls -la'],
+              ['Navegar pasta',      'cd C:\\pasta',   'cd /pasta'],
+              ['Ver arquivo',        'type arq.txt',   'cat arq.txt'],
+              ['Criar pasta',        'mkdir pasta',    'mkdir -p pasta'],
+              ['Copiar arquivo',     'copy src dst',   'cp src dst'],
+              ['Mover / renomear',   'move src dst',   'mv src dst'],
+              ['Deletar arquivo',    'del arquivo',    'rm arquivo'],
+              ['Limpar tela',        'cls',            'clear  /  Ctrl+L'],
+            ],
+          },
+          {
+            group: 'Rede e Diagnóstico',
+            rows: [
+              ['Ver IPs',            'ipconfig',          'ip addr  /  ifconfig'],
+              ['Ping',               'ping -n 4 IP',      'ping -c 4 IP'],
+              ['Tabela de rotas',    'route print',       'ip route'],
+              ['Portas abertas',     'netstat -ano',      'ss -tlnp'],
+              ['DNS lookup',         'nslookup host',     'dig host'],
+              ['Traçar rota',        'tracert host',      'traceroute host'],
+              ['IP público',         '(navegador)',        'curl ifconfig.me'],
+            ],
+          },
+          {
+            group: 'Processos e Serviços',
+            rows: [
+              ['Ver processos',      'tasklist',          'ps aux  /  htop'],
+              ['Matar processo',     'taskkill /PID NNN', 'kill -9 PID'],
+              ['Listar serviços',    'services.msc',      'systemctl list-units --type=service'],
+              ['Iniciar serviço',    'net start svc',     'systemctl start svc'],
+              ['Parar serviço',      'net stop svc',      'systemctl stop svc'],
+              ['Boot automático',    '(checkbox GUI)',     'systemctl enable svc'],
+            ],
+          },
+          {
+            group: 'Admin e Logs',
+            rows: [
+              ['Executar como admin', 'Run as Admin',     'sudo comando'],
+              ['Instalar software',   '.exe  /  winget',  'apt install pacote'],
+              ['Ver logs',            'Visualizador de Eventos', 'journalctl -u svc -f'],
+              ['Editor de texto',     'notepad arq',      'vim arq  /  nano arq'],
+              ['Variável de ambiente','set VAR=val',       'export VAR=val'],
+              ['Editar hosts',        'C:\\Windows\\System32\\drivers\\etc\\hosts', 'sudo vim /etc/hosts'],
+            ],
+          },
+        ].map(section => (
+          <div key={section.group} className="mb-6">
+            <h3 className="text-xs font-bold uppercase tracking-widest text-text-3 mb-3 px-1">{section.group}</h3>
+            <div className="overflow-x-auto rounded-lg border border-border">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="bg-bg-3">
+                    <th className="text-left p-2 text-xs font-bold text-text-3 border-b border-border w-1/3">Ação</th>
+                    <th className="text-left p-2 text-xs font-bold text-blue-400 border-b border-border border-l w-1/3">🪟 Windows</th>
+                    <th className="text-left p-2 text-xs font-bold text-ok border-b border-border border-l w-1/3">🐧 Linux</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {section.rows.map(([action, win, linux]) => (
+                    <tr key={action} className="bg-bg-2 hover:bg-bg-3 transition-colors">
+                      <td className="p-2 text-xs text-text-2">{action}</td>
+                      <td className="p-2 font-mono text-[11px] text-blue-300 border-l border-border">{win}</td>
+                      <td className="p-2 font-mono text-[11px] text-ok border-l border-border">{linux}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))}
+      </section>
+
       {/* Scripts para Download */}
       <div className="mt-8 p-6 rounded-xl bg-bg-2 border border-border">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">

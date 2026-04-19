@@ -125,4 +125,17 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'c-knock-monitor', title: 'knock-monitor — alertas coloridos Port Knocking em tempo real',
     description: 'LEGÍTIMO / SUSPEITO / SSH SEM KNOCK / LOGIN SSH. Roda em background com nohup.',
     category: 'Comando', href: '/audit-logs#forense-knock', icon: Eye },
+
+  // Sprint W — Windows-to-Linux
+  { id: 't-terminal-zero', title: 'Terminal do Zero — Linux para quem vem do Windows',
+    description: 'pwd, ls, cd, sudo. Ctrl+Shift+C para copiar. Tab para autocompletar.',
+    category: 'Tópico', href: '/instalacao#terminal-do-zero', icon: Terminal },
+
+  { id: 't-sysadmin-mindset', title: 'Mindset SysAdmin — Windows vs Linux',
+    description: 'systemctl vs Serviços, journalctl vs Event Viewer, iptables vs Firewall.',
+    category: 'Tópico', href: '/instalacao#sysadmin-mindset', icon: Shield },
+
+  { id: 't-win-linux-table', title: 'Tabela Windows → Linux — Equivalências de Comandos',
+    description: 'dir=ls, ipconfig=ip addr, services.msc=systemctl, Event Viewer=journalctl.',
+    category: 'Tópico', href: '/cheat-sheet#windows-linux', icon: FileText },
 ];

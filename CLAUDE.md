@@ -103,8 +103,8 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 20 (+ /laboratorio + /proxmox) |
-| `totalTopics` | `app/dashboard/page.tsx` | 43 (+ 5 sub-seções SIGMA Fase 3) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 56 (ALL_CHECKLIST_IDS.length — inclui Sprint SIGMA Fase 2) |
+| `totalTopics` | `app/dashboard/page.tsx` | 45 (+ 2 tópicos Sprint W: terminal-do-zero, sysadmin-mindset) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 59 (ALL_CHECKLIST_IDS.length — Sprint W: +3 terminal-basico, sudo-entendido, sysadmin-mindset) |
 | Texto na Home | `app/page.tsx` | "40+ topicos praticos" |
 
 ---
@@ -331,6 +331,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint SIGMA: Resgate Total + Elite Lab — /laboratorio (VirtualBox vs KVM vs Proxmox, KVM/libvirt completo), /proxmox (VE produção: bridges vmbr, VMs, snapshots, cluster HA), Certbot + HTTP-01 challenge em /nginx-ssl, badges proxmox-pioneer + resgate-gold, CONTENT_PAGES_COUNT 18→20, checklistItemsCount 35→45, totalTopics 26→38
 - ✅ Sprint SIGMA Fase 2: Integração dos 20 arquivos bônus — /port-knocking (admin em ação, bot invisibility), /audit-logs (forense: scripts audit-knock + knock-monitor, rotação 90 dias), /wan-nat (5 funções simultâneas + conntrack mágico), /dnat (PREROUTING kernel: 5 hooks Netfilter, troca cirúrgica, tcpdump duplo), /lan-proxy (FluxoCard timeline t=0ms→t=52ms, HTTP vs HTTPS), checklistItemsCount 45→56
 - ✅ Sprint SIGMA Fase 3: Polimento final — badge 🔬 sigma-master (11 checkpoints Fase 2), +6 itens de busca (Ctrl+K encontra todas as seções avançadas), +5 tópicos (IDs 38–42) nos grupos existentes, totalTopics 38→43, SEO enriquecido para 5 rotas
+- ✅ Sprint W: Windows-to-Linux — WindowsComparisonBox (Boxes.tsx), seções "Terminal do Zero" + "Mindset SysAdmin" em /instalacao, tabela Windows↔Linux em /cheat-sheet#windows-linux, +3 checkpoints, checklistItemsCount 56→59, totalTopics 43→45, +3 searchItems (69 total)
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

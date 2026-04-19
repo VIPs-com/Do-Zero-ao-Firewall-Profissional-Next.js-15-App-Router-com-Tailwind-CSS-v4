@@ -97,6 +97,10 @@ const TOPICS: Topic[] = [
   { id: '40', num: '40', title: 'As 5 funções simultâneas do Firewall (Roteador+Filtro+Tradutor+Proxy+Guardião) e a magia do conntrack IDA/VOLTA.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/wan-nat#anatomia-nat', group: 'WAN, NAT & ESTABLISHED' },
   { id: '41', num: '41', title: 'PREROUTING pelo kernel: os 5 hooks do Netfilter, a troca cirúrgica do IP e tcpdump antes e depois do DNAT.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/dnat#prerouting-kernel', group: 'DNAT & PREROUTING' },
   { id: '42', num: '42', title: 'Fluxo completo de navegação via Squid: timeline t=0ms→t=52ms, HTTP vs HTTPS e os 4 cenários de ACL.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/lan-proxy#fluxo-navegacao', group: 'LAN, DNS & Proxy' },
+
+  // ── Sprint W — Windows-to-Linux ───────────────────────────────────────────────
+  { id: '43', num: '43', title: 'Terminal do Zero para Windows users: pwd, ls, sudo, Tab autocompletar, Ctrl+Shift+C para copiar.', layer: 'Fundação · Terminal', layerClass: 'l7', href: '/instalacao#terminal-do-zero', group: 'Fundação & Terminal' },
+  { id: '44', num: '44', title: 'Mindset SysAdmin: systemctl vs Serviços Windows, journalctl vs Event Viewer, /etc/ vs Program Files.', layer: 'Fundação · Conceitos', layerClass: 'l7', href: '/instalacao#sysadmin-mindset', group: 'Fundação & Terminal' },
 ];
 
 export default function TopicsPage() {

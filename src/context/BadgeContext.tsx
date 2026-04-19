@@ -73,7 +73,9 @@ export const ALL_CHECKLIST_IDS = [
   'prerouting-deep-dive', 'conntrack-dnat-mapping',
   // Sprint SIGMA Fase 2 — /lan-proxy
   'squid-flow-understood', 'squid-http-vs-https',
-]; // 56 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint W — Windows-to-Linux (/instalacao)
+  'terminal-basico', 'sudo-entendido', 'sysadmin-mindset',
+]; // 59 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
