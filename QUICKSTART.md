@@ -39,11 +39,12 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 | `/app/opengraph-image.tsx` · `icon.tsx` · `apple-icon.tsx` | Assets dinâmicos via `next/og` |
 | `/proxy.ts` | **Next.js 16** — CSP nonce per-request (Sprint E) |
 | `/next.config.ts` | Headers de segurança (HSTS, X-Frame-Options, Permissions-Policy…) |
-| `/src/components/ui/` | Primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge… |
+| `/src/components/ui/` | Primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav… |
 | `/src/components/ClientLayout.tsx` | Header, nav, toggle dark/light, busca global |
 | `/src/context/BadgeContext.tsx` | Estado global: badges, progresso, checkpoints |
 | `/src/data/quizQuestions.ts` | Perguntas do quiz extraídas (Sprint F) |
-| `/src/data/searchItems.ts` | Índice da busca global ⌘K (60 itens) |
+| `/src/data/searchItems.ts` | Índice da busca global ⌘K (71 itens) |
+| `/src/data/courseOrder.ts` | Sequência de 21 módulos — usada pelo ModuleNav |
 | `/src/data/deepDives.tsx` | Conteúdo dos 6 modais avançados |
 | `/src/lib/seo.ts` | **Fonte única** — `SITE_CONFIG`, `ROUTE_SEO`, `buildMetadata()` |
 | `/src/lib/useFocusTrap.ts` | Hook a11y — focus trap + ESC + restore focus |
@@ -60,6 +61,7 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 3. Adicionar entrada em ROUTE_SEO['/nova-rota'] em src/lib/seo.ts
 4. Registrar em ClientLayout.tsx → NAV_LINKS
 5. Indexar em searchItems.ts → SEARCH_ITEMS
+6. (Opcional) Adicionar à sequência em src/data/courseOrder.ts + inserir <ModuleNav> no rodapé
 ```
 
 > O `sitemap.xml` é gerado automaticamente a partir de `ROUTE_SEO`.
@@ -204,4 +206,4 @@ node_modules/
 
 `Next.js 16.2.2` · `React 19` · `TypeScript 5.8` · `Tailwind CSS v4` · `Turbopack` · `motion/react 12` · `Lucide React`
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo) · P (Diamond Polish) · L (Legacy Gold — TroubleshootingCard, zona reversa, FTP DNAT, xt_recent, dhparam, /offline) · SIGMA (Elite Lab — /laboratorio, /proxmox, Certbot, badges, 56 checkpoints) · SIGMA Fase 3 (badge 🔬 sigma-master, +6 busca, +5 tópicos, totalTopics 43) · W (Windows-to-Linux — WindowsComparisonBox, Terminal do Zero, Mindset SysAdmin, tabela equivalências) · **W2 (RosettaStone 25 comandos, resgate-gold.sh, badge 🧭 explorador-mundos, FluxoCard OSI, seção certificado — 60 checkpoints, 25 badges)**
+**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo) · P (Diamond Polish) · L (Legacy Gold — TroubleshootingCard, zona reversa, FTP DNAT, xt_recent, dhparam, /offline) · SIGMA (Elite Lab — /laboratorio, /proxmox, Certbot, badges, 56 checkpoints) · SIGMA Fase 3 (badge 🔬 sigma-master, +6 busca, +5 tópicos, totalTopics 43) · W (Windows-to-Linux — WindowsComparisonBox, Terminal do Zero, Mindset SysAdmin, tabela equivalências) · W2 (RosettaStone 25 comandos, resgate-gold.sh, badge 🧭 explorador-mundos, FluxoCard OSI, seção certificado — 60 checkpoints, 25 badges) · **Polish (ModuleNav Anterior/Próximo nas 20 páginas, courseOrder.ts 21 módulos, labels certbot nginx-ssl)**

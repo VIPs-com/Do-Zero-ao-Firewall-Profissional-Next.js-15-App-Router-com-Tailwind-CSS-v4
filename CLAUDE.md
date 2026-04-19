@@ -56,9 +56,10 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting)
-    searchItems.ts          # 54 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 71 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    courseOrder.ts          # sequência de 21 módulos para ModuleNav (Anterior / Próximo)
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
-  components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge
+  components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
     seo.ts                  # SITE_CONFIG, ROUTE_SEO (23 rotas), buildMetadata()
@@ -333,6 +334,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint SIGMA Fase 3: Polimento final — badge 🔬 sigma-master (11 checkpoints Fase 2), +6 itens de busca (Ctrl+K encontra todas as seções avançadas), +5 tópicos (IDs 38–42) nos grupos existentes, totalTopics 38→43, SEO enriquecido para 5 rotas
 - ✅ Sprint W: Windows-to-Linux — WindowsComparisonBox (Boxes.tsx), seções "Terminal do Zero" + "Mindset SysAdmin" em /instalacao, tabela Windows↔Linux em /cheat-sheet#windows-linux, +3 checkpoints, checklistItemsCount 56→59, totalTopics 43→45, +3 searchItems (69 total)
 - ✅ Sprint W2: RosettaStone.tsx (25 comandos, busca + filtro por categoria), resgate-gold.sh (Botão de Pânico), badge 🧭 explorador-mundos, FluxoCard Troubleshooting Mental Map em /instalacao, seção "Como apresentar profissionalmente" em /certificado, checklistItemsCount 59→60, badges 24→25, searchItems 69→71
+- ✅ Sprint Polish: ModuleNav (Anterior / Próximo) nas 20 páginas de conteúdo, courseOrder.ts com sequência de 21 módulos, labels "▶ Saída esperada" certbot em /nginx-ssl, link avulso /web-server removido de nginx-ssl
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

@@ -208,6 +208,24 @@ Sprint W2 ✅ RosettaStone + Botão de Pânico + Badge Explorador de Mundos
   ├── searchItems: +2 itens (t-rosetta-stone, c-resgate-gold) → 71 total
   └── checklistItemsCount 59→60 · badges 24→25
 
+Sprint Polish ✅ Navegação Sequencial + Saída Esperada Certbot
+  ├── src/data/courseOrder.ts: novo arquivo — sequência canônica de 21 módulos
+  │   (instalacao → wan-nat → dns → nginx-ssl → lan-proxy → dnat → port-knocking →
+  │    vpn-ipsec → wireguard → nftables → fail2ban → audit-logs → ataques-avancados →
+  │    pivoteamento → laboratorio → proxmox → evolucao → cheat-sheet → glossario →
+  │    quiz → certificado) — /web-server excluído (página de referência, não módulo)
+  ├── src/components/ui/ModuleNav.tsx: novo componente 'use client'
+  │   ← Anterior (btn-outline) / Próximo → (btn-primary), aria-label a11y,
+  │   responsive (nome completo sm+, "Anterior/Próximo" em mobile)
+  ├── 20 páginas de conteúdo: ModuleNav inserido no rodapé de cada rota
+  │   (lotes validados com npm run lint após cada batch)
+  ├── /nginx-ssl: link avulso para /web-server "Módulo anterior" removido e
+  │   substituído pelo ModuleNav padronizado
+  ├── /nginx-ssl: labels JSX "▶ Saída esperada — certbot certificates:" e
+  │   "▶ Saída esperada — certbot renew --dry-run:" adicionados antes dos
+  │   blocos de output do Certbot (alinha com padrão Sprint P de /dns e /wireguard)
+  └── Constantes inalteradas: 60 checkpoints · 45 tópicos · 25 badges · 71 searchItems · 33/33 build
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
