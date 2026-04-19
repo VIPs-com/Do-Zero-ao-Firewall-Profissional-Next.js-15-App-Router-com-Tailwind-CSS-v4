@@ -183,6 +183,31 @@ Sprint SIGMA Fase 3 ✅ Polimento Final + Integração Total
   │   wan-nat, dnat, lan-proxy) — mencionam forense, conntrack, PREROUTING e Squid
   └── CLAUDE.md: constante totalTopics atualizada para 43
 
+Sprint W ✅ Windows-to-Linux — Módulo Zero para alunos Windows
+  ├── Boxes.tsx: novo componente WindowsComparisonBox (grid lado a lado 🪟|🐧)
+  ├── /instalacao: seção #terminal-do-zero (pwd, ls, sudo, Tab, Ctrl+Shift+C)
+  ├── /instalacao: seção #sysadmin-mindset (systemctl vs services.msc, journalctl vs Event Viewer)
+  ├── /cheat-sheet: seção #windows-linux — tabela 4 grupos (Navegação, Rede, Processos, Admin)
+  ├── BadgeContext: +3 checkpoints (terminal-basico, sudo-entendido, sysadmin-mindset)
+  ├── searchItems: +3 itens (t-terminal-zero, t-sysadmin-mindset, t-win-linux-table) → 69 total
+  ├── topicos: +2 entradas IDs 43–44 no grupo "Fundação & Terminal"
+  └── checklistItemsCount 56→59 · totalTopics 43→45
+
+Sprint W2 ✅ RosettaStone + Botão de Pânico + Badge Explorador de Mundos
+  ├── RosettaStone.tsx: tabela interativa 25 comandos (busca + filtro por categoria:
+  │   Sistema, Rede, Processos, Serviços, Admin) — prop onFirstInteraction para checkpoint
+  ├── public/scripts/resgate-gold.sh: Botão de Pânico — limpa iptables, garante SSH,
+  │   ativa ip_forward, salva backup em /etc/firewall/ com timestamp
+  ├── /cheat-sheet#scripts: terceiro card de download (grid 2→3 colunas, card vermelho)
+  ├── /instalacao: seção #rosetta-stone (RosettaStone interativa com checkpoint)
+  ├── /instalacao: seção #troubleshooting-map (FluxoCard OSI — 6 passos L1→L7)
+  ├── /certificado: seção "Como apresentar este projeto profissionalmente"
+  │   (título currículo + headline LinkedIn + 8 competências técnicas)
+  ├── BadgeContext: badge 🧭 explorador-mundos (trigger: 4 checkpoints Módulo Zero)
+  ├── BadgeContext: +1 checkpoint rosetta-stone-explored
+  ├── searchItems: +2 itens (t-rosetta-stone, c-resgate-gold) → 71 total
+  └── checklistItemsCount 59→60 · badges 24→25
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

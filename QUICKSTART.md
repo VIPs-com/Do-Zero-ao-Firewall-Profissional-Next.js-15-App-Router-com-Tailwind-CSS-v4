@@ -89,7 +89,7 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — vitest passando
 - [ ] `npm run build` — 33/33 páginas (26 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 20`, `totalTopics = 43`, `checklistItemsCount = 56`)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 20`, `totalTopics = 45`, `checklistItemsCount = 60`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)
@@ -204,4 +204,4 @@ node_modules/
 
 `Next.js 16.2.2` · `React 19` · `TypeScript 5.8` · `Tailwind CSS v4` · `Turbopack` · `motion/react 12` · `Lucide React`
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo) · P (Diamond Polish) · L (Legacy Gold — TroubleshootingCard, zona reversa, FTP DNAT, xt_recent, dhparam, /offline) · SIGMA (Elite Lab — /laboratorio, /proxmox, Certbot, badges, 56 checkpoints) · **SIGMA Fase 3 (badge 🔬 sigma-master, +6 busca, +5 tópicos, totalTopics 43)**
+**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo) · P (Diamond Polish) · L (Legacy Gold — TroubleshootingCard, zona reversa, FTP DNAT, xt_recent, dhparam, /offline) · SIGMA (Elite Lab — /laboratorio, /proxmox, Certbot, badges, 56 checkpoints) · SIGMA Fase 3 (badge 🔬 sigma-master, +6 busca, +5 tópicos, totalTopics 43) · W (Windows-to-Linux — WindowsComparisonBox, Terminal do Zero, Mindset SysAdmin, tabela equivalências) · **W2 (RosettaStone 25 comandos, resgate-gold.sh, badge 🧭 explorador-mundos, FluxoCard OSI, seção certificado — 60 checkpoints, 25 badges)**
