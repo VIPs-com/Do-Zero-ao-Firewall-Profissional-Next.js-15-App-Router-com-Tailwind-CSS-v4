@@ -330,6 +330,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint L: Legacy Gold — TroubleshootingCard (OSI Ladder interativo), zona DNS reversa, FTP DNAT (21+50000:51000), SSH 2222, /proc/net/xt_recent, IPSec iptables prereqs, dhparam+TLS hardening, MSS Clamping, conntrack tuning, tcpdump duplo, Netplan YAML, scripts bash para download, página /offline terminal-style
 - ✅ Sprint SIGMA: Resgate Total + Elite Lab — /laboratorio (VirtualBox vs KVM vs Proxmox, KVM/libvirt completo), /proxmox (VE produção: bridges vmbr, VMs, snapshots, cluster HA), Certbot + HTTP-01 challenge em /nginx-ssl, badges proxmox-pioneer + resgate-gold, CONTENT_PAGES_COUNT 18→20, checklistItemsCount 35→45, totalTopics 26→38
 - ✅ Sprint SIGMA Fase 2: Integração dos 20 arquivos bônus — /port-knocking (admin em ação, bot invisibility), /audit-logs (forense: scripts audit-knock + knock-monitor, rotação 90 dias), /wan-nat (5 funções simultâneas + conntrack mágico), /dnat (PREROUTING kernel: 5 hooks Netfilter, troca cirúrgica, tcpdump duplo), /lan-proxy (FluxoCard timeline t=0ms→t=52ms, HTTP vs HTTPS), checklistItemsCount 45→56
+- ✅ Sprint SIGMA Fase 3: Polimento final — badge 🔬 sigma-master (11 checkpoints Fase 2), +6 itens de busca (Ctrl+K encontra todas as seções avançadas), +5 tópicos (IDs 38–42) nos grupos existentes, totalTopics 38→43, SEO enriquecido para 5 rotas
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

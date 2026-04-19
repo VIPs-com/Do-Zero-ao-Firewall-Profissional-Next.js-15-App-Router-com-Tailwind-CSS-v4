@@ -169,6 +169,20 @@ Sprint SIGMA Fase 2 ✅ Integração dos 20 Arquivos Bônus (Eixo 3)
   │   HTTP vs HTTPS: URL completa vs só domínio → por que dstdomain é obrigatório
   └── checklistItemsCount: 45→56 · ALL_CHECKLIST_IDS: 56 entradas (8 arquivos, 0 páginas novas)
 
+Sprint SIGMA Fase 3 ✅ Polimento Final + Integração Total
+  ├── BadgeContext: badge sigma-master (🔬) — desbloqueado ao completar os 11
+  │   checkpoints da Fase 2 (knock-admin-flow, audit-knock-script, nat-5-functions,
+  │   prerouting-deep-dive, conntrack-dnat-mapping, squid-flow-understood + outros 5)
+  ├── searchItems.ts: +6 itens para as novas seções avançadas → 66 itens total
+  │   (t-knock-admin, t-forense-knock, t-nat-anatomy, t-prerouting-k,
+  │    t-squid-flow, c-knock-monitor — Ctrl+K encontra tudo)
+  ├── topicos/page.tsx: +5 tópicos (IDs 38–42) nos grupos existentes
+  │   (Port Knocking, Segurança Avançada, WAN/NAT, DNAT, LAN/Proxy)
+  ├── dashboard: totalTopics 38→43
+  ├── seo.ts: descrições enriquecidas para 5 rotas (port-knocking, audit-logs,
+  │   wan-nat, dnat, lan-proxy) — mencionam forense, conntrack, PREROUTING e Squid
+  └── CLAUDE.md: constante totalTopics atualizada para 43
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
