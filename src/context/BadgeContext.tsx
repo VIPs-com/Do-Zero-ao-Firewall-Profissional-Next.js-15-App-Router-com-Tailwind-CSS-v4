@@ -10,7 +10,8 @@ export type BadgeId =
   | 'fail2ban-master'
   | 'proxmox-pioneer'
   | 'resgate-gold'
-  | 'sigma-master';
+  | 'sigma-master'
+  | 'explorador-mundos';
 
 export interface BadgeDef {
   icon: string;
@@ -43,6 +44,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'proxmox-pioneer':    { icon: '🖥️', title: 'Proxmox Pioneer',      desc: 'Configurou um laboratório completo no Proxmox VE' },
   'resgate-gold':       { icon: '🏅', title: 'Agente de Resgate',     desc: 'Explorou os ambientes de laboratório avançados' },
   'sigma-master':       { icon: '🔬', title: 'SIGMA Master',          desc: 'Dominou forense de rede, anatomia do NAT e internos do kernel' },
+  'explorador-mundos':  { icon: '🧭', title: 'Explorador de Mundos',  desc: 'Completou o Módulo Zero e dominou a transição Windows → Linux' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -75,7 +77,9 @@ export const ALL_CHECKLIST_IDS = [
   'squid-flow-understood', 'squid-http-vs-https',
   // Sprint W — Windows-to-Linux (/instalacao)
   'terminal-basico', 'sudo-entendido', 'sysadmin-mindset',
-]; // 59 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint W2 — RosettaStone interativa
+  'rosetta-stone-explored',
+]; // 60 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
@@ -212,6 +216,14 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['prerouting-deep-dive'] && checklist['conntrack-dnat-mapping'] &&
       checklist['squid-flow-understood'] && checklist['squid-http-vs-https']
     ) unlockBadge('sigma-master');
+
+    // Sprint W2 — Explorador de Mundos (Módulo Zero completo)
+    if (
+      checklist['terminal-basico'] &&
+      checklist['sudo-entendido'] &&
+      checklist['sysadmin-mindset'] &&
+      checklist['rosetta-stone-explored']
+    ) unlockBadge('explorador-mundos');
 
     if (Object.values(checklist).filter(v => v).length >= 15) unlockBadge('linux-ninja');
   }, [checklist]);

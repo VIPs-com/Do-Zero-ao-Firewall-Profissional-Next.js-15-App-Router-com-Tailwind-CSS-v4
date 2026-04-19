@@ -223,6 +223,84 @@ export default function CertificatePage() {
           </div>
         </div>
       )}
+
+      {/* Seção profissional — visível sempre, independente de isReady */}
+      <section className="mt-16 pt-10 border-t border-border no-print">
+        <div className="text-center mb-8">
+          <div className="section-label">Próximos Passos</div>
+          <h2 className="text-2xl font-bold mb-2">📌 Como apresentar este projeto profissionalmente</h2>
+          <p className="text-text-2 text-sm max-w-xl mx-auto">
+            Você construiu infraestrutura real. Veja como comunicar isso no currículo e no LinkedIn.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* Títulos */}
+          <div className="bg-bg-2 p-6 rounded-xl border border-border space-y-5">
+            <div>
+              <p className="text-xs font-bold text-text-3 uppercase tracking-widest mb-2">📄 Título no currículo</p>
+              <code className="block bg-bg-3 border border-border text-sm text-accent-2 px-4 py-3 rounded-lg leading-relaxed">
+                Segurança de Redes e Infraestrutura Linux<br />
+                — Firewall Profissional (Workshop Linux 2026)
+              </code>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-text-3 uppercase tracking-widest mb-2">🏷️ LinkedIn — headline</p>
+              <code className="block bg-bg-3 border border-border text-sm text-accent-2 px-4 py-3 rounded-lg">
+                SysAdmin Linux | Firewall iptables | Segurança de Redes
+              </code>
+            </div>
+            <div>
+              <p className="text-xs font-bold text-text-3 uppercase tracking-widest mb-2">📎 LinkedIn — seção Projetos</p>
+              <p className="text-xs text-text-2 bg-bg-3 border border-border px-4 py-3 rounded-lg leading-relaxed">
+                &ldquo;Configurei um laboratório Linux completo com três zonas (WAN, DMZ, LAN):
+                firewall iptables com SNAT/DNAT, DNS BIND9, proxy Squid, VPN IPSec/WireGuard
+                e Port Knocking. Plataforma: Workshop Linux 2026.&rdquo;
+              </p>
+            </div>
+          </div>
+
+          {/* Competências para CV */}
+          <div className="bg-bg-2 p-6 rounded-xl border border-border">
+            <p className="text-xs font-bold text-text-3 uppercase tracking-widest mb-4">✅ Competências técnicas adquiridas</p>
+            <ul className="space-y-2.5">
+              {[
+                { icon: '🛡️', skill: 'iptables',          desc: 'SNAT, DNAT, Port Knocking, ESTABLISHED/RELATED' },
+                { icon: '📖', skill: 'DNS BIND9',          desc: 'zonas diretas e reversas, forwarders, PTR' },
+                { icon: '🔒', skill: 'SSL/TLS + Nginx',    desc: 'OpenSSL, reverse proxy, Certbot, HSTS' },
+                { icon: '🔐', skill: 'VPN',                desc: 'IPSec StrongSwan (IKEv2) e WireGuard (Curve25519)' },
+                { icon: '🌍', skill: 'Squid Proxy',        desc: 'ACLs dstdomain/url_regex, deny-all, squid -k' },
+                { icon: '🔥', skill: 'nftables',           desc: 'sets, maps, migração do iptables' },
+                { icon: '🚫', skill: 'Fail2ban',           desc: 'jails, filtros regex, integração com iptables' },
+                { icon: '🔍', skill: 'Auditoria de logs',  desc: 'journalctl, iptables LOG, Fail2ban, forense' },
+              ].map(({ icon, skill, desc }) => (
+                <li key={skill} className="flex items-start gap-3 text-sm">
+                  <span className="shrink-0 mt-0.5" aria-hidden="true">{icon}</span>
+                  <span>
+                    <strong className="text-text">{skill}</strong>
+                    <span className="text-text-3"> — {desc}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="highlight-box">
+          <div className="flex items-center gap-2 mb-2 text-accent font-bold uppercase tracking-widest text-[10px]">
+            <span aria-hidden="true">💡</span>
+            Dica de carreira
+          </div>
+          <p className="text-sm text-text-2">
+            Ao invés de &ldquo;fiz um curso de Linux&rdquo;, diga:{' '}
+            <strong className="text-text">
+              &ldquo;Configurei um laboratório Linux real com três zonas de rede, firewall iptables, VPN, proxy
+              e auditoria de logs.&rdquo;
+            </strong>{' '}
+            O recrutador de infraestrutura entende imediatamente que você tem experiência prática, não apenas teórica.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

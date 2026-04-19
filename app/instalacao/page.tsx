@@ -1,20 +1,24 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { CheckCircle2, Terminal, Info, Package, Laptop, Shield } from 'lucide-react';
+import { CheckCircle2, Terminal, Info, Package, Laptop, Shield, AlertTriangle, Globe, Network } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { StepItem, ChecklistItem } from '@/components/ui/Steps';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { CodeBlock } from '@/components/ui/CodeBlock';
+import { FluxoCard } from '@/components/ui/FluxoCard';
+import { RosettaStone } from '@/components/ui/RosettaStone';
 
 const CHECKLIST_ITEMS = [
   // Sprint W — Terminal & Mindset
   { id: 'terminal-basico', text: '💻 Terminal Básico', sub: 'Executei pwd, ls, cd e cat no terminal', layer: 'Fundação' },
   { id: 'sudo-entendido', text: '🔑 Sudo = Admin', sub: 'Entendi que sudo = Executar como Administrador', layer: 'Fundação' },
   { id: 'sysadmin-mindset', text: '🧠 Mindset SysAdmin', sub: 'Li o comparativo Windows vs Linux — systemctl/journalctl', layer: 'Fundação' },
+  // Sprint W2 — Rosetta Stone
+  { id: 'rosetta-stone-explored', text: '🗿 Rosetta Stone', sub: 'Explorei a tabela interativa de equivalências Windows/Linux', layer: 'Fundação' },
   // Validação do lab
   { id: 'ping-internet', text: '🌍 Ping Internet', sub: 'ping -c 3 8.8.8.8 funciona', layer: 'Camada 3' },
   { id: 'dns-resolve', text: '📖 DNS Resolve', sub: 'ping -c 3 google.com funciona', layer: 'Camada 7' },
@@ -268,6 +272,68 @@ export default function InstallationPage() {
                 onToggle={() => toggleCheck('sysadmin-mindset')}
               />
             </div>
+          </section>
+
+          {/* Rosetta Stone */}
+          <section id="rosetta-stone">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <span aria-hidden="true">🗿</span>
+              Rosetta Stone — Windows e Linux lado a lado
+            </h2>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              25 comandos do dia a dia com seus equivalentes exatos. Busque pelo nome que você já conhece
+              no Windows e descubra o equivalente Linux. Filtros por categoria disponíveis.
+            </p>
+
+            <RosettaStone
+              onFirstInteraction={() => {
+                if (!checklist['rosetta-stone-explored']) {
+                  updateChecklist('rosetta-stone-explored', true);
+                }
+              }}
+            />
+
+            <div className="mt-4">
+              <ChecklistItem
+                text={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.text}
+                sub={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.sub}
+                layer={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.layer}
+                checked={!!checklist['rosetta-stone-explored']}
+                onToggle={() => toggleCheck('rosetta-stone-explored')}
+              />
+            </div>
+          </section>
+
+          {/* Troubleshooting Mental Map */}
+          <section id="troubleshooting-map">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <span aria-hidden="true">🗺️</span>
+              Mapa Mental de Troubleshooting
+            </h2>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Quando algo não funciona, siga esta escada lógica das camadas OSI. Comece sempre pelo
+              mais simples — a maioria dos problemas está nas camadas 1, 2 ou 3.
+            </p>
+
+            <FluxoCard
+              direction="horizontal"
+              steps={[
+                { label: 'Problema detectado', sub: 'Site não carrega / ping falha', icon: <AlertTriangle size={16} />, color: 'border-red-500/40' },
+                { label: 'L1/L2 — Físico', sub: 'ip link show — eth0 UP?', icon: <Network size={16} />, color: 'border-layer-2/40' },
+                { label: 'L3 — Rede', sub: 'ip route — ping 8.8.8.8', icon: <Globe size={16} />, color: 'border-layer-3/40' },
+                { label: 'L4 — Transporte', sub: 'ss -tlnp — porta ouvindo?', icon: <Shield size={16} />, color: 'border-layer-4/40' },
+                { label: 'L7 — Aplicação', sub: 'curl localhost — responde?', icon: <Terminal size={16} />, color: 'border-layer-7/40' },
+                { label: '✅ Resolvido', sub: 'Documente e avance', icon: <CheckCircle2 size={16} />, color: 'border-ok/40' },
+              ]}
+            />
+
+            <WarnBox title="80% dos problemas estão nas primeiras camadas">
+              <p className="text-sm text-text-2">
+                Antes de investigar firewall ou aplicação, verifique o óbvio: a interface está UP?
+                (<code>ip link show</code>). O IP está correto? (<code>ip addr</code>). A rota existe?
+                (<code>ip route</code>). Só depois suba para L4 e L7.
+              </p>
+            </WarnBox>
           </section>
 
           {/* IP Architecture */}

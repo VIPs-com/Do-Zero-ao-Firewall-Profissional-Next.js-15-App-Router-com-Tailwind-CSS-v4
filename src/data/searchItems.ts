@@ -138,4 +138,13 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 't-win-linux-table', title: 'Tabela Windows → Linux — Equivalências de Comandos',
     description: 'dir=ls, ipconfig=ip addr, services.msc=systemctl, Event Viewer=journalctl.',
     category: 'Tópico', href: '/cheat-sheet#windows-linux', icon: FileText },
+
+  // Sprint W2 — RosettaStone + resgate-gold
+  { id: 't-rosetta-stone', title: 'Rosetta Stone — Tabela interativa Windows → Linux',
+    description: 'Busque 25 comandos por nome, categoria (Rede, Serviços, Admin) ou descrição.',
+    category: 'Tópico', href: '/instalacao#rosetta-stone', icon: Terminal },
+
+  { id: 'c-resgate-gold', title: 'resgate-gold.sh — Script de recuperação do firewall',
+    description: 'Botão de Pânico: limpa iptables, garante SSH, ativa ip_forward. Download direto.',
+    category: 'Comando', href: '/cheat-sheet#scripts', icon: Shield },
 ];

@@ -357,7 +357,7 @@ export default function CheatSheetPage() {
         <p className="text-sm text-text-2 mb-6">
           Scripts prontos para uso no laboratório. Baixe e adapte conforme o seu ambiente.
         </p>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-3 gap-4">
           <div className="p-4 rounded-lg bg-bg-3 border border-border">
             <h3 className="font-bold text-sm mb-2">entrar.sh</h3>
             <p className="text-xs text-text-3 mb-3">Auto-knock (Port Knocking automático) + conexão SSH em sequência.</p>
@@ -378,6 +378,21 @@ export default function CheatSheetPage() {
               className="inline-flex items-center gap-2 px-3 py-1.5 bg-ok/10 hover:bg-ok/20 border border-ok/30 rounded-lg text-xs font-bold text-ok transition-all"
             >
               ⬇ Baixar knock-monitor.sh
+            </a>
+          </div>
+          <div className="p-4 rounded-lg bg-bg-3 border border-err/20">
+            <h3 className="font-bold text-sm mb-1 flex items-center gap-2">
+              <span aria-hidden="true">🆘</span> resgate-gold.sh
+            </h3>
+            <p className="text-xs text-text-3 mb-3">
+              <strong className="text-err">Botão de Pânico</strong> — restaura o firewall para estado estável com SSH garantido.
+            </p>
+            <a
+              href="/scripts/resgate-gold.sh"
+              download
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-err/10 hover:bg-err/20 border border-err/30 rounded-lg text-xs font-bold text-err transition-all"
+            >
+              ⬇ Baixar resgate-gold.sh
             </a>
           </div>
         </div>
