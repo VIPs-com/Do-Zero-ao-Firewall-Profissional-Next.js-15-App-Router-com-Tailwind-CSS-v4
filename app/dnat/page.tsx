@@ -186,13 +186,127 @@ export default function DnatPage() {
             </div>
           </section>
 
-          {/* Section 5: Erros Comuns */}
+          {/* Section 6: PREROUTING — O Kernel Visto Por Dentro */}
+          <section id="prerouting-kernel">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                <Server size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">6. PREROUTING — O Kernel Visto Por Dentro</h2>
+            </div>
+
+            <InfoBox title="🔬 Os 5 Hooks do Netfilter — onde cada regra vive">
+              <pre className="text-xs font-mono overflow-x-auto">{`Pacote chega na placa de rede (enp0s3):
+         │
+    ┌────▼────────┐
+    │ PREROUTING  │ ← DNAT acontece AQUI (antes de decidir destino)
+    └────┬────────┘
+         │
+    ┌────▼────────┐
+    │   ROUTING   │ ← kernel decide: "é para mim?" (INPUT) ou encaminhar? (FORWARD)
+    └────┬────────┘
+         ├─── "é para mim" ──► INPUT  (SSH, Squid, serviços do próprio FW)
+         │
+    ┌────▼──────────────┐
+    │  FORWARD           │ ← filtragem de pacotes que atravessam o FW
+    └────┬──────────────┘
+         │
+    ┌────▼──────────────┐
+    │  POSTROUTING       │ ← SNAT acontece aqui (antes de sair pela placa)
+    └───────────────────┘`}</pre>
+            </InfoBox>
+
+            <WarnBox title="⚡ Por que o DNAT TEM que ser no PREROUTING">
+              <p className="text-sm">Se o DNAT acontecesse <em>depois</em> do ROUTING, o kernel veria <code className="text-xs">dst=192.168.20.200</code> (IP público = <em>&quot;sou eu&quot;</em>) e mandaria o pacote para <strong>INPUT</strong>. O pacote nunca chegaria no FORWARD nem no Web Server. O PREROUTING intercepta <strong>antes</strong> de qualquer decisão de destino — é a única janela possível para a troca.</p>
+            </WarnBox>
+
+            <div className="mt-4 space-y-4">
+              <CodeBlock code={`# A troca cirúrgica no cabeçalho IP:
+
+# ANTES da regra DNAT (pacote chega na placa WAN):
+# src: 203.0.113.50    dst: 192.168.20.200  ← IP público do Firewall
+# checksum: 0xA3F2
+
+# DEPOIS (kernel trocou e recalculou o checksum):
+# src: 203.0.113.50    dst: 192.168.56.120  ← IP privado do Web Server
+# checksum: 0xB1C4    ← recalculado! pacote permanece íntegro
+
+# Ver a regra e seu contador (pkts aumenta a cada nova conexão):
+watch -n 1 "iptables -t nat -L PREROUTING -n -v"
+# pkts  bytes  target  prot  ...
+# 143   8580   DNAT    tcp   dpt:443  to:192.168.56.120:443`} />
+
+              <CodeBlock code={`# O conntrack registra o mapeamento para o retorno automático:
+conntrack -L | grep 192.168.56.120
+
+# tcp 6 118 SYN_SENT
+#   src=203.0.113.50 dst=192.168.20.200 sport=54876 dport=443  ← IDA (IP original)
+#   src=192.168.56.120 dst=203.0.113.50 sport=443 dport=54876  ← VOLTA (desfaz o DNAT)
+#   [UNREPLIED]  → muda para [ASSURED] após SYN-ACK
+#
+# Linha 1 = caminho de IDA (como o pacote chegou)
+# Linha 2 = caminho de VOLTA esperado (conntrack vai desfazer o DNAT na resposta)`} />
+
+              <CodeBlock code={`# Experimento com 2 terminais — veja a troca acontecendo ao vivo:
+
+# TERMINAL 1 — antes do DNAT (placa WAN, IP público ainda):
+tcpdump -i enp0s3 -nn dst port 443
+# 203.0.113.50.54876 > 192.168.20.200.443: Flags [S]
+#                      ^^^^^^^^^^^^^^^^
+#                      IP público — antes da troca!
+
+# TERMINAL 2 — depois do DNAT (placa DMZ, IP privado):
+tcpdump -i enp0s8 -nn dst port 443
+# 203.0.113.50.54876 > 192.168.56.120.443: Flags [S]
+#                      ^^^^^^^^^^^^^^^^
+#                      IP privado — depois da troca!
+
+# TERMINAL 3 — gerar o tráfego:
+curl -k https://192.168.20.200`} />
+
+              <HighlightBox title="📋 DNAT + FORWARD — sempre duas regras obrigatórias">
+                <div className="space-y-2 text-sm font-mono">
+                  <p><span className="text-ok">Regra 1</span> (tabela nat):    PREROUTING → troca o endereço de destino</p>
+                  <p><span className="text-ok">Regra 2</span> (tabela filter): FORWARD    → dá a permissão de passar</p>
+                  <p className="text-err pt-1">DNAT sozinho = endereço trocado, mas FORWARD=DROP bloqueia o pacote</p>
+                  <p className="text-err">FORWARD sozinho = permissão dada, mas pacote vai para o IP errado</p>
+                </div>
+              </HighlightBox>
+
+              <div className="space-y-3 mt-4">
+                {[
+                  { id: 'prerouting-deep-dive', text: 'Entendi por que o DNAT deve acontecer antes do ROUTING (kernel)' },
+                  { id: 'conntrack-dnat-mapping', text: 'Executei conntrack -L e li as duas linhas: IDA e VOLTA esperada' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className="w-full flex items-start gap-3 text-left group"
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 size={16} className="text-ok shrink-0 mt-0.5" />
+                    ) : (
+                      <Circle size={16} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                    )}
+                    <span className={cn(
+                      "text-sm leading-tight transition-colors",
+                      checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                    )}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 7: Erros Comuns (renumerado — era 5) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">7. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com DNAT">

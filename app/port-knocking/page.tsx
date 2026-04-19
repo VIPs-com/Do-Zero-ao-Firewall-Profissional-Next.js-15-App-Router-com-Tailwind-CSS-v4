@@ -196,13 +196,113 @@ export default function PortKnockingPage() {
             </div>
           </section>
 
-          {/* Section 5: Erros Comuns */}
+          {/* Section 6: O Administrador em Ação */}
+          <section id="admin-em-acao">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                <Terminal size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">6. O Administrador em Ação</h2>
+            </div>
+
+            <WarnBox title="⏱️ O curl vai travar — e isso é NORMAL">
+              <p className="text-sm">O <code className="text-xs">curl --max-time 1</code> vai travar <strong>~1 segundo</strong> sem resposta. Isso é NORMAL — a porta está sendo <code className="text-xs">DROP</code>ada intencionalmente pelo kernel. Não é erro de rede, não é erro de configuração. É o mecanismo funcionando perfeitamente.</p>
+            </WarnBox>
+
+            <div className="mt-6 mb-6">
+              <FluxoCard
+                title="Fluxo Completo do Admin — 4 Atos"
+                steps={[
+                  { label: 'Porta Invisível', sub: "nmap vê 'filtered' — nem open nem closed. Bots desistem.", icon: <EyeOff size={16} />, color: 'text-text-3' },
+                  { label: 'Bate em :59991', sub: 'curl --max-time 1 192.168.57.250:59991 — kernel anota o IP com timestamp.', icon: <Key size={16} />, color: 'text-accent' },
+                  { label: 'Janela 10s', sub: 'Porta 22 abre SOMENTE para aquele IP pelos próximos 10 segundos.', icon: <Zap size={16} />, color: 'text-warn' },
+                  { label: 'SSH Conecta', sub: 'Sessão ESTABLISHED — independente do knock após conectar.', icon: <Unlock size={16} />, color: 'text-ok' },
+                ]}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <CodeBlock code={`# Fluxo manual (3 linhas):
+curl --max-time 1 192.168.57.250:59991 2>/dev/null
+# ↑ trava ~1s — DROP silencioso (normal!)
+ssh usuario@192.168.57.250
+# ↑ conectar nos próximos 10 segundos!
+
+# Script ~/entrar.sh — automatiza tudo:
+cat > ~/entrar.sh << 'EOF'
+#!/bin/bash
+HOST=\${1:-192.168.57.250}
+echo "Batendo na porta 59991..."
+curl --max-time 1 \$HOST:59991 2>/dev/null
+sleep 1
+echo "Conectando via SSH..."
+ssh usuario@\$HOST
+# Após sair do SSH, fechar o acesso:
+curl --max-time 1 \$HOST:59992 2>/dev/null
+echo "Acesso fechado."
+EOF
+chmod +x ~/entrar.sh
+./entrar.sh`} />
+
+              <HighlightBox title="🤖 Por que bots NUNCA descobrem a porta">
+                <CodeBlock code={`# SSH exposto (sem Port Knocking):
+grep "Failed password" /var/log/auth.log | wc -l
+# 847  ← tentativas de invasão SÓ HOJE
+
+# SSH com Port Knocking:
+grep "Failed password" /var/log/auth.log | wc -l
+# 0    ← nenhum bot sequer chega ao SSH
+
+# Por quê? O scanner vê:
+# nmap -p 22 192.168.20.200
+# PORT   STATE    SERVICE
+# 22/tcp filtered ssh
+#        ^^^^^^^^
+#        Sem resposta. Para o bot, não existe servidor.`} />
+              </HighlightBox>
+
+              <InfoBox title="💡 Os Dois Sistemas Independentes — recent vs conntrack">
+                <div className="space-y-2 text-sm">
+                  <p><strong>Módulo recent</strong> — guarda quem tem permissão de <em>iniciar</em> conexão. Timer: 10s. Após conectar, não é mais consultado.</p>
+                  <p><strong>conntrack (ESTABLISHED)</strong> — guarda sessões <em>já estabelecidas</em>. Timer: 5 dias (432000s). Renovado a cada pacote trocado.</p>
+                  <p className="text-ok font-medium">Você pode deixar o timer do knock expirar que a sessão SSH continua ativa pelo conntrack.</p>
+                </div>
+              </InfoBox>
+
+              <div className="space-y-3">
+                {[
+                  { id: 'knock-admin-flow', text: 'Executei o fluxo curl + ssh completo e entrei no servidor' },
+                  { id: 'knock-visibility', text: 'Verifiquei os 0 logins no auth.log com Port Knocking ativo' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className="w-full flex items-start gap-3 text-left group"
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 size={16} className="text-ok shrink-0 mt-0.5" />
+                    ) : (
+                      <Circle size={16} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                    )}
+                    <span className={cn(
+                      "text-sm leading-tight transition-colors",
+                      checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                    )}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 7: Erros Comuns (renumerado — era 5) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">7. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com Port Knocking">

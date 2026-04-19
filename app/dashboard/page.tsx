@@ -59,7 +59,7 @@ export default function DashboardPage() {
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Sprint SIGMA: +lab-comparison-read/lab-kvm-installed/lab-kvm-vm/proxmox-iso/proxmox-bridges/proxmox-vms/proxmox-snapshot/certbot-installed/certbot-certificate/certbot-renewal → 45 checkpoints
-  const checklistItemsCount = 45;
+  const checklistItemsCount = 56; // Sprint SIGMA Fase 2: +11 novos checkpoints
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 

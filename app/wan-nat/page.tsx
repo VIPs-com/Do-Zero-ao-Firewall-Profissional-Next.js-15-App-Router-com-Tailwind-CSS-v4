@@ -433,13 +433,107 @@ export default function WanNatPage() {
             </div>
           </section>
 
-          {/* Section 8: Erros Comuns */}
+          {/* Section 9: Anatomia do NAT — 5 Funções do Firewall */}
+          <section id="anatomia-nat">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                <Network size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">9. A Anatomia do NAT — 5 Funções Simultâneas</h2>
+            </div>
+
+            <InfoBox title="🏗️ O Firewall não é só filtro — acumula 5 funções ao mesmo tempo">
+              <pre className="text-xs font-mono overflow-x-auto">{`┌─────────────────────────────────────────────────┐
+│                   FIREWALL                       │
+│                                                 │
+│  1. ROTEADOR  — ip_forward encaminha pacotes     │
+│  2. FILTRO    — iptables decide quem passa       │
+│  3. TRADUTOR  — NAT/SNAT/DNAT troca endereços    │
+│  4. PROXY     — Squid filtra URLs (Camada 7)     │
+│  5. GUARDIÃO  — Port Knocking esconde o SSH      │
+└─────────────────────────────────────────────────┘`}</pre>
+            </InfoBox>
+
+            <div className="mt-6 mb-6">
+              <FluxoCard
+                title="As 5 Funções em Ação"
+                steps={[
+                  { label: '1. Roteador', sub: 'ip_forward=1 — sem isso o kernel descarta pacotes de outras redes.', icon: <Globe size={16} />, color: 'text-info' },
+                  { label: '2. Filtro', sub: 'iptables INPUT/FORWARD/OUTPUT — política DROP, libera só o necessário.', icon: <Shield size={16} />, color: 'text-accent' },
+                  { label: '3. Tradutor', sub: 'SNAT/DNAT/MASQUERADE — troca endereços IP e rastreia pelo conntrack.', icon: <RefreshCw size={16} />, color: 'text-ok' },
+                  { label: '4. Proxy', sub: 'Squid na Camada 7 — vê URL completa, aplica ACLs por domínio.', icon: <Globe size={16} />, color: 'text-warn' },
+                  { label: '5. Guardião', sub: 'Port Knocking — SSH invisível para bots (módulo recent, 10s).', icon: <Zap size={16} />, color: 'text-err' },
+                ]}
+              />
+            </div>
+
+            <HighlightBox title="✨ A &quot;Mágica&quot; do Retorno — é o conntrack">
+              <CodeBlock code={`# Como a resposta de 8.8.8.8 "volta sozinha" para 192.168.57.50:
+conntrack -L | grep "192.168.57.50"
+# tcp      6  120  ESTABLISHED
+#   src=192.168.57.50 dst=8.8.8.8 sport=45321 dport=53    ← IDA
+#   src=8.8.8.8 dst=192.168.20.200 sport=53 dport=45321   ← VOLTA esperada
+#   [ASSURED]
+#
+# O kernel registrou o mapeamento no momento do SNAT:
+# "quando chegar resposta de 8.8.8.8 para .20.200,
+#  trocar automaticamente o destino para .57.50"
+# SEM regra explícita de retorno — é o conntrack trabalhando.`} />
+            </HighlightBox>
+
+            <div className="mt-4">
+              <CodeBlock code={`# Fluxo completo das 5 funções — cliente 192.168.57.50 acessa github.com:
+#
+# 1. ip_forward=1          → kernel encaminha o pacote
+# 2. FORWARD ACCEPT        → iptables libera a passagem
+# 3. SNAT POSTROUTING      → 192.168.57.50 → 192.168.20.200 (IP público)
+# 4. Squid verifica ACL    → github.com: liberado → busca em nome do cliente
+# 5. Port Knocking         → SSH do admin protegido por módulo recent
+#
+# Resposta de github.com:
+# conntrack desfaz o SNAT automaticamente → entrega para 192.168.57.50
+
+# Ver o estado atual de todas as funções:
+sysctl net.ipv4.ip_forward           # Função 1: deve ser 1
+iptables -L FORWARD -n --line-numbers # Função 2: regras de filtragem
+iptables -t nat -L POSTROUTING -n    # Função 3: SNAT/MASQUERADE
+squid -k parse && echo "Squid OK"    # Função 4: sintaxe OK
+cat /proc/net/xt_recent/abre-ssh     # Função 5: IPs autorizados ao SSH`} />
+            </div>
+
+            <div className="space-y-3 mt-4">
+              {[
+                { id: 'nat-5-functions', text: 'Identifiquei as 5 funções simultâneas no meu firewall' },
+                { id: 'nat-conntrack-magic', text: 'Executei conntrack -L e entendi o mapeamento IDA/VOLTA automático' },
+              ].map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => toggleCheck(item.id)}
+                  className="w-full flex items-start gap-3 text-left group"
+                >
+                  {checklist[item.id] ? (
+                    <CheckCircle2 size={16} className="text-ok shrink-0 mt-0.5" />
+                  ) : (
+                    <Circle size={16} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                  )}
+                  <span className={cn(
+                    "text-sm leading-tight transition-colors",
+                    checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                  )}>
+                    {item.text}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Section 10: Erros Comuns (renumerado — era 8) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">8. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">10. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com Firewall & NAT">

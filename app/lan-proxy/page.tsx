@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Laptop, Shield, Globe, Terminal, Lock, ArrowRight, ChevronRight, AlertTriangle, BookOpen, Filter, Zap } from 'lucide-react';
+import { Laptop, Shield, Globe, Terminal, Lock, ArrowRight, ChevronRight, AlertTriangle, BookOpen, Filter, Zap, Activity } from 'lucide-react';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
@@ -206,13 +207,111 @@ export default function LanProxyPage() {
             </InfoBox>
           </section>
 
-          {/* Section 5: Erros Comuns (renumbered from 4) */}
+          {/* Section 6: Fluxo Completo de Navegação via Squid */}
+          <section id="fluxo-navegacao">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                <Activity size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">6. Fluxo Completo de Navegação via Squid</h2>
+            </div>
+
+            <InfoBox title="🌐 O cliente NUNCA fala diretamente com o destino">
+              <pre className="text-xs font-mono overflow-x-auto">{`Cliente LAN                  Firewall/Squid              Internet
+(192.168.57.50)             (192.168.57.250)
+     │                           │                          │
+     │  1. TCP → :3128           │                          │
+     │──────────────────────────►│  2. Verifica ACLs        │
+     │                           │  3. TCP → :443           │
+     │                           │─────────────────────────►│
+     │◄──────────────────────────│◄─── resposta ────────────│
+     │  4. entrega ao cliente    │                          │`}</pre>
+            </InfoBox>
+
+            <div className="mt-6 mb-6">
+              <FluxoCard
+                title="Timeline de Navegação — t=0ms até t=52ms"
+                steps={[
+                  { label: 't=0ms  TCP → Squid :3128', sub: 'SYN/SYN-ACK/ACK — handshake com o proxy. Cliente configura proxy: 192.168.57.250:3128.', icon: <Terminal size={16} />, color: 'text-info' },
+                  { label: 't=2ms  Squid avalia ACLs', sub: 'Lê URL completa (HTTP) ou domínio (HTTPS), verifica liberados/negados/lan em ordem.', icon: <Filter size={16} />, color: 'text-accent' },
+                  { label: 't=4ms  DNS + conexão saída', sub: 'Squid resolve o nome e abre TCP em nome do cliente. SNAT troca IP de origem.', icon: <Globe size={16} />, color: 'text-ok' },
+                  { label: 't=51ms Resposta recebida', sub: 'Servidor remoto entrega conteúdo ao Squid. Cache salva se possível (TCP_HIT nas próximas).', icon: <ArrowRight size={16} />, color: 'text-warn' },
+                  { label: 't=52ms Entregue ao cliente', sub: 'Log registra: 192.168.57.50 TCP_MISS/200 ... github.com (ou TCP_HIT se em cache).', icon: <Laptop size={16} />, color: 'text-ok' },
+                ]}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <CodeBlock code={`# Os 4 cenários de ACL — monitorar ao vivo:
+tail -f /var/log/squid/access.log
+
+# Cenário A — site liberado (gov.br):
+# 192.168.57.50 TCP_MISS/200  ... gov.br     ← buscou na rede
+
+# Cenário B — bloqueado (facebook.com):
+# 192.168.57.50 TCP_DENIED/403 ... facebook.com ← bloqueado pela ACL
+
+# Cenário C — site neutro (github.com):
+# 192.168.57.50 TCP_MISS/200  ... github.com  ← LAN liberada
+
+# Cenário D — segundo acesso ao mesmo recurso:
+# 192.168.57.50 TCP_HIT/200   ... github.com  ← veio do cache!
+
+# Filtrar só bloqueados:
+tail -f /var/log/squid/access.log | grep TCP_DENIED`} />
+
+              <HighlightBox title="🔒 HTTP vs HTTPS — o que o Squid consegue ver">
+                <CodeBlock code={`# HTTP (porta 80) — Squid lê TUDO:
+# URL completa: http://site.com/pagina/artigo?id=123
+# Cabeçalhos, cookies, conteúdo
+# Pode: filtrar por URL, cachear, modificar
+
+# HTTPS (porta 443) — Squid vê SÓ o domínio:
+# Cliente envia: CONNECT www.facebook.com:443
+# Squid vê:      www.facebook.com  (só isso!)
+# NÃO vê: /pagina/post/123  (criptografado pela Camada 6/TLS)
+# Pode:    bloquear domínio inteiro com dstdomain
+
+# Por isso dstdomain é a prática correta para HTTPS:
+acl negados dstdomain "/etc/squid/negados.txt"
+# Bloqueia: www.facebook.com, m.facebook.com, api.facebook.com
+# Qualquer subdomínio de facebook.com é bloqueado.`} />
+              </HighlightBox>
+
+              <div className="space-y-3 mt-4">
+                {[
+                  { id: 'squid-flow-understood', text: 'Segui o fluxo t=0ms→t=52ms no tail -f access.log em tempo real' },
+                  { id: 'squid-http-vs-https', text: 'Entendi por que HTTPS só permite bloquear por dstdomain (não por URL)' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className="w-full flex items-start gap-3 text-left group"
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 size={16} className="text-ok shrink-0 mt-0.5" />
+                    ) : (
+                      <Circle size={16} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                    )}
+                    <span className={cn(
+                      "text-sm leading-tight transition-colors",
+                      checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                    )}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 7: Erros Comuns (renumerado — era 5) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">5. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">7. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes com Squid Proxy">

@@ -61,7 +61,17 @@ export const ALL_CHECKLIST_IDS = [
   'proxmox-iso', 'proxmox-bridges', 'proxmox-vms', 'proxmox-snapshot',
   // Sprint SIGMA — Certbot para Produção
   'certbot-installed', 'certbot-certificate', 'certbot-renewal',
-]; // 45 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint SIGMA Fase 2 — /port-knocking
+  'knock-admin-flow', 'knock-visibility',
+  // Sprint SIGMA Fase 2 — /audit-logs
+  'audit-knock-script', 'knock-monitor-script', 'audit-log-rotation',
+  // Sprint SIGMA Fase 2 — /wan-nat
+  'nat-5-functions', 'nat-conntrack-magic',
+  // Sprint SIGMA Fase 2 — /dnat
+  'prerouting-deep-dive', 'conntrack-dnat-mapping',
+  // Sprint SIGMA Fase 2 — /lan-proxy
+  'squid-flow-understood', 'squid-http-vs-https',
+]; // 56 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)

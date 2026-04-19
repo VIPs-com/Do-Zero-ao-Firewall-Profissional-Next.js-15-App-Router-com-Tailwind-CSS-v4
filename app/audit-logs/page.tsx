@@ -2,7 +2,8 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Terminal, Search, Shield, AlertTriangle, Eye, FileText, Filter, CheckCircle2, Circle } from 'lucide-react';
+import { Terminal, Search, Shield, AlertTriangle, Eye, FileText, Filter, CheckCircle2, Circle, Activity, UserCheck } from 'lucide-react';
+import { StepItem } from '@/components/ui/Steps';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
@@ -207,13 +208,221 @@ export default function AuditLogsPage() {
             </div>
           </section>
 
-          {/* Section 4: Common Errors */}
+          {/* Section 5: Auditoria Forense — Port Knocking */}
+          <section id="forense-knock">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                <UserCheck size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">5. Auditoria Forense — Port Knocking</h2>
+            </div>
+
+            <InfoBox title="🔍 Dois tipos de administrador">
+              <div className="space-y-3 text-sm font-mono">
+                <div>
+                  <p className="text-err font-bold">Administrador REATIVO:</p>
+                  <p className="text-text-2 pl-2">&quot;O servidor foi comprometido!&quot; → &quot;Quando aconteceu?&quot; → <strong>&quot;Não sei... não estava monitorando.&quot;</strong></p>
+                </div>
+                <div>
+                  <p className="text-ok font-bold">Administrador com FORENSE:</p>
+                  <p className="text-text-2 pl-2">&quot;Comprometido em 2026-03-17 às 03:42:17 pelo IP 185.234.x.x — aqui está o log completo assinado.&quot;</p>
+                </div>
+                <p className="text-text-3 pt-1">A diferença: logs configurados, retidos e analisados. O <code className="text-xs">tail -f</code> é só o começo.</p>
+              </div>
+            </InfoBox>
+
+            <div className="mt-6 space-y-6">
+              <StepItem
+                number={1}
+                title="Nível 1 — Monitoramento em Tempo Real"
+                description="Ver cada knock ao vivo com hora, interface e IP de origem"
+              />
+              <CodeBlock code={`# Ver todos os eventos de knock ao vivo:
+tail -f /var/log/syslog | grep "KNOCK"
+
+# Versão legível — hora | interface | IP → porta:
+tail -f /var/log/syslog | grep "KNOCK" \\
+    | awk '{
+        for(i=1;i<=NF;i++) {
+            if($i ~ /^SRC=/) src=substr($i,5)
+            if($i ~ /^IN=/)  iface=substr($i,4)
+            if($i ~ /^DPT=/) dpt=substr($i,5)
+        }
+        print $3 " | " iface " | " src " → porta " dpt
+    }'
+
+# Saída esperada:
+# 10:23:45 | enp0s9 | 192.168.57.50 → porta 59991  (admin legítimo)
+# 10:24:12 | enp0s3 | 185.234.x.x  → porta 59991  (SUSPEITO — veio da WAN!)`} />
+
+              <StepItem
+                number={2}
+                title="Nível 2 — Análise Histórica"
+                description="Top IPs, horários de pico e tentativas SSH sem knock"
+              />
+              <CodeBlock code={`# Top 10 IPs que mais bateram:
+grep "KNOCK-59991" /var/log/syslog \\
+    | grep -oP "SRC=\\K[0-9.]+" \\
+    | sort | uniq -c | sort -rn | head 10
+# 43  192.168.57.50  ← admin legítimo
+#  3  192.168.57.100 ← outro admin?
+#  1  185.234.x.x    ← SUSPEITO!
+
+# Horários de pico:
+grep "KNOCK-59991" /var/log/syslog \\
+    | grep -oP "^\\w+ \\d+ \\K\\d+(?=:)" \\
+    | sort | uniq -c | sort -rn
+# 12  10  ← 12 batidas às 10h (horário de trabalho — normal)
+#  1  03  ← 1 batida às 3h da manhã — ALERTA!
+
+# Tentativas SSH sem knock (bots):
+grep "SSH-SEM-KNOCK" /var/log/syslog \\
+    | grep -oP "SRC=\\K[0-9.]+" \\
+    | sort | uniq -c | sort -rn
+# 847  185.x.x.x  ← bot tentando SSH direto — nunca chega ao serviço`} />
+
+              <StepItem
+                number={3}
+                title="Nível 3 — Correlação de Eventos"
+                description="Descobrir quem bateu E depois fez SSH — possível reconhecimento ativo"
+              />
+              <CodeBlock code={`# Extrair IPs que bateram:
+grep "KNOCK-59991" /var/log/syslog \\
+    | grep -oP "SRC=\\K[0-9.]+" > /tmp/batidas.txt
+
+# Extrair logins SSH bem-sucedidos:
+grep "Accepted" /var/log/auth.log \\
+    | awk '{print $(NF-3)}' > /tmp/logins.txt
+
+# Correlacionar — quem bateu E logou?
+while read ip; do
+    if grep -q "$ip" /tmp/logins.txt; then
+        echo "LEGÍTIMO: $ip bateu e fez login"
+    else
+        echo "SUSPEITO: $ip bateu mas NÃO logou — reconhecimento?"
+    fi
+done < /tmp/batidas.txt`} />
+
+              <div className="mt-2">
+                <p className="text-sm font-semibold text-text-2 mb-3">Script completo: <code className="text-xs text-accent">/usr/local/bin/audit-knock</code></p>
+              </div>
+              <CodeBlock code={`cat > /usr/local/bin/audit-knock << 'SCRIPT'
+#!/bin/bash
+LOGFILE="/var/log/syslog"
+AUTHLOG="/var/log/auth.log"
+DATA=$(date +"%Y-%m-%d")
+
+echo "╔══════════════════════════════════════════╗"
+echo "║   RELATÓRIO DE AUDITORIA — PORT KNOCKING  ║"
+echo "║   Gerado em: $(date)   ║"
+echo "╚══════════════════════════════════════════╝"
+
+echo "━━━ RESUMO DO DIA ━━━"
+echo "Batidas na porta 59991:     $(grep "KNOCK-59991" $LOGFILE | grep "$DATA" | wc -l)"
+echo "Tentativas SSH sem knock:   $(grep "SSH-SEM-KNOCK" $LOGFILE | grep "$DATA" | wc -l)"
+echo "Logins bem-sucedidos:       $(grep "Accepted" $AUTHLOG | grep "$DATA" | wc -l)"
+
+echo "━━━ TOP IPs QUE BATERAM ━━━"
+grep "KNOCK-59991" $LOGFILE | grep "$DATA" \\
+    | grep -oP "SRC=\\K[0-9.]+" \\
+    | sort | uniq -c | sort -rn | head 10
+
+echo "━━━ ATIVIDADE FORA DO HORÁRIO COMERCIAL ━━━"
+grep "KNOCK-59991" $LOGFILE | grep "$DATA" \\
+    | awk '{split($3,t,":"); h=t[1]+0; if(h<8||h>=20) print "⚠️ "$3, $0}' \\
+    | grep -oP "⚠️ [0-9:]+ .*SRC=\\K[0-9.]+" \\
+    | while read ip; do echo "  Batida suspeita de: $ip"; done
+SCRIPT
+
+chmod +x /usr/local/bin/audit-knock
+audit-knock  # executar o relatório`} />
+
+              <div className="mt-2">
+                <p className="text-sm font-semibold text-text-2 mb-3">Monitor em tempo real: <code className="text-xs text-accent">/usr/local/bin/knock-monitor</code></p>
+              </div>
+              <CodeBlock code={`cat > /usr/local/bin/knock-monitor << 'SCRIPT'
+#!/bin/bash
+ADMIN_IP="192.168.57.50"
+
+tail -f /var/log/syslog | while read linha; do
+    if echo "$linha" | grep -q "KNOCK-59991"; then
+        IP=$(echo "$linha" | grep -oP "SRC=\\K[0-9.]+")
+        HORA=$(echo "$linha" | awk '{print $3}')
+        IN=$(echo "$linha" | grep -oP "IN=\\K\\S+")
+
+        if [ "$IP" = "$ADMIN_IP" ]; then
+            echo "[$HORA] ✓ KNOCK LEGÍTIMO: $IP via $IN"
+        else
+            echo "[$HORA] ⚠️  KNOCK SUSPEITO: $IP via $IN"
+            logger -p auth.warning "ALERTA: knock suspeito de $IP via $IN"
+        fi
+
+    elif echo "$linha" | grep -q "SSH-SEM-KNOCK"; then
+        IP=$(echo "$linha" | grep -oP "SRC=\\K[0-9.]+")
+        echo "[$(echo "$linha" | awk '{print $3}')] 🚨 SSH SEM KNOCK: $IP (bot/scanner)"
+
+    elif echo "$linha" | grep -q "Accepted publickey"; then
+        echo "[$(echo "$linha" | awk '{print $3}')] 🔑 LOGIN SSH: $(echo "$linha" | awk '{print $9}')"
+    fi
+done
+SCRIPT
+
+chmod +x /usr/local/bin/knock-monitor
+# Rodar em background:
+nohup /usr/local/bin/knock-monitor > /var/log/knock-monitor.log 2>&1 &
+tail -f /var/log/knock-monitor.log`} />
+
+              <HighlightBox title="📁 Retenção de 90 dias + Arquivo separado para knock">
+                <CodeBlock code={`# /etc/logrotate.d/rsyslog — garantir 90 dias:
+# rotate 90   (ao invés do padrão 7)
+# compress    (gzip nos arquivos antigos)
+
+# /etc/rsyslog.d/knock.conf — separar logs de knock:
+# :msg, contains, "KNOCK" /var/log/auditoria/knock.log
+# & stop
+
+mkdir -p /var/log/auditoria && chmod 700 /var/log/auditoria
+systemctl restart rsyslog
+
+# Monitorar apenas os logs de knock:
+tail -f /var/log/auditoria/knock.log`} />
+              </HighlightBox>
+
+              <div className="space-y-3 mt-4">
+                {[
+                  { id: 'audit-knock-script', text: 'Criei e executei o script /usr/local/bin/audit-knock' },
+                  { id: 'knock-monitor-script', text: 'Rodei o knock-monitor em background e vi os alertas coloridos' },
+                  { id: 'audit-log-rotation', text: 'Configurei retenção de 90 dias e arquivo separado para knock' },
+                ].map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className="w-full flex items-start gap-3 text-left group"
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 size={16} className="text-ok shrink-0 mt-0.5" />
+                    ) : (
+                      <Circle size={16} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                    )}
+                    <span className={cn(
+                      "text-sm leading-tight transition-colors",
+                      checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                    )}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 6: Erros Comuns (renumerado — era 4) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
                 <AlertTriangle size={24} />
               </div>
-              <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
+              <h2 className="text-2xl font-bold">6. Erros Comuns</h2>
             </div>
 
             <WarnBox title="⚠️ Problemas frequentes em auditoria de logs">

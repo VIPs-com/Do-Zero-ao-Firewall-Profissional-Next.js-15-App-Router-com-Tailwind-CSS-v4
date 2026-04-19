@@ -104,7 +104,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 20 (+ /laboratorio + /proxmox) |
 | `totalTopics` | `app/dashboard/page.tsx` | 38 (+ entradas Ambientes de Lab) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 45 (ALL_CHECKLIST_IDS.length — inclui Sprint SIGMA) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 56 (ALL_CHECKLIST_IDS.length — inclui Sprint SIGMA Fase 2) |
 | Texto na Home | `app/page.tsx` | "40+ topicos praticos" |
 
 ---
@@ -329,6 +329,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint P: Diamond Polish — FluxoCard em 5 páginas (dns, dnat, port-knocking, vpn-ipsec, nginx-ssl), "Erros Comuns" em 10 páginas, saídas esperadas em 3 páginas, audit-logs refatorado com componentes UI, certificado com 10 competências
 - ✅ Sprint L: Legacy Gold — TroubleshootingCard (OSI Ladder interativo), zona DNS reversa, FTP DNAT (21+50000:51000), SSH 2222, /proc/net/xt_recent, IPSec iptables prereqs, dhparam+TLS hardening, MSS Clamping, conntrack tuning, tcpdump duplo, Netplan YAML, scripts bash para download, página /offline terminal-style
 - ✅ Sprint SIGMA: Resgate Total + Elite Lab — /laboratorio (VirtualBox vs KVM vs Proxmox, KVM/libvirt completo), /proxmox (VE produção: bridges vmbr, VMs, snapshots, cluster HA), Certbot + HTTP-01 challenge em /nginx-ssl, badges proxmox-pioneer + resgate-gold, CONTENT_PAGES_COUNT 18→20, checklistItemsCount 35→45, totalTopics 26→38
+- ✅ Sprint SIGMA Fase 2: Integração dos 20 arquivos bônus — /port-knocking (admin em ação, bot invisibility), /audit-logs (forense: scripts audit-knock + knock-monitor, rotação 90 dias), /wan-nat (5 funções simultâneas + conntrack mágico), /dnat (PREROUTING kernel: 5 hooks Netfilter, troca cirúrgica, tcpdump duplo), /lan-proxy (FluxoCard timeline t=0ms→t=52ms, HTTP vs HTTPS), checklistItemsCount 45→56
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
