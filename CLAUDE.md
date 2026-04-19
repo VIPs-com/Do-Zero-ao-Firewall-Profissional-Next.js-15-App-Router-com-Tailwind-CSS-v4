@@ -103,7 +103,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 20 (+ /laboratorio + /proxmox) |
-| `totalTopics` | `app/dashboard/page.tsx` | 38 (+ entradas Ambientes de Lab) |
+| `totalTopics` | `app/dashboard/page.tsx` | 43 (+ 5 sub-seções SIGMA Fase 3) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 56 (ALL_CHECKLIST_IDS.length — inclui Sprint SIGMA Fase 2) |
 | Texto na Home | `app/page.tsx` | "40+ topicos praticos" |
 

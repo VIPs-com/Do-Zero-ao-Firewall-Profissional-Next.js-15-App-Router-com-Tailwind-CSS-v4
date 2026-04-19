@@ -96,7 +96,7 @@ export const ROUTE_SEO = {
   '/wan-nat': {
     title: 'WAN & NAT — Acesso à Internet',
     description:
-      'Configure SNAT e MASQUERADE no iptables para dar acesso à internet para a LAN. Entenda POSTROUTING, conntrack e estado ESTABLISHED.',
+      'As 5 funções simultâneas do firewall (Roteador+Filtro+Tradutor+Proxy+Guardião), SNAT, MASQUERADE e o mapeamento IDA/VOLTA automático do conntrack.',
   },
   '/dns': {
     title: 'DNS com BIND9 — Servidor Autoritativo',
@@ -116,17 +116,17 @@ export const ROUTE_SEO = {
   '/lan-proxy': {
     title: 'Squid Proxy para LAN',
     description:
-      'Implante Squid como proxy da LAN com ACLs, filtragem por dstdomain, logs de acesso e controle de conteúdo para usuários internos.',
+      'Fluxo completo de navegação t=0ms→t=52ms. Por que HTTPS só permite bloquear por dstdomain — o Squid vê a URL completa só no HTTP.',
   },
   '/dnat': {
     title: 'DNAT & Port Forwarding',
     description:
-      'Publique serviços da DMZ para a WAN com DNAT no iptables. Entenda PREROUTING, a ordem correta de regras e integração com FORWARD.',
+      'PREROUTING pelo kernel: 5 hooks Netfilter, troca cirúrgica do IP, conntrack IDA/VOLTA e tcpdump duplo antes e depois do DNAT.',
   },
   '/port-knocking': {
     title: 'Port Knocking — SSH Invisível',
     description:
-      'Torne o SSH invisível para port scans com port knocking usando iptables recent module. Sequência secreta, timeout e stealth mode.',
+      'SSH invisível para port scans. Script ~/entrar.sh, janela de 10s e por que 847 bots tentam SSH enquanto Port Knocking registra 0.',
   },
   '/vpn-ipsec': {
     title: 'VPN IPSec com StrongSwan',
@@ -146,7 +146,7 @@ export const ROUTE_SEO = {
   '/audit-logs': {
     title: 'Audit Logs & Monitoramento',
     description:
-      'Configure logging de firewall, journald, syslog e auditd. Monitore tráfego suspeito e mantenha trilha de auditoria para forense.',
+      'Auditoria forense de Port Knocking com tail -f awk, scripts audit-knock e knock-monitor. Correlação de batidas com logins SSH.',
   },
   '/nftables': {
     title: 'nftables — Substituto Moderno do iptables',

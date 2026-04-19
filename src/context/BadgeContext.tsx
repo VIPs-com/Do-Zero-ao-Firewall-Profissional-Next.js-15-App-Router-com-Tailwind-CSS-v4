@@ -9,7 +9,8 @@ export type BadgeId =
   | 'wireguard-master'
   | 'fail2ban-master'
   | 'proxmox-pioneer'
-  | 'resgate-gold';
+  | 'resgate-gold'
+  | 'sigma-master';
 
 export interface BadgeDef {
   icon: string;
@@ -41,6 +42,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'fail2ban-master':    { icon: '🚫', title: 'Fail2ban Master',       desc: 'Protegeu serviços com Fail2ban' },
   'proxmox-pioneer':    { icon: '🖥️', title: 'Proxmox Pioneer',      desc: 'Configurou um laboratório completo no Proxmox VE' },
   'resgate-gold':       { icon: '🏅', title: 'Agente de Resgate',     desc: 'Explorou os ambientes de laboratório avançados' },
+  'sigma-master':       { icon: '🔬', title: 'SIGMA Master',          desc: 'Dominou forense de rede, anatomia do NAT e internos do kernel' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -200,6 +202,14 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['wg-keys'] && checklist['wg-server'] && checklist['wg-tunnel']) unlockBadge('wireguard-master');
     if (checklist['f2b-install'] && checklist['f2b-sshd'] && checklist['f2b-ban-test']) unlockBadge('fail2ban-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
+    // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
+    if (
+      checklist['knock-admin-flow'] && checklist['knock-visibility'] &&
+      checklist['audit-knock-script'] && checklist['knock-monitor-script'] && checklist['audit-log-rotation'] &&
+      checklist['nat-5-functions'] && checklist['nat-conntrack-magic'] &&
+      checklist['prerouting-deep-dive'] && checklist['conntrack-dnat-mapping'] &&
+      checklist['squid-flow-understood'] && checklist['squid-http-vs-https']
+    ) unlockBadge('sigma-master');
 
     if (Object.values(checklist).filter(v => v).length >= 15) unlockBadge('linux-ninja');
   }, [checklist]);

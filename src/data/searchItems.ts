@@ -100,4 +100,29 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'c-certbot',      title: 'certbot --nginx',          description: 'Obter certificado Let\'s Encrypt com plugin Nginx',          category: 'Comando',        href: '/nginx-ssl',   icon: Terminal },
   { id: 'c-certbot-renew', title: 'certbot renew --dry-run', description: 'Testar renovação automática de certificado Let\'s Encrypt',  category: 'Comando',        href: '/nginx-ssl',   icon: Terminal },
   { id: 'c-qm',           title: 'qm snapshot / rollback',  description: 'Criar e reverter snapshots de VMs no Proxmox',               category: 'Comando',        href: '/proxmox',     icon: Terminal },
+
+  // Sprint SIGMA Fase 2 — seções avançadas (5 novas seções + 1 script)
+  { id: 't-knock-admin',   title: 'Administrador em Ação — ~/entrar.sh + Port Knocking',
+    description: 'Fluxo curl → knock → SSH em 10s. Script ~/entrar.sh automatizado. 847 bots vs 0.',
+    category: 'Tópico', href: '/port-knocking#admin-em-acao', icon: Zap },
+
+  { id: 't-forense-knock', title: 'Auditoria Forense: tail -f awk + scripts audit-knock e knock-monitor',
+    description: '3 níveis: tempo real, análise histórica, correlação batidas+logins.',
+    category: 'Tópico', href: '/audit-logs#forense-knock', icon: Activity },
+
+  { id: 't-nat-anatomy',   title: 'Anatomia do NAT — 5 Funções Simultâneas do Firewall',
+    description: 'Roteador + Filtro + Tradutor + Proxy + Guardião. conntrack IDA/VOLTA automático.',
+    category: 'Tópico', href: '/wan-nat#anatomia-nat', icon: Network },
+
+  { id: 't-prerouting-k',  title: 'PREROUTING — 5 Hooks Netfilter e Troca Cirúrgica de IP',
+    description: 'Por que DNAT deve ser antes do ROUTING. tcpdump antes e depois da troca.',
+    category: 'Tópico', href: '/dnat#prerouting-kernel', icon: Shield },
+
+  { id: 't-squid-flow',    title: 'Fluxo Completo via Squid — Timeline t=0ms→t=52ms',
+    description: 'HTTP vê URL completa; HTTPS vê só domínio. 4 cenários de ACL.',
+    category: 'Tópico', href: '/lan-proxy#fluxo-navegacao', icon: Globe },
+
+  { id: 'c-knock-monitor', title: 'knock-monitor — alertas coloridos Port Knocking em tempo real',
+    description: 'LEGÍTIMO / SUSPEITO / SSH SEM KNOCK / LOGIN SSH. Roda em background com nohup.',
+    category: 'Comando', href: '/audit-logs#forense-knock', icon: Eye },
 ];

@@ -90,6 +90,13 @@ const TOPICS: Topic[] = [
   { id: '35', num: '35', title: 'Proxmox VE: instalação, bridges vmbr, criação das 4 VMs do laboratório e snapshots profissionais.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox', group: 'Ambientes de Lab' },
   { id: '36', num: '36', title: 'Cluster Proxmox: Live Migration de VMs, Alta Disponibilidade (HA) e storage compartilhado com Ceph.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox#cluster', group: 'Ambientes de Lab' },
   { id: '37', num: '37', title: 'vzdump e backups agendados: proteja seu lab com backups completos de VMs no Proxmox VE.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox#backup', group: 'Ambientes de Lab' },
+
+  // ── Sprint SIGMA Fase 2 — seções avançadas ────────────────────────────────────
+  { id: '38', num: '38', title: 'Fluxo do administrador com Port Knocking: ~/entrar.sh, janela de 10s e por que bots nunca descobrem a porta.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/port-knocking#admin-em-acao', group: 'Port Knocking' },
+  { id: '39', num: '39', title: 'Auditoria forense do Port Knocking: tail -f com awk, scripts audit-knock e knock-monitor, rotação 90 dias.', layer: 'Forense · Logs', layerClass: 'l4', href: '/audit-logs#forense-knock', group: 'Segurança Avançada' },
+  { id: '40', num: '40', title: 'As 5 funções simultâneas do Firewall (Roteador+Filtro+Tradutor+Proxy+Guardião) e a magia do conntrack IDA/VOLTA.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/wan-nat#anatomia-nat', group: 'WAN, NAT & ESTABLISHED' },
+  { id: '41', num: '41', title: 'PREROUTING pelo kernel: os 5 hooks do Netfilter, a troca cirúrgica do IP e tcpdump antes e depois do DNAT.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/dnat#prerouting-kernel', group: 'DNAT & PREROUTING' },
+  { id: '42', num: '42', title: 'Fluxo completo de navegação via Squid: timeline t=0ms→t=52ms, HTTP vs HTTPS e os 4 cenários de ACL.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/lan-proxy#fluxo-navegacao', group: 'LAN, DNS & Proxy' },
 ];
 
 export default function TopicsPage() {
