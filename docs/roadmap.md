@@ -148,6 +148,27 @@ Sprint SIGMA ✅ Resgate Total + Elite Lab
       ├── Badge resgate-gold (🏅): visitar /laboratorio + /proxmox
       └── CONTENT_PAGES_COUNT: 18→20 · checklistItemsCount: 35→45 · totalTopics: 26→38
 
+Sprint SIGMA Fase 2 ✅ Integração dos 20 Arquivos Bônus (Eixo 3)
+  ├── /port-knocking — Seção 6 "O Administrador em Ação":
+  │   FluxoCard 4 atos (invisível→knock→janela 10s→ESTABLISHED independente),
+  │   script ~/entrar.sh, comparativo 847 bots vs 0 com Port Knocking,
+  │   dois sistemas: módulo recent (10s de autorização) vs conntrack (5 dias sessão ativa)
+  ├── /audit-logs — Seção 5 "Auditoria Forense — Port Knocking":
+  │   3 níveis: tail -f | awk ao vivo, análise histórica (top IPs + horários de pico),
+  │   correlação batidas+logins (reconhecimento ativo vs admin legítimo),
+  │   scripts /usr/local/bin/audit-knock (relatório) + knock-monitor (alertas coloridos),
+  │   rotação 90 dias + rsyslog.d/knock.conf (arquivo separado)
+  ├── /wan-nat — Seção 9 "A Anatomia do NAT — 5 Funções Simultâneas":
+  │   FluxoCard (Roteador+Filtro+Tradutor+Proxy+Guardião),
+  │   conntrack -L com mapeamento IDA/VOLTA automático sem regra explícita
+  ├── /dnat — Seção 6 "PREROUTING — O Kernel Visto Por Dentro":
+  │   Diagrama 5 hooks Netfilter, troca cirúrgica do header IP + recálculo checksum,
+  │   conntrack entry IDA+VOLTA, tcpdump duplo (placa WAN vs placa DMZ)
+  ├── /lan-proxy — Seção 6 "Fluxo Completo de Navegação via Squid":
+  │   FluxoCard timeline t=0ms→t=52ms, 4 cenários ACL,
+  │   HTTP vs HTTPS: URL completa vs só domínio → por que dstdomain é obrigatório
+  └── checklistItemsCount: 45→56 · ALL_CHECKLIST_IDS: 56 entradas (8 arquivos, 0 páginas novas)
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
