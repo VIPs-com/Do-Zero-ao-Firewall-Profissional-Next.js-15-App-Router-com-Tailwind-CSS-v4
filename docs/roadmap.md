@@ -226,6 +226,24 @@ Sprint Polish ✅ Navegação Sequencial + Saída Esperada Certbot
   │   blocos de output do Certbot (alinha com padrão Sprint P de /dns e /wireguard)
   └── Constantes inalteradas: 60 checkpoints · 45 tópicos · 25 badges · 71 searchItems · 33/33 build
 
+Sprint Audit Fix ✅ Consolidação Pós-Cursor Review
+  Objetivo: reconciliar 8 inconsistências confirmadas (números, comentários, boilerplate legacy)
+  ├── BadgeContext.tsx
+  │   ├── deep-diver.desc: "18 páginas" → "20 páginas de conteúdo"
+  │   ├── Comentário CONTENT_PAGES_COUNT: "16 rotas" → lista completa das 20 rotas
+  │   └── Threshold linux-ninja: 15 → 45 (75% dos 60 checkpoints — coerente com o título)
+  ├── app/layout.tsx
+  │   └── Comentário "middleware.ts" → "proxy.ts" (Next.js 16 renomeou no Sprint E)
+  ├── app/dashboard/page.tsx
+  │   ├── Comentários contraditórios limpos (sprint history removido, texto descritivo)
+  │   └── totalTopics: 45 → 44 (alinhado ao array TOPICS real em app/topicos/page.tsx)
+  ├── app/page.tsx
+  │   └── Hero "40+ tópicos práticos" → "44 tópicos práticos"
+  ├── .env.example
+  │   └── Remove boilerplate AI Studio morto (GEMINI_API_KEY, APP_URL)
+  │       Mantém apenas NEXT_PUBLIC_SITE_URL com comentário explicativo
+  └── Constantes pós-Audit Fix: totalTopics=44 · 60 checkpoints · 25 badges · 71 searchItems · 33/33 build
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
