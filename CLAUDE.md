@@ -106,7 +106,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 20 (+ /laboratorio + /proxmox) |
 | `totalTopics` | `app/dashboard/page.tsx` | 45 (Sprint Topics: tópico #45 RosettaStone adicionado) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 60 (ALL_CHECKLIST_IDS.length) |
-| Texto na Home | `app/page.tsx` | "44 tópicos práticos" |
+| Texto na Home | `app/page.tsx` | "45 tópicos práticos" |
 
 ---
 
