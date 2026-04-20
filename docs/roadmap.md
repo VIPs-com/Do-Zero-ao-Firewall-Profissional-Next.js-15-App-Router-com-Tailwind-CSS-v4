@@ -244,6 +244,23 @@ Sprint Audit Fix ✅ Consolidação Pós-Cursor Review
   │       Mantém apenas NEXT_PUBLIC_SITE_URL com comentário explicativo
   └── Constantes pós-Audit Fix: totalTopics=44 · 60 checkpoints · 25 badges · 71 searchItems · 33/33 build
 
+Sprint V + Topics + UX ✅ E2E Fixes · Tópico #45 · Dashboard Módulos
+  Objetivo: fechar 3 débitos técnicos pós-Audit Fix em sequência
+  ├── Sprint V — Playwright E2E
+  │   ├── 07-dashboard-counters.spec.ts: 3/35→3/60, 0/21→0/25, comentário header
+  │   ├── 03-quiz-expert-badge.spec.ts: fallback parseInt '27'→'33'
+  │   └── 08-module-nav.spec.ts: NOVO spec (3 testes — início, meio, fim da sequência)
+  ├── Sprint Topics — Tópico #45
+  │   ├── app/topicos/page.tsx: nova entrada id='45' grupo "Fundação & Terminal"
+  │   │   "RosettaStone interativa: 25 equivalências Windows→Linux" → /instalacao#rosetta-stone
+  │   └── app/dashboard/page.tsx: totalTopics 44→45
+  ├── Sprint UX — Dashboard Módulos do Curso
+  │   ├── Import COURSE_ORDER de @/data/courseOrder
+  │   └── Nova seção "Módulos do Curso" entre stats grid e badges:
+  │       grid 21 módulos com ✓ verde (visitado) ou número (pendente)
+  │       counter "X de 21" no cabeçalho
+  └── Constantes: totalTopics=45 · 60 checkpoints · 25 badges · 8 specs E2E · 33/33 build
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

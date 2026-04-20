@@ -20,7 +20,7 @@ test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é d
 
   // Determina total de questões
   const counterText = await page.locator('text=/\\d+\\/\\d+/').first().textContent();
-  const totalQuestions = parseInt(counterText?.split('/')[1] ?? '27', 10);
+  const totalQuestions = parseInt(counterText?.split('/')[1] ?? '33', 10);
 
   for (let i = 0; i < totalQuestions; i++) {
     // Aguarda o indicador mostrar a questão i+1 (animação completa)

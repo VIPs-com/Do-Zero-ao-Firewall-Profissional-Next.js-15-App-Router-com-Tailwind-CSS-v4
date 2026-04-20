@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
+import { COURSE_ORDER } from '@/data/courseOrder';
 
 export default function DashboardPage() {
   const {
@@ -55,7 +56,7 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  const totalTopics = 44;
+  const totalTopics = 45;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
@@ -137,6 +138,48 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
+
+          {/* Módulos do Curso */}
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <BookOpen className="text-info" size={20} />
+                Módulos do Curso
+              </h2>
+              <span className="text-xs font-mono text-text-3">
+                {COURSE_ORDER.filter(m => {
+                  const slug = m.path.replace('/', '');
+                  return visitedPages.has(slug) || visitedPages.has(m.path);
+                }).length} de {COURSE_ORDER.length}
+              </span>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {COURSE_ORDER.map((mod, idx) => {
+                const slug = mod.path.replace('/', '');
+                const visited = visitedPages.has(slug) || visitedPages.has(mod.path);
+                return (
+                  <Link
+                    key={mod.path}
+                    href={mod.path}
+                    className={cn(
+                      'flex items-center gap-3 p-3 rounded-xl border text-sm transition-all',
+                      visited
+                        ? 'bg-bg-2 border-ok/30 text-text'
+                        : 'bg-bg-2/40 border-border text-text-3 hover:border-border-2'
+                    )}
+                  >
+                    <span className={cn(
+                      'w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0',
+                      visited ? 'bg-ok/20 text-ok' : 'bg-bg-3 text-text-3'
+                    )}>
+                      {visited ? '✓' : idx + 1}
+                    </span>
+                    <span className="text-xs leading-tight font-medium">{mod.title}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
 
           {/* Badges Section */}
           <section>

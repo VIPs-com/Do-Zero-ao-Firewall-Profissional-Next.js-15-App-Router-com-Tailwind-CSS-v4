@@ -101,6 +101,7 @@ const TOPICS: Topic[] = [
   // ── Sprint W — Windows-to-Linux ───────────────────────────────────────────────
   { id: '43', num: '43', title: 'Terminal do Zero para Windows users: pwd, ls, sudo, Tab autocompletar, Ctrl+Shift+C para copiar.', layer: 'Fundação · Terminal', layerClass: 'l7', href: '/instalacao#terminal-do-zero', group: 'Fundação & Terminal' },
   { id: '44', num: '44', title: 'Mindset SysAdmin: systemctl vs Serviços Windows, journalctl vs Event Viewer, /etc/ vs Program Files.', layer: 'Fundação · Conceitos', layerClass: 'l7', href: '/instalacao#sysadmin-mindset', group: 'Fundação & Terminal' },
+  { id: '45', num: '45', title: 'RosettaStone interativa: 25 equivalências Windows → Linux com filtro por categoria — ls, grep, systemctl e mais.', layer: 'Fundação · Conceitos', layerClass: 'l7', href: '/instalacao#rosetta-stone', group: 'Fundação & Terminal' },
 ];
 
 export default function TopicsPage() {
