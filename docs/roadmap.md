@@ -261,6 +261,26 @@ Sprint V + Topics + UX ✅ E2E Fixes · Tópico #45 · Dashboard Módulos
   │       counter "X de 21" no cabeçalho
   └── Constantes: totalTopics=45 · 60 checkpoints · 25 badges · 8 specs E2E · 33/33 build
 
+Sprint T₃ ✅ Testes Unitários courseOrder + ModuleNav
+  Objetivo: cobrir os dois arquivos críticos do Sprint Polish com vitest
+  ├── src/data/courseOrder.test.ts (NOVO — 9 testes)
+  │   ├── 21 módulos exatos
+  │   ├── sem paths duplicados
+  │   ├── primeiro prev=null · último next=null
+  │   ├── começa em /instalacao · termina em /certificado
+  │   ├── todos prev (não-null) existem na sequência
+  │   ├── todos next (não-null) existem na sequência
+  │   ├── bidirecionalidade: se A.next=B então B.prev=A
+  │   ├── todos os titles não-vazios
+  │   └── todos os paths começam com /
+  ├── src/components/ui/ModuleNav.test.tsx (NOVO — 5 testes)
+  │   ├── null para path desconhecido
+  │   ├── /instalacao: sem Anterior, Próximo→/wan-nat
+  │   ├── /wan-nat: Anterior→/instalacao, Próximo→/dns
+  │   ├── /certificado: Anterior→/quiz, sem Próximo
+  │   └── /nginx-ssl: hrefs corretos /dns e /lan-proxy
+  └── Total: 6 suítes · 42 testes vitest · lint ✓ · build 33/33 ✓
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
