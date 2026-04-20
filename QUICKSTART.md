@@ -91,7 +91,7 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — vitest passando
 - [ ] `npm run build` — 33/33 páginas (26 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 20`, `totalTopics = 45`, `checklistItemsCount = 60`)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 20`, `totalTopics = 44`, `checklistItemsCount = 60`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)

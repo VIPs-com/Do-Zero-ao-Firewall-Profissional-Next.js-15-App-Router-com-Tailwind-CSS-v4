@@ -115,7 +115,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   /*
-   * SPRINT E — Lê o nonce gerado pelo middleware.ts e aplica em ambos os
+   * SPRINT E — Lê o nonce gerado pelo proxy.ts (Next.js 16 renomeou
+   *            middleware.ts → proxy.ts) e aplica em ambos os
    * <script> inline. Isso permite que o CSP use 'nonce-XXX' em vez de
    * 'unsafe-inline', elevando a defesa contra XSS.
    *

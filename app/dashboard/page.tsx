@@ -54,12 +54,12 @@ export default function DashboardPage() {
     trackPageVisit('dashboard');
   }, [trackPageVisit]);
 
-  // Sprint SIGMA Fase 3: +5 sub-seções avançadas → 43 tópicos
-  const totalTopics = 45; // Sprint W: +2 tópicos (terminal-do-zero, sysadmin-mindset)
+  // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
+  const totalTopics = 44;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
-  // Sprint SIGMA: +lab-comparison-read/lab-kvm-installed/lab-kvm-vm/proxmox-iso/proxmox-bridges/proxmox-vms/proxmox-snapshot/certbot-installed/certbot-certificate/certbot-renewal → 45 checkpoints
-  const checklistItemsCount = 60; // Sprint W2: +1 (rosetta-stone-explored)
+  // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
+  const checklistItemsCount = 60;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 

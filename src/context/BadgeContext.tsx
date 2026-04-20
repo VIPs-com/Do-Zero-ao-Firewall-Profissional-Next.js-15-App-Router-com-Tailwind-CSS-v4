@@ -24,7 +24,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'quiz-expert':        { icon: '🥇', title: 'Expert',             desc: 'Score ≥ 80% no Quiz' },
   'quiz-master':        { icon: '🏆', title: 'Mestre',             desc: 'Score 100% no Quiz' },
   'explorer':           { icon: '🗺️', title: 'Explorador',         desc: 'Visitou 5+ páginas diferentes' },
-  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 18 páginas de conteúdo' },
+  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 20 páginas de conteúdo' },
   'night-owl':          { icon: '🦉', title: 'Coruja Noturna',     desc: 'Ativou o Dark Mode' },
   'searcher':           { icon: '🔍', title: 'Investigador',       desc: 'Usou a busca global' },
   'topology-pro':       { icon: '🖧', title: 'Topólogo',           desc: 'Clicou em 5+ elementos da topologia' },
@@ -82,15 +82,23 @@ export const ALL_CHECKLIST_IDS = [
 ]; // 60 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
- * PÁGINAS DE CONTEÚDO DO PROJETO (16 rotas técnicas — não inclui home, quiz, dashboard, certificado, topicos)
- * Usadas como limiar para o badge 'deep-diver'.
- * Atualizar se novas rotas de conteúdo forem adicionadas.
+ * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
+ * Não inclui: /, /quiz, /dashboard, /certificado, /topicos.
+ * ClientLayout chama trackPageVisit(pathname) em toda navegação.
+ * Atualizar este número e a lista se novas rotas forem adicionadas.
  *
- * /instalacao, /wan-nat, /dns, /nginx-ssl, /web-server, /lan-proxy,
- * /dnat, /port-knocking, /vpn-ipsec, /ataques-avancados, /pivoteamento,
- * /audit-logs, /evolucao, /glossario, /cheat-sheet
+ *  1. /instalacao          11. /fail2ban
+ *  2. /wan-nat             12. /audit-logs
+ *  3. /dns                 13. /ataques-avancados
+ *  4. /nginx-ssl           14. /pivoteamento
+ *  5. /lan-proxy           15. /laboratorio
+ *  6. /dnat                16. /proxmox
+ *  7. /port-knocking       17. /evolucao
+ *  8. /vpn-ipsec           18. /cheat-sheet
+ *  9. /wireguard           19. /glossario
+ * 10. /nftables            20. /web-server
  */
-export const CONTENT_PAGES_COUNT = 20; // Sprint SIGMA: +/laboratorio +/proxmox
+export const CONTENT_PAGES_COUNT = 20;
 
 interface BadgeContextType {
   unlockedBadges: Set<BadgeId>;
@@ -225,7 +233,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['rosetta-stone-explored']
     ) unlockBadge('explorador-mundos');
 
-    if (Object.values(checklist).filter(v => v).length >= 15) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (45 de 60).
+    if (Object.values(checklist).filter(v => v).length >= 45) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

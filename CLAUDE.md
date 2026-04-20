@@ -104,9 +104,9 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 20 (+ /laboratorio + /proxmox) |
-| `totalTopics` | `app/dashboard/page.tsx` | 45 (Sprint W: +2 tópicos) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 60 (ALL_CHECKLIST_IDS.length — Sprint W2: +1 rosetta-stone-explored) |
-| Texto na Home | `app/page.tsx` | "40+ topicos praticos" |
+| `totalTopics` | `app/dashboard/page.tsx` | 44 (Sprint Audit Fix: alinhado ao array TOPICS real) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 60 (ALL_CHECKLIST_IDS.length) |
+| Texto na Home | `app/page.tsx` | "44 tópicos práticos" |
 
 ---
 
@@ -335,6 +335,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint W: Windows-to-Linux — WindowsComparisonBox (Boxes.tsx), seções "Terminal do Zero" + "Mindset SysAdmin" em /instalacao, tabela Windows↔Linux em /cheat-sheet#windows-linux, +3 checkpoints, checklistItemsCount 56→59, totalTopics 43→45, +3 searchItems (69 total)
 - ✅ Sprint W2: RosettaStone.tsx (25 comandos, busca + filtro por categoria), resgate-gold.sh (Botão de Pânico), badge 🧭 explorador-mundos, FluxoCard Troubleshooting Mental Map em /instalacao, seção "Como apresentar profissionalmente" em /certificado, checklistItemsCount 59→60, badges 24→25, searchItems 69→71
 - ✅ Sprint Polish: ModuleNav (Anterior / Próximo) nas 20 páginas de conteúdo, courseOrder.ts com sequência de 21 módulos, labels "▶ Saída esperada" certbot em /nginx-ssl, link avulso /web-server removido de nginx-ssl
+- ✅ Sprint Audit Fix: reconciliação pós-Cursor review — deep-diver.desc (18→20), comentário CONTENT_PAGES_COUNT (16 rotas → 20 rotas completas), app/layout.tsx middleware.ts → proxy.ts, comentários dashboard sincronizados, threshold linux-ninja (15→45), .env.example limpo (só NEXT_PUBLIC_SITE_URL), totalTopics 45→44 (alinhado ao array TOPICS), hero "40+" → "44 tópicos práticos"
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
