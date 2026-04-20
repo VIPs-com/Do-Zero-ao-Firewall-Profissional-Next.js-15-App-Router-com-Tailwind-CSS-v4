@@ -10,7 +10,7 @@
 npm install        # instalar dependências
 npm run dev        # http://localhost:3000
 npm test           # vitest — testes automatizados
-npm run build      # build de produção — 30/30 páginas (23 próprias + assets SEO/PWA)
+npm run build      # build de produção — 33/33 páginas (26 próprias + assets SEO/PWA)
 ```
 
 ---
@@ -21,7 +21,7 @@ npm run build      # build de produção — 30/30 páginas (23 próprias + asse
 npm run lint         # tsc --noEmit — typecheck TypeScript
 npm run lint:eslint  # ESLint + jsx-a11y — acessibilidade WCAG 2.1 AA
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalSearch, SEO)
+npm test             # vitest — 6 suítes · 42 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
 ```
 
 ---
@@ -30,7 +30,7 @@ npm test             # vitest — 4 suítes (BadgeContext, ClientLayout, GlobalS
 
 | Pasta / Arquivo | O que é |
 |---|---|
-| `/app` | Rotas e Layouts (App Router) — 23 rotas próprias |
+| `/app` | Rotas e Layouts (App Router) — 26 rotas próprias |
 | `/app/globals.css` | Tokens de cor dark/light + classes reutilizáveis |
 | `/app/layout.tsx` | Root layout + anti-FOUC + JSON-LD + nonce CSP |
 | `/app/providers.tsx` | `<BadgeProvider>` global |

@@ -66,8 +66,8 @@ npm install        # instalar dependências
 npm run dev        # http://localhost:3000
 npm run lint       # tsc --noEmit — typecheck
 npm run lint:eslint # ESLint + jsx-a11y
-npm test           # vitest — 4 suítes
-npm run build      # 30/30 páginas (23 próprias + assets SEO/PWA)
+npm test           # vitest — 6 suítes · 42 testes
+npm run build      # 33/33 páginas (26 próprias + assets SEO/PWA)
 ```
 
 > Para guia completo de onboarding: [QUICKSTART.md](QUICKSTART.md)
@@ -77,7 +77,7 @@ npm run build      # 30/30 páginas (23 próprias + assets SEO/PWA)
 ## 📂 Estrutura de Pastas (resumo)
 
 ```
-app/                    ← App Router — 23 rotas públicas
+app/                    ← App Router — 26 rotas públicas
   layout.tsx            ← Root layout + anti-FOUC + JSON-LD + nonce CSP
   globals.css           ← Tokens de tema dark/light (@theme)
   providers.tsx         ← <BadgeProvider> global

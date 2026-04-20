@@ -13,12 +13,12 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run test         # vitest run — suíte de testes (BadgeContext, ClientLayout, GlobalSearch, SEO)
+npm run test         # vitest run — 6 suítes · 42 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
 npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 23 rotas próprias (build reporta 30/30 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest)
+npm run build        # valida TypeScript + gera 26 rotas próprias (build reporta 33/33 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 23 rotas — todas 'use client'
+  [rota]/page.tsx           # 26 rotas — todas 'use client'
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -62,7 +62,7 @@ src/
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (23 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (26 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -73,7 +73,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
-  07-dashboard-counters.spec.ts # 3/35 checklist + 75% quiz + 0/21 badges
+  07-dashboard-counters.spec.ts # 3/60 checklist + 75% quiz + 0/25 badges
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
 
@@ -144,7 +144,7 @@ NUNCA criar arquivos CSS separados — usar classes Tailwind diretamente no JSX.
 Toda configuração de metadata vive em **`src/lib/seo.ts`**:
 
 - `SITE_CONFIG` — nome, URL base, keywords globais, theme color
-- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 23 rotas
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 26 rotas
 - `buildMetadata(route)` — helper que gera objeto `Metadata` completo com OG + Twitter + canonical
 
 **Para adicionar SEO a uma nova rota:**
