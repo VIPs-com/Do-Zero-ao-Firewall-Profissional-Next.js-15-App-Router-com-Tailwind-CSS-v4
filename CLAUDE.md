@@ -107,6 +107,8 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `totalTopics` | `app/dashboard/page.tsx` | 45 (Sprint Topics: tópico #45 RosettaStone adicionado) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 60 (ALL_CHECKLIST_IDS.length) |
 | Texto na Home | `app/page.tsx` | "45 tópicos práticos" |
+| Badges | `src/context/BadgeContext.tsx` | 26 (Sprint Badge V2: +course-master) |
+| searchItems | `src/data/searchItems.ts` | 72 (Sprint Search+1: +p-modulos) |
 
 ---
 
@@ -338,6 +340,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Audit Fix: reconciliação pós-Cursor review — deep-diver.desc (18→20), comentário CONTENT_PAGES_COUNT (16 rotas → 20 rotas completas), app/layout.tsx middleware.ts → proxy.ts, comentários dashboard sincronizados, threshold linux-ninja (15→45), .env.example limpo (só NEXT_PUBLIC_SITE_URL), totalTopics 45→44 (alinhado ao array TOPICS), hero "40+" → "44 tópicos práticos"
 - ✅ Sprint V + Topics + UX: Playwright E2E fixes (3/35→3/60, 0/21→0/25, fallback quiz 27→33), spec ModuleNav 08-module-nav.spec.ts (8 specs total), tópico #45 RosettaStone (totalTopics 44→45), seção "Módulos do Curso" no dashboard (mapa visual 21 módulos com ✓/número)
 - ✅ Sprint T₃: testes vitest para courseOrder.ts (9 invariantes — 21 módulos, sem duplicatas, bidirecionalidade, chain completa) e ModuleNav.tsx (5 casos — null, início, meio, fim, path interno); total 6 suítes · 42 testes
+- ✅ Sprint Badge V2 + Search+1: badge 🎯 course-master (visitar todos os 21 módulos), searchItems 71→72 (Módulos do Curso → /dashboard#modulos), badges 25→26
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

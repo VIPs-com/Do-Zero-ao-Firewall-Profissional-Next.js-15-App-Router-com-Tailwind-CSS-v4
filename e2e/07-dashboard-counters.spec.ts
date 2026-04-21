@@ -6,7 +6,7 @@ import { test, expect } from './fixtures';
  * Constantes em app/dashboard/page.tsx:
  *   totalTopics = 45          (visitedPages.size / 45)
  *   checklistItemsCount = 60  (checklistCompleted / 60)
- *   BADGE_DEFS tem 25 chaves
+ *   BADGE_DEFS tem 26 chaves
  *
  * ATENÇÃO — visitedPages tracking é inconsistente no código:
  *   ClientLayout chama trackPageVisit('/dashboard')  — com barra
@@ -42,11 +42,11 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   await expect(page.getByText('75%')).toBeVisible();
 });
 
-test('dashboard exibe 0/25 badges para usuário sem progresso', async ({ page }) => {
+test('dashboard exibe 0/26 badges para usuário sem progresso', async ({ page }) => {
   // Sem seed — estado completamente limpo (fixture já limpou)
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
   // Sem nenhum badge desbloqueado (visitedPages << 5, sem quiz)
-  await expect(page.getByText('0/25')).toBeVisible();
+  await expect(page.getByText('0/26')).toBeVisible();
 });

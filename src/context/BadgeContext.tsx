@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+import { COURSE_ORDER } from '@/data/courseOrder';
 
 export type BadgeId =
   | 'quiz-beginner' | 'quiz-expert' | 'quiz-master'
@@ -11,7 +12,8 @@ export type BadgeId =
   | 'proxmox-pioneer'
   | 'resgate-gold'
   | 'sigma-master'
-  | 'explorador-mundos';
+  | 'explorador-mundos'
+  | 'course-master';
 
 export interface BadgeDef {
   icon: string;
@@ -45,6 +47,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'resgate-gold':       { icon: '🏅', title: 'Agente de Resgate',     desc: 'Explorou os ambientes de laboratório avançados' },
   'sigma-master':       { icon: '🔬', title: 'SIGMA Master',          desc: 'Dominou forense de rede, anatomia do NAT e internos do kernel' },
   'explorador-mundos':  { icon: '🧭', title: 'Explorador de Mundos',  desc: 'Completou o Módulo Zero e dominou a transição Windows → Linux' },
+  'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 21 módulos do curso em sequência' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -190,6 +193,12 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (visitedPages.size >= 5)                  unlockBadge('explorer');
     if (visitedPages.size >= CONTENT_PAGES_COUNT) unlockBadge('deep-diver');
     if (visitedPages.has('laboratorio') && visitedPages.has('proxmox')) unlockBadge('resgate-gold');
+    // Mestre do Curso: todos os 21 módulos de COURSE_ORDER visitados
+    const allVisited = COURSE_ORDER.every(m => {
+      const slug = m.path.slice(1); // '/wan-nat' → 'wan-nat'
+      return visitedPages.has(m.path) || visitedPages.has(slug);
+    });
+    if (allVisited) unlockBadge('course-master');
   }, [visitedPages]);
 
   useEffect(() => {

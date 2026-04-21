@@ -281,6 +281,15 @@ Sprint T₃ ✅ Testes Unitários courseOrder + ModuleNav
   │   └── /nginx-ssl: hrefs corretos /dns e /lan-proxy
   └── Total: 6 suítes · 42 testes vitest · lint ✓ · build 33/33 ✓
 
+Sprint Badge V2 + Search+1 ✅ Mestre do Curso + Busca Módulos
+  ├── BadgeContext.tsx
+  │   ├── BadgeId: + 'course-master'
+  │   ├── BADGE_DEFS: 🎯 Mestre do Curso — "Visitou todos os 21 módulos do curso"
+  │   └── useEffect visitedPages: COURSE_ORDER.every() → unlockBadge('course-master')
+  ├── searchItems.ts: id='p-modulos' → "Módulos do Curso" → /dashboard#modulos (72 itens)
+  ├── e2e/07-dashboard-counters.spec.ts: 0/25 → 0/26 (BADGE_DEFS agora tem 26 chaves)
+  └── Constantes: badges 25→26 · searchItems 71→72 · lint ✓ · test 42/42 ✓ · build 33/33 ✓
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
