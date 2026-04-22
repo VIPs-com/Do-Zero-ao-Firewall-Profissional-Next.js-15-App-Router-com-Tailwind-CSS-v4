@@ -329,6 +329,12 @@ html.light {
   z-index: 1;
 }
 
+/* MilestoneCelebration: barra de auto-close de 5s */
+@keyframes milestone-close {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
+
 /* FluxoCard: borda que acende sutilmente no hover — nota cyber sem distração */
 .fluxo-card {
   transition: box-shadow 0.3s ease, border-color 0.3s ease;

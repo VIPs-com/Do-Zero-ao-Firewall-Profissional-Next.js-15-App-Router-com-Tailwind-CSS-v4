@@ -66,6 +66,49 @@ export default function DashboardPage() {
 
   const overallProgress = Math.round((topicsProgress + checklistProgress + (quizScore > 0 ? 100 : 0)) / 3);
 
+  // Conta módulos visitados (mesma lógica da seção "Módulos do Curso")
+  const visitedModulesCount = COURSE_ORDER.filter(m => {
+    const slug = m.path.replace('/', '');
+    return visitedPages.has(slug) || visitedPages.has(m.path);
+  }).length;
+
+  // Primeiro módulo ainda não visitado (CTA para course-master)
+  const firstUnvisitedModule = COURSE_ORDER.find(m => {
+    const slug = m.path.replace('/', '');
+    return !visitedPages.has(slug) && !visitedPages.has(m.path);
+  });
+
+  // Checkpoints exclusivos do badge sigma-master
+  const SIGMA_CHECKPOINTS = [
+    'knock-admin-flow', 'knock-visibility',
+    'audit-knock-script', 'knock-monitor-script', 'audit-log-rotation',
+    'nat-5-functions', 'nat-conntrack-magic',
+    'prerouting-deep-dive', 'conntrack-dnat-mapping',
+    'squid-flow-understood', 'squid-http-vs-https',
+  ];
+  const sigmaCompleted = SIGMA_CHECKPOINTS.filter(id => checklist[id]).length;
+
+  // Próxima conquista de milestone — prioridade: ninja > course > quiz > sigma
+  type NextMilestone = {
+    emoji: string; label: string; description: string;
+    current: number; total: number; href: string; cta: string;
+  };
+  let nextMilestone: NextMilestone | null = null;
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 45) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (45/60 checkpoints)',
+      current: checklistCompleted, total: 45, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 21) {
+    nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 21 módulos do curso',
+      current: visitedModulesCount, total: 21,
+      href: firstUnvisitedModule?.path ?? '/instalacao', cta: 'Próximo Módulo' };
+  } else if (!unlockedBadges.has('quiz-master') && quizScore < 100) {
+    nextMilestone = { emoji: '🏆', label: 'Mestre do Quiz', description: 'Acerte 100% das questões',
+      current: quizScore, total: 100, href: '/quiz', cta: 'Ir para o Quiz' };
+  } else if (!unlockedBadges.has('sigma-master') && sigmaCompleted < 11) {
+    nextMilestone = { emoji: '🔬', label: 'SIGMA Master', description: 'Complete os 11 checkpoints avançados',
+      current: sigmaCompleted, total: 11, href: '/audit-logs', cta: 'Ir para o Lab' };
+  }
+
   const stats = [
     { label: 'Tópicos Lidos',    value: `${visitedPages.size}/${totalTopics}`,          icon: <BookOpen />, color: 'text-info' },
     { label: 'Labs Concluídos',  value: `${checklistCompleted}/${checklistItemsCount}`, icon: <Shield />,   color: 'text-ok' },
@@ -214,6 +257,37 @@ export default function DashboardPage() {
         </div>
 
         <aside className="space-y-6">
+
+          {/* Próxima Conquista */}
+          {nextMilestone && (
+            <div className="bg-gradient-to-br from-accent/5 to-bg-2 border border-accent/20 rounded-xl p-6">
+              <h3 className="font-bold text-sm mb-4 flex items-center gap-2 text-accent">
+                <Target size={16} />
+                Próxima Conquista
+              </h3>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl select-none" aria-hidden="true">{nextMilestone.emoji}</span>
+                <div>
+                  <div className="font-bold text-sm">{nextMilestone.label}</div>
+                  <div className="text-[10px] text-text-3 leading-relaxed mt-0.5">{nextMilestone.description}</div>
+                </div>
+              </div>
+              <div className="flex justify-between text-[10px] text-text-3 mb-1">
+                <span>Progresso</span>
+                <span className="font-mono font-bold text-text">{nextMilestone.current}/{nextMilestone.total}</span>
+              </div>
+              <div className="w-full h-1.5 bg-bg-3 rounded-full overflow-hidden mb-4">
+                <div
+                  className="h-full bg-accent transition-all duration-500"
+                  style={{ width: `${Math.min(100, Math.round((nextMilestone.current / nextMilestone.total) * 100))}%` }}
+                />
+              </div>
+              <Link href={nextMilestone.href} className="btn-outline w-full py-2 text-xs">
+                {nextMilestone.cta}
+                <ChevronRight size={14} />
+              </Link>
+            </div>
+          )}
 
           {/* Checklist Summary */}
           <div className="bg-bg-2 border border-border rounded-xl p-6">

@@ -25,6 +25,7 @@ export default function QuizPage() {
 
   const handleAnswer = (optIdx: number) => {
     if (showResult) return;
+    if (answers[currentIdx] !== undefined) return; // lock após primeiro toque
     setAnswers(prev => ({ ...prev, [currentIdx]: optIdx }));
   };
 
@@ -154,6 +155,10 @@ export default function QuizPage() {
   }
 
   const currentQuestion = QUESTIONS[currentIdx];
+  // Feedback por questão — derivado do estado existente, sem novo useState
+  const hasAnswered = answers[currentIdx] !== undefined;
+  const selectedOpt = answers[currentIdx];
+  const isCorrect = hasAnswered && selectedOpt === currentQuestion.correct;
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -195,31 +200,70 @@ export default function QuizPage() {
           <h2 className="text-xl font-bold mb-8 leading-relaxed">{currentQuestion.text}</h2>
           
           <div className="space-y-3">
-            {currentQuestion.options.map((opt, i) => (
-              <button
-                key={i}
-                onClick={() => handleAnswer(i)}
-                className={cn(
-                  "w-full flex items-center gap-4 p-4 rounded-xl border text-left transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-                  answers[currentIdx] === i 
-                    ? "bg-accent-bg border-accent text-text" 
-                    : "bg-bg-3 border-border text-text-2 hover:border-accent/50 hover:text-text"
-                )}
-                aria-pressed={answers[currentIdx] === i}
-                aria-label={`Opção ${i + 1}: ${opt}`}
-              >
-                <div className={cn(
-                  "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
-                  answers[currentIdx] === i 
-                    ? "border-accent bg-accent text-white" 
-                    : "border-border group-hover:border-accent/50"
-                )}>
-                  {answers[currentIdx] === i && <div className="w-2 h-2 rounded-full bg-white" />}
-                </div>
-                <span className="text-sm font-medium">{opt}</span>
-              </button>
-            ))}
+            {currentQuestion.options.map((opt, i) => {
+              const isSelected = selectedOpt === i;
+              const isThisCorrect = i === currentQuestion.correct;
+              // visual após responder
+              const optClass = !hasAnswered
+                ? cn(
+                    "bg-bg-3 border-border text-text-2 hover:border-accent/50 hover:text-text cursor-pointer",
+                    isSelected && "bg-accent-bg border-accent text-text"
+                  )
+                : isThisCorrect
+                  ? "bg-ok/10 border-ok/60 text-ok cursor-default"
+                  : isSelected
+                    ? "bg-err/10 border-err/60 text-err cursor-default"
+                    : "bg-bg-3 border-border text-text-3 opacity-40 cursor-default";
+
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleAnswer(i)}
+                  disabled={hasAnswered}
+                  className={cn(
+                    "w-full flex items-center gap-4 p-4 rounded-xl border text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                    optClass
+                  )}
+                  aria-pressed={isSelected}
+                  aria-label={`Opção ${i + 1}: ${opt}`}
+                >
+                  <div className={cn(
+                    "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
+                    !hasAnswered && (isSelected ? "border-accent bg-accent text-white" : "border-border"),
+                    hasAnswered && isThisCorrect && "border-ok bg-ok text-white",
+                    hasAnswered && isSelected && !isThisCorrect && "border-err bg-err text-white",
+                    hasAnswered && !isThisCorrect && !isSelected && "border-border",
+                  )}>
+                    {hasAnswered && isThisCorrect
+                      ? <CheckCircle2 size={14} />
+                      : hasAnswered && isSelected && !isThisCorrect
+                        ? <XCircle size={14} />
+                        : isSelected && !hasAnswered
+                          ? <div className="w-2 h-2 rounded-full bg-white" />
+                          : null}
+                  </div>
+                  <span className="text-sm font-medium">{opt}</span>
+                </button>
+              );
+            })}
           </div>
+
+          {/* Chip de feedback instantâneo */}
+          {hasAnswered && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={cn(
+                "mt-4 p-3 rounded-lg flex items-center gap-3 text-sm font-medium",
+                isCorrect ? "bg-ok/10 border border-ok/30 text-ok" : "bg-err/10 border border-err/30 text-err"
+              )}
+            >
+              {isCorrect
+                ? <><CheckCircle2 size={18} /> <span>Correto! ✓</span></>
+                : <><XCircle size={18} /> <span>Resposta correta: <strong>{currentQuestion.options[currentQuestion.correct]}</strong></span></>
+              }
+            </motion.div>
+          )}
 
           <div className="mt-10 flex justify-between items-center">
             <button 

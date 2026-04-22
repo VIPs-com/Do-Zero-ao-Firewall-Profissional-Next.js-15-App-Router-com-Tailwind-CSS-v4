@@ -1,5 +1,10 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo, lazy, Suspense } from 'react';
 import { COURSE_ORDER } from '@/data/courseOrder';
+
+// Lazy — o modal de celebração só entra no bundle quando necessário
+const MilestoneCelebration = lazy(() =>
+  import('@/components/ui/MilestoneCelebration').then(m => ({ default: m.MilestoneCelebration }))
+);
 
 export type BadgeId =
   | 'quiz-beginner' | 'quiz-expert' | 'quiz-master'
@@ -103,6 +108,11 @@ export const ALL_CHECKLIST_IDS = [
  */
 export const CONTENT_PAGES_COUNT = 20;
 
+// Badges que merecem celebração especial ao desbloquear
+const MILESTONE_BADGES = new Set<BadgeId>([
+  'course-master', 'quiz-master', 'linux-ninja', 'sigma-master', 'certificado',
+]);
+
 interface BadgeContextType {
   unlockedBadges: Set<BadgeId>;
   unlockBadge: (id: BadgeId) => void;
@@ -119,6 +129,9 @@ interface BadgeContextType {
   updateQuizScore: (score: number) => void;
   exportProgress: () => void;
   importProgress: (json: string) => { ok: boolean; error?: string };
+  /** Badge de milestone recém-desbloqueada (dispara modal de celebração). Null quando não há. */
+  milestoneBadge: BadgeId | null;
+  clearMilestoneBadge: () => void;
 }
 
 const BadgeContext = createContext<BadgeContextType | undefined>(undefined);
@@ -131,6 +144,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [checklist, setChecklist] = useState<Record<string, boolean>>({});
   const [quizScore, setQuizScore] = useState(0);
   const [lastNotification, setLastNotification] = useState<BadgeId | null>(null);
+  const [milestoneBadge, setMilestoneBadge] = useState<BadgeId | null>(null);
 
   // Hidratação do localStorage — cada read é defensivo:
   // se o JSON estiver corrompido (manipulação manual, versão antiga, etc.),
@@ -253,13 +267,22 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (quizScore === 100) unlockBadge('quiz-master');
   }, [quizScore]);
 
+  const clearMilestoneBadge = useCallback(() => setMilestoneBadge(null), []);
+
   const unlockBadge = useCallback((id: BadgeId) => {
     setUnlockedBadges(prev => {
       if (prev.has(id)) return prev;
       const next = new Set(prev);
       next.add(id);
-      setLastNotification(id);
-      setTimeout(() => setLastNotification(null), 4000);
+      // Badge normal: toast de 4s
+      if (!MILESTONE_BADGES.has(id)) {
+        setLastNotification(id);
+        setTimeout(() => setLastNotification(null), 4000);
+      }
+      // Badge de milestone: dispara modal de celebração (não mostra toast simultâneo)
+      if (MILESTONE_BADGES.has(id)) {
+        setMilestoneBadge(id);
+      }
       return next;
     });
   }, []);
@@ -391,6 +414,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       updateQuizScore,
       exportProgress,
       importProgress,
+      milestoneBadge,
+      clearMilestoneBadge,
     }}>
       {children}
       {lastNotification && (
@@ -402,6 +427,12 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             <p className="text-xs text-text-3">{BADGE_DEFS[lastNotification].desc}</p>
           </div>
         </div>
+      )}
+      {/* Modal de celebração para badges de milestone — lazy (não entra no bundle inicial) */}
+      {milestoneBadge && (
+        <Suspense fallback={null}>
+          <MilestoneCelebration badgeId={milestoneBadge} onClose={clearMilestoneBadge} />
+        </Suspense>
       )}
     </BadgeContext.Provider>
   );
