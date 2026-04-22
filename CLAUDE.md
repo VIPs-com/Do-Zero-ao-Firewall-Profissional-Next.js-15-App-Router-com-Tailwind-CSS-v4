@@ -341,7 +341,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint V + Topics + UX: Playwright E2E fixes (3/35→3/60, 0/21→0/25, fallback quiz 27→33), spec ModuleNav 08-module-nav.spec.ts (8 specs total), tópico #45 RosettaStone (totalTopics 44→45), seção "Módulos do Curso" no dashboard (mapa visual 21 módulos com ✓/número)
 - ✅ Sprint T₃: testes vitest para courseOrder.ts (9 invariantes — 21 módulos, sem duplicatas, bidirecionalidade, chain completa) e ModuleNav.tsx (5 casos — null, início, meio, fim, path interno); total 6 suítes · 42 testes
 - ✅ Sprint Badge V2 + Search+1: badge 🎯 course-master (visitar todos os 21 módulos), searchItems 71→72 (Módulos do Curso → /dashboard#modulos), badges 25→26
-- ✅ Sprint UI-H (Hybrid Progress): `ProgressDropdown` no header (X/21 + lista dos 21 módulos com ✓/atual/pendente, focus trap, ESC/click-fora) + `ContinueFloatingButton` bottom-right (próximo módulo, 🔥 pulse quando 20/21, oculto em /, /dashboard e no próprio destino) — sidebar esquerda preservada, zero mudanças em BadgeContext/courseOrder
+- ✅ Sprint UI-H (Hybrid Progress): `ProgressDropdown` no header (X/21 + lista dos 21 módulos com ✓/atual/pendente, focus trap, ESC/click-fora) — sidebar esquerda preservada, zero mudanças em BadgeContext/courseOrder (ContinueFloatingButton removido pois ModuleNav no rodapé já cobre a navegação)
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

@@ -290,20 +290,15 @@ Sprint Badge V2 + Search+1 ✅ Mestre do Curso + Busca Módulos
   ├── e2e/07-dashboard-counters.spec.ts: 0/25 → 0/26 (BADGE_DEFS agora tem 26 chaves)
   └── Constantes: badges 25→26 · searchItems 71→72 · lint ✓ · test 42/42 ✓ · build 33/33 ✓
 
-Sprint UI-H ✅ Hybrid Progress (Dropdown + Botão Flutuante)
+Sprint UI-H ✅ Hybrid Progress (ProgressDropdown)
   ├── src/components/ui/ProgressDropdown.tsx (NOVO — dropdown no header)
   │   ├── Trigger: ícone ListChecks + "{completed}/21" (aria-expanded, aria-haspopup=menu)
   │   ├── Painel (motion.div, z-50): barra de progresso + lista dos 21 módulos
   │   ├── Estados por módulo: ✓ visitado · 🟡 atual (1º não-visitado) · ⬜ pendente
   │   ├── A11y: role=dialog, useFocusTrap, ESC fecha, click fora fecha
   │   └── Mobile: sheet full-width ancorada ao topo-right (<sm)
-  ├── src/components/ui/ContinueFloatingButton.tsx (NOVO — botão flutuante)
-  │   ├── Posição: fixed bottom-6 right-6 z-40
-  │   ├── Lógica: COURSE_ORDER.find(!visitado) → rota próximo módulo
-  │   ├── Guards: oculto em /, /dashboard, no próprio destino e quando tudo visitado
-  │   ├── Pulse 🔥 Flame quando 20/21 (loop 1.6s, respeita prefers-reduced-motion)
-  │   └── Mobile: texto oculto, só ícone (<sm)
-  ├── ClientLayout.tsx: <ProgressDropdown /> após theme toggle + <ContinueFloatingButton /> após <GlobalSearch />
+  ├── ClientLayout.tsx: <ProgressDropdown /> inserido após theme toggle
+  ├── ContinueFloatingButton removido — ModuleNav no rodapé já cobre navegação sequencial
   └── Zero mudanças em BadgeContext/courseOrder · lint ✓ · test 42/42 ✓ · build 33/33 ✓
 
 ❌ Backend/Supabase — DESCARTADO
