@@ -319,6 +319,32 @@ Sprint PV ✅ Polish Visual (Padrão Ouro em Todas as Páginas)
   ├── /dnat · /port-knocking · /nginx-ssl · /lan-proxy · /vpn-ipsec — sem alteração (já no padrão)
   └── lint ✓ · test 42/42 ✓ · build 33/33 ✓
 
+Sprint CE ✅ Celebração & Engajamento — 3 camadas proporcionais à conquista
+  ├── Camada 1 — Quiz Feedback Instantâneo (app/quiz/page.tsx)
+  │   ├── Feedback visual imediato ao selecionar opção: verde (correta) · vermelho (errada)
+  │   ├── Opções incorretas → opacity-40 · cursor-default (lock após 1ª resposta)
+  │   └── Chip abaixo das opções: "✓ Correto!" ou "✗ Resposta correta: [texto]"
+  ├── Camada 2 — MilestoneCelebration Modal (src/components/ui/MilestoneCelebration.tsx — NOVO)
+  │   ├── Overlay full-screen z-[200] + card centralizado (max-w-sm, backdrop-blur)
+  │   ├── Emoji animado (bounce) · título · descrição · barra auto-close 5s
+  │   ├── CTA contextual por badge (course-master→/certificado, quiz-master→/dashboard, etc.)
+  │   ├── canvas-confetti lazy (3KB gzip, zero deps): disparado apenas para course-master e quiz-master
+  │   ├── A11y: useFocusTrap · role=dialog · aria-modal · ESC fecha · foco restaurado
+  │   └── prefers-reduced-motion: sem confetti, animações instantâneas
+  ├── Camada 3 — Card "Próxima Conquista" (app/dashboard/page.tsx — sidebar)
+  │   ├── Calcula milestone mais próxima ainda não desbloqueada
+  │   │   (prioridade: linux-ninja → course-master → quiz-master → sigma-master)
+  │   ├── Barra de progresso com X/Y e CTA para o módulo mais relevante
+  │   └── CTA inteligente: course-master aponta para o 1º módulo ainda não visitado
+  ├── BadgeContext.tsx
+  │   ├── MILESTONE_BADGES distingue 5 badges especiais dos 21 comuns
+  │   ├── Milestones → disparam milestoneBadge (modal) em vez do toast de 4s
+  │   ├── Estado milestoneBadge + clearMilestoneBadge() expostos no contexto
+  │   └── MilestoneCelebration lazy-loaded via Suspense (não entra no bundle inicial)
+  ├── globals.css: @keyframes milestone-close (5s linear) para barra de auto-close
+  ├── package.json: + canvas-confetti + @types/canvas-confetti
+  └── lint ✓ · test 42/42 ✓ · build 33/33 ✓
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
