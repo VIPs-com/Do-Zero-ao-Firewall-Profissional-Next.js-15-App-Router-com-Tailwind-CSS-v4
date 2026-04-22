@@ -345,6 +345,32 @@ Sprint CE ✅ Celebração & Engajamento — 3 camadas proporcionais à conquist
   ├── package.json: + canvas-confetti + @types/canvas-confetti
   └── lint ✓ · test 42/42 ✓ · build 33/33 ✓
 
+Sprint CERT ✅ Certificado Compartilhável + Imprimível
+  ├── app/certificado/page.tsx
+  │   ├── Web Share API: navigator.share() no mobile/suportado;
+  │   │   fallback navigator.clipboard.writeText() no desktop
+  │   ├── Botão "Compartilhar" com feedback "✓ Link copiado!" (3s, aria-live=polite)
+  │   └── id="cert-page" no container raiz (alvo do CSS de print)
+  ├── app/globals.css: @media print
+  │   ├── Oculta header e .no-print (breadcrumb, inputs, botões, seção profissional)
+  │   ├── Fundo branco, sem sombras/text-shadow no papel
+  │   └── #cert-page: max-width:none · padding:0 · margin:0
+  ├── Certificado já usa bg-white/cores slate fixas — imprime limpo em dark e light mode
+  ├── Ciclo motivacional fechado: course-master → modal → /certificado → compartilhar/imprimir
+  └── lint ✓ · test 42/42 ✓ · build 33/33 ✓
+
+Sprint CE-E2E ✅ Cobertura E2E para MilestoneCelebration
+  ├── e2e/09-milestone-celebration.spec.ts (NOVO — 6 testes)
+  │   ├── modal aparece ao hidratar com quiz-score=100 (milestone fresca)
+  │   ├── exibe título correto ("Mestre") + label "Badge Desbloqueado!"
+  │   ├── ESC fecha o modal
+  │   ├── botão × fecha o modal
+  │   ├── CTA "Ver meu progresso" navega para /dashboard
+  │   └── milestone NÃO exibe toast genérico simultaneamente
+  ├── Estratégia: seed localStorage.quiz-score=100 sem workshop-badges
+  │   → BadgeContext.useEffect → unlockBadge → MILESTONE_BADGES → modal
+  └── Total E2E: 9 specs · lint ✓ · test 42/42 ✓ · build 33/33 ✓
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
