@@ -371,6 +371,20 @@ Sprint CE-E2E ✅ Cobertura E2E para MilestoneCelebration
   │   → BadgeContext.useEffect → unlockBadge → MILESTONE_BADGES → modal
   └── Total E2E: 9 specs · lint ✓ · test 42/42 ✓ · build 33/33 ✓
 
+Sprint ANIM ✅ Micro-animações no Checklist
+  ├── app/globals.css
+  │   ├── @keyframes checklist-pop (scale 0.3→1.22→0.92→1 · opacity 0→1 · 0.28s ease-out)
+  │   └── button > svg.text-ok { animation: checklist-pop 0.28s ease-out }
+  │       Quando um item é marcado, React desmonta <Circle> e monta <CheckCircle2
+  │       className="text-ok"> — CSS mount-animation dispara automaticamente.
+  │       Cobre ChecklistItem (Steps.tsx) e todos os botões inline das 15+ páginas
+  │       sem tocar em nenhum arquivo de página.
+  │       prefers-reduced-motion: coberto pelo bloco global (animation-duration: 0.01ms).
+  ├── app/dashboard/page.tsx
+  │   └── Barra "Checklist do Lab": transition-all → transition-[width] duration-700 ease-out
+  │       Desliza suavemente ao chegar no dashboard após marcar checkpoints.
+  └── lint ✓ · test 42/42 ✓ · build 33/33 ✓
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

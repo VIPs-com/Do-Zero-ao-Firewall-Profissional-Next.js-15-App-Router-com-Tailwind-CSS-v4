@@ -38,12 +38,14 @@ const NAV_LINKS = [
 
 ```tsx
 import { CodeBlock }                        from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox, HighlightBox }   from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, HighlightBox,
+         WindowsComparisonBox }             from '@/components/ui/Boxes';
 import { FluxoCard }                        from '@/components/ui/FluxoCard';
-import { Steps }                            from '@/components/ui/Steps';
-import { ProgressBar }                      from '@/components/ui/ProgressBar';
+import { StepItem, ChecklistItem }          from '@/components/ui/Steps';
 import { LayerBadge }                       from '@/components/ui/LayerBadge';
 import { TroubleshootingCard }              from '@/components/ui/TroubleshootingCard';
+import { ModuleNav }                        from '@/components/ui/ModuleNav';
+import { RosettaStone }                     from '@/components/ui/RosettaStone';
 
 // Boxes de conteúdo (preferir os componentes em vez das classes brutas)
 <InfoBox title="Título">Informação azul</InfoBox>
@@ -81,6 +83,27 @@ import { TroubleshootingCard }              from '@/components/ui/Troubleshootin
     { layer: 7, name: 'Aplicação',  symptom: 'HTTP 5xx',   command: 'curl -I URL',        detail: 'nginx -t; journalctl' },
   ]}
 />
+```
+
+// ChecklistItem — botão de checkpoint interativo (pop animation automático ao marcar)
+// Props: text, sub?, layer?, checked, onToggle, className?
+<ChecklistItem
+  text="Configurar regra SNAT"
+  sub="iptables -t nat -A POSTROUTING ..."
+  checked={checklist['snat-config']}
+  onToggle={() => updateChecklist('snat-config', !checklist['snat-config'])}
+/>
+
+// WindowsComparisonBox — comparativo lado a lado Windows↔Linux
+<WindowsComparisonBox
+  linuxCode="dig @192.168.56.10 exemplo.local"
+  windowsCode="nslookup exemplo.local 192.168.56.10"
+  linuxLabel="Linux — dig"
+  windowsLabel="Windows — nslookup"
+/>
+
+// ModuleNav — navegação Anterior/Próximo (já inserida em todas as 20 páginas de conteúdo)
+<ModuleNav currentPath="/wan-nat" />
 ```
 
 > **Regra de ouro:** sempre usar os componentes importados, nunca `<div className="code-block">` ou `<div className="info-box">` diretamente — garante consistência visual e facilita refatorações futuras.
