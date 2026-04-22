@@ -23,6 +23,7 @@ const COMPETENCIAS = [
 
 export default function CertificatePage() {
   const [name, setName] = useState('');
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
   const { checklistPercentage, quizScore, unlockBadge } = useBadges();
 
   useEffect(() => {
@@ -56,8 +57,32 @@ export default function CertificatePage() {
     window.print();
   };
 
+  const handleShare = async () => {
+    const url = `${window.location.origin}/certificado`;
+    const shareData = {
+      title: 'Certificado — Workshop Linux 2026',
+      text: `${name || 'Concluí'} o Workshop Linux 2026: Do Zero ao Firewall Profissional! 🎓🛡️`,
+      url,
+    };
+    // Web Share API (mobile/suportado)
+    if (navigator.share && navigator.canShare?.(shareData)) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return; // usuário cancelou
+      }
+    }
+    // Fallback: copiar link para a área de transferência
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareStatus('copied');
+      setTimeout(() => setShareStatus('idle'), 3000);
+    } catch { /* clipboard indisponível — silencioso */ }
+  };
+
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12">
+    <div id="cert-page" className="max-w-5xl mx-auto px-4 py-12">
       <div className="breadcrumb mb-8 no-print">
         <Link href="/">Início</Link>
         <span>/</span>
@@ -138,9 +163,17 @@ export default function CertificatePage() {
               <Printer size={18} />
               Imprimir / Salvar PDF
             </button>
-            <button className="btn-outline px-8 py-3">
-              <Share2 size={18} />
-              Compartilhar
+            <button
+              onClick={handleShare}
+              className="btn-outline px-8 py-3"
+              aria-live="polite"
+              aria-label={shareStatus === 'copied' ? 'Link copiado para a área de transferência' : 'Compartilhar certificado'}
+            >
+              {shareStatus === 'copied' ? (
+                <><CheckCircle2 size={18} className="text-ok" /> Link copiado!</>
+              ) : (
+                <><Share2 size={18} /> Compartilhar</>
+              )}
             </button>
           </div>
 

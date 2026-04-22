@@ -393,6 +393,42 @@ html.light {
 }
 
 /* ============================================================
+   PRINT — Certificado de Conclusão
+   ============================================================
+   Ativado quando o usuário clica em "Imprimir / Salvar PDF" ou
+   usa Ctrl+P. Oculta toda a UI do site e deixa só o certificado
+   visível — que já tem bg-white e cores slate fixas.
+   ============================================================ */
+@media print {
+  /* Ocultar chrome do site: header sticky e qualquer .no-print */
+  header,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Reset de fundo da página para branco puro */
+  html,
+  body {
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Remove sombras e bordas decorativas que ficam ruins no papel */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Container da rota /certificado — sem padding para o certificado preencher a página */
+  #cert-page {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* ============================================================
    ACESSIBILIDADE — foco visível (WCAG 2.4.7)
    ============================================================
    Anel de foco visível para navegação por teclado. Aplicado
