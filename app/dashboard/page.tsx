@@ -301,7 +301,7 @@ export default function DashboardPage() {
                 <span className="font-bold">{checklistProgress}%</span>
               </div>
               <div className="w-full h-1.5 bg-bg-3 rounded-full overflow-hidden mb-6">
-                <div className="h-full bg-ok transition-all" style={{ width: `${checklistProgress}%` }} />
+                <div className="h-full bg-ok transition-[width] duration-700 ease-out" style={{ width: `${checklistProgress}%` }} />
               </div>
               <Link href="/instalacao#checklist" className="btn-outline w-full py-2 text-xs">
                 Continuar Lab

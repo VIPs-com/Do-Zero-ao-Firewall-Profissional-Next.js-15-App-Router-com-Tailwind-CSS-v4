@@ -335,6 +335,33 @@ html.light {
   to   { width: 0%; }
 }
 
+/* ============================================================
+   SPRINT ANIM — Micro-animação de Checklist
+   ============================================================
+   Quando um item do checklist é marcado, React desmonta <Circle>
+   e monta <CheckCircle2 className="text-ok ...">. Por ser um
+   elemento NOVO no DOM, a animation CSS dispara na montagem —
+   sem precisar tocar em nenhum dos 15+ arquivos de página.
+
+   Selector: `button > svg.text-ok`
+   — cobre tanto ChecklistItem (Steps.tsx) quanto todos os botões
+     inline de checklist espalhados pelas rotas de conteúdo.
+   — não afeta outros botões (quiz options têm SVGs aninhados
+     em divs, não filhos diretos do button).
+
+   prefers-reduced-motion: coberto pelo bloco global mais abaixo
+   (animation-duration: 0.01ms !important). */
+@keyframes checklist-pop {
+  0%   { transform: scale(0.3); opacity: 0; }
+  55%  { transform: scale(1.22); opacity: 1; }
+  80%  { transform: scale(0.92); }
+  100% { transform: scale(1); }
+}
+
+button > svg.text-ok {
+  animation: checklist-pop 0.28s ease-out;
+}
+
 /* FluxoCard: borda que acende sutilmente no hover — nota cyber sem distração */
 .fluxo-card {
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
