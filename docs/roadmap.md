@@ -301,6 +301,24 @@ Sprint UI-H ✅ Hybrid Progress (ProgressDropdown)
   ├── ContinueFloatingButton removido — ModuleNav no rodapé já cobre navegação sequencial
   └── Zero mudanças em BadgeContext/courseOrder · lint ✓ · test 42/42 ✓ · build 33/33 ✓
 
+Sprint PV ✅ Polish Visual (Padrão Ouro em Todas as Páginas)
+  ├── app/audit-logs/page.tsx
+  │   ├── FluxoCard "Anatomia de uma Linha de Log iptables" (5 steps: Timestamp → Host → Prefix → SRC/DST → PROTO/DPT)
+  │   └── HighlightBox "Por que o Prefix é seu melhor amigo no forense"
+  ├── app/offline/page.tsx
+  │   └── Migração de 8 classes hardcoded (#0d1117, #30363d, etc.) para tokens de tema (bg-bg, border-border, text-err, text-ok, text-warn, text-info)
+  ├── app/dns/page.tsx
+  │   └── WindowsComparisonBox dig↔nslookup (Linux: dig @192.168.56.10 / Windows: nslookup) na seção de Diagnóstico
+  ├── app/instalacao/page.tsx
+  │   └── FluxoCard "As 3 Interfaces do Firewall — Zonas de Segurança" (eth0 WAN · eth1 DMZ · eth2 LAN) antes do grid principal
+  ├── app/page.tsx (Home)
+  │   ├── STATS array: 4 cards (45 tópicos / 21 módulos / 26 badges / 7 camadas OSI) com whileInView
+  │   ├── Terminal: botões hardcoded (#ff5f57/febc2e/28c840) → bg-err/bg-warn/bg-ok
+  │   ├── Terminal: cursor piscante animate-pulse após última linha de comando
+  │   └── Features Grid: motion.div com whileInView (opacity+y, delay escalonado, respeita prefers-reduced-motion)
+  ├── /dnat · /port-knocking · /nginx-ssl · /lan-proxy · /vpn-ipsec — sem alteração (já no padrão)
+  └── lint ✓ · test 42/42 ✓ · build 33/33 ✓
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

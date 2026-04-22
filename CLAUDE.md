@@ -342,6 +342,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint T₃: testes vitest para courseOrder.ts (9 invariantes — 21 módulos, sem duplicatas, bidirecionalidade, chain completa) e ModuleNav.tsx (5 casos — null, início, meio, fim, path interno); total 6 suítes · 42 testes
 - ✅ Sprint Badge V2 + Search+1: badge 🎯 course-master (visitar todos os 21 módulos), searchItems 71→72 (Módulos do Curso → /dashboard#modulos), badges 25→26
 - ✅ Sprint UI-H (Hybrid Progress): `ProgressDropdown` no header (X/21 + lista dos 21 módulos com ✓/atual/pendente, focus trap, ESC/click-fora) — sidebar esquerda preservada, zero mudanças em BadgeContext/courseOrder (ContinueFloatingButton removido pois ModuleNav no rodapé já cobre a navegação)
+- ✅ Sprint PV (Polish Visual): FluxoCard "Anatomia do Log" + HighlightBox Prefix em /audit-logs (única página sem FluxoCard); /offline migrado de cores hardcoded para tokens de tema (dark/light mode correto); WindowsComparisonBox dig↔nslookup em /dns; FluxoCard "3 Interfaces WAN/DMZ/LAN" em /instalacao; home polida (stats em cards 45/21/26/7, cursor piscante no terminal, whileInView nos features, tokens no terminal mock)
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
