@@ -8,7 +8,6 @@ import { Menu, X, Sun, Moon, Search, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { ProgressDropdown } from './ui/ProgressDropdown';
-import { ContinueFloatingButton } from './ui/ContinueFloatingButton';
 
 /*
  * Sprint F — GlobalSearch só entra em cena quando o usuário aperta ⌘K / clica em Buscar.
@@ -224,9 +223,6 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
       </main>
 
       <GlobalSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-
-      {/* Botão flutuante "Continuar" — Sprint UI-H */}
-      <ContinueFloatingButton />
 
       <footer className="bg-bg-2 border-t border-border py-12 px-4 text-center">
         <div className="max-w-7xl mx-auto">
