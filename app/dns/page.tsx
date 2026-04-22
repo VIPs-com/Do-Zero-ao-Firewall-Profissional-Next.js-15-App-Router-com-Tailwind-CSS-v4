@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, HighlightBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -184,6 +184,13 @@ systemctl reload named`}
                   <CodeBlock code={`;; ANSWER SECTION:\n120.56.168.192.in-addr.arpa. 3600 IN PTR www.workshop.local.\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
                 </div>
               </div>
+
+              <WindowsComparisonBox
+                linuxCode={`# Consulta direta ao servidor DNS local\ndig @192.168.56.10 workshop.local\n\n# Resolução reversa (IP → nome)\ndig -x 192.168.56.120 @192.168.56.10`}
+                windowsCode={`# Consulta direta ao servidor DNS local\nnslookup workshop.local 192.168.56.10\n\n# Resolução reversa (IP → nome)\nnslookup 192.168.56.120 192.168.56.10`}
+                linuxLabel="Linux — dig"
+                windowsLabel="Windows — nslookup"
+              />
 
               <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
                 <Terminal size={20} className="text-accent shrink-0 mt-1" />

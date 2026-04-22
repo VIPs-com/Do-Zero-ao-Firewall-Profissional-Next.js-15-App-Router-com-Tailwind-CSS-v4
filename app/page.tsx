@@ -3,8 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { motion } from 'motion/react';
-import { Shield, Terminal, BookOpen, Zap, Award, Lock, Globe, Server, ChevronRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'motion/react';
+import { Shield, Terminal, BookOpen, Zap, Award, Lock, Globe, Server, ChevronRight, Layers, Layout, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /*
@@ -65,7 +65,15 @@ const FEATURES = [
   }
 ];
 
+const STATS = [
+  { icon: <Layers size={20} className="text-accent" />, value: '45', label: 'Tópicos práticos' },
+  { icon: <BookOpen size={20} className="text-info" />, value: '21', label: 'Módulos sequenciais' },
+  { icon: <Award size={20} className="text-ok" />, value: '26', label: 'Badges desbloqueáveis' },
+  { icon: <Star size={20} className="text-warn" />, value: '7', label: 'Camadas OSI na prática' },
+];
+
 export default function Home() {
+  const prefersReducedMotion = useReducedMotion();
   return (
     <div className="pb-20">
       {/* Hero Section */}
@@ -105,9 +113,9 @@ export default function Home() {
         >
           <div className="bg-bg-2 border border-border rounded-xl overflow-hidden shadow-2xl">
             <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border bg-bg-3">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+              <div className="w-2.5 h-2.5 rounded-full bg-err" />
+              <div className="w-2.5 h-2.5 rounded-full bg-warn" />
+              <div className="w-2.5 h-2.5 rounded-full bg-ok" />
               <div className="ml-auto text-[10px] font-mono text-text-3">firewall — bash</div>
             </div>
             <div className="p-6 font-mono text-xs md:text-sm leading-relaxed space-y-2">
@@ -132,12 +140,36 @@ export default function Home() {
               </div>
               <div className="text-warn">KNOCK: SRC=ADMIN-IP DPT=KNOCK-PORT</div>
               <div className="text-text-3"># IP anotado — SSH aberto por 30s</div>
+              <div className="flex gap-2 mt-1">
+                <span className="text-accent-2">$</span>
+                <span className="inline-block w-2 h-4 bg-accent-2 animate-pulse" aria-hidden="true" />
+              </div>
             </div>
           </div>
           {/* Decorative elements */}
           <div className="absolute -z-10 -top-10 -right-10 w-40 h-40 bg-accent/10 rounded-full blur-3xl" />
           <div className="absolute -z-10 -bottom-10 -left-10 w-40 h-40 bg-info/10 rounded-full blur-3xl" />
         </motion.div>
+      </section>
+
+      {/* Stats */}
+      <section className="max-w-7xl mx-auto px-4 pb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {STATS.map((s, i) => (
+            <motion.div
+              key={i}
+              initial={prefersReducedMotion ? undefined : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="flex flex-col items-center gap-2 p-6 rounded-xl bg-bg-2 border border-border text-center"
+            >
+              {s.icon}
+              <span className="text-3xl font-bold tabular-nums">{s.value}</span>
+              <span className="text-[11px] text-text-2 uppercase tracking-wider">{s.label}</span>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* OSI Strip */}
@@ -172,8 +204,12 @@ export default function Home() {
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((f, i) => (
-            <motion.div 
+            <motion.div
               key={i}
+              initial={prefersReducedMotion ? undefined : { opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.07 }}
               whileHover={{ y: -5 }}
               className="p-8 rounded-xl bg-bg-2 border border-border hover:border-accent/50 transition-all group"
             >

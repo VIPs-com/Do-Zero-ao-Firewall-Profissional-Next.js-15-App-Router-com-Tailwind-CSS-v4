@@ -7,6 +7,7 @@ import { StepItem } from '@/components/ui/Steps';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
@@ -77,6 +78,25 @@ export default function AuditLogsPage() {
                 <li><code className="text-xs text-accent-2">PROTO=TCP DPT=22</code> → tentativa de SSH direto (sem Port Knocking)</li>
                 <li><code className="text-xs text-accent-2">SYN</code> → início de conexão TCP (handshake fase 1)</li>
               </ul>
+            </HighlightBox>
+
+            <FluxoCard
+              title="Anatomia de uma Linha de Log iptables"
+              direction="horizontal"
+              steps={[
+                { label: 'Timestamp', sub: 'Mar 17 10:23:45', color: 'var(--color-layer-3)' },
+                { label: 'Host', sub: 'firewall kernel:', color: 'var(--color-layer-4)' },
+                { label: 'Prefix', sub: '[KNOCK-SSH]', color: 'var(--color-accent)' },
+                { label: 'SRC/DST', sub: '192.168.x.x', color: 'var(--color-layer-5)' },
+                { label: 'PROTO/DPT', sub: 'TCP :22', color: 'var(--color-layer-6)' },
+              ]}
+            />
+
+            <HighlightBox title="🔑 Por que o Prefix é seu melhor amigo no forense">
+              <p className="text-sm text-text-2">
+                O <strong>Prefix</strong> (ex: <code className="text-xs text-accent-2">KNOCK-SSH</code>, <code className="text-xs text-accent-2">IPTABLES DROP</code>) é o campo que você define na regra com <code className="text-xs text-accent-2">--log-prefix</code>.
+                É ele que permite fazer <code className="text-xs">grep &quot;KNOCK-SSH&quot;</code> e filtrar exatamente os eventos que importam — sem ele, todos os logs aparecem iguais e a análise vira um pesadelo.
+              </p>
             </HighlightBox>
 
             <CodeBlock

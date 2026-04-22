@@ -93,6 +93,16 @@ export default function InstallationPage() {
         </div>
       </div>
 
+      <FluxoCard
+        title="As 3 Interfaces do Firewall — Zonas de Segurança"
+        direction="horizontal"
+        steps={[
+          { label: 'eth0 (WAN)', sub: 'IP Público · DHCP', color: 'var(--color-err)' },
+          { label: 'eth1 (DMZ)', sub: '192.168.56.1/24', color: 'var(--color-warn)' },
+          { label: 'eth2 (LAN)', sub: '192.168.57.1/24', color: 'var(--color-ok)' },
+        ]}
+      />
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-12">
           {/* Setup Steps */}
