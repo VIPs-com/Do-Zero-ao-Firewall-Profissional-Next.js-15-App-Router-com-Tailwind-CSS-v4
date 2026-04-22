@@ -178,6 +178,12 @@ export const ROUTE_SEO = {
     description:
       'Proteja SSH, Nginx e outros serviços com Fail2ban: jails, filtros regex, ações de ban, integração com iptables e monitoramento de logs.',
   },
+  '/hardening': {
+    title: 'Hardening Linux — SSH, sysctl e AppArmor',
+    description:
+      'Fortifique seu servidor Linux: desative autenticação por senha no SSH, aplique sysctl de segurança (SYN cookies, ASLR) e configure AppArmor com perfis de confinamento.',
+    keywords: ['hardening', 'SSH', 'sysctl', 'AppArmor', 'segurança Linux'],
+  },
   '/offline': {
     title: 'Sem conexão',
     description: 'Você está offline. Verifique sua conexão de rede.',

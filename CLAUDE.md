@@ -103,12 +103,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 20 (+ /laboratorio + /proxmox) |
-| `totalTopics` | `app/dashboard/page.tsx` | 45 (Sprint Topics: tópico #45 RosettaStone adicionado) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 60 (ALL_CHECKLIST_IDS.length) |
-| Texto na Home | `app/page.tsx` | "45 tópicos práticos" |
-| Badges | `src/context/BadgeContext.tsx` | 26 (Sprint Badge V2: +course-master) |
-| searchItems | `src/data/searchItems.ts` | 72 (Sprint Search+1: +p-modulos) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 21 (Sprint I.3: +/hardening) |
+| `totalTopics` | `app/dashboard/page.tsx` | 46 (Sprint I.3: tópico #46 Hardening adicionado) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 63 (ALL_CHECKLIST_IDS.length) |
+| Texto na Home | `app/page.tsx` | "46 tópicos práticos" |
+| Badges | `src/context/BadgeContext.tsx` | 27 (Sprint I.3: +hardening-master) |
+| searchItems | `src/data/searchItems.ts` | 73 (Sprint EVOL+I.3: +t-roadmap-evolucao +t-hardening) |
 
 ---
 
@@ -347,6 +347,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint CERT (Certificado Compartilhável): Web Share API + fallback "Copiar link" (clipboard, 3s feedback); `@media print` em globals.css oculta toda a UI e exibe só o certificado em A4; ciclo motivacional completo: course-master → modal → /certificado → compartilhar/imprimir.
 - ✅ Sprint ANIM (Micro-animações): `@keyframes checklist-pop` + `button > svg.text-ok` em globals.css — pop spring ao marcar qualquer checkpoint, cobre os 15+ arquivos de página sem tocar em nenhum; barra "Checklist do Lab" no dashboard com `transition-[width] duration-700`.
 - ✅ Sprint CE-E2E (Cobertura E2E milestone modal): `e2e/09-milestone-celebration.spec.ts` — 6 casos: modal aparece, título correto, ESC fecha, × fecha, CTA navega, toast NÃO aparece para milestones. Total: 9 specs E2E.
+- ✅ Sprint EVOL (Roadmap Visual): `/evolucao` enriquecida com seção `#roadmap-evolucao` — 3 fases (v2.0/v3.0/v4.0) com grids de módulos disponíveis/em breve; botão localStorage "Me avise sobre v2.0" com estado persistente; +1 searchItem (t-roadmap-evolucao).
+- ✅ Sprint I.3 (Módulo Hardening): `/hardening` — SSH (PasswordAuthentication no, Ed25519), sysctl security (SYN cookies, ASLR, rp_filter), AppArmor (aa-enforce Nginx, aa-logprof); badge 🔐 hardening-master (27º badge); 3 checkpoints (ssh-hardened, sysctl-secured, apparmor-enabled); TroubleshootingCard "Permission Denied mesmo com chmod 777"; module-accent-hardening #a3e635; CONTENT_PAGES_COUNT 20→21, checklistItemsCount 60→63, totalTopics 45→46, COURSE_ORDER 21→22 módulos, linux-ninja threshold 45→47.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

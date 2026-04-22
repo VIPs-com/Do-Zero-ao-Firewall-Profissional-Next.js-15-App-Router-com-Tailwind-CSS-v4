@@ -18,7 +18,8 @@ export type BadgeId =
   | 'resgate-gold'
   | 'sigma-master'
   | 'explorador-mundos'
-  | 'course-master';
+  | 'course-master'
+  | 'hardening-master';
 
 export interface BadgeDef {
   icon: string;
@@ -52,7 +53,8 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'resgate-gold':       { icon: '🏅', title: 'Agente de Resgate',     desc: 'Explorou os ambientes de laboratório avançados' },
   'sigma-master':       { icon: '🔬', title: 'SIGMA Master',          desc: 'Dominou forense de rede, anatomia do NAT e internos do kernel' },
   'explorador-mundos':  { icon: '🧭', title: 'Explorador de Mundos',  desc: 'Completou o Módulo Zero e dominou a transição Windows → Linux' },
-  'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 21 módulos do curso em sequência' },
+  'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 22 módulos do curso em sequência' },
+  'hardening-master':   { icon: '🔐', title: 'Hardening Master',      desc: 'SSH, sysctl e AppArmor configurados corretamente' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -87,7 +89,9 @@ export const ALL_CHECKLIST_IDS = [
   'terminal-basico', 'sudo-entendido', 'sysadmin-mindset',
   // Sprint W2 — RosettaStone interativa
   'rosetta-stone-explored',
-]; // 60 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.3 — Hardening Linux
+  'ssh-hardened', 'sysctl-secured', 'apparmor-enabled',
+]; // 63 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -95,18 +99,19 @@ export const ALL_CHECKLIST_IDS = [
  * ClientLayout chama trackPageVisit(pathname) em toda navegação.
  * Atualizar este número e a lista se novas rotas forem adicionadas.
  *
- *  1. /instalacao          11. /fail2ban
- *  2. /wan-nat             12. /audit-logs
- *  3. /dns                 13. /ataques-avancados
- *  4. /nginx-ssl           14. /pivoteamento
- *  5. /lan-proxy           15. /laboratorio
- *  6. /dnat                16. /proxmox
- *  7. /port-knocking       17. /evolucao
- *  8. /vpn-ipsec           18. /cheat-sheet
- *  9. /wireguard           19. /glossario
- * 10. /nftables            20. /web-server
+ *  1. /instalacao          12. /hardening
+ *  2. /wan-nat             13. /audit-logs
+ *  3. /dns                 14. /ataques-avancados
+ *  4. /nginx-ssl           15. /pivoteamento
+ *  5. /lan-proxy           16. /laboratorio
+ *  6. /dnat                17. /proxmox
+ *  7. /port-knocking       18. /evolucao
+ *  8. /vpn-ipsec           19. /cheat-sheet
+ *  9. /wireguard           20. /glossario
+ * 10. /nftables            21. /web-server
+ * 11. /fail2ban
  */
-export const CONTENT_PAGES_COUNT = 20;
+export const CONTENT_PAGES_COUNT = 21;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -207,7 +212,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (visitedPages.size >= 5)                  unlockBadge('explorer');
     if (visitedPages.size >= CONTENT_PAGES_COUNT) unlockBadge('deep-diver');
     if (visitedPages.has('laboratorio') && visitedPages.has('proxmox')) unlockBadge('resgate-gold');
-    // Mestre do Curso: todos os 21 módulos de COURSE_ORDER visitados
+    // Mestre do Curso: todos os 22 módulos de COURSE_ORDER visitados
     const allVisited = COURSE_ORDER.every(m => {
       const slug = m.path.slice(1); // '/wan-nat' → 'wan-nat'
       return visitedPages.has(m.path) || visitedPages.has(slug);
@@ -238,6 +243,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['pivoting-risk'])                                  unlockBadge('pivoting-master');
     if (checklist['wg-keys'] && checklist['wg-server'] && checklist['wg-tunnel']) unlockBadge('wireguard-master');
     if (checklist['f2b-install'] && checklist['f2b-sshd'] && checklist['f2b-ban-test']) unlockBadge('fail2ban-master');
+    if (checklist['ssh-hardened'] && checklist['sysctl-secured'] && checklist['apparmor-enabled']) unlockBadge('hardening-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -256,8 +262,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['rosetta-stone-explored']
     ) unlockBadge('explorador-mundos');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (45 de 60).
-    if (Object.values(checklist).filter(v => v).length >= 45) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (47 de 63).
+    if (Object.values(checklist).filter(v => v).length >= 47) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

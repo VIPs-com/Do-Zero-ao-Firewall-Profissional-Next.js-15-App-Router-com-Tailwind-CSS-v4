@@ -56,11 +56,11 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  const totalTopics = 45;
+  const totalTopics = 46;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
-  const checklistItemsCount = 60;
+  const checklistItemsCount = 63;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 
@@ -94,12 +94,12 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 45) {
-    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (45/60 checkpoints)',
-      current: checklistCompleted, total: 45, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
-  } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 21) {
-    nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 21 módulos do curso',
-      current: visitedModulesCount, total: 21,
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 47) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (47/63 checkpoints)',
+      current: checklistCompleted, total: 47, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 22) {
+    nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 22 módulos do curso',
+      current: visitedModulesCount, total: 22,
       href: firstUnvisitedModule?.path ?? '/instalacao', cta: 'Próximo Módulo' };
   } else if (!unlockedBadges.has('quiz-master') && quizScore < 100) {
     nextMilestone = { emoji: '🏆', label: 'Mestre do Quiz', description: 'Acerte 100% das questões',
