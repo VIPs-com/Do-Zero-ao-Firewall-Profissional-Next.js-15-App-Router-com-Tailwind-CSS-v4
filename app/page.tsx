@@ -66,9 +66,9 @@ const FEATURES = [
 ];
 
 const STATS = [
-  { icon: <Layers size={20} className="text-accent" />, value: '45', label: 'Tópicos práticos' },
-  { icon: <BookOpen size={20} className="text-info" />, value: '21', label: 'Módulos sequenciais' },
-  { icon: <Award size={20} className="text-ok" />, value: '26', label: 'Badges desbloqueáveis' },
+  { icon: <Layers size={20} className="text-accent" />, value: '47', label: 'Tópicos práticos' },
+  { icon: <BookOpen size={20} className="text-info" />, value: '23', label: 'Módulos sequenciais' },
+  { icon: <Award size={20} className="text-ok" />, value: '28', label: 'Badges desbloqueáveis' },
   { icon: <Star size={20} className="text-warn" />, value: '7', label: 'Camadas OSI na prática' },
 ];
 
