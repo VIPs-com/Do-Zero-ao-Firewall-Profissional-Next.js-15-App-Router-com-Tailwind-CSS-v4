@@ -93,7 +93,7 @@ export default function Home() {
           </h1>
           <p className="text-lg text-text-2 leading-relaxed mb-10 max-w-lg">
             Aprenda a construir um firewall Linux completo, dominando iptables, NAT, DNS, HTTPS,
-            Proxy, VPN IPSec, WireGuard e Fail2ban. <strong>46 tópicos práticos</strong> com diagnóstico por camadas OSI.
+            Proxy, VPN IPSec, WireGuard e Fail2ban. <strong>47 tópicos práticos</strong> com diagnóstico por camadas OSI.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/instalacao" className="btn-primary px-8 py-3 text-base">

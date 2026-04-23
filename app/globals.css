@@ -89,6 +89,7 @@
   --module-wireguard:        #2dd4bf;  /* teal  (crypto/moderno) */
   --module-fail2ban:         #f87171;  /* vermelho suave (ban)   */
   --module-hardening:        #a3e635;  /* verde-lima (fortaleza) */
+  --module-docker:           #2496ed;  /* azul Docker oficial    */
 
   /* Auras/brilhos cyber — sombras suaves reutilizáveis */
   --glow-accent: 0 0 0 1px rgba(224, 90, 43, 0.28), 0 0 24px rgba(224, 90, 43, 0.18);
@@ -240,6 +241,7 @@ html.light {
   .module-accent-wireguard        { --mod: var(--module-wireguard); }
   .module-accent-fail2ban         { --mod: var(--module-fail2ban); }
   .module-accent-hardening        { --mod: var(--module-hardening); }
+  .module-accent-docker           { --mod: var(--module-docker); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

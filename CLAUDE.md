@@ -103,12 +103,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 21 (Sprint I.3: +/hardening) |
-| `totalTopics` | `app/dashboard/page.tsx` | 46 (Sprint I.3: tópico #46 Hardening adicionado) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 63 (ALL_CHECKLIST_IDS.length) |
-| Texto na Home | `app/page.tsx` | "46 tópicos práticos" |
-| Badges | `src/context/BadgeContext.tsx` | 27 (Sprint I.3: +hardening-master) |
-| searchItems | `src/data/searchItems.ts` | 73 (Sprint EVOL+I.3: +t-roadmap-evolucao +t-hardening) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 22 (Sprint I.4: +/docker) |
+| `totalTopics` | `app/dashboard/page.tsx` | 47 (Sprint I.4: tópico #47 Docker adicionado) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 66 (ALL_CHECKLIST_IDS.length) |
+| Texto na Home | `app/page.tsx` | "47 tópicos práticos" |
+| Badges | `src/context/BadgeContext.tsx` | 28 (Sprint I.4: +docker-master) |
+| searchItems | `src/data/searchItems.ts` | 74 (Sprint I.4: +t-docker) |
 
 ---
 
@@ -348,7 +348,9 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint ANIM (Micro-animações): `@keyframes checklist-pop` + `button > svg.text-ok` em globals.css — pop spring ao marcar qualquer checkpoint, cobre os 15+ arquivos de página sem tocar em nenhum; barra "Checklist do Lab" no dashboard com `transition-[width] duration-700`.
 - ✅ Sprint CE-E2E (Cobertura E2E milestone modal): `e2e/09-milestone-celebration.spec.ts` — 6 casos: modal aparece, título correto, ESC fecha, × fecha, CTA navega, toast NÃO aparece para milestones. Total: 9 specs E2E.
 - ✅ Sprint EVOL (Roadmap Visual): `/evolucao` enriquecida com seção `#roadmap-evolucao` — 3 fases (v2.0/v3.0/v4.0) com grids de módulos disponíveis/em breve; botão localStorage "Me avise sobre v2.0" com estado persistente; +1 searchItem (t-roadmap-evolucao).
-- ✅ Sprint I.3 (Módulo Hardening): `/hardening` — SSH (PasswordAuthentication no, Ed25519), sysctl security (SYN cookies, ASLR, rp_filter), AppArmor (aa-enforce Nginx, aa-logprof); badge 🔐 hardening-master (27º badge); 3 checkpoints (ssh-hardened, sysctl-secured, apparmor-enabled); TroubleshootingCard "Permission Denied mesmo com chmod 777"; module-accent-hardening #a3e635; CONTENT_PAGES_COUNT 20→21, checklistItemsCount 60→63, totalTopics 45→46, COURSE_ORDER 21→22 módulos, linux-ninja threshold 45→47.
+- ✅ Sprint I.3 (Módulo Hardening): `/hardening` — SSH (PasswordAuthentication no, Ed25519), sysctl security (SYN cookies, ASLR, rp_filter), AppArmor (aa-enforce Nginx, aa-logprof); badge 🔐 hardening-master; 3 checkpoints; module-accent-hardening #a3e635; CONTENT_PAGES_COUNT 20→21, checklistItemsCount 60→63, totalTopics 45→46, COURSE_ORDER 21→22 módulos.
+- ✅ Sprint TOPICOS: tópico #46 Hardening adicionado em `/topicos` (novo grupo "Hardening Linux").
+- ✅ Sprint I.4 (Módulo Docker): `/docker` — bridge/host/none drivers, redes customizadas + DNS interno, port mapping = DNAT automático, chains DOCKER/DOCKER-USER no iptables, docker-compose redes declarativas (frontend/backend/internal); badge 🐳 docker-master (28º badge); 3 checkpoints (docker-installed, docker-bridge, docker-iptables); module-accent-docker #2496ed; CONTENT_PAGES_COUNT 21→22, checklistItemsCount 63→66, totalTopics 46→47, COURSE_ORDER 22→23 módulos, linux-ninja threshold 47→50; tópicos #47+47b em /topicos (grupo "Docker & Containers"); /evolucao v3.0 atualizado com Docker marcado como disponível.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

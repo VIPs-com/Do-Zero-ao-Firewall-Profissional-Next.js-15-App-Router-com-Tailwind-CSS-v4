@@ -178,6 +178,12 @@ export const ROUTE_SEO = {
     description:
       'Proteja SSH, Nginx e outros serviços com Fail2ban: jails, filtros regex, ações de ban, integração com iptables e monitoramento de logs.',
   },
+  '/docker': {
+    title: 'Docker Networking — Redes, iptables e Segurança',
+    description:
+      'Entenda como o Docker manipula o iptables automaticamente: bridge networks, port mapping como DNAT, chain DOCKER-USER e isolamento de containers.',
+    keywords: ['Docker', 'Docker networking', 'bridge network', 'iptables Docker', 'containers Linux'],
+  },
   '/hardening': {
     title: 'Hardening Linux — SSH, sysctl e AppArmor',
     description:

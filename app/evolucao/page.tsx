@@ -34,8 +34,8 @@ const PHASE_V3 = {
   badgeColor: 'bg-info/15 text-info border-info/30',
   status: 'Planejado',
   modules: [
-    { name: 'Docker & Containerização', slug: null, available: false, icon: '🐳', tags: ['images', 'volumes'] },
-    { name: 'Redes Docker',             slug: null, available: false, icon: '🌐', tags: ['bridge', 'overlay', 'iptables'] },
+    { name: 'Docker & Containerização', slug: '/docker', available: true,  icon: '🐳', tags: ['images', 'volumes'] },
+    { name: 'Redes Docker',             slug: '/docker', available: true,  icon: '🌐', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
     { name: 'Docker Compose',           slug: null, available: false, icon: '📦', tags: ['multi-container', 'yaml'] },
     { name: 'Ansible para SysAdmins',   slug: null, available: false, icon: '⚙️', tags: ['IaC', 'playbooks'] },
     { name: 'PostgreSQL na DMZ',        slug: null, available: false, icon: '🗄️', tags: ['firewall', 'pg_hba'] },

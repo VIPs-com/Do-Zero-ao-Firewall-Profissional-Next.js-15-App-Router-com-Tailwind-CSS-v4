@@ -102,6 +102,13 @@ const TOPICS: Topic[] = [
   { id: '43', num: '43', title: 'Terminal do Zero para Windows users: pwd, ls, sudo, Tab autocompletar, Ctrl+Shift+C para copiar.', layer: 'Fundação · Terminal', layerClass: 'l7', href: '/instalacao#terminal-do-zero', group: 'Fundação & Terminal' },
   { id: '44', num: '44', title: 'Mindset SysAdmin: systemctl vs Serviços Windows, journalctl vs Event Viewer, /etc/ vs Program Files.', layer: 'Fundação · Conceitos', layerClass: 'l7', href: '/instalacao#sysadmin-mindset', group: 'Fundação & Terminal' },
   { id: '45', num: '45', title: 'RosettaStone interativa: 25 equivalências Windows → Linux com filtro por categoria — ls, grep, systemctl e mais.', layer: 'Fundação · Conceitos', layerClass: 'l7', href: '/instalacao#rosetta-stone', group: 'Fundação & Terminal' },
+
+  // ── Sprint I.3 — Hardening Linux ─────────────────────────────────────────────
+  { id: '46', num: '46', title: 'Hardening Linux: SSH sem senha (Ed25519), sysctl de segurança (SYN cookies, ASLR) e AppArmor enforce para Nginx.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/hardening', group: 'Hardening Linux' },
+
+  // ── Sprint I.4 — Docker Networking ───────────────────────────────────────────
+  { id: '47', num: '47', title: 'Docker Networking: bridge, host e none. Como o Docker manipula o iptables automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/docker#redes', group: 'Docker & Containers' },
+  { id: '47b', num: '47', title: 'Port mapping (-p 8080:80) é DNAT automático: Docker cria regras iptables na chain DOCKER.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/docker#port-mapping', group: 'Docker & Containers' },
 ];
 
 export default function TopicsPage() {
