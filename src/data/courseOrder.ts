@@ -1,5 +1,5 @@
 // src/data/courseOrder.ts
-// Sequência linear dos 23 módulos do curso — usada pelo ModuleNav para navegação Anterior/Próximo.
+// Sequência linear dos 24 módulos do curso — usada pelo ModuleNav para navegação Anterior/Próximo.
 // Nota: /web-server NÃO entra aqui — é página de referência, não módulo do curso.
 //
 // TRILHA FUNDAMENTOS (v2.0): 10 módulos para iniciantes em Linux.

@@ -18,7 +18,7 @@ npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 38 rotas próprias (build reporta 45/45 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 40 rotas próprias (build reporta 45/45 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 38 rotas — todas 'use client' (27 trilha Firewall + 11 trilha Fundamentos)
+  [rota]/page.tsx           # 40 rotas — todas 'use client' (24 COURSE_ORDER + 11 trilha Fundamentos + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -62,7 +62,7 @@ src/
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (38 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (40 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -107,7 +107,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 23 (Sprint I.5: +ssh-2fa) |
 | `totalTopics` | `app/dashboard/page.tsx` | 58 (Sprint I.5: +SSH 2FA) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 79 (Sprint I.5: +3 checkpoints TOTP) |
-| Texto na Home | `app/page.tsx` | "47 tópicos práticos" |
+| Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
 | Badges | `src/context/BadgeContext.tsx` | 30 (Sprint I.5: +ssh-2fa-master) |
 | searchItems | `src/data/searchItems.ts` | 87 (Sprint I.5: +2 SSH 2FA) |
 
@@ -307,7 +307,7 @@ Conformidade implementada no Sprint C:
 1. `npm run lint` — zero erros TypeScript
 2. `npm run lint:eslint` — zero warnings de acessibilidade
 3. `npm test` — suíte vitest passando
-4. `npm run build` — 45/45 páginas (38 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
+4. `npm run build` — 45/45 páginas (40 próprias + /sitemap + /robots + /opengraph-image + /icon + /apple-icon + /manifest.webmanifest + /_not-found)
 5. Verificar consistência dos números da tabela de constantes
 
 ---
