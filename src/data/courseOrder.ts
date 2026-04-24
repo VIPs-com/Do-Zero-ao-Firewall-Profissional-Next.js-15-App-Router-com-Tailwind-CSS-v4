@@ -1,5 +1,5 @@
 // src/data/courseOrder.ts
-// Sequência linear dos 24 módulos do curso — usada pelo ModuleNav para navegação Anterior/Próximo.
+// Sequência linear dos 25 módulos do curso — usada pelo ModuleNav para navegação Anterior/Próximo.
 // Nota: /web-server NÃO entra aqui — é página de referência, não módulo do curso.
 //
 // TRILHA FUNDAMENTOS (v2.0): 10 módulos para iniciantes em Linux.
@@ -26,8 +26,9 @@ export const COURSE_ORDER: CourseModule[] = [
   { path: '/fail2ban',          title: 'Fail2ban',                   prev: '/nftables',          next: '/hardening' },
   { path: '/hardening',         title: 'Hardening Linux',            prev: '/fail2ban',          next: '/ssh-2fa' },
   { path: '/ssh-2fa',           title: 'SSH com 2FA (TOTP)',         prev: '/hardening',         next: '/docker' },
-  { path: '/docker',            title: 'Docker Networking',          prev: '/ssh-2fa',           next: '/audit-logs' },
-  { path: '/audit-logs',        title: 'Audit & Logs',               prev: '/docker',            next: '/ataques-avancados' },
+  { path: '/docker',            title: 'Docker Networking',          prev: '/ssh-2fa',           next: '/docker-compose' },
+  { path: '/docker-compose',    title: 'Docker Compose',             prev: '/docker',            next: '/audit-logs' },
+  { path: '/audit-logs',        title: 'Audit & Logs',               prev: '/docker-compose',    next: '/ataques-avancados' },
   { path: '/ataques-avancados', title: 'Ataques Avançados',          prev: '/audit-logs',        next: '/pivoteamento' },
   { path: '/pivoteamento',      title: 'Pivoteamento',               prev: '/ataques-avancados', next: '/laboratorio' },
   { path: '/laboratorio',       title: 'Laboratório',                prev: '/pivoteamento',      next: '/proxmox' },

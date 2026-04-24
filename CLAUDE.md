@@ -18,7 +18,7 @@ npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 40 rotas próprias (build reporta 45/45 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 41 rotas próprias (build reporta 46/46 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 40 rotas — todas 'use client' (24 COURSE_ORDER + 11 trilha Fundamentos + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
+  [rota]/page.tsx           # 41 rotas — todas 'use client' (25 COURSE_ORDER + 11 trilha Fundamentos + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -57,12 +57,12 @@ src/
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting)
     searchItems.ts          # 87 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
-    courseOrder.ts          # COURSE_ORDER (24 módulos Firewall) + FUNDAMENTOS_ORDER (10 módulos Fundamentos) para ModuleNav
+    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (10 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (40 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (41 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 23 (Sprint I.5: +ssh-2fa) |
-| `totalTopics` | `app/dashboard/page.tsx` | 58 (Sprint I.5: +SSH 2FA) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 79 (Sprint I.5: +3 checkpoints TOTP) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 24 (Sprint I.6: +docker-compose) |
+| `totalTopics` | `app/dashboard/page.tsx` | 59 (Sprint I.6: +Docker Compose) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 82 (Sprint I.6: +3 checkpoints Compose) |
 | Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 30 (Sprint I.5: +ssh-2fa-master) |
-| searchItems | `src/data/searchItems.ts` | 87 (Sprint I.5: +2 SSH 2FA) |
+| Badges | `src/context/BadgeContext.tsx` | 31 (Sprint I.6: +compose-master) |
+| searchItems | `src/data/searchItems.ts` | 89 (Sprint I.6: +2 Docker Compose) |
 
 ---
 
@@ -307,7 +307,7 @@ Conformidade implementada no Sprint C:
 1. `npm run lint` — zero erros TypeScript
 2. `npm run lint:eslint` — zero warnings de acessibilidade
 3. `npm test` — suíte vitest passando
-4. `npm run build` — 45/45 páginas (40 próprias + /sitemap + /robots + /opengraph-image + /icon + /apple-icon + /manifest.webmanifest + /_not-found)
+4. `npm run build` — 46/46 páginas (41 próprias + /sitemap + /robots + /opengraph-image + /icon + /apple-icon + /manifest.webmanifest + /_not-found)
 5. Verificar consistência dos números da tabela de constantes
 
 ---
@@ -355,6 +355,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint F1-F3 (Trilha Fundamentos Linux v2.0): 10 módulos paralelos para iniciantes (`/fundamentos` índice + `/fhs` + `/comandos` + `/editores` + `/processos` + `/permissoes` + `/discos` + `/logs-basicos` + `/backup` + `/shell-script` + `/cron`); FUNDAMENTOS_ORDER em courseOrder.ts; ModuleNav com prop `order`; badge 🐧 fundamentos-master (29º badge); 10 checkpoints (fhs-explorado, comandos-praticados, ...); module-accent-fundamentos #6366f1; CTA "Novo no Linux?" na home; nav link Fundamentos; +11 searchItems (85 total); checklistItemsCount 66→76; totalTopics 47→57; linux-ninja threshold 50→57; +8 testes FUNDAMENTOS_ORDER em courseOrder.test.ts; /evolucao v2.0 com 10 módulos Fundamentos marcados como disponíveis.
 - ✅ Sprint Polish-F (Fundamentos Rich Edition): 7 módulos básicos enriquecidos (/processos, /permissoes, /discos, /logs-basicos, /backup, /shell-script, /cron) com FluxoCard, WindowsComparisonBox, InfoBox/WarnBox extras e exercícios guiados expandidos — sem mudanças em constantes.
 - ✅ Sprint I.5 (Módulo SSH com 2FA): `/ssh-2fa` — TOTP teoria (HMAC + RFC 6238), libpam-google-authenticator + qrencode, /etc/pam.d/sshd, sshd_config KbdInteractiveAuthentication, teste em sessão separada, rollback, Fail2ban jail para TOTP; badge 📱 ssh-2fa-master (30º badge); 3 checkpoints (totp-instalado, pam-configurado, ssh-2fa-testado); module-accent-ssh-2fa #f59e0b; CONTENT_PAGES_COUNT 22→23, checklistItemsCount 76→79, totalTopics 57→58, COURSE_ORDER 23→24 módulos, linux-ninja threshold 57→59; tópico #48 em /topicos (grupo "Hardening Linux"); /evolucao v3.0 SSH 2FA marcado disponível; +2 searchItems (87 total); E2E 07-dashboard-counters 3/79 + 0/30.
+- ✅ Sprint I.6 (Módulo Docker Compose): `/docker-compose` — anatomia completa do docker-compose.yml (services/networks/volumes/secrets), stack básica Nginx, redes declarativas frontend/backend/internal com `internal: true`, volumes nomeados vs bind mount vs tmpfs, .env files + Docker Secrets, stack completa Nginx+App+PostgreSQL com healthcheck e deploy.replicas, comandos essenciais (up/down/ps/logs/top/exec/scale), troubleshooting; badge 🐙 compose-master (31º badge); 3 checkpoints (compose-instalado, compose-stack, compose-networks); module-accent-compose #1d63ed; CONTENT_PAGES_COUNT 23→24, checklistItemsCount 79→82, totalTopics 58→59, COURSE_ORDER 24→25 módulos, linux-ninja threshold 59→62; tópico #49 em /topicos (grupo "Docker & Containers"); /evolucao v3.0 Docker Compose marcado disponível; +2 searchItems (89 total); E2E 07-dashboard-counters 3/82 + 0/31.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

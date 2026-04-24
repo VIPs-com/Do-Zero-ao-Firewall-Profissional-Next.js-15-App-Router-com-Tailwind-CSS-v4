@@ -111,6 +111,8 @@ const TOPICS: Topic[] = [
   // ── Sprint I.4 — Docker Networking ───────────────────────────────────────────
   { id: '47', num: '47', title: 'Docker Networking: bridge, host e none. Como o Docker manipula o iptables automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/docker#redes', group: 'Docker & Containers' },
   { id: '47b', num: '47', title: 'Port mapping (-p 8080:80) é DNAT automático: Docker cria regras iptables na chain DOCKER.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/docker#port-mapping', group: 'Docker & Containers' },
+  // ── Sprint I.6 — Docker Compose ───────────────────────────────────────────────
+  { id: '49', num: '49', title: 'Docker Compose: docker-compose.yml declarativo, redes frontend/backend/internal isoladas, volumes persistentes e stack completa Nginx+App+PostgreSQL.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/docker-compose', group: 'Docker & Containers' },
 
   // ── Sprint F1-F3 — Trilha Fundamentos Linux (v2.0) ────────────────────────
   { id: 'f01', num: 'F01', title: 'Estrutura do Sistema (FHS): /etc, /var, /usr, /home, /tmp — o mapa do Linux comparado com C:\\Windows\\', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/fhs', group: 'Fundamentos Linux' },

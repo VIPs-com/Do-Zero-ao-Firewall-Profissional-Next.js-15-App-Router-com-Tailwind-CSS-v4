@@ -190,6 +190,12 @@ export const ROUTE_SEO = {
       'Fortifique seu servidor Linux: desative autenticação por senha no SSH, aplique sysctl de segurança (SYN cookies, ASLR) e configure AppArmor com perfis de confinamento.',
     keywords: ['hardening', 'SSH', 'sysctl', 'AppArmor', 'segurança Linux'],
   },
+  '/docker-compose': {
+    title: 'Docker Compose — Stacks Multi-Container com Redes e Volumes',
+    description:
+      'Orquestre stacks completas com Docker Compose: docker-compose.yml, redes declarativas frontend/backend/internal, volumes persistentes, secrets e .env files.',
+    keywords: ['Docker Compose', 'docker-compose.yml', 'stack multi-container', 'redes Docker', 'volumes Docker', 'orchestration'],
+  },
   '/ssh-2fa': {
     title: 'SSH com 2FA — TOTP com Google Authenticator',
     description:

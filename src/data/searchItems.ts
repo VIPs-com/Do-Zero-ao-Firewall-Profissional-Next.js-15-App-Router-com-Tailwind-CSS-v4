@@ -59,6 +59,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 't-audit',    title: 'Audit Logs',            description: 'Monitoramento de tráfego, syslog e auditd',           category: 'Tópico', href: '/audit-logs',       icon: Eye },
   { id: 't-nftables', title: 'nftables',              description: 'Substituto moderno do iptables — sintaxe e equivalência', category: 'Tópico', href: '/nftables',     icon: Shield },
   { id: 't-hardening', title: 'Hardening Linux',     description: 'SSH seguro, sysctl de defesa e AppArmor — 3 camadas de proteção do servidor', category: 'Tópico', href: '/hardening',    icon: Shield },
+  { id: 't-compose',  title: 'Docker Compose',      description: 'Stacks multi-container com redes declarativas, volumes persistentes e secrets', category: 'Tópico', href: '/docker-compose', icon: Server },
+  { id: 'g-compose-yml', title: 'docker-compose.yml', description: 'Arquivo declarativo YAML que define services, networks e volumes de uma stack', category: 'Glossário', href: '/docker-compose', icon: FileText },
   { id: 't-ssh-2fa',  title: 'SSH com 2FA (TOTP)',  description: 'Autenticação de dois fatores no SSH com Google Authenticator e libpam', category: 'Tópico', href: '/ssh-2fa', icon: Lock },
   { id: 'g-totp',    title: 'TOTP',               description: 'Time-based One-Time Password — RFC 6238, código de 6 dígitos válido por 30s', category: 'Glossário', href: '/ssh-2fa', icon: Smartphone },
   { id: 't-docker',   title: 'Docker Networking',   description: 'Redes bridge, port mapping = DNAT automático, chain DOCKER-USER e segurança de containers', category: 'Tópico', href: '/docker', icon: Server },

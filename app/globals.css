@@ -91,6 +91,7 @@
   --module-hardening:        #a3e635;  /* verde-lima (fortaleza) */
   --module-docker:           #2496ed;  /* azul Docker oficial    */
   --module-ssh-2fa:          #f59e0b;  /* âmbar — autenticação/OTP */
+  --module-compose:          #1d63ed;  /* azul escuro — Docker Compose */
   --module-fundamentos:      #6366f1;  /* indigo — trilha iniciante */
 
   /* Auras/brilhos cyber — sombras suaves reutilizáveis */
@@ -245,6 +246,7 @@ html.light {
   .module-accent-hardening        { --mod: var(--module-hardening); }
   .module-accent-docker           { --mod: var(--module-docker); }
   .module-accent-ssh-2fa          { --mod: var(--module-ssh-2fa); }
+  .module-accent-compose          { --mod: var(--module-compose); }
   .module-accent-fundamentos      { --mod: var(--module-fundamentos); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`

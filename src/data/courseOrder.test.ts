@@ -3,8 +3,8 @@ import { COURSE_ORDER, FUNDAMENTOS_ORDER } from './courseOrder';
 
 describe('courseOrder — integridade da sequência de módulos', () => {
 
-  it('tem exatamente 24 módulos', () => {
-    expect(COURSE_ORDER).toHaveLength(24);
+  it('tem exatamente 25 módulos', () => {
+    expect(COURSE_ORDER).toHaveLength(25);
   });
 
   it('não há paths duplicados', () => {

@@ -41,7 +41,7 @@ const PHASE_V3 = {
   modules: [
     { name: 'Docker & Containerização', slug: '/docker', available: true,  icon: '🐳', tags: ['images', 'volumes'] },
     { name: 'Redes Docker',             slug: '/docker', available: true,  icon: '🌐', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
-    { name: 'Docker Compose',           slug: null, available: false, icon: '📦', tags: ['multi-container', 'yaml'] },
+    { name: 'Docker Compose',           slug: '/docker-compose', available: true,  icon: '📦', tags: ['multi-container', 'yaml'] },
     { name: 'Ansible para SysAdmins',   slug: null, available: false, icon: '⚙️', tags: ['IaC', 'playbooks'] },
     { name: 'PostgreSQL na DMZ',        slug: null, available: false, icon: '🗄️', tags: ['firewall', 'pg_hba'] },
     { name: 'CI/CD com GitHub Actions', slug: null, available: false, icon: '🚀', tags: ['pipeline', 'deploy'] },

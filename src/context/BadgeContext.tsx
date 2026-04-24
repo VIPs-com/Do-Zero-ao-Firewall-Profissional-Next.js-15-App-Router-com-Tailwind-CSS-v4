@@ -22,7 +22,8 @@ export type BadgeId =
   | 'hardening-master'
   | 'docker-master'
   | 'fundamentos-master'
-  | 'ssh-2fa-master';
+  | 'ssh-2fa-master'
+  | 'compose-master';
 
 export interface BadgeDef {
   icon: string;
@@ -56,11 +57,12 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'resgate-gold':       { icon: '🏅', title: 'Agente de Resgate',     desc: 'Explorou os ambientes de laboratório avançados' },
   'sigma-master':       { icon: '🔬', title: 'SIGMA Master',          desc: 'Dominou forense de rede, anatomia do NAT e internos do kernel' },
   'explorador-mundos':  { icon: '🧭', title: 'Explorador de Mundos',  desc: 'Completou o Módulo Zero e dominou a transição Windows → Linux' },
-  'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 23 módulos do curso em sequência' },
+  'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 25 módulos do curso em sequência' },
   'hardening-master':   { icon: '🔐', title: 'Hardening Master',      desc: 'SSH, sysctl e AppArmor configurados corretamente' },
   'docker-master':      { icon: '🐳', title: 'Docker Master',         desc: 'Redes Docker, bridge customizada e iptables integrado' },
   'fundamentos-master': { icon: '🐧', title: 'Fundamentos Master',    desc: 'Completou todos os 10 módulos da Trilha Fundamentos Linux' },
   'ssh-2fa-master':     { icon: '📱', title: 'SSH 2FA Master',        desc: 'SSH protegido com autenticação de dois fatores (TOTP)' },
+  'compose-master':     { icon: '🐙', title: 'Compose Master',        desc: 'Orquestrou uma stack completa com Docker Compose — redes, volumes e secrets' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -105,7 +107,9 @@ export const ALL_CHECKLIST_IDS = [
   'logs-lidos', 'backup-criado', 'script-escrito', 'tarefa-agendada',
   // Sprint I.5 — SSH com 2FA (TOTP)
   'totp-instalado', 'pam-configurado', 'ssh-2fa-testado',
-]; // 79 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.6 — Docker Compose
+  'compose-instalado', 'compose-stack', 'compose-networks',
+]; // 82 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -115,18 +119,19 @@ export const ALL_CHECKLIST_IDS = [
  *
  *  1. /instalacao          12. /hardening
  *  2. /wan-nat             13. /docker
- *  3. /dns                 14. /audit-logs
- *  4. /nginx-ssl           15. /ataques-avancados
- *  5. /lan-proxy           16. /pivoteamento
- *  6. /dnat                17. /laboratorio
- *  7. /port-knocking       18. /proxmox
- *  8. /vpn-ipsec           19. /evolucao
- *  9. /wireguard           20. /cheat-sheet
- * 10. /nftables            21. /glossario
- * 11. /fail2ban            22. /web-server
- * 12. /hardening           23. /ssh-2fa
+ *  3. /dns                 14. /docker-compose
+ *  4. /nginx-ssl           15. /audit-logs
+ *  5. /lan-proxy           16. /ataques-avancados
+ *  6. /dnat                17. /pivoteamento
+ *  7. /port-knocking       18. /laboratorio
+ *  8. /vpn-ipsec           19. /proxmox
+ *  9. /wireguard           20. /evolucao
+ * 10. /nftables            21. /cheat-sheet
+ * 11. /fail2ban            22. /glossario
+ * 12. /hardening           23. /web-server
+ * 13. /ssh-2fa             24. /docker-compose
  */
-export const CONTENT_PAGES_COUNT = 23;
+export const CONTENT_PAGES_COUNT = 24;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -261,6 +266,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['ssh-hardened'] && checklist['sysctl-secured'] && checklist['apparmor-enabled']) unlockBadge('hardening-master');
     if (checklist['docker-installed'] && checklist['docker-bridge'] && checklist['docker-iptables']) unlockBadge('docker-master');
     if (checklist['totp-instalado'] && checklist['pam-configurado'] && checklist['ssh-2fa-testado']) unlockBadge('ssh-2fa-master');
+    if (checklist['compose-instalado'] && checklist['compose-stack'] && checklist['compose-networks']) unlockBadge('compose-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -286,8 +292,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (59 de 79).
-    if (Object.values(checklist).filter(v => v).length >= 59) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (62 de 82).
+    if (Object.values(checklist).filter(v => v).length >= 62) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {
