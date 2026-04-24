@@ -2,10 +2,11 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Circle } from 'lucide-react';
+import { CheckCircle2, Circle, Archive, RefreshCw, Upload, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { FUNDAMENTOS_ORDER } from '@/data/courseOrder';
@@ -27,7 +28,7 @@ tar -xzf backup-etc.tar.gz -C /tmp/restore/  # extrai em outro local`;
 
 const RSYNC_CMD = `# Sincronização local (incremental — só transfere o que mudou)
 rsync -av /etc/ /backup/etc/
-rsync -av --delete /var/www/ /backup/www/  # --delete remove arquivos deletados
+rsync -av --delete /var/www/ /backup/www/  # --delete espelha exatamente
 
 # Sincronização remota via SSH
 rsync -avz /etc/ user@192.168.1.100:/backup/etc/
@@ -44,6 +45,27 @@ scp user@servidor:/etc/nginx/nginx.conf ./
 
 # Copiar diretório recursivamente
 scp -r /etc/nginx/ user@servidor:/backup/nginx/`;
+
+const SCRIPT_BACKUP = `#!/bin/bash
+# backup-diario.sh — backup automático do servidor
+
+ORIGEM="/etc /var/www /home"
+DESTINO="/backup"
+DATA=$(date +%Y%m%d-%H%M)
+
+for DIR in $ORIGEM; do
+  NOME=$(echo $DIR | tr '/' '-' | sed 's/^-//')
+  ARQUIVO="$DESTINO/$NOME-$DATA.tar.gz"
+  tar -czf "$ARQUIVO" "$DIR" 2>/dev/null
+  echo "OK: $ARQUIVO ($(du -sh $ARQUIVO | cut -f1))"
+done
+
+# Remover backups com mais de 7 dias
+find $DESTINO -name "*.tar.gz" -mtime +7 -delete
+echo "Backups antigos removidos"
+
+# Agendar no cron (executar todo dia às 3h):
+# 0 3 * * * /scripts/backup-diario.sh >> /var/log/backup.log 2>&1`;
 
 export default function BackupPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
@@ -72,6 +94,32 @@ export default function BackupPage() {
         ferramentas mais usadas para backup em Linux — simples, confiáveis e scriptáveis para automação com cron.
       </p>
 
+      <FluxoCard
+        title="Fluxo: estratégia de backup completa"
+        steps={[
+          { label: 'tar',    sub: 'backup pontual (.tar.gz)', icon: <Archive size={14} />,    color: 'border-info/50' },
+          { label: 'rsync',  sub: 'sincronização incremental', icon: <RefreshCw size={14} />, color: 'border-accent/50' },
+          { label: 'scp',    sub: 'enviar para servidor remoto', icon: <Upload size={14} />,  color: 'border-warn/50' },
+          { label: 'cron',   sub: 'automatizar diariamente',  icon: <Clock size={14} />,      color: 'border-ok/50' },
+        ]}
+      />
+
+      <WindowsComparisonBox
+        windowsCode={`Backup do Windows (Painel de Controle)
+  → Histórico de Arquivos (F: drive)
+  → Ponto de Restauração do Sistema
+  → Backup e Restauração (Windows 7)
+  → Robocopy (linha de comando avançado)
+  → wbadmin para backup completo de sistema`}
+        linuxCode={`tar -czf backup.tar.gz /etc/  # criar arquivo
+tar -xzf backup.tar.gz       # restaurar
+rsync -av /origem/ /destino/ # sincronização incremental
+rsync -avz /etc/ user@srv:/backup/
+# Combine com cron para automação diária`}
+        windowsLabel="Windows — Backup do Sistema"
+        linuxLabel="Linux — tar, rsync, scp + cron"
+      />
+
       <div className="space-y-14">
 
         <section id="tar">
@@ -80,6 +128,13 @@ export default function BackupPage() {
             <code>tar</code> cria arquivos comprimidos (.tar.gz) de diretórios inteiros. Ideal para backups pontuais e transferências.
           </p>
           <CodeBlock code={TAR_CMD} lang="bash" title="tar" />
+          <InfoBox className="mt-4" title="Decore: czf para criar, xzf para extrair">
+            <p className="text-sm text-text-2">
+              <strong>c</strong>reate · <strong>z</strong>ip (gzip) · <strong>f</strong>ile — para criar.
+              E<strong>x</strong>tract · <strong>z</strong>ip · <strong>f</strong>ile — para extrair.
+              O <code>v</code> adicional (verbose) mostra cada arquivo sendo processado.
+            </p>
+          </InfoBox>
         </section>
 
         <section id="rsync">
@@ -100,17 +155,57 @@ export default function BackupPage() {
         <section id="scp">
           <h2 className="text-2xl font-bold mb-2">scp — Copiar via SSH</h2>
           <CodeBlock code={SCP_CMD} lang="bash" title="scp" />
+          <InfoBox className="mt-4" title="rsync vs scp — quando usar cada um">
+            <p className="text-sm text-text-2">
+              Use <code>scp</code> para transferências únicas e simples. Use <code>rsync</code> para
+              backups recorrentes — ele só transfere os blocos que mudaram, economizando banda e tempo.
+            </p>
+          </InfoBox>
+        </section>
+
+        <section id="script-backup">
+          <h2 className="text-2xl font-bold mb-2">Script Completo — Backup Automático</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Combine tar + cron para uma estratégia de backup profissional.
+          </p>
+          <CodeBlock code={SCRIPT_BACKUP} lang="bash" title="backup-diario.sh" />
         </section>
 
         <HighlightBox title="🔜 Próxima versão deste módulo">
           <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
-            <li>restic — backup moderno com deduplicação e criptografia</li>
-            <li>Bacula para backup corporativo centralizado</li>
-            <li>rclone — backup para S3, B2, Google Drive</li>
-            <li>verificação de integridade com sha256sum</li>
-            <li>automação com cron (ver Módulo 10)</li>
+            <li>restic — backup moderno com deduplicação e criptografia nativa</li>
+            <li>Bacula/Amanda — backup corporativo centralizado</li>
+            <li>rclone — sincronizar para S3, Backblaze B2, Google Drive</li>
+            <li>verificação de integridade com sha256sum antes e depois</li>
+            <li>regra 3-2-1: 3 cópias, 2 mídias diferentes, 1 offsite</li>
           </ul>
         </HighlightBox>
+
+        <section id="exercicios">
+          <h2 className="text-2xl font-bold mb-4">Exercícios Guiados</h2>
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 1 — Backup com tar</p>
+              <CodeBlock code={`mkdir -p /tmp/backup
+tar -czf /tmp/backup/etc-$(date +%Y%m%d).tar.gz /etc/
+ls -lh /tmp/backup/
+tar -tzf /tmp/backup/etc-*.tar.gz | head -20  # ver conteúdo`} lang="bash" />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 2 — Rsync local</p>
+              <CodeBlock code={`mkdir -p /tmp/backup-rsync
+rsync -n -av /etc/ /tmp/backup-rsync/   # dry run primeiro
+rsync -av /etc/ /tmp/backup-rsync/      # executar de verdade
+rsync -av /etc/ /tmp/backup-rsync/      # segunda vez: notar velocidade`} lang="bash" />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 3 — Restaurar um arquivo</p>
+              <CodeBlock code={`# Extrair apenas um arquivo específico do backup
+tar -xzf /tmp/backup/etc-*.tar.gz etc/hosts -C /tmp/
+cat /tmp/etc/hosts  # confirmar restauração`} lang="bash" />
+            </div>
+          </div>
+        </section>
 
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">

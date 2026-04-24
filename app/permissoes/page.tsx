@@ -2,10 +2,11 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Circle } from 'lucide-react';
+import { CheckCircle2, Circle, Eye, Edit3, Shield, UserPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { FUNDAMENTOS_ORDER } from '@/data/courseOrder';
@@ -60,6 +61,21 @@ sudo visudo
 # Auditar ações sudo
 sudo grep "sudo" /var/log/auth.log | tail -10`;
 
+const CHMOD_NUMERICO = `# Tabela de valores numéricos
+# r=4  w=2  x=1   →   soma define as permissões
+#
+# 7 = rwx  (dono total)
+# 6 = rw-  (ler e escrever)
+# 5 = r-x  (ler e executar)
+# 4 = r--  (só ler)
+# 0 = ---  (nenhuma)
+#
+# Exemplos práticos:
+chmod 700 ~/.ssh             # só dono acessa (diretório SSH)
+chmod 600 ~/.ssh/id_rsa      # chave privada: só dono lê
+chmod 644 ~/.ssh/id_rsa.pub  # chave pública: todos leem
+chmod 777 /tmp/shared        # NUNCA em produção!`;
+
 export default function PermissoesPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
@@ -88,6 +104,33 @@ export default function PermissoesPage() {
         expõem dados sensíveis ou bloqueiam serviços inteiros.
       </p>
 
+      <FluxoCard
+        title="Fluxo: controle de acesso no Linux"
+        steps={[
+          { label: 'ls -la',    sub: 'ver permissões',      icon: <Eye size={14} />,      color: 'border-info/50' },
+          { label: 'chmod',     sub: 'alterar permissões',  icon: <Edit3 size={14} />,    color: 'border-accent/50' },
+          { label: 'useradd',   sub: 'criar usuários',      icon: <UserPlus size={14} />, color: 'border-warn/50' },
+          { label: 'sudo',      sub: 'privilégios root',    icon: <Shield size={14} />,   color: 'border-ok/50' },
+        ]}
+      />
+
+      <WindowsComparisonBox
+        windowsCode={`Propriedades do arquivo → Segurança
+  → Usuários e Grupos listados
+  → Permissões: Controle Total, Modificar,
+    Leitura e Execução, Leitura, Gravação
+  → Herança de permissões da pasta pai
+  Painel de Controle → Contas de Usuário`}
+        linuxCode={`ls -la arquivo     # ver dono, grupo, bits rwx
+chmod 644 arquivo  # rw-r--r--
+chmod 755 pasta/   # rwxr-xr-x
+chown user:group arquivo
+useradd -m devops  # criar usuário
+sudo comando       # executar como root`}
+        windowsLabel="Windows — Propriedades / Contas"
+        linuxLabel="Linux — chmod, chown, useradd, sudo"
+      />
+
       <div className="space-y-14">
 
         <section id="permissoes">
@@ -97,6 +140,7 @@ export default function PermissoesPage() {
             Assim, <code>755</code> = rwxr-xr-x e <code>600</code> = rw-------.
           </p>
           <CodeBlock code={CHMOD} lang="bash" title="chmod — permissões" />
+          <CodeBlock code={CHMOD_NUMERICO} lang="bash" title="chmod — referência numérica" />
         </section>
 
         <section id="usuarios">
@@ -129,6 +173,17 @@ export default function PermissoesPage() {
           </InfoBox>
         </section>
 
+        <section id="armadilhas">
+          <div className="p-5 rounded-xl bg-[rgba(239,68,68,0.06)] border border-err/30">
+            <h3 className="font-bold text-base mb-3 text-err">⚠️ Armadilhas Comuns</h3>
+            <div className="space-y-2 text-sm text-text-2">
+              <p><code className="text-err">chmod 777 /var/www</code> — expõe o servidor: qualquer usuário pode modificar arquivos.</p>
+              <p><code className="text-err">chown root arquivo</code> sem sudo — silenciosamente falha ou bloqueia o acesso.</p>
+              <p><code className="text-err">sudo visudo</code> — se esquecer e editar diretamente <code>/etc/sudoers</code>, um erro pode travar o sistema.</p>
+            </div>
+          </div>
+        </section>
+
         <HighlightBox title="🔜 Próxima versão deste módulo">
           <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
             <li>ACLs com getfacl/setfacl — permissões granulares por usuário</li>
@@ -137,6 +192,32 @@ export default function PermissoesPage() {
             <li>PAM modules — autenticação plugável (2FA, LDAP)</li>
           </ul>
         </HighlightBox>
+
+        <section id="exercicios">
+          <h2 className="text-2xl font-bold mb-4">Exercícios Guiados</h2>
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 1 — Ler e alterar permissões</p>
+              <CodeBlock code={`ls -la /etc/ssh/sshd_config   # ver permissões atuais
+touch /tmp/teste.sh
+chmod +x /tmp/teste.sh        # adicionar execução
+ls -la /tmp/teste.sh          # confirmar -rwxr-xr-x`} lang="bash" />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 2 — Criar usuário devops</p>
+              <CodeBlock code={`sudo useradd -m -s /bin/bash devops
+sudo passwd devops
+sudo usermod -aG sudo devops
+groups devops                  # confirmar grupo sudo`} lang="bash" />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 3 — sudo em ação</p>
+              <CodeBlock code={`sudo whoami                    # deve retornar "root"
+sudo grep "sudo" /var/log/auth.log | tail -5
+# Confirmar que sua ação ficou registrada no log`} lang="bash" />
+            </div>
+          </div>
+        </section>
 
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">

@@ -2,10 +2,11 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Circle } from 'lucide-react';
+import { CheckCircle2, Circle, HardDrive, Search, Link2, Database } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { FUNDAMENTOS_ORDER } from '@/data/courseOrder';
@@ -21,24 +22,29 @@ sudo blkid               # UUID e tipo de cada partição`;
 
 const ESPACO = `df -h                         # espaço em todos os filesystems montados
 df -h /                       # só a partição raiz
-du -sh /var/log/              # tamanho do diretório /var/log
+du -sh /var/log/              # tamanho total do diretório /var/log
 du -sh /var/log/* | sort -hr | head -10  # 10 maiores em /var/log
 du -sh /home/*                # espaço por usuário em /home`;
 
 const MOUNT = `# Montar manualmente (temporário — não persiste após reboot)
+sudo mkdir -p /mnt/dados
 sudo mount /dev/sdb1 /mnt/dados
 
 # Desmontar
 sudo umount /mnt/dados
 
 # Ver o que está montado atualmente
-mount | grep /dev/sd
+mount | grep /dev/sd`;
 
-# Mounts persistentes — editar /etc/fstab
-cat /etc/fstab
-# Exemplo de linha fstab:
-# UUID=abc123 /mnt/dados ext4 defaults 0 2
-# (use 'blkid' para obter o UUID correto)`;
+const FSTAB = `# /etc/fstab — mounts persistentes (editado com sudo nano)
+# Formato: dispositivo   ponto-de-montagem   tipo   opções   dump   pass
+UUID=abc123-def456  /mnt/dados  ext4  defaults  0  2
+
+# IMPORTANTE: sempre use UUID, não /dev/sdb1
+# O nome /dev/sdb1 pode mudar entre reboots; UUID é permanente
+sudo blkid /dev/sdb1    # obter UUID do disco
+sudo nano /etc/fstab    # editar
+sudo mount -a           # testar sem reiniciar (monta tudo do fstab)`;
 
 export default function DiscosPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
@@ -68,6 +74,32 @@ export default function DiscosPage() {
         as ferramentas para gerenciar armazenamento em servidores reais.
       </p>
 
+      <FluxoCard
+        title="Fluxo: adicionar um novo disco ao servidor"
+        steps={[
+          { label: 'lsblk',    sub: 'identificar disco',    icon: <Search size={14} />,   color: 'border-info/50' },
+          { label: 'fdisk',    sub: 'criar partição',       icon: <HardDrive size={14} />, color: 'border-accent/50' },
+          { label: 'mkfs',     sub: 'formatar (ext4/xfs)',  icon: <Database size={14} />, color: 'border-warn/50' },
+          { label: 'mount + fstab', sub: 'montar e persistir', icon: <Link2 size={14} />, color: 'border-ok/50' },
+        ]}
+      />
+
+      <WindowsComparisonBox
+        windowsCode={`Gerenciamento de Disco (diskmgmt.msc)
+  → Ver discos e partições graficamente
+  → Formatar: clique direito → Formatar
+  → Letra de unidade (C:, D:, E:...)
+  → Partição automática "aparece" como
+    letra nova no Explorer`}
+        linuxCode={`lsblk               # listar discos e partições
+sudo fdisk /dev/sdb # particionar
+sudo mkfs.ext4 /dev/sdb1  # formatar
+sudo mount /dev/sdb1 /mnt/dados
+# Editar /etc/fstab para persistir`}
+        windowsLabel="Windows — Gerenciamento de Disco"
+        linuxLabel="Linux — lsblk, fdisk, mount, fstab"
+      />
+
       <div className="space-y-14">
 
         <section id="identificar">
@@ -76,10 +108,11 @@ export default function DiscosPage() {
             <code>lsblk</code> mostra a árvore de discos e partições. <code>fdisk -l</code> dá detalhes completos.
           </p>
           <CodeBlock code={IDENTIFICAR} lang="bash" title="Listar discos" />
-          <InfoBox className="mt-4" title="Nomenclatura Linux">
+          <InfoBox className="mt-4" title="Nomenclatura Linux de discos">
             <p className="text-sm text-text-2">
-              <code>/dev/sda</code> = primeiro disco SATA/SCSI. <code>/dev/sda1</code> = primeira partição.
-              <code>/dev/nvme0n1</code> = disco NVMe. <code>/dev/vda</code> = disco virtual (VirtualBox/KVM).
+              <code>/dev/sda</code> = primeiro disco SATA/SCSI · <code>/dev/sda1</code> = primeira partição ·
+              <code> /dev/nvme0n1</code> = disco NVMe · <code>/dev/vda</code> = disco virtual (VirtualBox/KVM).
+              O sistema de arquivos raiz (<code>/</code>) é sempre o primeiro disco.
             </p>
           </InfoBox>
         </section>
@@ -87,28 +120,74 @@ export default function DiscosPage() {
         <section id="espaco">
           <h2 className="text-2xl font-bold mb-2">Verificar Uso de Espaço</h2>
           <p className="text-text-2 text-sm mb-4">
-            <code>df -h</code> mostra o espaço livre de cada partição montada. <code>du -sh</code> mostra o tamanho de um diretório.
+            <code>df -h</code> mostra o espaço livre de cada partição montada. <code>du -sh</code> mostra o tamanho de um diretório específico.
           </p>
           <CodeBlock code={ESPACO} lang="bash" title="df e du" />
+          <InfoBox className="mt-4" title="Disco cheio trava o servidor">
+            <p className="text-sm text-text-2">
+              Quando uma partição chega a 100%, serviços param de escrever logs e podem travar.
+              Configure alertas para avisar aos 80%: <code>df -h | grep -E &apos;[89][0-9]%&apos;</code>.
+              O maior consumidor geralmente é <code>/var/log</code> — verifique com <code>du -sh /var/log/*</code>.
+            </p>
+          </InfoBox>
         </section>
 
         <section id="mount">
-          <h2 className="text-2xl font-bold mb-2">Montar Discos e fstab</h2>
+          <h2 className="text-2xl font-bold mb-2">Montar Discos</h2>
           <p className="text-text-2 text-sm mb-4">
-            <code>mount</code> anexa um disco à árvore de diretórios. Para persistir após reboot, edite <code>/etc/fstab</code>.
+            <code>mount</code> anexa um dispositivo à árvore de diretórios. Desmonte com <code>umount</code> antes de remover o disco fisicamente.
           </p>
-          <CodeBlock code={MOUNT} lang="bash" title="mount e fstab" />
+          <CodeBlock code={MOUNT} lang="bash" title="mount e umount" />
+        </section>
+
+        <section id="fstab">
+          <h2 className="text-2xl font-bold mb-2">fstab — Mounts Persistentes</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Mounts manuais desaparecem no reboot. Para persistir, edite <code>/etc/fstab</code>.
+          </p>
+          <CodeBlock code={FSTAB} lang="bash" title="/etc/fstab" />
+          <WarnBox className="mt-4" title="Erro no fstab pode impedir o boot">
+            <p className="text-sm text-text-2">
+              Uma linha malformada no <code>/etc/fstab</code> pode fazer o sistema entrar em modo de
+              recuperação no próximo boot. Sempre teste com <code>sudo mount -a</code> antes de reiniciar.
+              Em VMs, tire um snapshot antes de editar o fstab.
+            </p>
+          </WarnBox>
         </section>
 
         <HighlightBox title="🔜 Próxima versão deste módulo">
           <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
             <li>LVM — Logical Volume Manager para redimensionar partições online</li>
-            <li>RAID com mdadm — redundância de dados</li>
+            <li>RAID com mdadm — redundância de dados sem hardware especial</li>
             <li>ext4 vs xfs vs btrfs — quando usar cada filesystem</li>
-            <li>quotas de disco por usuário</li>
-            <li>dd — clonar discos e criar imagens</li>
+            <li>quotas de disco por usuário (edquota)</li>
+            <li>dd — clonar discos e criar imagens byte a byte</li>
           </ul>
         </HighlightBox>
+
+        <section id="exercicios">
+          <h2 className="text-2xl font-bold mb-4">Exercícios Guiados</h2>
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 1 — Mapear os discos do sistema</p>
+              <CodeBlock code={`lsblk -f          # ver discos, partições e UUIDs
+df -h             # ver uso de espaço
+# Qual partição tem menos espaço livre?`} lang="bash" />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 2 — Encontrar o que ocupa mais espaço</p>
+              <CodeBlock code={`du -sh /var/log/* | sort -hr | head -10
+du -sh /home/*
+# Qual diretório é o maior consumidor?`} lang="bash" />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">🎯 Exercício 3 — Ver conteúdo do fstab</p>
+              <CodeBlock code={`cat /etc/fstab
+# Quantas partições estão configuradas para montar no boot?
+# Qual é o UUID da partição raiz (/)?`} lang="bash" />
+            </div>
+          </div>
+        </section>
 
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">
