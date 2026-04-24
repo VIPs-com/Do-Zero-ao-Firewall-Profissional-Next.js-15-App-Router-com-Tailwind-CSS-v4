@@ -20,7 +20,8 @@ export type BadgeId =
   | 'explorador-mundos'
   | 'course-master'
   | 'hardening-master'
-  | 'docker-master';
+  | 'docker-master'
+  | 'fundamentos-master';
 
 export interface BadgeDef {
   icon: string;
@@ -57,6 +58,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 23 módulos do curso em sequência' },
   'hardening-master':   { icon: '🔐', title: 'Hardening Master',      desc: 'SSH, sysctl e AppArmor configurados corretamente' },
   'docker-master':      { icon: '🐳', title: 'Docker Master',         desc: 'Redes Docker, bridge customizada e iptables integrado' },
+  'fundamentos-master': { icon: '🐧', title: 'Fundamentos Master',    desc: 'Completou todos os 10 módulos da Trilha Fundamentos Linux' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -95,7 +97,11 @@ export const ALL_CHECKLIST_IDS = [
   'ssh-hardened', 'sysctl-secured', 'apparmor-enabled',
   // Sprint I.4 — Docker Networking
   'docker-installed', 'docker-bridge', 'docker-iptables',
-]; // 66 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint F1-F3 — Trilha Fundamentos Linux (v2.0)
+  'fhs-explorado', 'comandos-praticados', 'editores-usados',
+  'processos-controlados', 'permissoes-configuradas', 'discos-mapeados',
+  'logs-lidos', 'backup-criado', 'script-escrito', 'tarefa-agendada',
+]; // 76 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -267,8 +273,15 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['rosetta-stone-explored']
     ) unlockBadge('explorador-mundos');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (50 de 66).
-    if (Object.values(checklist).filter(v => v).length >= 50) unlockBadge('linux-ninja');
+    // Sprint F1-F3 — Trilha Fundamentos Linux
+    if (
+      checklist['fhs-explorado'] && checklist['comandos-praticados'] && checklist['editores-usados'] &&
+      checklist['processos-controlados'] && checklist['permissoes-configuradas'] && checklist['discos-mapeados'] &&
+      checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
+    ) unlockBadge('fundamentos-master');
+
+    // Linux Ninja: desbloqueado com 75% do checklist (57 de 76).
+    if (Object.values(checklist).filter(v => v).length >= 57) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

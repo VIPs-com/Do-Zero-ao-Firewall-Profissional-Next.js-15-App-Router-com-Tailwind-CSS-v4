@@ -109,6 +109,18 @@ const TOPICS: Topic[] = [
   // ── Sprint I.4 — Docker Networking ───────────────────────────────────────────
   { id: '47', num: '47', title: 'Docker Networking: bridge, host e none. Como o Docker manipula o iptables automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/docker#redes', group: 'Docker & Containers' },
   { id: '47b', num: '47', title: 'Port mapping (-p 8080:80) é DNAT automático: Docker cria regras iptables na chain DOCKER.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/docker#port-mapping', group: 'Docker & Containers' },
+
+  // ── Sprint F1-F3 — Trilha Fundamentos Linux (v2.0) ────────────────────────
+  { id: 'f01', num: 'F01', title: 'Estrutura do Sistema (FHS): /etc, /var, /usr, /home, /tmp — o mapa do Linux comparado com C:\\Windows\\', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/fhs', group: 'Fundamentos Linux' },
+  { id: 'f02', num: 'F02', title: 'Comandos Essenciais: ls, cd, cp, mv, rm, grep, find, cat, less e o operador pipe — navegando o terminal.', layer: 'Fundamentos · Terminal', layerClass: 'l7', href: '/comandos', group: 'Fundamentos Linux' },
+  { id: 'f03', num: 'F03', title: 'Editores de Texto: nano para edições rápidas, VIM para produção — modos, atalhos e como sair do vim.', layer: 'Fundamentos · Ferramentas', layerClass: 'l7', href: '/editores', group: 'Fundamentos Linux' },
+  { id: 'f04', num: 'F04', title: 'Gerenciamento de Processos: ps, top, htop, kill, systemctl — equivalente ao Gerenciador de Tarefas do Windows.', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/processos', group: 'Fundamentos Linux' },
+  { id: 'f05', num: 'F05', title: 'Permissões e Usuários: chmod, chown, useradd, groups, sudo — controle de acesso e segurança básica.', layer: 'Fundamentos · Segurança', layerClass: 'l7', href: '/permissoes', group: 'Fundamentos Linux' },
+  { id: 'f06', num: 'F06', title: 'Discos e Partições: fdisk, lsblk, mount, df, du, dd — gerenciamento de armazenamento e filesystems.', layer: 'Fundamentos · Armazenamento', layerClass: 'l3', href: '/discos', group: 'Fundamentos Linux' },
+  { id: 'f07', num: 'F07', title: 'Logs e Monitoramento: journalctl, /var/log/, tail -f, grep — leitura e análise de logs como um SysAdmin.', layer: 'Fundamentos · Diagnóstico', layerClass: 'l7', href: '/logs-basicos', group: 'Fundamentos Linux' },
+  { id: 'f08', num: 'F08', title: 'Backup e Restauração: rsync, tar, scp — proteja dados com backups locais, remotos e automatizados.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/backup', group: 'Fundamentos Linux' },
+  { id: 'f09', num: 'F09', title: 'Shell Script: variáveis, if, for, funções e $() em bash — automatize tarefas de administração de sistemas.', layer: 'Fundamentos · Automação', layerClass: 'l7', href: '/shell-script', group: 'Fundamentos Linux' },
+  { id: 'f10', num: 'F10', title: 'Agendamento de Tarefas: crontab, @reboot, systemd timers e at — automatize manutenção periódica do servidor.', layer: 'Fundamentos · Automação', layerClass: 'l7', href: '/cron', group: 'Fundamentos Linux' },
 ];
 
 export default function TopicsPage() {

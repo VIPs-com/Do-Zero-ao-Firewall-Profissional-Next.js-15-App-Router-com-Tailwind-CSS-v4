@@ -206,6 +206,73 @@ export const ROUTE_SEO = {
       'Monte um laboratório profissional com Proxmox VE: instalação, bridges de rede (vmbr0/vmbr1/vmbr2), criação das 4 VMs, snapshots e backup com vzdump.',
     keywords: ['Proxmox', 'Proxmox VE', 'virtualização', 'vmbr', 'snapshot', 'vzdump', 'laboratório'],
   },
+  // ── Trilha Fundamentos Linux (v2.0) ─────────────────────────────────────────
+  '/fundamentos': {
+    title: 'Fundamentos Linux — Trilha para Iniciantes',
+    description:
+      'Comece do zero no Linux: 10 módulos que ensinam FHS, comandos, editores, processos, permissões, discos, logs, backup, shell script e cron.',
+    keywords: ['Linux iniciante', 'fundamentos Linux', 'aprender Linux', 'terminal Linux', 'Ubuntu básico'],
+  },
+  '/fhs': {
+    title: 'Estrutura do Sistema Linux (FHS)',
+    description:
+      'Módulo 01 da trilha Fundamentos: entenda /etc, /var, /usr, /home, /tmp e o mapa do sistema Linux. Comparação com pastas do Windows.',
+    keywords: ['FHS', 'estrutura de diretórios Linux', '/etc', '/var', '/usr', 'hierarquia Linux'],
+  },
+  '/comandos': {
+    title: 'Comandos Essenciais Linux',
+    description:
+      'Módulo 02: ls, cd, cp, mv, rm, grep, find, cat, less e o operador pipe. Domine o terminal Linux do zero.',
+    keywords: ['comandos Linux', 'terminal Linux', 'ls', 'grep', 'find', 'pipe', 'bash básico'],
+  },
+  '/editores': {
+    title: 'Editores de Texto — nano e VIM',
+    description:
+      'Módulo 03: use nano para edições rápidas e VIM para produção. Modos, atalhos essenciais e como sair do vim.',
+    keywords: ['nano', 'VIM', 'editor de texto Linux', 'vim iniciante', 'nano tutorial'],
+  },
+  '/processos': {
+    title: 'Gerenciamento de Processos no Linux',
+    description:
+      'Módulo 04: ps, top, htop, kill, systemctl e jobs. Controle processos em execução como no Gerenciador de Tarefas do Windows.',
+    keywords: ['ps', 'top', 'htop', 'kill', 'systemctl', 'processos Linux', 'gerenciamento Linux'],
+  },
+  '/permissoes': {
+    title: 'Permissões e Usuários no Linux',
+    description:
+      'Módulo 05: chmod, chown, useradd, groups e sudo. Entenda rwxr-xr-x e como gerenciar usuários no Linux.',
+    keywords: ['chmod', 'chown', 'useradd', 'sudo', 'permissões Linux', 'usuários Linux'],
+  },
+  '/discos': {
+    title: 'Discos e Partições no Linux',
+    description:
+      'Módulo 06: fdisk, lsblk, mount, df, du e dd. Gerencie discos, partições e sistemas de arquivo no Linux.',
+    keywords: ['fdisk', 'lsblk', 'mount', 'df', 'du', 'dd', 'partições Linux', 'discos Linux'],
+  },
+  '/logs-basicos': {
+    title: 'Logs e Monitoramento Básico no Linux',
+    description:
+      'Módulo 07: journalctl, /var/log/, tail -f e grep. Leia e analise logs do sistema como um SysAdmin.',
+    keywords: ['journalctl', 'logs Linux', '/var/log/', 'tail -f', 'rsyslog', 'monitoramento Linux'],
+  },
+  '/backup': {
+    title: 'Backup e Restauração no Linux',
+    description:
+      'Módulo 08: rsync, tar e scp. Proteja seus dados com backups locais, remotos e agendados no Linux.',
+    keywords: ['rsync', 'tar', 'scp', 'backup Linux', 'restauração Linux', 'cópia de segurança'],
+  },
+  '/shell-script': {
+    title: 'Shell Script — Automatize o Linux',
+    description:
+      'Módulo 09: variáveis, if, for, funções e $() em bash. Escreva scripts de automação para administração de sistemas.',
+    keywords: ['shell script', 'bash script', 'automação Linux', 'scripting bash', 'variáveis bash'],
+  },
+  '/cron': {
+    title: 'Agendamento de Tarefas — cron e systemd timers',
+    description:
+      'Módulo 10: crontab -e, @reboot, systemd timers e at. Agende tarefas periódicas e automatize manutenção do servidor.',
+    keywords: ['cron', 'crontab', 'systemd timers', 'agendamento Linux', 'tarefas periódicas'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

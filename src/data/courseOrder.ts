@@ -1,6 +1,9 @@
 // src/data/courseOrder.ts
 // Sequência linear dos 23 módulos do curso — usada pelo ModuleNav para navegação Anterior/Próximo.
 // Nota: /web-server NÃO entra aqui — é página de referência, não módulo do curso.
+//
+// TRILHA FUNDAMENTOS (v2.0): 10 módulos para iniciantes em Linux.
+// Trilha separada — não integrada ao COURSE_ORDER principal.
 
 export interface CourseModule {
   path: string;
@@ -33,4 +36,20 @@ export const COURSE_ORDER: CourseModule[] = [
   { path: '/glossario',         title: 'Glossário',                  prev: '/cheat-sheet',       next: '/quiz' },
   { path: '/quiz',              title: 'Quiz',                       prev: '/glossario',         next: '/certificado' },
   { path: '/certificado',       title: 'Certificado',                prev: '/quiz',              next: null },
+];
+
+// ── Trilha Fundamentos Linux (v2.0) — iniciantes ──────────────────────────────
+// Sequência paralela ao COURSE_ORDER. Passada como prop order={FUNDAMENTOS_ORDER}
+// ao ModuleNav nas páginas da trilha.
+export const FUNDAMENTOS_ORDER: CourseModule[] = [
+  { path: '/fhs',          title: 'Estrutura do Sistema (FHS)',   prev: null,          next: '/comandos' },
+  { path: '/comandos',     title: 'Comandos Essenciais',          prev: '/fhs',        next: '/editores' },
+  { path: '/editores',     title: 'Editores de Texto',            prev: '/comandos',   next: '/processos' },
+  { path: '/processos',    title: 'Gerenciamento de Processos',   prev: '/editores',   next: '/permissoes' },
+  { path: '/permissoes',   title: 'Permissões e Usuários',        prev: '/processos',  next: '/discos' },
+  { path: '/discos',       title: 'Discos e Partições',           prev: '/permissoes', next: '/logs-basicos' },
+  { path: '/logs-basicos', title: 'Logs e Monitoramento',         prev: '/discos',     next: '/backup' },
+  { path: '/backup',       title: 'Backup e Restauração',         prev: '/logs-basicos', next: '/shell-script' },
+  { path: '/shell-script', title: 'Shell Script',                 prev: '/backup',     next: '/cron' },
+  { path: '/cron',         title: 'Agendamento de Tarefas',       prev: '/shell-script', next: null },
 ];

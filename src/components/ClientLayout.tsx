@@ -19,13 +19,14 @@ const GlobalSearch = dynamic(
 );
 
 const NAV_LINKS = [
-  { href: '/',            label: 'Início',      icon: '🏠' },
-  { href: '/dashboard',   label: 'Dashboard',   icon: '📊' },
-  { href: '/topicos',     label: 'Tópicos',     icon: '📚' },
-  { href: '/instalacao',  label: 'Instalação',  icon: '🛠️' },
-  { href: '/quiz',        label: 'Quiz',        icon: '🧠' },
-  { href: '/cheat-sheet', label: 'Cheat Sheet', icon: '⚡' },
-  { href: '/certificado', label: 'Certificado', icon: '🎓' },
+  { href: '/',             label: 'Início',      icon: '🏠' },
+  { href: '/dashboard',    label: 'Dashboard',   icon: '📊' },
+  { href: '/fundamentos',  label: 'Fundamentos', icon: '🐧' },
+  { href: '/topicos',      label: 'Tópicos',     icon: '📚' },
+  { href: '/instalacao',   label: 'Instalação',  icon: '🛠️' },
+  { href: '/quiz',         label: 'Quiz',        icon: '🧠' },
+  { href: '/cheat-sheet',  label: 'Cheat Sheet', icon: '⚡' },
+  { href: '/certificado',  label: 'Certificado', icon: '🎓' },
 ];
 
 export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {

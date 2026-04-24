@@ -13,12 +13,12 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run test         # vitest run — 6 suítes · 42 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
+npm run test         # vitest run — 6 suítes · 51 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
 npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 26 rotas próprias (build reporta 33/33 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 37 rotas próprias (build reporta 44/44 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 26 rotas — todas 'use client'
+  [rota]/page.tsx           # 37 rotas — todas 'use client' (26 trilha Firewall + 11 trilha Fundamentos)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -56,13 +56,13 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting)
-    searchItems.ts          # 71 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
-    courseOrder.ts          # sequência de 21 módulos para ModuleNav (Anterior / Próximo)
+    searchItems.ts          # 85 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    courseOrder.ts          # COURSE_ORDER (23 módulos Firewall) + FUNDAMENTOS_ORDER (10 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (26 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (37 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -73,7 +73,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
-  07-dashboard-counters.spec.ts # 3/60 checklist + 75% quiz + 0/25 badges
+  07-dashboard-counters.spec.ts # 3/76 checklist + 75% quiz + 0/29 badges
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
 
@@ -103,12 +103,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 22 (Sprint I.4: +/docker) |
-| `totalTopics` | `app/dashboard/page.tsx` | 47 (Sprint I.4: tópico #47 Docker adicionado) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 66 (ALL_CHECKLIST_IDS.length) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 22 (trilha Fundamentos não conta — badge separado) |
+| `totalTopics` | `app/dashboard/page.tsx` | 57 (Sprint F1-F3: +10 módulos Fundamentos) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 76 (ALL_CHECKLIST_IDS.length, +10 Fundamentos) |
 | Texto na Home | `app/page.tsx` | "47 tópicos práticos" |
-| Badges | `src/context/BadgeContext.tsx` | 28 (Sprint I.4: +docker-master) |
-| searchItems | `src/data/searchItems.ts` | 74 (Sprint I.4: +t-docker) |
+| Badges | `src/context/BadgeContext.tsx` | 29 (Sprint F1: +fundamentos-master) |
+| searchItems | `src/data/searchItems.ts` | 85 (Sprint F1-F3: +11 fundamentos) |
 
 ---
 
@@ -146,7 +146,7 @@ NUNCA criar arquivos CSS separados — usar classes Tailwind diretamente no JSX.
 Toda configuração de metadata vive em **`src/lib/seo.ts`**:
 
 - `SITE_CONFIG` — nome, URL base, keywords globais, theme color
-- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 26 rotas
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 37 rotas
 - `buildMetadata(route)` — helper que gera objeto `Metadata` completo com OG + Twitter + canonical
 
 **Para adicionar SEO a uma nova rota:**
@@ -306,7 +306,7 @@ Conformidade implementada no Sprint C:
 1. `npm run lint` — zero erros TypeScript
 2. `npm run lint:eslint` — zero warnings de acessibilidade
 3. `npm test` — suíte vitest passando
-4. `npm run build` — 33/33 páginas (26 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
+4. `npm run build` — 44/44 páginas (37 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
 5. Verificar consistência dos números da tabela de constantes
 
 ---
@@ -351,6 +351,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint I.3 (Módulo Hardening): `/hardening` — SSH (PasswordAuthentication no, Ed25519), sysctl security (SYN cookies, ASLR, rp_filter), AppArmor (aa-enforce Nginx, aa-logprof); badge 🔐 hardening-master; 3 checkpoints; module-accent-hardening #a3e635; CONTENT_PAGES_COUNT 20→21, checklistItemsCount 60→63, totalTopics 45→46, COURSE_ORDER 21→22 módulos.
 - ✅ Sprint TOPICOS: tópico #46 Hardening adicionado em `/topicos` (novo grupo "Hardening Linux").
 - ✅ Sprint I.4 (Módulo Docker): `/docker` — bridge/host/none drivers, redes customizadas + DNS interno, port mapping = DNAT automático, chains DOCKER/DOCKER-USER no iptables, docker-compose redes declarativas (frontend/backend/internal); badge 🐳 docker-master (28º badge); 3 checkpoints (docker-installed, docker-bridge, docker-iptables); module-accent-docker #2496ed; CONTENT_PAGES_COUNT 21→22, checklistItemsCount 63→66, totalTopics 46→47, COURSE_ORDER 22→23 módulos, linux-ninja threshold 47→50; tópicos #47+47b em /topicos (grupo "Docker & Containers"); /evolucao v3.0 atualizado com Docker marcado como disponível.
+- ✅ Sprint F1-F3 (Trilha Fundamentos Linux v2.0): 10 módulos paralelos para iniciantes (`/fundamentos` índice + `/fhs` + `/comandos` + `/editores` + `/processos` + `/permissoes` + `/discos` + `/logs-basicos` + `/backup` + `/shell-script` + `/cron`); FUNDAMENTOS_ORDER em courseOrder.ts; ModuleNav com prop `order`; badge 🐧 fundamentos-master (29º badge); 10 checkpoints (fhs-explorado, comandos-praticados, ...); module-accent-fundamentos #6366f1; CTA "Novo no Linux?" na home; nav link Fundamentos; +11 searchItems (85 total); checklistItemsCount 66→76; totalTopics 47→57; linux-ninja threshold 50→57; +8 testes FUNDAMENTOS_ORDER em courseOrder.test.ts; /evolucao v2.0 com 10 módulos Fundamentos marcados como disponíveis.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

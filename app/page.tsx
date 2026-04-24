@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { motion, useReducedMotion } from 'motion/react';
-import { Shield, Terminal, BookOpen, Zap, Award, Lock, Globe, Server, ChevronRight, Layers, Layout, Star } from 'lucide-react';
+import { Shield, Terminal, BookOpen, Zap, Award, Lock, Globe, Server, ChevronRight, Layers, Layout, Star, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /*
@@ -149,6 +149,31 @@ export default function Home() {
           {/* Decorative elements */}
           <div className="absolute -z-10 -top-10 -right-10 w-40 h-40 bg-accent/10 rounded-full blur-3xl" />
           <div className="absolute -z-10 -bottom-10 -left-10 w-40 h-40 bg-info/10 rounded-full blur-3xl" />
+        </motion.div>
+      </section>
+
+      {/* Novo no Linux? CTA Banner */}
+      <section className="max-w-7xl mx-auto px-4 pb-8">
+        <motion.div
+          initial={undefined}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-[rgba(99,102,241,0.08)] border border-[rgba(99,102,241,0.3)]"
+        >
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <span className="text-2xl" aria-hidden="true">🐧</span>
+            <div>
+              <p className="font-bold text-sm text-[#6366f1]">Novo no Linux?</p>
+              <p className="text-xs text-text-2">Comece pela Trilha Fundamentos — 10 módulos do zero antes do firewall.</p>
+            </div>
+          </div>
+          <Link
+            href="/fundamentos"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#6366f1] text-white font-semibold text-sm hover:bg-[#4f46e5] transition-colors"
+          >
+            Começar aqui
+            <ArrowRight size={14} aria-hidden="true" />
+          </Link>
         </motion.div>
       </section>
 
