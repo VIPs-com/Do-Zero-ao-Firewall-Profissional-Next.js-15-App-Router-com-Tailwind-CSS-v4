@@ -74,6 +74,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
   07-dashboard-counters.spec.ts # 3/76 checklist + 75% quiz + 0/29 badges
+  10-fundamentos-trail.spec.ts  # /fundamentos índice, visita /fhs, checkpoints, badge, ModuleNav (8 casos)
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
 
