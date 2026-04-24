@@ -363,4 +363,192 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     explanation: 'Com Type=oneshot e RemainAfterExit=yes, o systemd marca o serviço como "active (exited)" após o script terminar. Sem isso, o status ficaria "inactive" e systemctl stop não chamaria o ExecStop.',
   },
+
+  // ========== WireGuard ==========
+  {
+    text: 'Qual algoritmo criptográfico o WireGuard usa para troca de chaves (ECDH)?',
+    badge: '🔐 WireGuard',
+    options: ['RSA-4096', 'AES-256-GCM', 'Curve25519', 'Diffie-Hellman clássico'],
+    correct: 2,
+    explanation: 'WireGuard usa Curve25519 para ECDH (troca de chaves) e ChaCha20-Poly1305 para cifragem de dados — mais rápido que AES em hardware sem AES-NI.',
+  },
+  {
+    text: 'O que significa AllowedIPs = 0.0.0.0/0 na configuração de um cliente WireGuard?',
+    badge: '🔐 WireGuard',
+    options: [
+      'Permite apenas a subnet da VPN (split tunnel)',
+      'Bloqueia todo o tráfego externo',
+      'Todo o tráfego passa pelo servidor (full tunnel)',
+      'Libera o cliente para qualquer rede',
+    ],
+    correct: 2,
+    explanation: 'AllowedIPs = 0.0.0.0/0 é o "full tunnel" — todo o tráfego do cliente é roteado pelo servidor WireGuard. Para split tunnel, use apenas a subnet específica (ex: 10.0.0.0/24).',
+  },
+  {
+    text: 'Qual porta e protocolo o WireGuard usa por padrão?',
+    badge: '🔐 WireGuard',
+    options: ['1194/UDP (como OpenVPN)', '500/UDP (como IKEv1)', '51820/UDP', '4500/TCP'],
+    correct: 2,
+    explanation: 'WireGuard usa UDP pela porta 51820 por padrão (configurável com ListenPort). UDP é essencial para o desempenho — WireGuard não suporta TCP.',
+  },
+
+  // ========== Fail2ban ==========
+  {
+    text: 'O que é uma "jail" no Fail2ban?',
+    badge: '🚫 Fail2ban',
+    options: [
+      'Um container de segurança para isolar processos',
+      'Uma regra iptables para bloquear um IP',
+      'A combinação de logpath + filtro regex + ação de ban',
+      'Uma lista de IPs permanentemente banidos',
+    ],
+    correct: 2,
+    explanation: 'Uma jail é a unidade de configuração do Fail2ban: define qual log monitorar (logpath), qual padrão detectar (filter/failregex) e qual ação executar ao atingir maxretry.',
+  },
+  {
+    text: 'Por que editar jail.local e não jail.conf diretamente no Fail2ban?',
+    badge: '🚫 Fail2ban',
+    options: [
+      'jail.conf não existe — jail.local é o único arquivo',
+      'jail.conf é sobrescrito em atualizações; jail.local persiste',
+      'jail.local tem prioridade menor e é mais seguro',
+      'Não há diferença — são arquivos equivalentes',
+    ],
+    correct: 1,
+    explanation: 'jail.conf é sobrescrito a cada atualização do pacote. jail.local herda todos os defaults do jail.conf e sobrescreve apenas as chaves que você define — suas configurações nunca são perdidas.',
+  },
+  {
+    text: 'O que o parâmetro findtime controla no Fail2ban?',
+    badge: '🚫 Fail2ban',
+    options: [
+      'O tempo de duração do ban em segundos',
+      'O intervalo entre varreduras do log',
+      'A janela de tempo para contar tentativas falhas',
+      'O tempo máximo de conexão SSH',
+    ],
+    correct: 2,
+    explanation: 'findtime define a janela de tempo: se um IP fizer maxretry falhas dentro de findtime segundos, ele é banido. Ex: maxretry=3 + findtime=600 = 3 falhas em 10 minutos.',
+  },
+
+  // ========== nftables ==========
+  {
+    text: 'Qual a principal vantagem dos "sets" nativos do nftables em relação ao iptables?',
+    badge: '🔥 nftables',
+    options: [
+      'São mais fáceis de configurar via interface gráfica',
+      'Verificação O(1) — eficiente independente do tamanho da lista',
+      'Sincronizam automaticamente com fail2ban',
+      'São compatíveis com iptables sem conversão',
+    ],
+    correct: 1,
+    explanation: 'No iptables, bloquear 1000 IPs exige 1000 regras avaliadas sequencialmente (O(n)). No nftables, um set usa hash/lookup em O(1) — o mesmo tempo independente de ter 1 ou 1 milhão de entradas.',
+  },
+  {
+    text: 'O que o comando "nft flush ruleset" faz?',
+    badge: '🔥 nftables',
+    options: [
+      'Salva o ruleset atual em /etc/nftables.conf',
+      'Lista todas as regras ativas',
+      'Remove TODAS as tabelas, chains e regras',
+      'Recarrega o ruleset do arquivo de configuração',
+    ],
+    correct: 2,
+    explanation: 'nft flush ruleset remove completamente todas as tabelas, chains e regras ativas. Cuidado em produção: equivale a um "iptables -F + iptables -X" em todas as tabelas de uma vez.',
+  },
+  {
+    text: 'Qual ferramenta converte automaticamente regras iptables para sintaxe nftables?',
+    badge: '🔥 nftables',
+    options: ['nft convert', 'iptables-translate', 'nft import', 'iptables-to-nft'],
+    correct: 1,
+    explanation: 'iptables-translate converte uma regra iptables para o equivalente nftables. Ex: iptables-translate -A INPUT -p tcp --dport 22 -j ACCEPT → nft add rule ip filter input tcp dport 22 accept.',
+  },
+
+  // ========== Hardening Linux ==========
+  {
+    text: 'Qual diretiva do sshd_config desativa autenticação por senha, exigindo chave SSH?',
+    badge: '🔐 Hardening',
+    options: ['RequireKey yes', 'PasswordAuthentication no', 'AuthMethod publickey', 'DisablePasswords yes'],
+    correct: 1,
+    explanation: 'PasswordAuthentication no desativa login por senha no SSH. Após configurar, apenas autenticação por chave pública funciona. SEMPRE teste a chave antes de aplicar para não se trancar fora do servidor.',
+  },
+  {
+    text: 'O que o sysctl kernel.randomize_va_space = 2 habilita no Linux?',
+    badge: '🔐 Hardening',
+    options: [
+      'Desativa o ASLR por completo',
+      'ASLR parcial — randomiza apenas a pilha',
+      'ASLR completo — randomiza pilha, heap e bibliotecas',
+      'Proteção contra SYN Flood',
+    ],
+    correct: 2,
+    explanation: 'ASLR (Address Space Layout Randomization) com valor 2 randomiza completamente o espaço de endereçamento (pilha, heap, bibliotecas). Dificulta exploits de buffer overflow que dependem de endereços fixos.',
+  },
+
+  // ========== Docker Networking ==========
+  {
+    text: 'O que acontece no iptables quando você usa a flag -p 8080:80 no Docker?',
+    badge: '🐳 Docker',
+    options: [
+      'Docker abre uma porta no firewall do host',
+      'Docker cria uma regra DNAT automática na chain DOCKER',
+      'Docker cria uma regra MASQUERADE para o container',
+      'Docker adiciona uma rota no kernel para o container',
+    ],
+    correct: 1,
+    explanation: 'O Docker cria automaticamente uma regra DNAT na chain DOCKER (na tabela nat, em PREROUTING): pacotes chegando na porta 8080 do host são redirecionados para a porta 80 do container. É o mesmo conceito do módulo DNAT, automatizado.',
+  },
+  {
+    text: 'Qual comando inspeciona as configurações de uma rede Docker, mostrando subnet e containers conectados?',
+    badge: '🐳 Docker',
+    options: ['docker inspect --network bridge', 'docker network inspect bridge', 'docker ps --format network', 'docker network ls --verbose'],
+    correct: 1,
+    explanation: 'docker network inspect NOME mostra todas as configurações da rede: subnet, gateway, driver e quais containers estão conectados com seus IPs internos.',
+  },
+
+  // ========== Docker Compose ==========
+  {
+    text: 'O que internal: true em uma rede do docker-compose.yml faz?',
+    badge: '🐙 Compose',
+    options: [
+      'Cria uma rede visível apenas dentro do container',
+      'Desativa o DNS interno da rede',
+      'Bloqueia toda comunicação externa — sem acesso à internet',
+      'Ativa o modo isolado apenas para o serviço db',
+    ],
+    correct: 2,
+    explanation: 'internal: true na definição da rede bloqueia qualquer tráfego externo — nem saída para a internet é permitida. Ideal para redes de banco de dados que não precisam de acesso externo e não devem tê-lo.',
+  },
+  {
+    text: 'Qual a diferença entre "docker compose down" e "docker compose down -v"?',
+    badge: '🐙 Compose',
+    options: [
+      'Não há diferença prática entre os dois',
+      'down -v para containers mais rapidamente com SIGKILL',
+      'down -v remove também os volumes nomeados (apaga dados persistidos)',
+      'down -v remove também as imagens baixadas',
+    ],
+    correct: 2,
+    explanation: 'docker compose down apenas para e remove containers e redes. O flag -v também remove os volumes nomeados definidos no compose file — apagando dados do banco e qualquer dado persistido. Use com extremo cuidado em produção.',
+  },
+
+  // ========== SSH 2FA / TOTP ==========
+  {
+    text: 'O que significa TOTP e qual é a janela de validade de cada código?',
+    badge: '📱 SSH 2FA',
+    options: [
+      'Temporary One-Time Password — válido por 60 segundos',
+      'Time-based One-Time Password — válido por 30 segundos',
+      'Token-based OTP Protocol — válido por 10 segundos',
+      'Two-factor One-Time Password — válido por 2 minutos',
+    ],
+    correct: 1,
+    explanation: 'TOTP (Time-based One-Time Password, RFC 6238) gera um código de 6 dígitos usando HMAC-SHA1(secret, floor(unixtime/30)). Cada código é válido por 30 segundos e só pode ser usado uma vez.',
+  },
+  {
+    text: 'Em qual arquivo PAM a linha do Google Authenticator deve ser adicionada para proteger o SSH com 2FA?',
+    badge: '📱 SSH 2FA',
+    options: ['/etc/pam.d/login', '/etc/pam.d/sshd', '/etc/ssh/pam.conf', '/etc/security/pam_google.conf'],
+    correct: 1,
+    explanation: '/etc/pam.d/sshd é o arquivo PAM específico do OpenSSH. Adicionar "auth required pam_google_authenticator.so" nele faz o SSH chamar o módulo TOTP durante a autenticação.',
+  },
 ];

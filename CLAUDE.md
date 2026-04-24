@@ -55,8 +55,8 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting)
-    searchItems.ts          # 87 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting) — 50 perguntas (Sprint Polish-I: +17)
+    searchItems.ts          # 89 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (10 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -356,6 +356,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Polish-F (Fundamentos Rich Edition): 7 módulos básicos enriquecidos (/processos, /permissoes, /discos, /logs-basicos, /backup, /shell-script, /cron) com FluxoCard, WindowsComparisonBox, InfoBox/WarnBox extras e exercícios guiados expandidos — sem mudanças em constantes.
 - ✅ Sprint I.5 (Módulo SSH com 2FA): `/ssh-2fa` — TOTP teoria (HMAC + RFC 6238), libpam-google-authenticator + qrencode, /etc/pam.d/sshd, sshd_config KbdInteractiveAuthentication, teste em sessão separada, rollback, Fail2ban jail para TOTP; badge 📱 ssh-2fa-master (30º badge); 3 checkpoints (totp-instalado, pam-configurado, ssh-2fa-testado); module-accent-ssh-2fa #f59e0b; CONTENT_PAGES_COUNT 22→23, checklistItemsCount 76→79, totalTopics 57→58, COURSE_ORDER 23→24 módulos, linux-ninja threshold 57→59; tópico #48 em /topicos (grupo "Hardening Linux"); /evolucao v3.0 SSH 2FA marcado disponível; +2 searchItems (87 total); E2E 07-dashboard-counters 3/79 + 0/30.
 - ✅ Sprint I.6 (Módulo Docker Compose): `/docker-compose` — anatomia completa do docker-compose.yml (services/networks/volumes/secrets), stack básica Nginx, redes declarativas frontend/backend/internal com `internal: true`, volumes nomeados vs bind mount vs tmpfs, .env files + Docker Secrets, stack completa Nginx+App+PostgreSQL com healthcheck e deploy.replicas, comandos essenciais (up/down/ps/logs/top/exec/scale), troubleshooting; badge 🐙 compose-master (31º badge); 3 checkpoints (compose-instalado, compose-stack, compose-networks); module-accent-compose #1d63ed; CONTENT_PAGES_COUNT 23→24, checklistItemsCount 79→82, totalTopics 58→59, COURSE_ORDER 24→25 módulos, linux-ninja threshold 59→62; tópico #49 em /topicos (grupo "Docker & Containers"); /evolucao v3.0 Docker Compose marcado disponível; +2 searchItems (89 total); E2E 07-dashboard-counters 3/82 + 0/31.
+- ✅ Sprint Polish-I + Quiz++ (Módulos Intermediários Rich Edition): 3 módulos enriquecidos com FluxoCard + WindowsComparisonBox + exercícios guiados — /wireguard (geração de chaves, wg0.conf, wg-quick, wg show, diagnósticos, segundo peer, troubleshooting handshake), /fail2ban (tail auth.log → failregex → maxretry → iptables REJECT → auto-unban; GPO vs jail.local; SSH jail, custom filter, log analysis), /nftables (add table → chain → rule → list ruleset → persist; Windows Firewall/netsh vs nftables; basic ruleset, blocklist set, iptables-translate); fix crítico: /nftables não chamava `trackPageVisit` — corrigido com useEffect; Quiz expandido de 33→50 perguntas (+17: WireGuard×3, Fail2ban×3, nftables×3, Hardening×2, Docker Networking×2, Docker Compose×2, SSH 2FA/TOTP×2); sem mudanças em constantes de badge/checkpoint.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

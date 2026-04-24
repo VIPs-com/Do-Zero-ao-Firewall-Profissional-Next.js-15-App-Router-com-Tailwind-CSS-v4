@@ -2,10 +2,11 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Shield, Key, Server, Laptop, ArrowRight, CheckCircle2, Circle, AlertTriangle } from 'lucide-react';
+import { Shield, Key, Server, Laptop, ArrowRight, CheckCircle2, Circle, AlertTriangle, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
@@ -129,6 +130,17 @@ export default function WireGuardPage() {
         alto desempenho e criptografia moderna. Com apenas ~4.000 linhas de código (contra
         ~100.000 do OpenVPN), é mais fácil de auditar, configurar e manter.
       </p>
+
+      <FluxoCard
+        title="Fluxo: configurar um túnel WireGuard do zero"
+        steps={[
+          { label: 'genkey + pubkey', sub: 'par de chaves Curve25519 por peer', icon: <Key size={14}/>, color: 'border-info/50' },
+          { label: 'wg0.conf', sub: 'Interface + Peer com AllowedIPs', icon: <Shield size={14}/>, color: 'border-[var(--mod)]/50' },
+          { label: 'wg-quick up wg0', sub: 'sobe interface e executa PostUp', icon: <Server size={14}/>, color: 'border-ok/50' },
+          { label: 'wg show', sub: 'verifica handshake e bytes transferidos', icon: <ArrowRight size={14}/>, color: 'border-warn/50' },
+          { label: 'ping 10.0.0.1', sub: 'valida o túnel ponta a ponta', icon: <Laptop size={14}/>, color: 'border-ok/50' },
+        ]}
+      />
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
@@ -283,6 +295,23 @@ export default function WireGuardPage() {
               <CodeBlock lang="bash" title="Regras iptables para WireGuard" code={IPTABLES_CODE} />
             </div>
 
+            <div className="mt-6">
+              <WindowsComparisonBox
+                windowsLabel="Windows (WireGuard App)"
+                linuxLabel="Linux (wg-quick CLI)"
+                windowsCode={`# 1. Baixar WireGuard App (wireguard.com/install)
+# 2. Importar arquivo .conf no GUI (Import tunnel)
+# 3. Clicar "Activate" — túnel sobe com 1 clique
+# 4. Status visual no system tray
+# Não requer configuração de iptables`}
+                linuxCode={`apt install wireguard wireguard-tools
+wg genkey | tee server.key | wg pubkey > server.pub
+nano /etc/wireguard/wg0.conf
+wg-quick up wg0
+systemctl enable wg-quick@wg0  # inicia no boot`}
+              />
+            </div>
+
             <div className="grid md:grid-cols-2 gap-6 mt-8">
               {[
                 {
@@ -336,6 +365,102 @@ export default function WireGuardPage() {
                 </li>
               </ul>
             </WarnBox>
+          </section>
+
+          {/* Section 7: Exercícios Guiados */}
+          <section id="exercicios">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-[var(--mod)]/10 flex items-center justify-center text-[var(--mod)]">
+                <Terminal size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">7. Exercícios Guiados</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">1</span>
+                  Verificar o estado do túnel e estatísticas
+                </h3>
+                <p className="text-sm text-text-2">Suba a interface, conecte um peer e analise o output do <code className="font-mono">wg show</code>.</p>
+                <CodeBlock lang="bash" title="Diagnóstico completo do túnel" code={`# Verificar se a interface wg0 existe
+ip link show wg0
+
+# Status detalhado do WireGuard
+wg show
+
+# Ver bytes transferidos por peer
+wg show wg0 transfer
+
+# Confirmar que a rota foi adicionada
+ip route show table main | grep wg0
+
+# Testar conectividade com o servidor
+ping -c 4 10.0.0.1
+
+# Se o handshake nunca ocorreu (latest handshake: none):
+# → verificar se a porta UDP está aberta no servidor
+nc -vuz IP_SERVIDOR 51820`} />
+              </div>
+
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">2</span>
+                  Adicionar segundo peer (cliente mobile)
+                </h3>
+                <p className="text-sm text-text-2">Gere chaves para um segundo cliente e adicione o bloco <code className="font-mono">[Peer]</code> no servidor sem derrubar o túnel.</p>
+                <CodeBlock lang="bash" title="Segundo peer sem reiniciar o WireGuard" code={`# No servidor — gerar chaves para o cliente 2
+cd /etc/wireguard
+wg genkey | tee client2.key | wg pubkey > client2.pub
+
+# Adicionar peer em tempo real (sem reiniciar!)
+wg set wg0 peer $(cat client2.pub) allowed-ips 10.0.0.3/32
+
+# Verificar que o peer foi adicionado
+wg show wg0 peers
+
+# Salvar a configuração dinâmica no arquivo permanente
+wg-quick save wg0
+
+# Config do cliente 2 (/etc/wireguard/wg0.conf no client)
+# [Interface]
+# Address = 10.0.0.3/24
+# PrivateKey = (conteúdo de client2.key)
+# [Peer]
+# PublicKey = (conteúdo de server.pub)
+# Endpoint = IP_SERVIDOR:51820
+# AllowedIPs = 0.0.0.0/0`} />
+              </div>
+
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">3</span>
+                  Troubleshooting: handshake não ocorre
+                </h3>
+                <p className="text-sm text-text-2">Siga o checklist de diagnóstico quando o peer conecta mas não há handshake.</p>
+                <CodeBlock lang="bash" title="Checklist de diagnóstico WireGuard" code={`# Passo 1: verificar se WireGuard está ativo no servidor
+systemctl status wg-quick@wg0
+
+# Passo 2: verificar porta UDP aberta
+ss -ulnp | grep 51820
+
+# Passo 3: verificar firewall no servidor
+iptables -L INPUT -n -v | grep 51820
+
+# Se não existir: adicionar regra
+iptables -A INPUT -p udp --dport 51820 -j ACCEPT
+
+# Passo 4: verificar ip_forward
+sysctl net.ipv4.ip_forward
+# Deve retornar: net.ipv4.ip_forward = 1
+
+# Passo 5: verificar se as chaves batem
+# No servidor:
+wg show wg0 public-key   # deve bater com PublicKey do [Peer] no cliente
+# No cliente:
+wg show wg0 public-key   # deve bater com PublicKey do [Peer] no servidor`} />
+              </div>
+            </div>
           </section>
 
         </div>

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Shield, Terminal, ArrowRight, Zap, AlertTriangle } from 'lucide-react';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, HighlightBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { LayerBadge } from '@/components/ui/LayerBadge';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -48,8 +49,12 @@ const EQUIVALENCIA = [
 ];
 
 export default function NftablesPage() {
-  const { checklist, updateChecklist } = useBadges();
+  const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'equivalencia'>('conceito');
+
+  useEffect(() => {
+    trackPageVisit('/nftables');
+  }, [trackPageVisit]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 module-accent-nftables">
@@ -73,6 +78,17 @@ export default function NftablesPage() {
         sintaxe moderna, mais legível e mais eficiente. Se você domina iptables, está a dois passos
         de dominar o nftables.
       </p>
+
+      <FluxoCard
+        title="Fluxo: criar um ruleset nftables do zero"
+        steps={[
+          { label: 'nft add table', sub: 'cria a tabela (ip, ip6 ou inet)', icon: <Zap size={14}/>, color: 'border-info/50' },
+          { label: 'nft add chain', sub: 'define hook e política padrão (drop/accept)', icon: <Shield size={14}/>, color: 'border-[var(--mod)]/50' },
+          { label: 'nft add rule', sub: 'condição + ação: tcp dport 22 accept', icon: <Terminal size={14}/>, color: 'border-ok/50' },
+          { label: 'nft list ruleset', sub: 'verifica todas as regras ativas', icon: <ArrowRight size={14}/>, color: 'border-warn/50' },
+          { label: '/etc/nftables.conf', sub: 'persiste entre reboots via systemd', icon: <Shield size={14}/>, color: 'border-ok/50' },
+        ]}
+      />
 
       {/* Tabs de navegação */}
       <div className="flex gap-2 mb-10 border-b border-border">
@@ -158,6 +174,26 @@ export default function NftablesPage() {
                   ))}
                 </div>
               </section>
+
+              <WindowsComparisonBox
+                windowsLabel="Windows Firewall / netsh"
+                linuxLabel="nftables / nft"
+                windowsCode={`# GUI: wf.msc (Windows Defender Firewall)
+# Ou via netsh:
+netsh advfirewall firewall add rule ^
+  name="Bloquear IP" dir=in action=block ^
+  remoteip=1.2.3.4
+# Listar regras:
+netsh advfirewall firewall show rule name=all`}
+                linuxCode={`# Criar tabela, chain e regra
+nft add table ip meu-fw
+nft add chain ip meu-fw input { type filter hook input priority 0\\; policy drop\\; }
+nft add rule ip meu-fw input ip saddr 1.2.3.4 drop
+# Listar tudo:
+nft list ruleset
+# Salvar:
+nft list ruleset > /etc/nftables.conf`}
+              />
             </div>
           )}
 
@@ -258,6 +294,125 @@ export default function NftablesPage() {
               </HighlightBox>
             </div>
           )}
+
+          {/* Exercícios Guiados */}
+          <section id="exercicios" className="mt-16">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-[var(--mod)]/10 flex items-center justify-center text-[var(--mod)]">
+                <Terminal size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">Exercícios Guiados</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">1</span>
+                  Criar ruleset básico equivalente ao iptables padrão
+                </h3>
+                <p className="text-sm text-text-2">Recrie as regras mais comuns do iptables em nftables nativo.</p>
+                <CodeBlock lang="bash" title="Exercício 1 — ruleset básico" code={`# Criar arquivo de configuração nftables
+cat > /tmp/meu-firewall.nft << 'EOF'
+#!/usr/sbin/nft -f
+flush ruleset
+
+table ip filter {
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        # Conexões já estabelecidas
+        ct state established,related accept
+
+        # Loopback sempre liberado
+        iifname "lo" accept
+
+        # SSH
+        tcp dport 22 accept
+
+        # Ping
+        icmp type echo-request accept
+    }
+
+    chain forward {
+        type filter hook forward priority 0; policy drop;
+        ct state established,related accept
+    }
+
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
+EOF
+
+# Verificar sintaxe sem aplicar
+nft -c -f /tmp/meu-firewall.nft
+
+# Aplicar
+nft -f /tmp/meu-firewall.nft
+
+# Verificar resultado
+nft list ruleset`} />
+              </div>
+
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">2</span>
+                  Blocklist dinâmica com set nativo
+                </h3>
+                <p className="text-sm text-text-2">Crie um set de IPs bloqueados e adicione/remova IPs em tempo real sem alterar as regras.</p>
+                <CodeBlock lang="bash" title="Exercício 2 — set blocklist" code={`# Criar tabela e set (se não existir)
+nft add table ip filter
+nft add set ip filter blocklist { type ipv4_addr; flags interval; }
+
+# Criar regra que referencia o set
+nft add chain ip filter input { type filter hook input priority 0; policy accept; }
+nft add rule ip filter input ip saddr @blocklist drop
+
+# Adicionar IPs ao set dinamicamente (sem reiniciar!)
+nft add element ip filter blocklist { 1.2.3.4 }
+nft add element ip filter blocklist { 10.0.0.0/8 }
+
+# Verificar conteúdo do set
+nft list set ip filter blocklist
+
+# Testar que o IP está bloqueado
+ping -c 2 1.2.3.4  # deve mostrar "Operation not permitted" no firewall
+
+# Remover IP do set
+nft delete element ip filter blocklist { 1.2.3.4 }`} />
+              </div>
+
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">3</span>
+                  Migrar regra iptables para nftables com iptables-translate
+                </h3>
+                <p className="text-sm text-text-2">Use a ferramenta oficial para converter regras legadas automaticamente.</p>
+                <CodeBlock lang="bash" title="Exercício 3 — migração automática" code={`# Instalar ferramenta de tradução
+apt install iptables -y  # já inclui iptables-translate
+
+# Converter regras individuais
+iptables-translate -A INPUT -p tcp --dport 22 -j ACCEPT
+# → nft add rule ip filter input tcp dport 22 counter accept
+
+iptables-translate -A INPUT -s 1.2.3.4 -j DROP
+# → nft add rule ip filter input ip saddr 1.2.3.4 counter drop
+
+iptables-translate -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+# → nft add rule ip nat postrouting oifname "eth0" counter masquerade
+
+# Converter um arquivo inteiro de regras salvas
+# (se você tem /etc/iptables/rules.v4)
+iptables-restore-translate -f /etc/iptables/rules.v4 > /etc/nftables.conf
+
+# Verificar o arquivo gerado
+cat /etc/nftables.conf
+
+# Aplicar
+nft -f /etc/nftables.conf`} />
+              </div>
+            </div>
+          </section>
 
           {/* Erros Comuns */}
           <section id="erros-comuns" className="mt-16">

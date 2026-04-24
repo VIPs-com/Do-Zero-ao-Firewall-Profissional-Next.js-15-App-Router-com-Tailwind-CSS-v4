@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Shield, Eye, FileText, Ban, ArrowRight, CheckCircle2, Circle, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 
@@ -139,6 +140,17 @@ export default function Fail2banPage() {
         defesa contra ataques de força bruta em qualquer servidor Linux.
       </p>
 
+      <FluxoCard
+        title="Fluxo: como o Fail2ban bane um atacante"
+        steps={[
+          { label: 'tail -f auth.log', sub: 'monitora logs via inotify em tempo real', icon: <Eye size={14}/>, color: 'border-info/50' },
+          { label: 'failregex match', sub: 'regex captura IP do atacante', icon: <FileText size={14}/>, color: 'border-[var(--mod)]/50' },
+          { label: 'maxretry atingido', sub: 'N falhas dentro do findtime', icon: <AlertTriangle size={14}/>, color: 'border-warn/50' },
+          { label: 'iptables REJECT', sub: 'ação executada automaticamente', icon: <Shield size={14}/>, color: 'border-err/50' },
+          { label: 'auto-unban', sub: 'ban expirado após bantime segundos', icon: <Ban size={14}/>, color: 'border-ok/50' },
+        ]}
+      />
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
 
@@ -186,7 +198,30 @@ export default function Fail2banPage() {
               <h2 className="text-2xl font-bold">2. Instalação e Configuração Base</h2>
             </div>
 
-            <CodeBlock lang="bash" title="Instalar e ativar" code={INSTALL_CODE} />
+            <WindowsComparisonBox
+              windowsLabel="Windows (Account Lockout Policy via GPO)"
+              linuxLabel="Linux (fail2ban)"
+              windowsCode={`# Via Group Policy (gpedit.msc):
+# Computer Config → Windows Settings →
+# Security Settings → Account Policies →
+# Account Lockout Policy:
+#   Threshold: 5 tentativas
+#   Duration: 30 min
+#   Reset counter: 30 min
+# (só funciona para contas Windows locais)`}
+              linuxCode={`apt install fail2ban
+nano /etc/fail2ban/jail.local
+# [sshd]
+# enabled = true
+# maxretry = 3
+# bantime = 3600
+# findtime = 600
+systemctl enable --now fail2ban
+fail2ban-client status sshd`}
+            />
+            <div className="mt-6">
+              <CodeBlock lang="bash" title="Instalar e ativar" code={INSTALL_CODE} />
+            </div>
 
             <div className="mt-6">
               <CodeBlock lang="ini" title="/etc/fail2ban/jail.local (SSH + defaults)" code={JAIL_LOCAL} />
@@ -311,6 +346,108 @@ export default function Fail2banPage() {
                 </li>
               </ul>
             </WarnBox>
+          </section>
+
+          {/* Section 6: Exercícios Guiados */}
+          <section id="exercicios">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-[var(--mod)]/10 flex items-center justify-center text-[var(--mod)]">
+                <Shield size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">6. Exercícios Guiados</h2>
+            </div>
+
+            <div className="space-y-6">
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">1</span>
+                  Configurar, testar e verificar jail SSH
+                </h3>
+                <p className="text-sm text-text-2">Configure a jail do SSH, simule falhas de autenticação e confirme o ban via iptables.</p>
+                <CodeBlock lang="bash" title="Exercício 1 — jail SSH completa" code={`# Criar/editar jail.local
+cat > /etc/fail2ban/jail.local << 'EOF'
+[DEFAULT]
+bantime  = 300
+findtime = 60
+maxretry = 3
+ignoreip = 127.0.0.1/8 10.0.0.0/8
+
+[sshd]
+enabled = true
+port    = ssh
+EOF
+
+# Reiniciar Fail2ban
+systemctl restart fail2ban
+
+# Verificar que a jail está ativa
+fail2ban-client status sshd
+
+# Simular falhas (em outro terminal, tente SSH com senha errada 3x)
+# ssh usuario_inexistente@localhost  # 3 vezes
+
+# Ver o ban
+fail2ban-client status sshd
+# Banned IP list: 127.0.0.1
+
+# Ver regra iptables criada
+iptables -L f2b-sshd -n -v
+
+# Desbanir para limpar
+fail2ban-client set sshd unbanip 127.0.0.1`} />
+              </div>
+
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">2</span>
+                  Testar filtro customizado antes de ativar
+                </h3>
+                <p className="text-sm text-text-2">Use <code className="font-mono">fail2ban-regex</code> para validar o regex do filtro contra o log real antes de ativar a jail.</p>
+                <CodeBlock lang="bash" title="Exercício 2 — testar filtro" code={`# Criar filtro para login HTTP básico
+cat > /etc/fail2ban/filter.d/nginx-auth.conf << 'EOF'
+[Definition]
+failregex = ^<HOST> .* "GET .* HTTP/.*" 401
+ignoreregex =
+EOF
+
+# Testar o filtro contra o log do Nginx (sem precisar ativar a jail)
+fail2ban-regex /var/log/nginx/access.log /etc/fail2ban/filter.d/nginx-auth.conf
+
+# Saída esperada mostra linhas que casaram com o failregex:
+# Lines: X matched, Y missed, Z ignored
+
+# Se nenhuma linha casou, ajustar o failregex e testar novamente
+# Dica: ver uma linha real do log para ajustar o regex
+tail -5 /var/log/nginx/access.log`} />
+              </div>
+
+              <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
+                <h3 className="font-semibold text-text flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-[var(--mod)]/20 text-[var(--mod)] text-xs font-bold flex items-center justify-center">3</span>
+                  Analisar top atacantes nos logs
+                </h3>
+                <p className="text-sm text-text-2">Extraia os IPs mais agressivos dos logs do Fail2ban e do auth.log para entender o perfil dos atacantes.</p>
+                <CodeBlock lang="bash" title="Exercício 3 — análise de logs" code={`# Top 10 IPs mais banidos hoje
+grep "Ban " /var/log/fail2ban.log | \\
+  grep "$(date +%Y-%m-%d)" | \\
+  awk '{print $NF}' | \\
+  sort | uniq -c | sort -rn | head -10
+
+# Quantos bans ocorreram por jail
+grep "Ban " /var/log/fail2ban.log | \\
+  awk '{print $6}' | \\
+  sort | uniq -c | sort -rn
+
+# Ver tentativas de login SSH com usuário inválido
+grep "Invalid user" /var/log/auth.log | \\
+  awk '{print $8, $10}' | \\
+  sort | uniq -c | sort -rn | head -20
+
+# Estatísticas de bans ativos agora
+fail2ban-client status | grep "Jail list" | \\
+  tr ',' '\\n' | xargs -I{} fail2ban-client status {}`} />
+              </div>
+            </div>
           </section>
 
         </div>
