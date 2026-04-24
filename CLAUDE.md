@@ -18,7 +18,7 @@ npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 37 rotas próprias (build reporta 44/44 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 38 rotas próprias (build reporta 45/45 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 37 rotas — todas 'use client' (26 trilha Firewall + 11 trilha Fundamentos)
+  [rota]/page.tsx           # 38 rotas — todas 'use client' (27 trilha Firewall + 11 trilha Fundamentos)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -56,13 +56,13 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting)
-    searchItems.ts          # 85 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
-    courseOrder.ts          # COURSE_ORDER (23 módulos Firewall) + FUNDAMENTOS_ORDER (10 módulos Fundamentos) para ModuleNav
+    searchItems.ts          # 87 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    courseOrder.ts          # COURSE_ORDER (24 módulos Firewall) + FUNDAMENTOS_ORDER (10 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (37 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (38 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -73,7 +73,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
-  07-dashboard-counters.spec.ts # 3/76 checklist + 75% quiz + 0/29 badges
+  07-dashboard-counters.spec.ts # 3/79 checklist + 75% quiz + 0/30 badges
   10-fundamentos-trail.spec.ts  # /fundamentos índice, visita /fhs, checkpoints, badge, ModuleNav (8 casos)
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 22 (trilha Fundamentos não conta — badge separado) |
-| `totalTopics` | `app/dashboard/page.tsx` | 57 (Sprint F1-F3: +10 módulos Fundamentos) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 76 (ALL_CHECKLIST_IDS.length, +10 Fundamentos) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 23 (Sprint I.5: +ssh-2fa) |
+| `totalTopics` | `app/dashboard/page.tsx` | 58 (Sprint I.5: +SSH 2FA) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 79 (Sprint I.5: +3 checkpoints TOTP) |
 | Texto na Home | `app/page.tsx` | "47 tópicos práticos" |
-| Badges | `src/context/BadgeContext.tsx` | 29 (Sprint F1: +fundamentos-master) |
-| searchItems | `src/data/searchItems.ts` | 85 (Sprint F1-F3: +11 fundamentos) |
+| Badges | `src/context/BadgeContext.tsx` | 30 (Sprint I.5: +ssh-2fa-master) |
+| searchItems | `src/data/searchItems.ts` | 87 (Sprint I.5: +2 SSH 2FA) |
 
 ---
 
@@ -307,7 +307,7 @@ Conformidade implementada no Sprint C:
 1. `npm run lint` — zero erros TypeScript
 2. `npm run lint:eslint` — zero warnings de acessibilidade
 3. `npm test` — suíte vitest passando
-4. `npm run build` — 44/44 páginas (37 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
+4. `npm run build` — 45/45 páginas (38 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest.webmanifest + _not-found)
 5. Verificar consistência dos números da tabela de constantes
 
 ---
@@ -353,6 +353,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint TOPICOS: tópico #46 Hardening adicionado em `/topicos` (novo grupo "Hardening Linux").
 - ✅ Sprint I.4 (Módulo Docker): `/docker` — bridge/host/none drivers, redes customizadas + DNS interno, port mapping = DNAT automático, chains DOCKER/DOCKER-USER no iptables, docker-compose redes declarativas (frontend/backend/internal); badge 🐳 docker-master (28º badge); 3 checkpoints (docker-installed, docker-bridge, docker-iptables); module-accent-docker #2496ed; CONTENT_PAGES_COUNT 21→22, checklistItemsCount 63→66, totalTopics 46→47, COURSE_ORDER 22→23 módulos, linux-ninja threshold 47→50; tópicos #47+47b em /topicos (grupo "Docker & Containers"); /evolucao v3.0 atualizado com Docker marcado como disponível.
 - ✅ Sprint F1-F3 (Trilha Fundamentos Linux v2.0): 10 módulos paralelos para iniciantes (`/fundamentos` índice + `/fhs` + `/comandos` + `/editores` + `/processos` + `/permissoes` + `/discos` + `/logs-basicos` + `/backup` + `/shell-script` + `/cron`); FUNDAMENTOS_ORDER em courseOrder.ts; ModuleNav com prop `order`; badge 🐧 fundamentos-master (29º badge); 10 checkpoints (fhs-explorado, comandos-praticados, ...); module-accent-fundamentos #6366f1; CTA "Novo no Linux?" na home; nav link Fundamentos; +11 searchItems (85 total); checklistItemsCount 66→76; totalTopics 47→57; linux-ninja threshold 50→57; +8 testes FUNDAMENTOS_ORDER em courseOrder.test.ts; /evolucao v2.0 com 10 módulos Fundamentos marcados como disponíveis.
+- ✅ Sprint Polish-F (Fundamentos Rich Edition): 7 módulos básicos enriquecidos (/processos, /permissoes, /discos, /logs-basicos, /backup, /shell-script, /cron) com FluxoCard, WindowsComparisonBox, InfoBox/WarnBox extras e exercícios guiados expandidos — sem mudanças em constantes.
+- ✅ Sprint I.5 (Módulo SSH com 2FA): `/ssh-2fa` — TOTP teoria (HMAC + RFC 6238), libpam-google-authenticator + qrencode, /etc/pam.d/sshd, sshd_config KbdInteractiveAuthentication, teste em sessão separada, rollback, Fail2ban jail para TOTP; badge 📱 ssh-2fa-master (30º badge); 3 checkpoints (totp-instalado, pam-configurado, ssh-2fa-testado); module-accent-ssh-2fa #f59e0b; CONTENT_PAGES_COUNT 22→23, checklistItemsCount 76→79, totalTopics 57→58, COURSE_ORDER 23→24 módulos, linux-ninja threshold 57→59; tópico #48 em /topicos (grupo "Hardening Linux"); /evolucao v3.0 SSH 2FA marcado disponível; +2 searchItems (87 total); E2E 07-dashboard-counters 3/79 + 0/30.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

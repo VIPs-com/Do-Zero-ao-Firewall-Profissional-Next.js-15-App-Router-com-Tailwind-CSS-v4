@@ -105,6 +105,8 @@ const TOPICS: Topic[] = [
 
   // ── Sprint I.3 — Hardening Linux ─────────────────────────────────────────────
   { id: '46', num: '46', title: 'Hardening Linux: SSH sem senha (Ed25519), sysctl de segurança (SYN cookies, ASLR) e AppArmor enforce para Nginx.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/hardening', group: 'Hardening Linux' },
+  // ── Sprint I.5 — SSH com 2FA ──────────────────────────────────────────────────
+  { id: '48', num: '48', title: 'SSH com 2FA: TOTP com Google Authenticator, libpam-google-authenticator, PAM config e sshd_config para autenticação de dois fatores.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/ssh-2fa', group: 'Hardening Linux' },
 
   // ── Sprint I.4 — Docker Networking ───────────────────────────────────────────
   { id: '47', num: '47', title: 'Docker Networking: bridge, host e none. Como o Docker manipula o iptables automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/docker#redes', group: 'Docker & Containers' },

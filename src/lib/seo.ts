@@ -190,6 +190,12 @@ export const ROUTE_SEO = {
       'Fortifique seu servidor Linux: desative autenticação por senha no SSH, aplique sysctl de segurança (SYN cookies, ASLR) e configure AppArmor com perfis de confinamento.',
     keywords: ['hardening', 'SSH', 'sysctl', 'AppArmor', 'segurança Linux'],
   },
+  '/ssh-2fa': {
+    title: 'SSH com 2FA — TOTP com Google Authenticator',
+    description:
+      'Adicione autenticação de dois fatores ao SSH com TOTP: instale libpam-google-authenticator, configure /etc/pam.d/sshd e sshd_config, gere QR code e teste com segurança.',
+    keywords: ['SSH 2FA', 'TOTP', 'Google Authenticator', 'libpam', 'autenticação dois fatores', 'SSH segurança'],
+  },
   '/offline': {
     title: 'Sem conexão',
     description: 'Você está offline. Verifique sua conexão de rede.',

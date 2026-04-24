@@ -27,7 +27,7 @@ const PHASE_V2 = {
     { name: 'Shell Script Bash',         slug: '/shell-script',   available: true,  icon: '📜', tags: ['variáveis', 'loops', 'funções'] },
     { name: 'Agendamento cron',          slug: '/cron',           available: true,  icon: '🕐', tags: ['crontab', 'systemd timers'] },
     { name: 'WireGuard Mesh Network',    slug: null,              available: false, icon: '🔗', tags: ['multi-peer', 'site-to-site'] },
-    { name: 'SSH com 2FA (TOTP)',        slug: null,              available: false, icon: '📱', tags: ['Google Auth', 'libpam'] },
+    { name: 'SSH com 2FA (TOTP)',        slug: '/ssh-2fa',        available: true,  icon: '📱', tags: ['Google Auth', 'libpam'] },
     { name: 'Suricata IDS Básico',       slug: null,              available: false, icon: '🔎', tags: ['IDS', 'regras'] },
   ],
 };
