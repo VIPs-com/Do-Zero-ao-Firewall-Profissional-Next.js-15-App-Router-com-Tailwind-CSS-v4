@@ -27,7 +27,8 @@ export type BadgeId =
   | 'pacotes-master'
   | 'boot-master'
   | 'cmd-avancados-master'
-  | 'rsyslog-master';
+  | 'rsyslog-master'
+  | 'dhcp-master';
 
 export interface BadgeDef {
   icon: string;
@@ -71,6 +72,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'boot-master':        { icon: '🖥️', title: 'Boot Master',           desc: 'Dominou BIOS/UEFI, GRUB2, kernel, initrd e systemd targets — do Power ao prompt' },
   'cmd-avancados-master': { icon: '🔧', title: 'Cmd Avançados Master', desc: 'Dominou sed, dd, nc, links e compactação — a caixa de ferramentas do SysAdmin profissional' },
   'rsyslog-master':       { icon: '📡', title: 'Rsyslog Master',       desc: 'Configurou logs locais, servidor central de logs e logrotate em produção' },
+  'dhcp-master':          { icon: '🌐', title: 'DHCP Master',          desc: 'Configurou isc-dhcp-server com subnet, reservas por MAC e monitoramento de leases' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -125,7 +127,9 @@ export const ALL_CHECKLIST_IDS = [
   'sed-dominado', 'links-criados', 'compactacao-praticada',
   // Sprint F7 — Logs Centralizados com Rsyslog (/rsyslog)
   'rsyslog-configurado', 'log-remoto-enviado', 'logrotate-configurado',
-]; // 94 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.7 — Servidor DHCP (/dhcp)
+  'dhcp-instalado', 'dhcp-subnet', 'dhcp-reserva',
+]; // 97 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -150,8 +154,9 @@ export const ALL_CHECKLIST_IDS = [
  * 26. /boot
  * 27. /comandos-avancados
  * 28. /rsyslog
+ * 29. /dhcp
  */
-export const CONTENT_PAGES_COUNT = 28;
+export const CONTENT_PAGES_COUNT = 29;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -291,6 +296,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['bios-uefi-entendido'] && checklist['grub-configurado'] && checklist['systemd-targets-explorados']) unlockBadge('boot-master');
     if (checklist['sed-dominado'] && checklist['links-criados'] && checklist['compactacao-praticada']) unlockBadge('cmd-avancados-master');
     if (checklist['rsyslog-configurado'] && checklist['log-remoto-enviado'] && checklist['logrotate-configurado']) unlockBadge('rsyslog-master');
+    if (checklist['dhcp-instalado'] && checklist['dhcp-subnet'] && checklist['dhcp-reserva']) unlockBadge('dhcp-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -316,8 +322,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (70 de 94).
-    if (Object.values(checklist).filter(v => v).length >= 70) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (72 de 97).
+    if (Object.values(checklist).filter(v => v).length >= 72) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

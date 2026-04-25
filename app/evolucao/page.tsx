@@ -38,11 +38,11 @@ const PHASE_V3 = {
   name: 'Servidores e Serviços',
   color: 'border-info/40 bg-info/5',
   badgeColor: 'bg-info/15 text-info border-info/30',
-  status: '2 disponíveis · 7 em breve',
+  status: '3 disponíveis · 6 em breve',
   modules: [
     { name: 'Docker Networking',         slug: '/docker',         available: true,  icon: '🐳', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
     { name: 'Docker Compose',            slug: '/docker-compose', available: true,  icon: '🐙', tags: ['multi-container', 'networks', 'secrets'] },
-    { name: 'Servidor DHCP',             slug: null,              available: false, icon: '📡', tags: ['isc-dhcp-server', 'reservas', 'leases'] },
+    { name: 'Servidor DHCP',             slug: '/dhcp',           available: true,  icon: '🌐', tags: ['isc-dhcp-server', 'reservas', 'leases'] },
     { name: 'Samba — File Sharing',      slug: null,              available: false, icon: '🗂️', tags: ['smb.conf', 'Windows', '\\\\IP\\pasta'] },
     { name: 'Servidor Apache',           slug: null,              available: false, icon: '🌐', tags: ['VirtualHost', 'a2ensite', 'módulos'] },
     { name: 'OpenVPN',                   slug: null,              available: false, icon: '🔒', tags: ['easy-rsa', 'client.ovpn', 'PKI'] },

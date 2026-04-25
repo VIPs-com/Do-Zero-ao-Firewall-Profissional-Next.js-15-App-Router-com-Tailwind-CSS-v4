@@ -212,4 +212,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint F7 — Logs Centralizados com Rsyslog (/rsyslog)
   { id: 't-rsyslog',   category: 'Tópico',    title: 'Logs Centralizados com Rsyslog', description: 'rsyslog, facilities, priorities, servidor central e logrotate em produção',        href: '/rsyslog', icon: Radio },
   { id: 'g-rsyslog',   category: 'Glossário', title: 'rsyslog — Reliable Syslog',      description: 'Daemon de logs que encaminha mensagens locais e remotas. Substitui o syslogd clássico', href: '/rsyslog', icon: Server },
+
+  // Sprint I.7 — Servidor DHCP (/dhcp)
+  { id: 't-dhcp',      category: 'Tópico',    title: 'Servidor DHCP',                  description: 'isc-dhcp-server, subnet, range, reservas por MAC e leases — distribua IPs na LAN', href: '/dhcp', icon: Server },
+  { id: 'g-dhcp',      category: 'Glossário', title: 'DHCP — Dynamic Host Configuration Protocol', description: 'Protocolo DORA (Discover/Offer/Request/Ack) que distribui IPs automaticamente na rede', href: '/dhcp', icon: Network },
 ];

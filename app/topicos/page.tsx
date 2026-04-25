@@ -129,6 +129,9 @@ const TOPICS: Topic[] = [
   { id: 'f12', num: 'F12', title: 'Processo de Boot: BIOS/UEFI, GRUB2, kernel, initrd e systemd targets — do botão Power ao prompt de login.', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/boot', group: 'Fundamentos Linux' },
   { id: 'f13', num: 'F13', title: 'Comandos Avançados: sed, dd, nc (NetCat), links simbólicos e compactação tar/gzip/zip — a caixa de ferramentas do SysAdmin.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/comandos-avancados', group: 'Fundamentos Linux' },
   { id: 'f14', num: 'F14', title: 'Logs Centralizados com Rsyslog: facilities, priorities, servidor central via TCP 514 e logrotate — padrão de produção real.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/rsyslog', group: 'Fundamentos Linux' },
+
+  // ── Servidores e Serviços (v3.0) ──────────────────────────────────────────────
+  { id: 's01', num: 'S01', title: 'Servidor DHCP: isc-dhcp-server, subnet declaration, range, reservas por MAC e monitoramento de leases — distribua IPs na LAN automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/dhcp', group: 'Servidores e Serviços' },
 ];
 
 export default function TopicsPage() {

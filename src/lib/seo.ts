@@ -308,6 +308,12 @@ export const ROUTE_SEO = {
       'Configure rsyslog em produção: facilities, priorities, servidor central de logs via TCP 514, logrotate e filtros avançados por programa.',
     keywords: ['rsyslog', 'syslog', 'logs centralizados', 'logrotate', 'facilities', 'journald', 'servidor de logs'],
   },
+  '/dhcp': {
+    title: 'Servidor DHCP | isc-dhcp-server · reservas MAC · leases',
+    description:
+      'Configure isc-dhcp-server no Linux: subnet declaration, pool de IPs, reservas por MAC address, monitoramento de leases e integração com iptables.',
+    keywords: ['DHCP', 'isc-dhcp-server', 'dhcpd.conf', 'reserva MAC', 'leases', 'DORA', 'distribuição de IPs'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

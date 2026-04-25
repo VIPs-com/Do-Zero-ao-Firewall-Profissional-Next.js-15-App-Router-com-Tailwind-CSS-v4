@@ -256,6 +256,8 @@ html.light {
   .module-accent-comandos-avancados { --mod: var(--color-layer-5); }
   /* Sprint F7 — Logs Centralizados com Rsyslog */
   .module-accent-rsyslog            { --mod: var(--color-layer-4); }
+  /* Sprint I.7 — Servidor DHCP */
+  .module-accent-dhcp               { --mod: var(--color-info); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.
