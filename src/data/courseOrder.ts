@@ -41,7 +41,7 @@ export const COURSE_ORDER: CourseModule[] = [
 ];
 
 // ── Trilha Fundamentos Linux (v2.0) — iniciantes ──────────────────────────────
-// 13 módulos
+// 14 módulos
 // Sequência paralela ao COURSE_ORDER. Passada como prop order={FUNDAMENTOS_ORDER}
 // ao ModuleNav nas páginas da trilha.
 export const FUNDAMENTOS_ORDER: CourseModule[] = [
@@ -57,5 +57,6 @@ export const FUNDAMENTOS_ORDER: CourseModule[] = [
   { path: '/cron',         title: 'Agendamento de Tarefas',       prev: '/shell-script', next: '/pacotes' },
   { path: '/pacotes',      title: 'Instalação de Programas',      prev: '/cron',         next: '/boot' },
   { path: '/boot',               title: 'Processo de Boot',    prev: '/pacotes',           next: '/comandos-avancados' },
-  { path: '/comandos-avancados', title: 'Comandos Avançados',  prev: '/boot',              next: null },
+  { path: '/comandos-avancados', title: 'Comandos Avançados',  prev: '/boot',              next: '/rsyslog' },
+  { path: '/rsyslog',            title: 'Logs Centralizados (Rsyslog)', prev: '/comandos-avancados', next: null },
 ];

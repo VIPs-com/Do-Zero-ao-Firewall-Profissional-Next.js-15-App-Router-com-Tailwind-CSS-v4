@@ -254,6 +254,8 @@ html.light {
   .module-accent-boot             { --mod: var(--color-warn); }
   /* Sprint F6 — Comandos Avançados */
   .module-accent-comandos-avancados { --mod: var(--color-layer-5); }
+  /* Sprint F7 — Logs Centralizados com Rsyslog */
+  .module-accent-rsyslog            { --mod: var(--color-layer-4); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

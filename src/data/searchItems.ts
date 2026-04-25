@@ -208,4 +208,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint F6 — Comandos Avançados (/comandos-avancados)
   { id: 't-cmd-avancados', category: 'Tópico',    title: 'Comandos Avançados',    description: 'sed, dd, nc, ln, gzip/tar — ferramentas de SysAdmin que todo profissional usa',   href: '/comandos-avancados', icon: Wrench },
   { id: 'g-sed',           category: 'Glossário', title: 'sed — Stream Editor',   description: 'Edita arquivos em stream. sed -i substitui in-place sem abrir editor',            href: '/comandos-avancados', icon: Terminal },
+
+  // Sprint F7 — Logs Centralizados com Rsyslog (/rsyslog)
+  { id: 't-rsyslog',   category: 'Tópico',    title: 'Logs Centralizados com Rsyslog', description: 'rsyslog, facilities, priorities, servidor central e logrotate em produção',        href: '/rsyslog', icon: Radio },
+  { id: 'g-rsyslog',   category: 'Glossário', title: 'rsyslog — Reliable Syslog',      description: 'Daemon de logs que encaminha mensagens locais e remotas. Substitui o syslogd clássico', href: '/rsyslog', icon: Server },
 ];

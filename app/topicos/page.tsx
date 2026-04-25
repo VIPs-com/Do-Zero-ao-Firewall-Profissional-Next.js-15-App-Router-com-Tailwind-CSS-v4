@@ -128,6 +128,7 @@ const TOPICS: Topic[] = [
   { id: 'f11', num: 'F11', title: 'Instalação de Programas: apt, dpkg, snap, pip — gerencie repositórios, instale pacotes .deb e use ambientes virtuais Python.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/pacotes', group: 'Fundamentos Linux' },
   { id: 'f12', num: 'F12', title: 'Processo de Boot: BIOS/UEFI, GRUB2, kernel, initrd e systemd targets — do botão Power ao prompt de login.', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/boot', group: 'Fundamentos Linux' },
   { id: 'f13', num: 'F13', title: 'Comandos Avançados: sed, dd, nc (NetCat), links simbólicos e compactação tar/gzip/zip — a caixa de ferramentas do SysAdmin.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/comandos-avancados', group: 'Fundamentos Linux' },
+  { id: 'f14', num: 'F14', title: 'Logs Centralizados com Rsyslog: facilities, priorities, servidor central via TCP 514 e logrotate — padrão de produção real.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/rsyslog', group: 'Fundamentos Linux' },
 ];
 
 export default function TopicsPage() {

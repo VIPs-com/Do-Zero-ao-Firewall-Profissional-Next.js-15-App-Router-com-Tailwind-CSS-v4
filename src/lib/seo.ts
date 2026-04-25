@@ -302,6 +302,12 @@ export const ROUTE_SEO = {
     description:
       'Domine sed, dd, nc (NetCat), links simbólicos e compactação tar/gzip/zip. A caixa de ferramentas que o mercado exige de um SysAdmin Linux.',
   },
+  '/rsyslog': {
+    title: 'Logs Centralizados com Rsyslog | facilities · priorities · logrotate',
+    description:
+      'Configure rsyslog em produção: facilities, priorities, servidor central de logs via TCP 514, logrotate e filtros avançados por programa.',
+    keywords: ['rsyslog', 'syslog', 'logs centralizados', 'logrotate', 'facilities', 'journald', 'servidor de logs'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;
