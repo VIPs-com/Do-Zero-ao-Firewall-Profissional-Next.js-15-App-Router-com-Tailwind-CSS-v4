@@ -9,59 +9,78 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 
 const PHASE_V2 = {
   version: 'v2.0',
-  name: 'Fundamentos Expandidos',
+  name: 'Fundamentos Linux',
   color: 'border-accent/40 bg-accent/5',
   badgeColor: 'bg-accent/15 text-accent border-accent/30',
-  status: 'Em desenvolvimento',
+  status: '12 disponíveis · 4 em breve',
   modules: [
-    { name: 'Hardening Linux',           slug: '/hardening',      available: true,  icon: '🔐', tags: ['SSH', 'sysctl', 'AppArmor'] },
-    { name: 'Fundamentos Linux (FHS)',   slug: '/fhs',            available: true,  icon: '🐧', tags: ['/etc', '/var', 'mapa do sistema'] },
-    { name: 'Comandos Essenciais',       slug: '/comandos',       available: true,  icon: '💻', tags: ['ls', 'grep', 'pipe'] },
-    { name: 'Editores: nano e VIM',      slug: '/editores',       available: true,  icon: '📝', tags: ['nano', 'vim', 'produção'] },
-    { name: 'Certbot Avançado',          slug: '/nginx-ssl',      available: true,  icon: '🔒', tags: ['Let\'s Encrypt', 'auto-renew'] },
-    { name: 'Processos e systemctl',     slug: '/processos',      available: true,  icon: '⚙️', tags: ['ps', 'top', 'kill'] },
-    { name: 'Permissões e Usuários',     slug: '/permissoes',     available: true,  icon: '🔑', tags: ['chmod', 'useradd', 'sudo'] },
-    { name: 'Discos e Partições',        slug: '/discos',         available: true,  icon: '💾', tags: ['fdisk', 'mount', 'df'] },
-    { name: 'Logs e Monitoramento',      slug: '/logs-basicos',   available: true,  icon: '📋', tags: ['journalctl', 'tail -f'] },
-    { name: 'Backup com rsync + tar',    slug: '/backup',         available: true,  icon: '🗄️', tags: ['rsync', 'tar', 'scp'] },
-    { name: 'Shell Script Bash',         slug: '/shell-script',   available: true,  icon: '📜', tags: ['variáveis', 'loops', 'funções'] },
-    { name: 'Agendamento cron',          slug: '/cron',           available: true,  icon: '🕐', tags: ['crontab', 'systemd timers'] },
-    { name: 'WireGuard Mesh Network',    slug: null,              available: false, icon: '🔗', tags: ['multi-peer', 'site-to-site'] },
-    { name: 'SSH com 2FA (TOTP)',        slug: '/ssh-2fa',        available: true,  icon: '📱', tags: ['Google Auth', 'libpam'] },
-    { name: 'Suricata IDS Básico',       slug: null,              available: false, icon: '🔎', tags: ['IDS', 'regras'] },
+    { name: 'Estrutura do Sistema (FHS)',   slug: '/fhs',               available: true,  icon: '🐧', tags: ['/etc', '/var', 'mapa do sistema'] },
+    { name: 'Comandos Essenciais',          slug: '/comandos',          available: true,  icon: '💻', tags: ['ls', 'grep', 'find', 'pipe'] },
+    { name: 'Editores: nano e VIM',         slug: '/editores',          available: true,  icon: '📝', tags: ['nano', 'vim', 'produção'] },
+    { name: 'Gerenciamento de Processos',   slug: '/processos',         available: true,  icon: '⚙️', tags: ['ps', 'top', 'kill', 'systemctl'] },
+    { name: 'Permissões e Usuários',        slug: '/permissoes',        available: true,  icon: '🔑', tags: ['chmod', 'useradd', 'sudo'] },
+    { name: 'Discos e Partições',           slug: '/discos',            available: true,  icon: '💾', tags: ['fdisk', 'mount', 'df'] },
+    { name: 'Logs e Monitoramento',         slug: '/logs-basicos',      available: true,  icon: '📋', tags: ['journalctl', 'tail -f', '/var/log'] },
+    { name: 'Backup e Restauração',         slug: '/backup',            available: true,  icon: '🗄️', tags: ['rsync', 'tar', 'scp'] },
+    { name: 'Shell Script Bash',            slug: '/shell-script',      available: true,  icon: '📜', tags: ['variáveis', 'loops', 'funções'] },
+    { name: 'Agendamento de Tarefas',       slug: '/cron',              available: true,  icon: '🕐', tags: ['crontab', 'systemd timers'] },
+    { name: 'SSH com 2FA (TOTP)',           slug: '/ssh-2fa',           available: true,  icon: '📱', tags: ['Google Auth', 'libpam', 'TOTP'] },
+    { name: 'WireGuard VPN',               slug: '/wireguard',          available: true,  icon: '🔗', tags: ['peers', 'wg0.conf', 'wg-quick'] },
+    { name: 'Instalação de Programas',      slug: null,                 available: false, icon: '📦', tags: ['apt', 'dpkg', 'snap', 'pip'] },
+    { name: 'Processo de Boot do Linux',    slug: null,                 available: false, icon: '🖥️', tags: ['GRUB', 'initrd', 'systemd targets'] },
+    { name: 'Comandos Avançados',           slug: null,                 available: false, icon: '🔧', tags: ['sed', 'dd', 'nc', 'ln', 'gzip'] },
+    { name: 'Logs Centralizados (Rsyslog)', slug: null,                 available: false, icon: '📡', tags: ['rsyslog', 'facilities', 'logrotate'] },
   ],
 };
 
 const PHASE_V3 = {
   version: 'v3.0',
-  name: 'Servidores em Produção',
+  name: 'Servidores e Serviços',
   color: 'border-info/40 bg-info/5',
   badgeColor: 'bg-info/15 text-info border-info/30',
-  status: 'Planejado',
+  status: '2 disponíveis · 7 em breve',
   modules: [
-    { name: 'Docker & Containerização', slug: '/docker', available: true,  icon: '🐳', tags: ['images', 'volumes'] },
-    { name: 'Redes Docker',             slug: '/docker', available: true,  icon: '🌐', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
-    { name: 'Docker Compose',           slug: '/docker-compose', available: true,  icon: '📦', tags: ['multi-container', 'yaml'] },
-    { name: 'Ansible para SysAdmins',   slug: null, available: false, icon: '⚙️', tags: ['IaC', 'playbooks'] },
-    { name: 'PostgreSQL na DMZ',        slug: null, available: false, icon: '🗄️', tags: ['firewall', 'pg_hba'] },
-    { name: 'CI/CD com GitHub Actions', slug: null, available: false, icon: '🚀', tags: ['pipeline', 'deploy'] },
-    { name: 'Nginx Load Balancer',      slug: null, available: false, icon: '⚖️', tags: ['upstream', 'health check'] },
+    { name: 'Docker Networking',         slug: '/docker',         available: true,  icon: '🐳', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
+    { name: 'Docker Compose',            slug: '/docker-compose', available: true,  icon: '🐙', tags: ['multi-container', 'networks', 'secrets'] },
+    { name: 'Servidor DHCP',             slug: null,              available: false, icon: '📡', tags: ['isc-dhcp-server', 'reservas', 'leases'] },
+    { name: 'Samba — File Sharing',      slug: null,              available: false, icon: '🗂️', tags: ['smb.conf', 'Windows', '\\\\IP\\pasta'] },
+    { name: 'Servidor Apache',           slug: null,              available: false, icon: '🌐', tags: ['VirtualHost', 'a2ensite', 'módulos'] },
+    { name: 'OpenVPN',                   slug: null,              available: false, icon: '🔒', tags: ['easy-rsa', 'client.ovpn', 'PKI'] },
+    { name: 'Traefik Proxy Reverso',     slug: null,              available: false, icon: '🔀', tags: ['labels', 'ACME', 'middlewares'] },
+    { name: 'LDAP / OpenLDAP',           slug: null,              available: false, icon: '👥', tags: ['diretório', 'autenticação', 'AD-like'] },
+    { name: 'Pi-hole',                   slug: null,              available: false, icon: '🕳️', tags: ['DNS', 'bloqueio de anúncios', 'privacy'] },
   ],
 };
 
 const PHASE_V4 = {
   version: 'v4.0',
-  name: 'Infra Moderna',
+  name: 'Infraestrutura Moderna',
   color: 'border-layer-6/40 bg-layer-6/5',
   badgeColor: 'bg-layer-6/15 text-layer-6 border-layer-6/30',
+  status: 'Visão de Médio Prazo',
+  modules: [
+    { name: 'Ansible para SysAdmins', slug: null, available: false, icon: '⚙️',  tags: ['IaC', 'playbooks', 'automação'] },
+    { name: 'Prometheus + Grafana',   slug: null, available: false, icon: '📊',  tags: ['métricas', 'dashboards', 'alertas'] },
+    { name: 'Kubernetes / K3s',       slug: null, available: false, icon: '☸️',  tags: ['pods', 'NetworkPolicy', 'CNI'] },
+    { name: 'Terraform',              slug: null, available: false, icon: '🏗️',  tags: ['IaC', 'providers', 'state'] },
+    { name: 'Suricata IDS/IPS',       slug: null, available: false, icon: '🛡️',  tags: ['regras', 'EVE JSON', 'IPS mode'] },
+    { name: 'eBPF & XDP',            slug: null, available: false, icon: '🔬',  tags: ['kernel', 'observabilidade', 'XDP'] },
+    { name: 'Service Mesh (Istio)',   slug: null, available: false, icon: '🕸️',  tags: ['mTLS', 'traffic policy', 'sidecars'] },
+    { name: 'SRE & SLOs',            slug: null, available: false, icon: '🎯',  tags: ['error budget', 'alerting', 'on-call'] },
+  ],
+};
+
+const PHASE_V5 = {
+  version: 'v5.0',
+  name: 'Cloud & Platform Engineering',
+  color: 'border-layer-7/40 bg-layer-7/5',
+  badgeColor: 'bg-layer-7/15 text-layer-7 border-layer-7/30',
   status: 'Visão de Longo Prazo',
   modules: [
-    { name: 'Kubernetes Networking',   slug: null, available: false, icon: '☸️', tags: ['CNI', 'NetworkPolicy'] },
-    { name: 'eBPF & XDP',             slug: null, available: false, icon: '🔬', tags: ['kernel', 'observabilidade'] },
-    { name: 'Suricata IDS/IPS Avançado', slug: null, available: false, icon: '🛡️', tags: ['regras', 'EVE JSON'] },
-    { name: 'Prometheus + Grafana',   slug: null, available: false, icon: '📡', tags: ['métricas', 'dashboards'] },
-    { name: 'Service Mesh (Istio)',   slug: null, available: false, icon: '🕸️', tags: ['mTLS', 'traffic policy'] },
-    { name: 'SRE & SLOs',            slug: null, available: false, icon: '🎯', tags: ['error budget', 'alerting'] },
+    { name: 'CI/CD com GitHub Actions',  slug: null, available: false, icon: '🚀', tags: ['pipeline', 'deploy', 'workflows'] },
+    { name: 'OPNsense / pfSense',        slug: null, available: false, icon: '🔥', tags: ['enterprise', 'HA', 'web UI'] },
+    { name: 'Nextcloud — Nuvem Pessoal', slug: null, available: false, icon: '☁️', tags: ['storage', 'caldav', 'self-hosted'] },
+    { name: 'eBPF Avançado + Cilium',    slug: null, available: false, icon: '🧬', tags: ['CNI', 'eBPF networking', 'Hubble'] },
   ],
 };
 
@@ -164,7 +183,7 @@ export default function EvolutionPage() {
               ) : (
                 <>
                   <Bell size={16} />
-                  Me avise sobre v2.0
+                  Me avise sobre v3.0
                 </>
               )}
             </button>
@@ -179,6 +198,9 @@ export default function EvolutionPage() {
 
         {/* v4.0 */}
         <RoadmapPhase phase={PHASE_V4} />
+
+        {/* v5.0 */}
+        <RoadmapPhase phase={PHASE_V5} />
       </section>
 
       {/* ── Roadmap de Carreira ────────────────────────────────────────────────── */}
