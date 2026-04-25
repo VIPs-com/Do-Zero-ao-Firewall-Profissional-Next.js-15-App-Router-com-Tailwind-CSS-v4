@@ -22,7 +22,8 @@ import {
   Download,
   Monitor,
   HardDrive,
-  Wrench
+  Wrench,
+  FolderOpen
 } from 'lucide-react';
 import React from 'react';
 
@@ -216,4 +217,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.7 — Servidor DHCP (/dhcp)
   { id: 't-dhcp',      category: 'Tópico',    title: 'Servidor DHCP',                  description: 'isc-dhcp-server, subnet, range, reservas por MAC e leases — distribua IPs na LAN', href: '/dhcp', icon: Server },
   { id: 'g-dhcp',      category: 'Glossário', title: 'DHCP — Dynamic Host Configuration Protocol', description: 'Protocolo DORA (Discover/Offer/Request/Ack) que distribui IPs automaticamente na rede', href: '/dhcp', icon: Network },
+
+  // Sprint I.8 — Samba File Sharing (/samba)
+  { id: 't-samba',     category: 'Tópico',    title: 'Samba — File Sharing Linux↔Windows', description: 'smb.conf, smbpasswd, shares públicos/privados, mount.cifs e Windows Explorer', href: '/samba', icon: FolderOpen },
+  { id: 'g-smb',       category: 'Glossário', title: 'SMB/CIFS — Server Message Block',    description: 'Protocolo de compartilhamento de arquivos da Microsoft. Samba implementa SMB no Linux', href: '/samba', icon: Network },
 ];

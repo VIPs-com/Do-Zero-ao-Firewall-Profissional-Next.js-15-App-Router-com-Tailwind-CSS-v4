@@ -258,6 +258,8 @@ html.light {
   .module-accent-rsyslog            { --mod: var(--color-layer-4); }
   /* Sprint I.7 — Servidor DHCP */
   .module-accent-dhcp               { --mod: var(--color-info); }
+  /* Sprint I.8 — Samba File Sharing */
+  .module-accent-samba              { --mod: var(--color-layer-6); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

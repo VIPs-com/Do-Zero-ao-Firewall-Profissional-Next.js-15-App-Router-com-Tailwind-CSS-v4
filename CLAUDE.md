@@ -18,7 +18,7 @@ npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 46 rotas próprias (build reporta 51/51 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 47 rotas próprias (build reporta 52/52 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 46 rotas — todas 'use client' (25 COURSE_ORDER + 15 trilha Fundamentos + 1 v3.0 + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
+  [rota]/page.tsx           # 47 rotas — todas 'use client' (25 COURSE_ORDER + 15 trilha Fundamentos + 2 v3.0 + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -56,13 +56,13 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting) — 50 perguntas (Sprint Polish-I: +17)
-    searchItems.ts          # 99 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 101 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (14 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (46 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (47 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 29 (Sprint I.7: +dhcp) |
-| `totalTopics` | `app/dashboard/page.tsx` | 64 (Sprint I.7: +Servidor DHCP) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 97 (Sprint I.7: +3 checkpoints dhcp) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 30 (Sprint I.8: +samba) |
+| `totalTopics` | `app/dashboard/page.tsx` | 65 (Sprint I.8: +Samba) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 100 (Sprint I.8: +3 checkpoints samba) |
 | Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 36 (Sprint I.7: +dhcp-master) |
-| searchItems | `src/data/searchItems.ts` | 99 (Sprint I.7: +2 Servidor DHCP) |
+| Badges | `src/context/BadgeContext.tsx` | 37 (Sprint I.8: +samba-master) |
+| searchItems | `src/data/searchItems.ts` | 101 (Sprint I.8: +2 Samba) |
 
 ---
 
@@ -362,6 +362,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint F6 (Comandos Avançados): `/comandos-avancados` — sed (substituição in-place, sed -i.bak, filtro de linhas), dd (backup de disco, gravar ISO, zerar disco, WarnBox disk destroyer), nc/NetCat (testar portas, listener, banner grabbing, transferência de arquivo), links simbólicos vs hard links (ln -s, ln, inodes, uso em Nginx/Apache), compactação/descompactação (tar+gzip/bzip2/xz, zip/unzip, tabela comparativa); badge 🔧 cmd-avancados-master (34º badge); 3 checkpoints (sed-dominado, links-criados, compactacao-praticada); module-accent-comandos-avancados layer-5; CONTENT_PAGES_COUNT 26→27, checklistItemsCount 88→91, totalTopics 61→62, FUNDAMENTOS_ORDER 12→13, linux-ninja threshold 66→68; tópico F13 em /topicos; /evolucao v2.0 marcado disponível; +2 searchItems (95 total); E2E 07-dashboard-counters 3/91 + 0/34.
 - ✅ Sprint F7 (Logs Centralizados com Rsyslog): `/rsyslog` — rsyslog vs journald (quando usar cada), /etc/rsyslog.conf (facilities: kern/auth/daemon/mail/user, priorities: emerg→debug), sintaxe facility.priority, servidor central de logs (imtcp/imudp porta 514, template RemoteLogs por hostname), cliente remoto (@@servidor:514), logrotate (rotate/compress/delaycompress/postrotate), filtros avançados por $programname, integração SIEM; badge 📡 rsyslog-master (35º badge); 3 checkpoints (rsyslog-configurado, log-remoto-enviado, logrotate-configurado); module-accent-rsyslog layer-4; CONTENT_PAGES_COUNT 27→28, checklistItemsCount 91→94, totalTopics 62→63, FUNDAMENTOS_ORDER 13→14, linux-ninja threshold 68→70; tópico F14 em /topicos; /evolucao v2.0 Logs Centralizados marcado disponível (v2.0 COMPLETO!); +2 searchItems (97 total); E2E 07-dashboard-counters 3/94 + 0/35.
 - ✅ Sprint I.7 (Servidor DHCP): `/dhcp` — DORA (Discover/Offer/Request/Ack), isc-dhcp-server instalação, /etc/default/isc-dhcp-server interface LAN, dhcpd.conf (subnet, range, routers, dns-servers), reservas por MAC address, leases (/var/lib/dhcp/dhcpd.leases), integração iptables portas 67/68 UDP, DHCP Relay, troubleshooting tcpdump+journalctl; badge 🌐 dhcp-master (36º badge); 3 checkpoints (dhcp-instalado, dhcp-subnet, dhcp-reserva); module-accent-dhcp info; CONTENT_PAGES_COUNT 28→29, checklistItemsCount 94→97, totalTopics 63→64, linux-ninja threshold 70→72; tópico S01 em /topicos (novo grupo "Servidores e Serviços"); /evolucao v3.0 DHCP marcado disponível; +2 searchItems (99 total); E2E 07-dashboard-counters 3/97 + 0/36.
+- ✅ Sprint I.8 (Samba File Sharing): `/samba` — SMB/CIFS, smb.conf (workgroup, netbios name, shares público/privado/homes), smbpasswd (usuário Samba separado do Linux), permissões (valid users, create mask, directory mask), firewall (137/138 UDP + 139/445 TCP), acesso Windows Explorer (\\\\IP\\pasta), smbclient, mount.cifs + /etc/fstab, smbstatus, troubleshooting 4 passos; badge 🗂️ samba-master (37º badge); 3 checkpoints (samba-instalado, samba-share, samba-windows); module-accent-samba layer-6; CONTENT_PAGES_COUNT 29→30, checklistItemsCount 97→100, totalTopics 64→65, linux-ninja threshold 72→75; tópico S02 em /topicos; /evolucao v3.0 Samba marcado disponível; +2 searchItems (101 total); E2E 3/100 + 0/37.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

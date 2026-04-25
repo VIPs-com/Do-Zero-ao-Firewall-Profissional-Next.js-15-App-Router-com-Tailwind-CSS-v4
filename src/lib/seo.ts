@@ -314,6 +314,12 @@ export const ROUTE_SEO = {
       'Configure isc-dhcp-server no Linux: subnet declaration, pool de IPs, reservas por MAC address, monitoramento de leases e integração com iptables.',
     keywords: ['DHCP', 'isc-dhcp-server', 'dhcpd.conf', 'reserva MAC', 'leases', 'DORA', 'distribuição de IPs'],
   },
+  '/samba': {
+    title: 'Samba | Compartilhamento Linux↔Windows · smb.conf · smbpasswd',
+    description:
+      'Configure Samba no Linux: smb.conf, shares públicos e privados, smbpasswd, acesso via Windows Explorer e mount.cifs. Protocolo SMB/CIFS completo.',
+    keywords: ['Samba', 'smb.conf', 'smbpasswd', 'compartilhamento de rede', 'SMB', 'CIFS', 'Windows Linux'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;
