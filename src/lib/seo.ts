@@ -297,6 +297,11 @@ export const ROUTE_SEO = {
       'Entenda o boot do Linux: BIOS/UEFI, GRUB2, kernel, initramfs e systemd targets. systemd-analyze blame para otimizar.',
     keywords: ['GRUB2', 'boot Linux', 'BIOS UEFI', 'systemd targets', 'initrd', 'initramfs', 'journalctl -b'],
   },
+  '/comandos-avancados': {
+    title: 'Comandos Avançados | sed · dd · nc · ln · gzip',
+    description:
+      'Domine sed, dd, nc (NetCat), links simbólicos e compactação tar/gzip/zip. A caixa de ferramentas que o mercado exige de um SysAdmin Linux.',
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

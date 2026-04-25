@@ -18,7 +18,7 @@ npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 43 rotas próprias (build reporta 48/48 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 44 rotas próprias (build reporta 49/49 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 43 rotas — todas 'use client' (25 COURSE_ORDER + 13 trilha Fundamentos + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
+  [rota]/page.tsx           # 44 rotas — todas 'use client' (25 COURSE_ORDER + 14 trilha Fundamentos + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -56,13 +56,13 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting) — 50 perguntas (Sprint Polish-I: +17)
-    searchItems.ts          # 93 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
-    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (12 módulos Fundamentos) para ModuleNav
+    searchItems.ts          # 95 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (13 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (43 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (44 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -73,7 +73,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
-  07-dashboard-counters.spec.ts # 3/79 checklist + 75% quiz + 0/30 badges
+  07-dashboard-counters.spec.ts # 3/91 checklist + 75% quiz + 0/34 badges
   10-fundamentos-trail.spec.ts  # /fundamentos índice, visita /fhs, checkpoints, badge, ModuleNav (8 casos)
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 26 (Sprint F5: +boot) |
-| `totalTopics` | `app/dashboard/page.tsx` | 61 (Sprint F5: +Processo de Boot) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 88 (Sprint F5: +3 checkpoints boot) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 27 (Sprint F6: +comandos-avancados) |
+| `totalTopics` | `app/dashboard/page.tsx` | 62 (Sprint F6: +Comandos Avançados) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 91 (Sprint F6: +3 checkpoints cmd-avancados) |
 | Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 33 (Sprint F5: +boot-master) |
-| searchItems | `src/data/searchItems.ts` | 93 (Sprint F5: +2 Processo de Boot) |
+| Badges | `src/context/BadgeContext.tsx` | 34 (Sprint F6: +cmd-avancados-master) |
+| searchItems | `src/data/searchItems.ts` | 95 (Sprint F6: +2 Comandos Avançados) |
 
 ---
 
@@ -359,6 +359,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Polish-I + Quiz++ (Módulos Intermediários Rich Edition): 3 módulos enriquecidos com FluxoCard + WindowsComparisonBox + exercícios guiados — /wireguard (geração de chaves, wg0.conf, wg-quick, wg show, diagnósticos, segundo peer, troubleshooting handshake), /fail2ban (tail auth.log → failregex → maxretry → iptables REJECT → auto-unban; GPO vs jail.local; SSH jail, custom filter, log analysis), /nftables (add table → chain → rule → list ruleset → persist; Windows Firewall/netsh vs nftables; basic ruleset, blocklist set, iptables-translate); fix crítico: /nftables não chamava `trackPageVisit` — corrigido com useEffect; Quiz expandido de 33→50 perguntas (+17: WireGuard×3, Fail2ban×3, nftables×3, Hardening×2, Docker Networking×2, Docker Compose×2, SSH 2FA/TOTP×2); sem mudanças em constantes de badge/checkpoint.
 - ✅ Sprint F4 (Módulo Instalação de Programas): `/pacotes` — apt (update/upgrade/install/purge/autoremove/search), dpkg (instalar .deb, listar, dpkg -S), repositórios (/etc/apt/sources.list, PPAs, repositórios de terceiros com GPG), snap (sandboxed, auto-update, quando usar), pip3 + venv (melhor prática Python); badge 📦 pacotes-master (32º badge); 3 checkpoints (apt-atualizado, pacote-instalado, repo-adicionado); module-accent-pacotes #22c55e; CONTENT_PAGES_COUNT 24→25, checklistItemsCount 82→85, totalTopics 59→60, FUNDAMENTOS_ORDER 10→11 módulos, linux-ninja threshold 62→63; tópico F11 em /topicos (grupo "Fundamentos Linux"); /evolucao v2.0 Instalação de Programas marcado disponível; +2 searchItems (91 total); E2E 07-dashboard-counters 3/85 + 0/32.
 - ✅ Sprint F5 (Processo de Boot): `/boot` — BIOS/UEFI (POST, diferença, efibootmgr), GRUB2 (/etc/default/grub, update-grub, parâmetros de kernel), kernel+initrd (uname -r, /proc/cmdline, dmesg), systemd PID 1 (targets: poweroff/rescue/multi-user/graphical, systemctl get-default, systemd-analyze blame), logs de boot (journalctl -b), modo recovery/rescue; badge 🖥️ boot-master (33º badge); 3 checkpoints (bios-uefi-entendido, grub-configurado, systemd-targets-explorados); module-accent-boot warn; CONTENT_PAGES_COUNT 25→26, checklistItemsCount 85→88, totalTopics 60→61, FUNDAMENTOS_ORDER 11→12 módulos, linux-ninja threshold 63→66; tópico F12 em /topicos; /evolucao v2.0 Boot marcado disponível; +2 searchItems (93 total); E2E 07-dashboard-counters 3/88 + 0/33.
+- ✅ Sprint F6 (Comandos Avançados): `/comandos-avancados` — sed (substituição in-place, sed -i.bak, filtro de linhas), dd (backup de disco, gravar ISO, zerar disco, WarnBox disk destroyer), nc/NetCat (testar portas, listener, banner grabbing, transferência de arquivo), links simbólicos vs hard links (ln -s, ln, inodes, uso em Nginx/Apache), compactação/descompactação (tar+gzip/bzip2/xz, zip/unzip, tabela comparativa); badge 🔧 cmd-avancados-master (34º badge); 3 checkpoints (sed-dominado, links-criados, compactacao-praticada); module-accent-comandos-avancados layer-5; CONTENT_PAGES_COUNT 26→27, checklistItemsCount 88→91, totalTopics 61→62, FUNDAMENTOS_ORDER 12→13, linux-ninja threshold 66→68; tópico F13 em /topicos; /evolucao v2.0 marcado disponível; +2 searchItems (95 total); E2E 07-dashboard-counters 3/91 + 0/34.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

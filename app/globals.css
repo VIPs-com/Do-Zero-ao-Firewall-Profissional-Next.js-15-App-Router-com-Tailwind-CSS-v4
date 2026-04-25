@@ -252,6 +252,8 @@ html.light {
   .module-accent-pacotes          { --mod: var(--module-pacotes); }
   /* Sprint F5 — Processo de Boot */
   .module-accent-boot             { --mod: var(--color-warn); }
+  /* Sprint F6 — Comandos Avançados */
+  .module-accent-comandos-avancados { --mod: var(--color-layer-5); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

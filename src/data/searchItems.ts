@@ -21,7 +21,8 @@ import {
   Package,
   Download,
   Monitor,
-  HardDrive
+  HardDrive,
+  Wrench
 } from 'lucide-react';
 import React from 'react';
 
@@ -203,4 +204,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint F5 — Processo de Boot (/boot)
   { id: 't-boot',  category: 'Tópico',    title: 'Processo de Boot do Linux',        description: 'BIOS/UEFI, GRUB2, kernel, initrd, systemd targets e journalctl -b', href: '/boot', icon: Monitor },
   { id: 'g-grub',  category: 'Glossário', title: 'GRUB2 — Grand Unified Bootloader', description: 'Bootloader padrão Linux. Configurar em /etc/default/grub + update-grub', href: '/boot', icon: HardDrive },
+
+  // Sprint F6 — Comandos Avançados (/comandos-avancados)
+  { id: 't-cmd-avancados', category: 'Tópico',    title: 'Comandos Avançados',    description: 'sed, dd, nc, ln, gzip/tar — ferramentas de SysAdmin que todo profissional usa',   href: '/comandos-avancados', icon: Wrench },
+  { id: 'g-sed',           category: 'Glossário', title: 'sed — Stream Editor',   description: 'Edita arquivos em stream. sed -i substitui in-place sem abrir editor',            href: '/comandos-avancados', icon: Terminal },
 ];

@@ -72,8 +72,8 @@ describe('courseOrder — integridade da sequência de módulos', () => {
 
 describe('FUNDAMENTOS_ORDER — integridade da trilha Fundamentos Linux', () => {
 
-  it('tem exatamente 12 módulos', () => {
-    expect(FUNDAMENTOS_ORDER).toHaveLength(12);
+  it('tem exatamente 13 módulos', () => {
+    expect(FUNDAMENTOS_ORDER).toHaveLength(13);
   });
 
   it('não há paths duplicados', () => {
@@ -87,9 +87,9 @@ describe('FUNDAMENTOS_ORDER — integridade da trilha Fundamentos Linux', () => 
     expect(FUNDAMENTOS_ORDER[FUNDAMENTOS_ORDER.length - 1].next).toBeNull();
   });
 
-  it('começa em /fhs e termina em /boot', () => {
+  it('começa em /fhs e termina em /comandos-avancados', () => {
     expect(FUNDAMENTOS_ORDER[0].path).toBe('/fhs');
-    expect(FUNDAMENTOS_ORDER[FUNDAMENTOS_ORDER.length - 1].path).toBe('/boot');
+    expect(FUNDAMENTOS_ORDER[FUNDAMENTOS_ORDER.length - 1].path).toBe('/comandos-avancados');
   });
 
   it('todos os valores prev (não-null) apontam para paths existentes', () => {
