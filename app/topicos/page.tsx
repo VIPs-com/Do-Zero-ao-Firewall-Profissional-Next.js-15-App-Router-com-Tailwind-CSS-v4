@@ -125,6 +125,7 @@ const TOPICS: Topic[] = [
   { id: 'f08', num: 'F08', title: 'Backup e Restauração: rsync, tar, scp — proteja dados com backups locais, remotos e automatizados.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/backup', group: 'Fundamentos Linux' },
   { id: 'f09', num: 'F09', title: 'Shell Script: variáveis, if, for, funções e $() em bash — automatize tarefas de administração de sistemas.', layer: 'Fundamentos · Automação', layerClass: 'l7', href: '/shell-script', group: 'Fundamentos Linux' },
   { id: 'f10', num: 'F10', title: 'Agendamento de Tarefas: crontab, @reboot, systemd timers e at — automatize manutenção periódica do servidor.', layer: 'Fundamentos · Automação', layerClass: 'l7', href: '/cron', group: 'Fundamentos Linux' },
+  { id: 'f11', num: 'F11', title: 'Instalação de Programas: apt, dpkg, snap, pip — gerencie repositórios, instale pacotes .deb e use ambientes virtuais Python.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/pacotes', group: 'Fundamentos Linux' },
 ];
 
 export default function TopicsPage() {

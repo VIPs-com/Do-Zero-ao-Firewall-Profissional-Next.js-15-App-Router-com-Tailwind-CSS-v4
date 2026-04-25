@@ -26,7 +26,7 @@ const PHASE_V2 = {
     { name: 'Agendamento de Tarefas',       slug: '/cron',              available: true,  icon: '🕐', tags: ['crontab', 'systemd timers'] },
     { name: 'SSH com 2FA (TOTP)',           slug: '/ssh-2fa',           available: true,  icon: '📱', tags: ['Google Auth', 'libpam', 'TOTP'] },
     { name: 'WireGuard VPN',               slug: '/wireguard',          available: true,  icon: '🔗', tags: ['peers', 'wg0.conf', 'wg-quick'] },
-    { name: 'Instalação de Programas',      slug: null,                 available: false, icon: '📦', tags: ['apt', 'dpkg', 'snap', 'pip'] },
+    { name: 'Instalação de Programas',      slug: '/pacotes',           available: true,  icon: '📦', tags: ['apt', 'dpkg', 'snap', 'pip'] },
     { name: 'Processo de Boot do Linux',    slug: null,                 available: false, icon: '🖥️', tags: ['GRUB', 'initrd', 'systemd targets'] },
     { name: 'Comandos Avançados',           slug: null,                 available: false, icon: '🔧', tags: ['sed', 'dd', 'nc', 'ln', 'gzip'] },
     { name: 'Logs Centralizados (Rsyslog)', slug: null,                 available: false, icon: '📡', tags: ['rsyslog', 'facilities', 'logrotate'] },

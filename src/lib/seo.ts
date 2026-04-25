@@ -285,6 +285,12 @@ export const ROUTE_SEO = {
       'Módulo 10: crontab -e, @reboot, systemd timers e at. Agende tarefas periódicas e automatize manutenção do servidor.',
     keywords: ['cron', 'crontab', 'systemd timers', 'agendamento Linux', 'tarefas periódicas'],
   },
+  '/pacotes': {
+    title: 'Instalação de Programas | apt · dpkg · snap · pip',
+    description:
+      'Gerencie software no Linux com apt, dpkg, snap e pip. Repositórios, PPAs, pacotes .deb e ambientes virtuais Python.',
+    keywords: ['apt', 'dpkg', 'snap', 'pip', 'gerenciador de pacotes Linux', 'repositórios Ubuntu'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

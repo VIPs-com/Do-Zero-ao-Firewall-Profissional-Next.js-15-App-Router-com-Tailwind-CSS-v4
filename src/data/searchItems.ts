@@ -17,7 +17,9 @@ import {
   Server,
   GitMerge,
   Radio,
-  Smartphone
+  Smartphone,
+  Package,
+  Download
 } from 'lucide-react';
 import React from 'react';
 
@@ -191,4 +193,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 't-cron',          title: 'Agendamento de Tarefas — cron e systemd timers',
     description: 'crontab -e, @reboot, systemd timers, at — automatize tarefas periódicas.',
     category: 'Tópico', href: '/cron', icon: Activity },
+
+  // Sprint F4 — Instalação de Programas (/pacotes)
+  { id: 't-pacotes',  category: 'Tópico',    title: 'Instalação de Programas',     description: 'apt, dpkg, snap, pip — gerenciar software no Linux',               href: '/pacotes', icon: Package },
+  { id: 'g-apt',      category: 'Glossário', title: 'APT — Advanced Package Tool', description: 'Gerenciador de pacotes do Debian/Ubuntu. apt update + install + purge', href: '/pacotes', icon: Download },
 ];

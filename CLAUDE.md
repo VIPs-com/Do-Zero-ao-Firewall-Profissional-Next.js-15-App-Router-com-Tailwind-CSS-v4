@@ -18,7 +18,7 @@ npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 41 rotas próprias (build reporta 46/46 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 42 rotas próprias (build reporta 47/47 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 41 rotas — todas 'use client' (25 COURSE_ORDER + 11 trilha Fundamentos + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
+  [rota]/page.tsx           # 42 rotas — todas 'use client' (25 COURSE_ORDER + 12 trilha Fundamentos + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -56,13 +56,13 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting) — 50 perguntas (Sprint Polish-I: +17)
-    searchItems.ts          # 89 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
-    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (10 módulos Fundamentos) para ModuleNav
+    searchItems.ts          # 91 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (11 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (41 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (42 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 24 (Sprint I.6: +docker-compose) |
-| `totalTopics` | `app/dashboard/page.tsx` | 59 (Sprint I.6: +Docker Compose) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 82 (Sprint I.6: +3 checkpoints Compose) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 25 (Sprint F4: +pacotes) |
+| `totalTopics` | `app/dashboard/page.tsx` | 60 (Sprint F4: +Instalação de Programas) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 85 (Sprint F4: +3 checkpoints pacotes) |
 | Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 31 (Sprint I.6: +compose-master) |
-| searchItems | `src/data/searchItems.ts` | 89 (Sprint I.6: +2 Docker Compose) |
+| Badges | `src/context/BadgeContext.tsx` | 32 (Sprint F4: +pacotes-master) |
+| searchItems | `src/data/searchItems.ts` | 91 (Sprint F4: +2 Instalação de Programas) |
 
 ---
 
@@ -357,6 +357,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint I.5 (Módulo SSH com 2FA): `/ssh-2fa` — TOTP teoria (HMAC + RFC 6238), libpam-google-authenticator + qrencode, /etc/pam.d/sshd, sshd_config KbdInteractiveAuthentication, teste em sessão separada, rollback, Fail2ban jail para TOTP; badge 📱 ssh-2fa-master (30º badge); 3 checkpoints (totp-instalado, pam-configurado, ssh-2fa-testado); module-accent-ssh-2fa #f59e0b; CONTENT_PAGES_COUNT 22→23, checklistItemsCount 76→79, totalTopics 57→58, COURSE_ORDER 23→24 módulos, linux-ninja threshold 57→59; tópico #48 em /topicos (grupo "Hardening Linux"); /evolucao v3.0 SSH 2FA marcado disponível; +2 searchItems (87 total); E2E 07-dashboard-counters 3/79 + 0/30.
 - ✅ Sprint I.6 (Módulo Docker Compose): `/docker-compose` — anatomia completa do docker-compose.yml (services/networks/volumes/secrets), stack básica Nginx, redes declarativas frontend/backend/internal com `internal: true`, volumes nomeados vs bind mount vs tmpfs, .env files + Docker Secrets, stack completa Nginx+App+PostgreSQL com healthcheck e deploy.replicas, comandos essenciais (up/down/ps/logs/top/exec/scale), troubleshooting; badge 🐙 compose-master (31º badge); 3 checkpoints (compose-instalado, compose-stack, compose-networks); module-accent-compose #1d63ed; CONTENT_PAGES_COUNT 23→24, checklistItemsCount 79→82, totalTopics 58→59, COURSE_ORDER 24→25 módulos, linux-ninja threshold 59→62; tópico #49 em /topicos (grupo "Docker & Containers"); /evolucao v3.0 Docker Compose marcado disponível; +2 searchItems (89 total); E2E 07-dashboard-counters 3/82 + 0/31.
 - ✅ Sprint Polish-I + Quiz++ (Módulos Intermediários Rich Edition): 3 módulos enriquecidos com FluxoCard + WindowsComparisonBox + exercícios guiados — /wireguard (geração de chaves, wg0.conf, wg-quick, wg show, diagnósticos, segundo peer, troubleshooting handshake), /fail2ban (tail auth.log → failregex → maxretry → iptables REJECT → auto-unban; GPO vs jail.local; SSH jail, custom filter, log analysis), /nftables (add table → chain → rule → list ruleset → persist; Windows Firewall/netsh vs nftables; basic ruleset, blocklist set, iptables-translate); fix crítico: /nftables não chamava `trackPageVisit` — corrigido com useEffect; Quiz expandido de 33→50 perguntas (+17: WireGuard×3, Fail2ban×3, nftables×3, Hardening×2, Docker Networking×2, Docker Compose×2, SSH 2FA/TOTP×2); sem mudanças em constantes de badge/checkpoint.
+- ✅ Sprint F4 (Módulo Instalação de Programas): `/pacotes` — apt (update/upgrade/install/purge/autoremove/search), dpkg (instalar .deb, listar, dpkg -S), repositórios (/etc/apt/sources.list, PPAs, repositórios de terceiros com GPG), snap (sandboxed, auto-update, quando usar), pip3 + venv (melhor prática Python); badge 📦 pacotes-master (32º badge); 3 checkpoints (apt-atualizado, pacote-instalado, repo-adicionado); module-accent-pacotes #22c55e; CONTENT_PAGES_COUNT 24→25, checklistItemsCount 82→85, totalTopics 59→60, FUNDAMENTOS_ORDER 10→11 módulos, linux-ninja threshold 62→63; tópico F11 em /topicos (grupo "Fundamentos Linux"); /evolucao v2.0 Instalação de Programas marcado disponível; +2 searchItems (91 total); E2E 07-dashboard-counters 3/85 + 0/32.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

@@ -53,5 +53,6 @@ export const FUNDAMENTOS_ORDER: CourseModule[] = [
   { path: '/logs-basicos', title: 'Logs e Monitoramento',         prev: '/discos',     next: '/backup' },
   { path: '/backup',       title: 'Backup e Restauração',         prev: '/logs-basicos', next: '/shell-script' },
   { path: '/shell-script', title: 'Shell Script',                 prev: '/backup',     next: '/cron' },
-  { path: '/cron',         title: 'Agendamento de Tarefas',       prev: '/shell-script', next: null },
+  { path: '/cron',         title: 'Agendamento de Tarefas',       prev: '/shell-script', next: '/pacotes' },
+  { path: '/pacotes',      title: 'Instalação de Programas',      prev: '/cron',         next: null },
 ];
