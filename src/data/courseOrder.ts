@@ -41,6 +41,7 @@ export const COURSE_ORDER: CourseModule[] = [
 ];
 
 // ── Trilha Fundamentos Linux (v2.0) — iniciantes ──────────────────────────────
+// 12 módulos
 // Sequência paralela ao COURSE_ORDER. Passada como prop order={FUNDAMENTOS_ORDER}
 // ao ModuleNav nas páginas da trilha.
 export const FUNDAMENTOS_ORDER: CourseModule[] = [
@@ -54,5 +55,6 @@ export const FUNDAMENTOS_ORDER: CourseModule[] = [
   { path: '/backup',       title: 'Backup e Restauração',         prev: '/logs-basicos', next: '/shell-script' },
   { path: '/shell-script', title: 'Shell Script',                 prev: '/backup',     next: '/cron' },
   { path: '/cron',         title: 'Agendamento de Tarefas',       prev: '/shell-script', next: '/pacotes' },
-  { path: '/pacotes',      title: 'Instalação de Programas',      prev: '/cron',         next: null },
+  { path: '/pacotes',      title: 'Instalação de Programas',      prev: '/cron',         next: '/boot' },
+  { path: '/boot',         title: 'Processo de Boot',             prev: '/pacotes',      next: null },
 ];

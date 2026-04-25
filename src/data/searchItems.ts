@@ -1,13 +1,13 @@
-import { 
-  Book, 
-  Shield, 
-  Globe, 
-  Terminal, 
-  Lock, 
-  Zap, 
-  Home, 
-  Layout, 
-  FileText, 
+import {
+  Book,
+  Shield,
+  Globe,
+  Terminal,
+  Lock,
+  Zap,
+  Home,
+  Layout,
+  FileText,
   Award,
   Network,
   Activity,
@@ -19,7 +19,9 @@ import {
   Radio,
   Smartphone,
   Package,
-  Download
+  Download,
+  Monitor,
+  HardDrive
 } from 'lucide-react';
 import React from 'react';
 
@@ -197,4 +199,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint F4 — Instalação de Programas (/pacotes)
   { id: 't-pacotes',  category: 'Tópico',    title: 'Instalação de Programas',     description: 'apt, dpkg, snap, pip — gerenciar software no Linux',               href: '/pacotes', icon: Package },
   { id: 'g-apt',      category: 'Glossário', title: 'APT — Advanced Package Tool', description: 'Gerenciador de pacotes do Debian/Ubuntu. apt update + install + purge', href: '/pacotes', icon: Download },
+
+  // Sprint F5 — Processo de Boot (/boot)
+  { id: 't-boot',  category: 'Tópico',    title: 'Processo de Boot do Linux',        description: 'BIOS/UEFI, GRUB2, kernel, initrd, systemd targets e journalctl -b', href: '/boot', icon: Monitor },
+  { id: 'g-grub',  category: 'Glossário', title: 'GRUB2 — Grand Unified Bootloader', description: 'Bootloader padrão Linux. Configurar em /etc/default/grub + update-grub', href: '/boot', icon: HardDrive },
 ];

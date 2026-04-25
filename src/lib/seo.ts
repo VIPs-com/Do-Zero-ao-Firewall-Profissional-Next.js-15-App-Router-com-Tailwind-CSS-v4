@@ -291,6 +291,12 @@ export const ROUTE_SEO = {
       'Gerencie software no Linux com apt, dpkg, snap e pip. Repositórios, PPAs, pacotes .deb e ambientes virtuais Python.',
     keywords: ['apt', 'dpkg', 'snap', 'pip', 'gerenciador de pacotes Linux', 'repositórios Ubuntu'],
   },
+  '/boot': {
+    title: 'Processo de Boot do Linux | GRUB2 · systemd · initrd',
+    description:
+      'Entenda o boot do Linux: BIOS/UEFI, GRUB2, kernel, initramfs e systemd targets. systemd-analyze blame para otimizar.',
+    keywords: ['GRUB2', 'boot Linux', 'BIOS UEFI', 'systemd targets', 'initrd', 'initramfs', 'journalctl -b'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

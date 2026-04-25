@@ -24,7 +24,8 @@ export type BadgeId =
   | 'fundamentos-master'
   | 'ssh-2fa-master'
   | 'compose-master'
-  | 'pacotes-master';
+  | 'pacotes-master'
+  | 'boot-master';
 
 export interface BadgeDef {
   icon: string;
@@ -65,6 +66,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'ssh-2fa-master':     { icon: '📱', title: 'SSH 2FA Master',        desc: 'SSH protegido com autenticação de dois fatores (TOTP)' },
   'compose-master':     { icon: '🐙', title: 'Compose Master',        desc: 'Orquestrou uma stack completa com Docker Compose — redes, volumes e secrets' },
   'pacotes-master':     { icon: '📦', title: 'Package Master',        desc: 'Dominou apt, dpkg, snap e pip — instalação e gestão de software no Linux' },
+  'boot-master':        { icon: '🖥️', title: 'Boot Master',           desc: 'Dominou BIOS/UEFI, GRUB2, kernel, initrd e systemd targets — do Power ao prompt' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -113,7 +115,9 @@ export const ALL_CHECKLIST_IDS = [
   'compose-instalado', 'compose-stack', 'compose-networks',
   // Sprint F4 — Instalação de Programas (/pacotes)
   'apt-atualizado', 'pacote-instalado', 'repo-adicionado',
-]; // 85 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint F5 — Processo de Boot (/boot)
+  'bios-uefi-entendido', 'grub-configurado', 'systemd-targets-explorados',
+]; // 88 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -135,8 +139,9 @@ export const ALL_CHECKLIST_IDS = [
  * 12. /hardening           23. /web-server
  * 13. /ssh-2fa             24. /docker-compose
  * 25. /pacotes
+ * 26. /boot
  */
-export const CONTENT_PAGES_COUNT = 25;
+export const CONTENT_PAGES_COUNT = 26;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -273,6 +278,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['totp-instalado'] && checklist['pam-configurado'] && checklist['ssh-2fa-testado']) unlockBadge('ssh-2fa-master');
     if (checklist['compose-instalado'] && checklist['compose-stack'] && checklist['compose-networks']) unlockBadge('compose-master');
     if (checklist['apt-atualizado'] && checklist['pacote-instalado'] && checklist['repo-adicionado']) unlockBadge('pacotes-master');
+    if (checklist['bios-uefi-entendido'] && checklist['grub-configurado'] && checklist['systemd-targets-explorados']) unlockBadge('boot-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -298,8 +304,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (63 de 85).
-    if (Object.values(checklist).filter(v => v).length >= 63) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (66 de 88).
+    if (Object.values(checklist).filter(v => v).length >= 66) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

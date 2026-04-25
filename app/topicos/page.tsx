@@ -126,6 +126,7 @@ const TOPICS: Topic[] = [
   { id: 'f09', num: 'F09', title: 'Shell Script: variáveis, if, for, funções e $() em bash — automatize tarefas de administração de sistemas.', layer: 'Fundamentos · Automação', layerClass: 'l7', href: '/shell-script', group: 'Fundamentos Linux' },
   { id: 'f10', num: 'F10', title: 'Agendamento de Tarefas: crontab, @reboot, systemd timers e at — automatize manutenção periódica do servidor.', layer: 'Fundamentos · Automação', layerClass: 'l7', href: '/cron', group: 'Fundamentos Linux' },
   { id: 'f11', num: 'F11', title: 'Instalação de Programas: apt, dpkg, snap, pip — gerencie repositórios, instale pacotes .deb e use ambientes virtuais Python.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/pacotes', group: 'Fundamentos Linux' },
+  { id: 'f12', num: 'F12', title: 'Processo de Boot: BIOS/UEFI, GRUB2, kernel, initrd e systemd targets — do botão Power ao prompt de login.', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/boot', group: 'Fundamentos Linux' },
 ];
 
 export default function TopicsPage() {

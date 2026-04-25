@@ -250,6 +250,8 @@ html.light {
   .module-accent-compose          { --mod: var(--module-compose); }
   .module-accent-fundamentos      { --mod: var(--module-fundamentos); }
   .module-accent-pacotes          { --mod: var(--module-pacotes); }
+  /* Sprint F5 — Processo de Boot */
+  .module-accent-boot             { --mod: var(--color-warn); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

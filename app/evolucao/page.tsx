@@ -12,7 +12,7 @@ const PHASE_V2 = {
   name: 'Fundamentos Linux',
   color: 'border-accent/40 bg-accent/5',
   badgeColor: 'bg-accent/15 text-accent border-accent/30',
-  status: '12 disponíveis · 4 em breve',
+  status: '13 disponíveis · 3 em breve',
   modules: [
     { name: 'Estrutura do Sistema (FHS)',   slug: '/fhs',               available: true,  icon: '🐧', tags: ['/etc', '/var', 'mapa do sistema'] },
     { name: 'Comandos Essenciais',          slug: '/comandos',          available: true,  icon: '💻', tags: ['ls', 'grep', 'find', 'pipe'] },
@@ -27,7 +27,7 @@ const PHASE_V2 = {
     { name: 'SSH com 2FA (TOTP)',           slug: '/ssh-2fa',           available: true,  icon: '📱', tags: ['Google Auth', 'libpam', 'TOTP'] },
     { name: 'WireGuard VPN',               slug: '/wireguard',          available: true,  icon: '🔗', tags: ['peers', 'wg0.conf', 'wg-quick'] },
     { name: 'Instalação de Programas',      slug: '/pacotes',           available: true,  icon: '📦', tags: ['apt', 'dpkg', 'snap', 'pip'] },
-    { name: 'Processo de Boot do Linux',    slug: null,                 available: false, icon: '🖥️', tags: ['GRUB', 'initrd', 'systemd targets'] },
+    { name: 'Processo de Boot do Linux',    slug: '/boot',              available: true,  icon: '🖥️', tags: ['GRUB', 'initrd', 'systemd targets'] },
     { name: 'Comandos Avançados',           slug: null,                 available: false, icon: '🔧', tags: ['sed', 'dd', 'nc', 'ln', 'gzip'] },
     { name: 'Logs Centralizados (Rsyslog)', slug: null,                 available: false, icon: '📡', tags: ['rsyslog', 'facilities', 'logrotate'] },
   ],
