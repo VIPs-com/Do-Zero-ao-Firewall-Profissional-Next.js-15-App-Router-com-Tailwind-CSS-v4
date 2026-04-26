@@ -266,6 +266,10 @@ html.light {
   .module-accent-openvpn            { --mod: var(--color-layer-3); }
   /* Sprint I.11 — Traefik Proxy Reverso */
   .module-accent-traefik            { --mod: var(--color-accent-2); }
+  /* Sprint I.12 — LDAP / OpenLDAP */
+  .module-accent-ldap               { --mod: var(--color-layer-7); }
+  /* Sprint I.13 — Pi-hole */
+  .module-accent-pihole             { --mod: var(--color-ok); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

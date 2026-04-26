@@ -23,7 +23,8 @@ import {
   Monitor,
   HardDrive,
   Wrench,
-  FolderOpen
+  FolderOpen,
+  Users
 } from 'lucide-react';
 import React from 'react';
 
@@ -233,4 +234,12 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.11 — Traefik Proxy Reverso (/traefik)
   { id: 't-traefik',   category: 'Tópico',    title: 'Traefik — Proxy Reverso Cloud-Native', description: 'Labels Docker, HTTPS automático ACME, middlewares (redirect, basicauth, rate-limit) e dashboard', href: '/traefik', icon: GitMerge },
   { id: 'g-acme',      category: 'Glossário', title: 'ACME — Certificados Let\'s Encrypt automáticos', description: 'Protocolo que o Traefik usa para solicitar e renovar certificados TLS sem intervenção manual', href: '/traefik', icon: Zap },
+
+  // Sprint I.12 — LDAP / OpenLDAP (/ldap)
+  { id: 't-ldap',      category: 'Tópico',    title: 'LDAP / OpenLDAP — Diretório Centralizado', description: 'slapd, DIT, OUs, ldapadd/ldapsearch, posixAccount e PAM — autenticação única para toda a infra', href: '/ldap', icon: Users },
+  { id: 'g-ldap',      category: 'Glossário', title: 'DN / Distinguished Name',                  description: 'Caminho único de uma entrada no diretório LDAP. Ex: uid=joao,ou=usuarios,dc=empresa,dc=com',   href: '/ldap', icon: Network },
+
+  // Sprint I.13 — Pi-hole (/pihole)
+  { id: 't-pihole',    category: 'Tópico',    title: 'Pi-hole — DNS Sinkhole para toda a rede',  description: 'Blocklists, gravity update, whitelist/blacklist, iptables DNS redirect e Unbound resolver local', href: '/pihole', icon: Shield },
+  { id: 'g-pihole',    category: 'Glossário', title: 'DNS Sinkhole',                             description: 'Técnica que responde 0.0.0.0 para domínios de anúncios/malware, bloqueando antes de carregar',   href: '/pihole', icon: Globe },
 ];

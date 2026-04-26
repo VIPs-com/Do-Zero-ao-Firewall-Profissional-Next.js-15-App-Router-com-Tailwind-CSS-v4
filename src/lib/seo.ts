@@ -338,6 +338,18 @@ export const ROUTE_SEO = {
       'Configure Traefik como proxy reverso cloud-native: labels Docker, HTTPS automático com Let\'s Encrypt, middlewares (redirect, basicauth, rate-limit) e dashboard. Traefik vs Nginx.',
     keywords: ['Traefik', 'proxy reverso', 'ACME', 'Let\'s Encrypt', 'Docker labels', 'middlewares', 'HTTPS automático'],
   },
+  '/ldap': {
+    title: 'LDAP / OpenLDAP | Diretório Centralizado · slapd · ldapadd · PAM',
+    description:
+      'Configure OpenLDAP no Linux: DIT, OUs, usuários com posixAccount, grupos, ldapadd/ldapsearch/ldapmodify, LDAPS com TLS e integração PAM para login Linux via diretório.',
+    keywords: ['LDAP', 'OpenLDAP', 'slapd', 'ldapadd', 'ldapsearch', 'Active Directory', 'PAM LDAP', 'autenticação centralizada'],
+  },
+  '/pihole': {
+    title: 'Pi-hole | DNS Sinkhole · Bloqueio de Anúncios · Toda a Rede',
+    description:
+      'Configure Pi-hole como DNS sinkhole: blocklists, whitelist, integração com DHCP, iptables para forçar DNS e Unbound como resolver local. Bloqueio de anúncios para toda a rede.',
+    keywords: ['Pi-hole', 'DNS sinkhole', 'bloqueio de anúncios', 'blocklist', 'gravity', 'Unbound', 'DNS privacidade'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

@@ -32,7 +32,9 @@ export type BadgeId =
   | 'samba-master'
   | 'apache-master'
   | 'openvpn-master'
-  | 'traefik-master';
+  | 'traefik-master'
+  | 'ldap-master'
+  | 'pihole-master';
 
 export interface BadgeDef {
   icon: string;
@@ -81,6 +83,8 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'apache-master':        { icon: '🌍', title: 'Apache Master',        desc: 'Configurou VirtualHosts, SSL e proxy reverso no Apache — o servidor web mais usado do mundo' },
   'openvpn-master':       { icon: '🔒', title: 'OpenVPN Master',       desc: 'Criou PKI com Easy-RSA, configurou servidor OpenVPN e conectou cliente com arquivo .ovpn' },
   'traefik-master':       { icon: '🔀', title: 'Traefik Master',       desc: 'Proxy reverso cloud-native com HTTPS automático via ACME e middlewares declarativos via labels Docker' },
+  'ldap-master':          { icon: '👥', title: 'LDAP Master',          desc: 'Diretório centralizado com OpenLDAP — usuários e grupos unificados para SSH, Samba e apps' },
+  'pihole-master':        { icon: '🕳️', title: 'Pi-hole Master',       desc: 'DNS sinkhole protegendo toda a rede — anúncios e rastreadores bloqueados antes de carregar' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -145,7 +149,11 @@ export const ALL_CHECKLIST_IDS = [
   'openvpn-instalado', 'openvpn-pki', 'openvpn-cliente',
   // Sprint I.11 — Traefik Proxy Reverso (/traefik)
   'traefik-instalado', 'traefik-https', 'traefik-middleware',
-]; // 109 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.12 — LDAP / OpenLDAP (/ldap)
+  'ldap-instalado', 'ldap-usuarios', 'ldap-autenticacao',
+  // Sprint I.13 — Pi-hole (/pihole)
+  'pihole-instalado', 'pihole-dhcp', 'pihole-bloqueando',
+]; // 115 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -175,8 +183,10 @@ export const ALL_CHECKLIST_IDS = [
  * 31. /apache
  * 32. /openvpn
  * 33. /traefik
+ * 34. /ldap
+ * 35. /pihole
  */
-export const CONTENT_PAGES_COUNT = 33;
+export const CONTENT_PAGES_COUNT = 35;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -321,6 +331,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['apache-instalado'] && checklist['apache-vhost'] && checklist['apache-ssl']) unlockBadge('apache-master');
     if (checklist['openvpn-instalado'] && checklist['openvpn-pki'] && checklist['openvpn-cliente']) unlockBadge('openvpn-master');
     if (checklist['traefik-instalado'] && checklist['traefik-https'] && checklist['traefik-middleware']) unlockBadge('traefik-master');
+    if (checklist['ldap-instalado'] && checklist['ldap-usuarios'] && checklist['ldap-autenticacao']) unlockBadge('ldap-master');
+    if (checklist['pihole-instalado'] && checklist['pihole-dhcp'] && checklist['pihole-bloqueando']) unlockBadge('pihole-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -346,8 +358,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (81 de 109).
-    if (Object.values(checklist).filter(v => v).length >= 81) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (86 de 115).
+    if (Object.values(checklist).filter(v => v).length >= 86) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

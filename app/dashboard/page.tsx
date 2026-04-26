@@ -56,13 +56,13 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  // Sprint I.11: +1 tópico Traefik → 67+1 = 68
-  const totalTopics = 68;
+  // Sprint I.13: +2 tópicos LDAP+Pi-hole → 68+2 = 70
+  const totalTopics = 70;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
-  // Sprint I.11: +3 checkpoints Traefik → 106+3 = 109
-  const checklistItemsCount = 109;
+  // Sprint I.13: +6 checkpoints LDAP+Pi-hole → 109+6 = 115
+  const checklistItemsCount = 115;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 
@@ -96,9 +96,9 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 81) {
-    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (81/109 checkpoints)',
-      current: checklistCompleted, total: 81, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 86) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (86/115 checkpoints)',
+      current: checklistCompleted, total: 86, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
   } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 25) {
     nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 25 módulos do curso',
       current: visitedModulesCount, total: 25,

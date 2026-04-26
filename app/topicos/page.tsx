@@ -136,6 +136,8 @@ const TOPICS: Topic[] = [
   { id: 's03', num: 'S03', title: 'Apache Web Server: VirtualHosts por nome, módulos essenciais (ssl, rewrite, proxy), HTTPS com Certbot e proxy reverso — compare com Nginx.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/apache', group: 'Servidores e Serviços' },
   { id: 's04', num: 'S04', title: 'OpenVPN: PKI com Easy-RSA, certificados CA/servidor/cliente, server.conf, client.ovpn inline e iptables NAT+FORWARD — VPN SSL corporativa completa.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/openvpn', group: 'Servidores e Serviços' },
   { id: 's05', num: 'S05', title: 'Traefik Proxy Reverso: labels Docker, HTTPS automático via ACME, middlewares (redirect, basicauth, rate-limit) e dashboard integrado — cloud-native.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/traefik', group: 'Servidores e Serviços' },
+  { id: 's06', num: 'S06', title: 'LDAP / OpenLDAP: DIT, OUs, usuários posixAccount, ldapadd/ldapsearch, LDAPS com TLS e PAM — autenticação única para SSH, Samba e apps.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/ldap', group: 'Servidores e Serviços' },
+  { id: 's07', num: 'S07', title: 'Pi-hole: DNS sinkhole com blocklists gravity, whitelist/blacklist, integração DHCP, iptables DNS redirect e Unbound resolver local para toda a rede.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/pihole', group: 'Servidores e Serviços' },
 ];
 
 export default function TopicsPage() {
