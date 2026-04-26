@@ -56,7 +56,7 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting) — 50 perguntas (Sprint Polish-I: +17)
-    searchItems.ts          # 101 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 103 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (14 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 30 (Sprint I.8: +samba) |
-| `totalTopics` | `app/dashboard/page.tsx` | 65 (Sprint I.8: +Samba) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 100 (Sprint I.8: +3 checkpoints samba) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 31 (Sprint I.9: +apache) |
+| `totalTopics` | `app/dashboard/page.tsx` | 66 (Sprint I.9: +Apache) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 103 (Sprint I.9: +3 checkpoints apache) |
 | Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 37 (Sprint I.8: +samba-master) |
-| searchItems | `src/data/searchItems.ts` | 101 (Sprint I.8: +2 Samba) |
+| Badges | `src/context/BadgeContext.tsx` | 38 (Sprint I.9: +apache-master) |
+| searchItems | `src/data/searchItems.ts` | 103 (Sprint I.9: +2 Apache) |
 
 ---
 
@@ -363,6 +363,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint F7 (Logs Centralizados com Rsyslog): `/rsyslog` — rsyslog vs journald (quando usar cada), /etc/rsyslog.conf (facilities: kern/auth/daemon/mail/user, priorities: emerg→debug), sintaxe facility.priority, servidor central de logs (imtcp/imudp porta 514, template RemoteLogs por hostname), cliente remoto (@@servidor:514), logrotate (rotate/compress/delaycompress/postrotate), filtros avançados por $programname, integração SIEM; badge 📡 rsyslog-master (35º badge); 3 checkpoints (rsyslog-configurado, log-remoto-enviado, logrotate-configurado); module-accent-rsyslog layer-4; CONTENT_PAGES_COUNT 27→28, checklistItemsCount 91→94, totalTopics 62→63, FUNDAMENTOS_ORDER 13→14, linux-ninja threshold 68→70; tópico F14 em /topicos; /evolucao v2.0 Logs Centralizados marcado disponível (v2.0 COMPLETO!); +2 searchItems (97 total); E2E 07-dashboard-counters 3/94 + 0/35.
 - ✅ Sprint I.7 (Servidor DHCP): `/dhcp` — DORA (Discover/Offer/Request/Ack), isc-dhcp-server instalação, /etc/default/isc-dhcp-server interface LAN, dhcpd.conf (subnet, range, routers, dns-servers), reservas por MAC address, leases (/var/lib/dhcp/dhcpd.leases), integração iptables portas 67/68 UDP, DHCP Relay, troubleshooting tcpdump+journalctl; badge 🌐 dhcp-master (36º badge); 3 checkpoints (dhcp-instalado, dhcp-subnet, dhcp-reserva); module-accent-dhcp info; CONTENT_PAGES_COUNT 28→29, checklistItemsCount 94→97, totalTopics 63→64, linux-ninja threshold 70→72; tópico S01 em /topicos (novo grupo "Servidores e Serviços"); /evolucao v3.0 DHCP marcado disponível; +2 searchItems (99 total); E2E 07-dashboard-counters 3/97 + 0/36.
 - ✅ Sprint I.8 (Samba File Sharing): `/samba` — SMB/CIFS, smb.conf (workgroup, netbios name, shares público/privado/homes), smbpasswd (usuário Samba separado do Linux), permissões (valid users, create mask, directory mask), firewall (137/138 UDP + 139/445 TCP), acesso Windows Explorer (\\\\IP\\pasta), smbclient, mount.cifs + /etc/fstab, smbstatus, troubleshooting 4 passos; badge 🗂️ samba-master (37º badge); 3 checkpoints (samba-instalado, samba-share, samba-windows); module-accent-samba layer-6; CONTENT_PAGES_COUNT 29→30, checklistItemsCount 97→100, totalTopics 64→65, linux-ninja threshold 72→75; tópico S02 em /topicos; /evolucao v3.0 Samba marcado disponível; +2 searchItems (101 total); E2E 3/100 + 0/37.
+- ✅ Sprint I.9 (Apache Web Server): `/apache` — estrutura apache2 (/etc/apache2/ sites-available/enabled, mods-available/enabled, conf-available/enabled), VirtualHosts por nome (a2ensite/a2dissite), módulos essenciais (mod_rewrite, mod_ssl, mod_headers, mod_proxy, mod_deflate, mod_expires), .htaccess performance warning, HTTPS com Certbot (certbot --apache) + certificado autoassinado (openssl req -x509), proxy reverso (ProxyPass/ProxyPassReverse + WebSocket via proxy_wstunnel), Apache vs Nginx tabela comparativa 9 critérios, WindowsComparisonBox (IIS ↔ Apache); badge 🌍 apache-master (38º badge); 3 checkpoints (apache-instalado, apache-vhost, apache-ssl); module-accent-apache warn; CONTENT_PAGES_COUNT 30→31, checklistItemsCount 100→103, totalTopics 65→66, linux-ninja threshold 75→77; tópico S03 em /topicos; /evolucao v3.0 Apache marcado disponível (5 disponíveis · 4 em breve); +2 searchItems (103 total); E2E 3/103 + 0/38.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

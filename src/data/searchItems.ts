@@ -221,4 +221,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.8 — Samba File Sharing (/samba)
   { id: 't-samba',     category: 'Tópico',    title: 'Samba — File Sharing Linux↔Windows', description: 'smb.conf, smbpasswd, shares públicos/privados, mount.cifs e Windows Explorer', href: '/samba', icon: FolderOpen },
   { id: 'g-smb',       category: 'Glossário', title: 'SMB/CIFS — Server Message Block',    description: 'Protocolo de compartilhamento de arquivos da Microsoft. Samba implementa SMB no Linux', href: '/samba', icon: Network },
+
+  // Sprint I.9 — Apache Web Server (/apache)
+  { id: 't-apache',    category: 'Tópico',    title: 'Apache Web Server',                  description: 'apache2, VirtualHost, a2ensite/a2dissite, SSL com Certbot e proxy reverso',       href: '/apache', icon: Server },
+  { id: 'g-apache',    category: 'Glossário', title: 'Apache vs Nginx',                    description: 'Apache usa threads por conexão; Nginx usa eventos assíncronos. Escolha depende do caso', href: '/apache', icon: Globe },
 ];

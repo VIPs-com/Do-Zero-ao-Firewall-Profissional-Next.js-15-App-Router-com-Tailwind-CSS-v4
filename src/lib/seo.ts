@@ -320,6 +320,12 @@ export const ROUTE_SEO = {
       'Configure Samba no Linux: smb.conf, shares públicos e privados, smbpasswd, acesso via Windows Explorer e mount.cifs. Protocolo SMB/CIFS completo.',
     keywords: ['Samba', 'smb.conf', 'smbpasswd', 'compartilhamento de rede', 'SMB', 'CIFS', 'Windows Linux'],
   },
+  '/apache': {
+    title: 'Apache Web Server | VirtualHost · SSL · Certbot · proxy reverso',
+    description:
+      'Configure Apache2 no Linux: VirtualHosts por nome, módulos essenciais (ssl, rewrite, proxy), HTTPS com Certbot e proxy reverso. Comparação completa Apache vs Nginx.',
+    keywords: ['Apache', 'apache2', 'VirtualHost', 'a2ensite', 'mod_rewrite', 'SSL Apache', 'proxy reverso', 'Certbot Apache'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;
