@@ -225,4 +225,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.9 — Apache Web Server (/apache)
   { id: 't-apache',    category: 'Tópico',    title: 'Apache Web Server',                  description: 'apache2, VirtualHost, a2ensite/a2dissite, SSL com Certbot e proxy reverso',       href: '/apache', icon: Server },
   { id: 'g-apache',    category: 'Glossário', title: 'Apache vs Nginx',                    description: 'Apache usa threads por conexão; Nginx usa eventos assíncronos. Escolha depende do caso', href: '/apache', icon: Globe },
+
+  // Sprint I.10 — OpenVPN (/openvpn)
+  { id: 't-openvpn',   category: 'Tópico',    title: 'OpenVPN — VPN com PKI própria',      description: 'Easy-RSA, certificados CA/servidor/cliente, server.conf, client.ovpn e iptables',  href: '/openvpn', icon: Lock },
+  { id: 'g-easyrsa',   category: 'Glossário', title: 'Easy-RSA — PKI simplificada',        description: 'Wrapper do OpenSSL para criar CA, assinar certificados e gerenciar CRL no OpenVPN', href: '/openvpn', icon: Shield },
 ];

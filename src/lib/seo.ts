@@ -326,6 +326,12 @@ export const ROUTE_SEO = {
       'Configure Apache2 no Linux: VirtualHosts por nome, módulos essenciais (ssl, rewrite, proxy), HTTPS com Certbot e proxy reverso. Comparação completa Apache vs Nginx.',
     keywords: ['Apache', 'apache2', 'VirtualHost', 'a2ensite', 'mod_rewrite', 'SSL Apache', 'proxy reverso', 'Certbot Apache'],
   },
+  '/openvpn': {
+    title: 'OpenVPN | Easy-RSA · PKI · server.conf · client.ovpn · iptables',
+    description:
+      'Configure OpenVPN do zero: crie sua PKI com Easy-RSA, configure o servidor (server.conf), gere arquivos .ovpn para clientes e integre com iptables. OpenVPN vs WireGuard vs IPSec.',
+    keywords: ['OpenVPN', 'Easy-RSA', 'PKI', 'VPN SSL', 'client.ovpn', 'tls-auth', 'split tunnel', 'full tunnel'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

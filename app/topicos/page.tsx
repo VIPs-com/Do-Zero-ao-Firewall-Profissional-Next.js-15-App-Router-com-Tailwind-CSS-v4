@@ -134,6 +134,7 @@ const TOPICS: Topic[] = [
   { id: 's01', num: 'S01', title: 'Servidor DHCP: isc-dhcp-server, subnet declaration, range, reservas por MAC e monitoramento de leases — distribua IPs na LAN automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/dhcp', group: 'Servidores e Serviços' },
   { id: 's02', num: 'S02', title: 'Samba: smb.conf, shares públicos e privados, smbpasswd, acesso via Windows Explorer e mount.cifs — ponte Linux↔Windows na mesma rede.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/samba', group: 'Servidores e Serviços' },
   { id: 's03', num: 'S03', title: 'Apache Web Server: VirtualHosts por nome, módulos essenciais (ssl, rewrite, proxy), HTTPS com Certbot e proxy reverso — compare com Nginx.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/apache', group: 'Servidores e Serviços' },
+  { id: 's04', num: 'S04', title: 'OpenVPN: PKI com Easy-RSA, certificados CA/servidor/cliente, server.conf, client.ovpn inline e iptables NAT+FORWARD — VPN SSL corporativa completa.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/openvpn', group: 'Servidores e Serviços' },
 ];
 
 export default function TopicsPage() {

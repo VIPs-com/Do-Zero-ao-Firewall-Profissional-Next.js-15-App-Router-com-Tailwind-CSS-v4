@@ -30,7 +30,8 @@ export type BadgeId =
   | 'rsyslog-master'
   | 'dhcp-master'
   | 'samba-master'
-  | 'apache-master';
+  | 'apache-master'
+  | 'openvpn-master';
 
 export interface BadgeDef {
   icon: string;
@@ -77,6 +78,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'dhcp-master':          { icon: '🌐', title: 'DHCP Master',          desc: 'Configurou isc-dhcp-server com subnet, reservas por MAC e monitoramento de leases' },
   'samba-master':         { icon: '🗂️', title: 'Samba Master',         desc: 'Configurou compartilhamento de arquivos Linux↔Windows com Samba e smbpasswd' },
   'apache-master':        { icon: '🌍', title: 'Apache Master',        desc: 'Configurou VirtualHosts, SSL e proxy reverso no Apache — o servidor web mais usado do mundo' },
+  'openvpn-master':       { icon: '🔒', title: 'OpenVPN Master',       desc: 'Criou PKI com Easy-RSA, configurou servidor OpenVPN e conectou cliente com arquivo .ovpn' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -137,7 +139,9 @@ export const ALL_CHECKLIST_IDS = [
   'samba-instalado', 'samba-share', 'samba-windows',
   // Sprint I.9 — Apache Web Server (/apache)
   'apache-instalado', 'apache-vhost', 'apache-ssl',
-]; // 103 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.10 — OpenVPN (/openvpn)
+  'openvpn-instalado', 'openvpn-pki', 'openvpn-cliente',
+]; // 106 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -165,8 +169,9 @@ export const ALL_CHECKLIST_IDS = [
  * 29. /dhcp
  * 30. /samba
  * 31. /apache
+ * 32. /openvpn
  */
-export const CONTENT_PAGES_COUNT = 31;
+export const CONTENT_PAGES_COUNT = 32;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -309,6 +314,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['dhcp-instalado'] && checklist['dhcp-subnet'] && checklist['dhcp-reserva']) unlockBadge('dhcp-master');
     if (checklist['samba-instalado'] && checklist['samba-share'] && checklist['samba-windows']) unlockBadge('samba-master');
     if (checklist['apache-instalado'] && checklist['apache-vhost'] && checklist['apache-ssl']) unlockBadge('apache-master');
+    if (checklist['openvpn-instalado'] && checklist['openvpn-pki'] && checklist['openvpn-cliente']) unlockBadge('openvpn-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -334,8 +340,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (77 de 103).
-    if (Object.values(checklist).filter(v => v).length >= 77) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (79 de 106).
+    if (Object.values(checklist).filter(v => v).length >= 79) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

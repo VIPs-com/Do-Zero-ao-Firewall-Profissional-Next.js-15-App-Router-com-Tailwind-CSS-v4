@@ -262,6 +262,8 @@ html.light {
   .module-accent-samba              { --mod: var(--color-layer-6); }
   /* Sprint I.9 — Apache Web Server */
   .module-accent-apache             { --mod: var(--color-warn); }
+  /* Sprint I.10 — OpenVPN */
+  .module-accent-openvpn            { --mod: var(--color-layer-3); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

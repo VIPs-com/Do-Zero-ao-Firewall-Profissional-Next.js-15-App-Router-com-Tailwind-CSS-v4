@@ -4,9 +4,9 @@ import { test, expect } from './fixtures';
  * Testa se o Dashboard exibe os contadores corretos a partir de estado pré-injetado.
  *
  * Constantes em app/dashboard/page.tsx:
- *   totalTopics = 66          (Sprint I.9: +1 Apache)
- *   checklistItemsCount = 103 (Sprint I.9: +3 checkpoints apache)
- *   BADGE_DEFS tem 38 chaves  (Sprint I.9: +apache-master)
+ *   totalTopics = 67          (Sprint I.10: +1 OpenVPN)
+ *   checklistItemsCount = 106 (Sprint I.10: +3 checkpoints openvpn)
+ *   BADGE_DEFS tem 39 chaves  (Sprint I.10: +openvpn-master)
  *
  * ATENÇÃO — visitedPages tracking é inconsistente no código:
  *   ClientLayout chama trackPageVisit('/dashboard')  — com barra
@@ -35,18 +35,18 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos: 3/103 (seed exato — não muda com o load)
-  await expect(page.getByText('3/103')).toBeVisible();
+  // Labs Concluídos: 3/106 (seed exato — não muda com o load)
+  await expect(page.getByText('3/106')).toBeVisible();
 
   // Melhor Quiz: 75%
   await expect(page.getByText('75%')).toBeVisible();
 });
 
-test('dashboard exibe 0/38 badges para usuário sem progresso', async ({ page }) => {
+test('dashboard exibe 0/39 badges para usuário sem progresso', async ({ page }) => {
   // Sem seed — estado completamente limpo (fixture já limpou)
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
   // Sem nenhum badge desbloqueado (visitedPages << 5, sem quiz)
-  await expect(page.getByText('0/38')).toBeVisible();
+  await expect(page.getByText('0/39')).toBeVisible();
 });
