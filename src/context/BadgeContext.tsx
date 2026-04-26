@@ -31,7 +31,8 @@ export type BadgeId =
   | 'dhcp-master'
   | 'samba-master'
   | 'apache-master'
-  | 'openvpn-master';
+  | 'openvpn-master'
+  | 'traefik-master';
 
 export interface BadgeDef {
   icon: string;
@@ -79,6 +80,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'samba-master':         { icon: '🗂️', title: 'Samba Master',         desc: 'Configurou compartilhamento de arquivos Linux↔Windows com Samba e smbpasswd' },
   'apache-master':        { icon: '🌍', title: 'Apache Master',        desc: 'Configurou VirtualHosts, SSL e proxy reverso no Apache — o servidor web mais usado do mundo' },
   'openvpn-master':       { icon: '🔒', title: 'OpenVPN Master',       desc: 'Criou PKI com Easy-RSA, configurou servidor OpenVPN e conectou cliente com arquivo .ovpn' },
+  'traefik-master':       { icon: '🔀', title: 'Traefik Master',       desc: 'Proxy reverso cloud-native com HTTPS automático via ACME e middlewares declarativos via labels Docker' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -141,7 +143,9 @@ export const ALL_CHECKLIST_IDS = [
   'apache-instalado', 'apache-vhost', 'apache-ssl',
   // Sprint I.10 — OpenVPN (/openvpn)
   'openvpn-instalado', 'openvpn-pki', 'openvpn-cliente',
-]; // 106 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.11 — Traefik Proxy Reverso (/traefik)
+  'traefik-instalado', 'traefik-https', 'traefik-middleware',
+]; // 109 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -170,8 +174,9 @@ export const ALL_CHECKLIST_IDS = [
  * 30. /samba
  * 31. /apache
  * 32. /openvpn
+ * 33. /traefik
  */
-export const CONTENT_PAGES_COUNT = 32;
+export const CONTENT_PAGES_COUNT = 33;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -315,6 +320,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['samba-instalado'] && checklist['samba-share'] && checklist['samba-windows']) unlockBadge('samba-master');
     if (checklist['apache-instalado'] && checklist['apache-vhost'] && checklist['apache-ssl']) unlockBadge('apache-master');
     if (checklist['openvpn-instalado'] && checklist['openvpn-pki'] && checklist['openvpn-cliente']) unlockBadge('openvpn-master');
+    if (checklist['traefik-instalado'] && checklist['traefik-https'] && checklist['traefik-middleware']) unlockBadge('traefik-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -340,8 +346,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (79 de 106).
-    if (Object.values(checklist).filter(v => v).length >= 79) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (81 de 109).
+    if (Object.values(checklist).filter(v => v).length >= 81) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

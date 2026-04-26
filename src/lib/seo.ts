@@ -332,6 +332,12 @@ export const ROUTE_SEO = {
       'Configure OpenVPN do zero: crie sua PKI com Easy-RSA, configure o servidor (server.conf), gere arquivos .ovpn para clientes e integre com iptables. OpenVPN vs WireGuard vs IPSec.',
     keywords: ['OpenVPN', 'Easy-RSA', 'PKI', 'VPN SSL', 'client.ovpn', 'tls-auth', 'split tunnel', 'full tunnel'],
   },
+  '/traefik': {
+    title: 'Traefik | Proxy Reverso · ACME · Let\'s Encrypt · Middlewares · Docker',
+    description:
+      'Configure Traefik como proxy reverso cloud-native: labels Docker, HTTPS automático com Let\'s Encrypt, middlewares (redirect, basicauth, rate-limit) e dashboard. Traefik vs Nginx.',
+    keywords: ['Traefik', 'proxy reverso', 'ACME', 'Let\'s Encrypt', 'Docker labels', 'middlewares', 'HTTPS automático'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

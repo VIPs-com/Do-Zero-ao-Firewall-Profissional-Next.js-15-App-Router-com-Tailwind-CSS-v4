@@ -264,6 +264,8 @@ html.light {
   .module-accent-apache             { --mod: var(--color-warn); }
   /* Sprint I.10 — OpenVPN */
   .module-accent-openvpn            { --mod: var(--color-layer-3); }
+  /* Sprint I.11 — Traefik Proxy Reverso */
+  .module-accent-traefik            { --mod: var(--color-accent-2); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

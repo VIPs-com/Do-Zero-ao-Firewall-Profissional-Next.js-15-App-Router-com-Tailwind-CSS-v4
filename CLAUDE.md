@@ -56,7 +56,7 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting) — 50 perguntas (Sprint Polish-I: +17)
-    searchItems.ts          # 105 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 107 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (14 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 32 (Sprint I.10: +openvpn) |
-| `totalTopics` | `app/dashboard/page.tsx` | 67 (Sprint I.10: +OpenVPN) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 106 (Sprint I.10: +3 checkpoints openvpn) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 33 (Sprint I.11: +traefik) |
+| `totalTopics` | `app/dashboard/page.tsx` | 68 (Sprint I.11: +Traefik) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 109 (Sprint I.11: +3 checkpoints traefik) |
 | Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 39 (Sprint I.10: +openvpn-master) |
-| searchItems | `src/data/searchItems.ts` | 105 (Sprint I.10: +2 OpenVPN) |
+| Badges | `src/context/BadgeContext.tsx` | 40 (Sprint I.11: +traefik-master) |
+| searchItems | `src/data/searchItems.ts` | 107 (Sprint I.11: +2 Traefik) |
 
 ---
 
@@ -365,6 +365,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint I.8 (Samba File Sharing): `/samba` — SMB/CIFS, smb.conf (workgroup, netbios name, shares público/privado/homes), smbpasswd (usuário Samba separado do Linux), permissões (valid users, create mask, directory mask), firewall (137/138 UDP + 139/445 TCP), acesso Windows Explorer (\\\\IP\\pasta), smbclient, mount.cifs + /etc/fstab, smbstatus, troubleshooting 4 passos; badge 🗂️ samba-master (37º badge); 3 checkpoints (samba-instalado, samba-share, samba-windows); module-accent-samba layer-6; CONTENT_PAGES_COUNT 29→30, checklistItemsCount 97→100, totalTopics 64→65, linux-ninja threshold 72→75; tópico S02 em /topicos; /evolucao v3.0 Samba marcado disponível; +2 searchItems (101 total); E2E 3/100 + 0/37.
 - ✅ Sprint I.9 (Apache Web Server): `/apache` — estrutura apache2 (/etc/apache2/ sites-available/enabled, mods-available/enabled, conf-available/enabled), VirtualHosts por nome (a2ensite/a2dissite), módulos essenciais (mod_rewrite, mod_ssl, mod_headers, mod_proxy, mod_deflate, mod_expires), .htaccess performance warning, HTTPS com Certbot (certbot --apache) + certificado autoassinado (openssl req -x509), proxy reverso (ProxyPass/ProxyPassReverse + WebSocket via proxy_wstunnel), Apache vs Nginx tabela comparativa 9 critérios, WindowsComparisonBox (IIS ↔ Apache); badge 🌍 apache-master (38º badge); 3 checkpoints (apache-instalado, apache-vhost, apache-ssl); module-accent-apache warn; CONTENT_PAGES_COUNT 30→31, checklistItemsCount 100→103, totalTopics 65→66, linux-ninja threshold 75→77; tópico S03 em /topicos; /evolucao v3.0 Apache marcado disponível (5 disponíveis · 4 em breve); +2 searchItems (103 total); E2E 3/103 + 0/38.
 - ✅ Sprint I.10 (OpenVPN): `/openvpn` — OpenVPN vs WireGuard vs IPSec (tabela comparativa 7 critérios), PKI com Easy-RSA (init-pki, build-ca, build-server, gen-dh, ta.key), server.conf (porta 1194 UDP, dev tun, split/full tunnel, AES-256-GCM, TLS 1.2+), script gerar-cliente.sh (certs inline no .ovpn), iptables NAT+FORWARD para sub-rede 10.8.0.0/24, revogação de certificados com CRL + cron de renovação, WindowsComparisonBox (VPN nativa Windows SSTP/L2TP ↔ OpenVPN), troubleshooting (4 erros comuns); badge 🔒 openvpn-master (39º badge); 3 checkpoints (openvpn-instalado, openvpn-pki, openvpn-cliente); module-accent-openvpn layer-3; CONTENT_PAGES_COUNT 31→32, checklistItemsCount 103→106, totalTopics 66→67, linux-ninja threshold 77→79; tópico S04 em /topicos; /evolucao v3.0 OpenVPN marcado disponível (6 disponíveis · 3 em breve); +2 searchItems (105 total); E2E 3/106 + 0/39.
+- ✅ Sprint I.11 (Traefik Proxy Reverso): `/traefik` — Traefik vs Nginx tabela comparativa (8 critérios), stack básica docker-compose (traefik+whoami, exposedbydefault=false), HTTPS automático com ACME/Let's Encrypt (tlschallenge, acme.json, volume letsencrypt), middlewares (redirect HTTP→HTTPS, basicauth com htpasswd, rate-limit, HSTS security headers), dashboard seguro com BasicAuth+HTTPS, stack completa (traefik+app+postgres, redes public/internal), WindowsComparisonBox (IIS ARR ↔ Traefik), troubleshooting (4 erros); badge 🔀 traefik-master (40º badge); 3 checkpoints (traefik-instalado, traefik-https, traefik-middleware); module-accent-traefik accent-2; CONTENT_PAGES_COUNT 32→33, checklistItemsCount 106→109, totalTopics 67→68, linux-ninja threshold 79→81; tópico S05 em /topicos; /evolucao v3.0 Traefik marcado disponível (7 disponíveis · 2 em breve); +2 searchItems (107 total); E2E 3/109 + 0/40.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

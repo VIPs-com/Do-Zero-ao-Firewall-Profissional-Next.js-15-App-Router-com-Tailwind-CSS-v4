@@ -135,6 +135,7 @@ const TOPICS: Topic[] = [
   { id: 's02', num: 'S02', title: 'Samba: smb.conf, shares públicos e privados, smbpasswd, acesso via Windows Explorer e mount.cifs — ponte Linux↔Windows na mesma rede.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/samba', group: 'Servidores e Serviços' },
   { id: 's03', num: 'S03', title: 'Apache Web Server: VirtualHosts por nome, módulos essenciais (ssl, rewrite, proxy), HTTPS com Certbot e proxy reverso — compare com Nginx.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/apache', group: 'Servidores e Serviços' },
   { id: 's04', num: 'S04', title: 'OpenVPN: PKI com Easy-RSA, certificados CA/servidor/cliente, server.conf, client.ovpn inline e iptables NAT+FORWARD — VPN SSL corporativa completa.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/openvpn', group: 'Servidores e Serviços' },
+  { id: 's05', num: 'S05', title: 'Traefik Proxy Reverso: labels Docker, HTTPS automático via ACME, middlewares (redirect, basicauth, rate-limit) e dashboard integrado — cloud-native.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/traefik', group: 'Servidores e Serviços' },
 ];
 
 export default function TopicsPage() {
