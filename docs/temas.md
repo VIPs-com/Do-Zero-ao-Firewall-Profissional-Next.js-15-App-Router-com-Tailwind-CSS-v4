@@ -43,28 +43,65 @@ O Tailwind CSS v4 usa `@theme` para definir tokens. O bloco `html.light {}` no `
 
 ## Tokens de módulo (Sprint M — Cyber-Industrial)
 
-Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e alimentam as utility classes `.module-accent-<slug>`. Todas as 18 páginas de conteúdo já aplicam `module-accent-<slug>` + `module-hero` (Sprint Polish concluído):
+Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e alimentam as utility classes `.module-accent-<slug>`. Todas as páginas de conteúdo aplicam `module-accent-<slug>` + `module-hero`:
 
-| Slug | Token CSS | Cor | Módulo |
-|---|---|---|---|
-| `instalacao` | `--module-instalacao` | `#9ca3af` | Instalação (neutro-tech) |
-| `wan-nat` | `--module-wan-nat` | `#60a5fa` | WAN & NAT |
-| `dns` | `--module-dns` | `#22d3ee` | DNS (BIND9) |
-| `nginx-ssl` | `--module-nginx-ssl` | `#34d399` | Nginx + SSL/TLS |
-| `lan-proxy` | `--module-lan-proxy` | `#fbbf24` | LAN + Squid Proxy |
-| `dnat` | `--module-dnat` | `#a78bfa` | DNAT |
-| `port-knocking` | `--module-port-knocking` | `#fb923c` | Port Knocking |
-| `vpn-ipsec` | `--module-vpn-ipsec` | `#3b82f6` | VPN IPSec |
-| `nftables` | `--module-nftables` | `#f85149` | nftables (firewall) |
-| `ataques-avancados` | `--module-ataques-avancados` | `#ec4899` | Ataques avançados |
-| `pivoteamento` | `--module-pivoteamento` | `#dc2626` | Pivoteamento |
-| `web-server` | `--module-web-server` | `#67e8f9` | Web Server |
-| `evolucao` | `--module-evolucao` | `#f59e0b` | Evolução |
-| `audit-logs` | `--module-audit-logs` | `#14b8a6` | Audit logs |
-| `cheat-sheet` | `--module-cheat-sheet` | `#818cf8` | Cheat sheet |
-| `glossario` | `--module-glossario` | `#94a3b8` | Glossário |
-| `wireguard` | `--module-wireguard` | `#2dd4bf` | WireGuard VPN |
-| `fail2ban` | `--module-fail2ban` | `#f87171` | Fail2ban |
+### v1.0 — Zero ao Firewall
+
+| Slug | Cor | Módulo |
+|---|---|---|
+| `instalacao` | `#9ca3af` | Instalação (neutro-tech) |
+| `wan-nat` | `#60a5fa` | WAN & NAT |
+| `dns` | `#22d3ee` | DNS (BIND9) |
+| `nginx-ssl` | `#34d399` | Nginx + SSL/TLS |
+| `lan-proxy` | `#fbbf24` | LAN + Squid Proxy |
+| `dnat` | `#a78bfa` | DNAT |
+| `port-knocking` | `#fb923c` | Port Knocking |
+| `vpn-ipsec` | `#3b82f6` | VPN IPSec |
+| `nftables` | `#f85149` | nftables (firewall) |
+| `ataques-avancados` | `#ec4899` | Ataques avançados |
+| `pivoteamento` | `#dc2626` | Pivoteamento |
+| `web-server` | `#67e8f9` | Web Server |
+| `evolucao` | `#f59e0b` | Evolução |
+| `audit-logs` | `#14b8a6` | Audit logs |
+| `cheat-sheet` | `#818cf8` | Cheat sheet |
+| `glossario` | `#94a3b8` | Glossário |
+| `wireguard` | `#2dd4bf` | WireGuard VPN |
+| `fail2ban` | `#f87171` | Fail2ban |
+| `hardening` | `#a3e635` | Hardening Linux |
+| `docker` | `#2496ed` | Docker Networking |
+| `ssh-2fa` | `#f59e0b` | SSH com 2FA |
+| `compose` | `#1d63ed` | Docker Compose |
+
+### v2.0 — Fundamentos Linux
+
+| Slug | Cor/Token | Módulo |
+|---|---|---|
+| `fundamentos` | `#6366f1` | Índice Fundamentos |
+| `pacotes` | `#22c55e` | Instalação de Programas |
+| `boot` | `var(--color-warn)` | Processo de Boot |
+| `comandos-avancados` | `var(--color-layer-5)` | Comandos Avançados |
+| `rsyslog` | `var(--color-layer-4)` | Logs Centralizados |
+
+### v3.0 — Servidores e Serviços
+
+| Slug | Cor/Token | Módulo |
+|---|---|---|
+| `dhcp` | `var(--color-info)` | Servidor DHCP |
+| `samba` | `var(--color-layer-6)` | Samba File Sharing |
+| `apache` | `var(--color-warn)` | Apache Web Server |
+| `openvpn` | `var(--color-layer-3)` | OpenVPN |
+| `traefik` | `var(--color-accent-2)` | Traefik Proxy Reverso |
+| `ldap` | `var(--color-layer-7)` | LDAP / OpenLDAP |
+| `pihole` | `var(--color-ok)` | Pi-hole |
+
+### v4.0 — Infraestrutura Moderna
+
+| Slug | Cor/Token | Módulo |
+|---|---|---|
+| `ansible` | `var(--color-err)` | Ansible |
+| `monitoring` | `var(--color-warn)` | Prometheus + Grafana |
+| `kubernetes` | `var(--color-layer-3)` | Kubernetes / K3s |
+| `terraform` | `var(--color-layer-6)` | Terraform IaC |
 
 ## Como usar numa rota
 

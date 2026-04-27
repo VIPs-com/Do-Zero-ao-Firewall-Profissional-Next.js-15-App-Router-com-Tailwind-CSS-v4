@@ -37,8 +37,8 @@ Conectar o repositorio GitHub na Vercel. O Next.js e detectado automaticamente, 
 - [ ] `npm run lint` — zero erros TypeScript
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — suite vitest passando
-- [ ] `npm run build` — **30/30 paginas** (23 proprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + `_not-found`)
-- [ ] Verificar constantes criticas (`CONTENT_PAGES_COUNT = 18`, `totalTopics = 26`, `checklistItemsCount = 35`)
+- [ ] `npm run build` — **52/52 paginas** (47 proprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + `_not-found`)
+- [ ] Verificar constantes criticas (`CONTENT_PAGES_COUNT = 39`, `totalTopics = 74`, `checklistItemsCount = 127`, `badges = 46`, `searchItems = 121`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2 ou Docker configurado para restart automatico
 - [ ] SSL/HTTPS ativo no Nginx (Certbot recomendado) — HSTS ja e emitido pelo `next.config.ts`

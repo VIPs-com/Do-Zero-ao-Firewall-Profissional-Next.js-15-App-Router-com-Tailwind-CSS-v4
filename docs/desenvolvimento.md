@@ -102,7 +102,7 @@ import { RosettaStone }                     from '@/components/ui/RosettaStone';
   windowsLabel="Windows — nslookup"
 />
 
-// ModuleNav — navegação Anterior/Próximo (já inserida em todas as 20 páginas de conteúdo)
+// ModuleNav — navegação Anterior/Próximo (já inserida em todas as páginas de conteúdo das trilhas v1.0 e v2.0)
 <ModuleNav currentPath="/wan-nat" />
 ```
 

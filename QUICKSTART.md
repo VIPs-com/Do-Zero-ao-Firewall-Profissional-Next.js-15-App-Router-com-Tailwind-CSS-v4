@@ -10,7 +10,7 @@
 npm install        # instalar dependências
 npm run dev        # http://localhost:3000
 npm test           # vitest — testes automatizados
-npm run build      # build de produção — 33/33 páginas (26 próprias + assets SEO/PWA)
+npm run build      # build de produção — 52/52 páginas (47 próprias + assets SEO/PWA)
 ```
 
 ---
@@ -21,7 +21,7 @@ npm run build      # build de produção — 33/33 páginas (26 próprias + asse
 npm run lint         # tsc --noEmit — typecheck TypeScript
 npm run lint:eslint  # ESLint + jsx-a11y — acessibilidade WCAG 2.1 AA
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm test             # vitest — 6 suítes · 42 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
+npm test             # vitest — 6 suítes · 51 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
 ```
 
 ---
@@ -30,7 +30,7 @@ npm test             # vitest — 6 suítes · 42 testes (BadgeContext, ClientLa
 
 | Pasta / Arquivo | O que é |
 |---|---|
-| `/app` | Rotas e Layouts (App Router) — 26 rotas próprias |
+| `/app` | Rotas e Layouts (App Router) — 47 rotas próprias |
 | `/app/globals.css` | Tokens de cor dark/light + classes reutilizáveis |
 | `/app/layout.tsx` | Root layout + anti-FOUC + JSON-LD + nonce CSP |
 | `/app/providers.tsx` | `<BadgeProvider>` global |
@@ -43,8 +43,8 @@ npm test             # vitest — 6 suítes · 42 testes (BadgeContext, ClientLa
 | `/src/components/ClientLayout.tsx` | Header, nav, toggle dark/light, busca global |
 | `/src/context/BadgeContext.tsx` | Estado global: badges, progresso, checkpoints |
 | `/src/data/quizQuestions.ts` | Perguntas do quiz extraídas (Sprint F) |
-| `/src/data/searchItems.ts` | Índice da busca global ⌘K (71 itens) |
-| `/src/data/courseOrder.ts` | Sequência de 21 módulos — usada pelo ModuleNav |
+| `/src/data/searchItems.ts` | Índice da busca global ⌘K (121 itens) |
+| `/src/data/courseOrder.ts` | COURSE_ORDER (25 módulos v1.0) + FUNDAMENTOS_ORDER (14 módulos v2.0) — usados pelo ModuleNav |
 | `/src/data/deepDives.tsx` | Conteúdo dos 6 modais avançados |
 | `/src/lib/seo.ts` | **Fonte única** — `SITE_CONFIG`, `ROUTE_SEO`, `buildMetadata()` |
 | `/src/lib/useFocusTrap.ts` | Hook a11y — focus trap + ESC + restore focus |
@@ -90,8 +90,8 @@ npm test             # vitest — 6 suítes · 42 testes (BadgeContext, ClientLa
 - [ ] `npm run lint` — zero erros TypeScript
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — vitest passando
-- [ ] `npm run build` — 33/33 páginas (26 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 20`, `totalTopics = 45`, `checklistItemsCount = 60`, `badges = 26`, `searchItems = 72`)
+- [ ] `npm run build` — 52/52 páginas (47 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 39`, `totalTopics = 74`, `checklistItemsCount = 127`, `badges = 46`, `searchItems = 121`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)
@@ -206,4 +206,4 @@ node_modules/
 
 `Next.js 16.2.2` · `React 19` · `TypeScript 5.8` · `Tailwind CSS v4` · `Turbopack` · `motion/react 12` · `Lucide React`
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (testes) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo) · P (Diamond Polish) · L (Legacy Gold — TroubleshootingCard, zona reversa, FTP DNAT, xt_recent, dhparam, /offline) · SIGMA (Elite Lab — /laboratorio, /proxmox, Certbot, badges, 56 checkpoints) · SIGMA Fase 3 (badge 🔬 sigma-master, +6 busca, +5 tópicos, totalTopics 43) · W (Windows-to-Linux — WindowsComparisonBox, Terminal do Zero, Mindset SysAdmin, tabela equivalências) · W2 (RosettaStone 25 comandos, resgate-gold.sh, badge 🧭 explorador-mundos, FluxoCard OSI, seção certificado — 60 checkpoints, 25 badges) · Polish (ModuleNav Anterior/Próximo nas 20 páginas, courseOrder.ts 21 módulos, labels certbot nginx-ssl) · Audit Fix (deep-diver 18→20, totalTopics 45→44, linux-ninja 15→45, .env.example limpo) · V+Topics+UX (E2E fixes, tópico #45 RosettaStone, dashboard Módulos do Curso) · T₃ (courseOrder.test.ts + ModuleNav.test.tsx — 6 suítes · 42 testes) · Badge V2 + Search+1 (🎯 course-master, searchItems 71→72, badges 25→26) · UI-H (ProgressDropdown no header X/21 — lista dos 21 módulos com ✓/atual/pendente, focus trap, ESC/click-fora) · **PV (Polish Visual — FluxoCard audit-logs, /offline tokens, WindowsBox /dns, FluxoCard /instalacao, home polish)**
+**Sprints concluídos:** A · B · C · D · E · G · F · M · T₀/T₁ · J · I.1 · I.2 · Polish · T₂ · R · P · L · SIGMA · SIGMA Fase 2 · SIGMA Fase 3 · W · W2 · Polish · Audit Fix · V+Topics+UX · T₃ · Badge V2 · UI-H · PV · **CE** (MilestoneCelebration modal + confetti, "Próxima Conquista" dashboard) · **CERT** (Web Share API, @media print certificado) · **ANIM** (checklist-pop spring, barra progresso) · **CE-E2E** (spec milestone modal — 9 specs E2E) · **EVOL** (roadmap visual v2.0/v3.0/v4.0) · **I.3** (Hardening — SSH Ed25519, sysctl, AppArmor) · **I.4** (Docker Networking — bridge/host/none, DOCKER-USER) · **F1-F3** (Trilha Fundamentos Linux v2.0 — 10 módulos base + badge 🐧) · **Polish-F** (7 módulos Fundamentos enriquecidos) · **I.5** (SSH 2FA — TOTP, libpam-google-authenticator) · **I.6** (Docker Compose — stacks, redes internas, secrets) · **Polish-I + Quiz++** (/wireguard, /fail2ban, /nftables enriquecidos + quiz 33→50 perguntas) · **F4** (Instalação de Programas — apt/dpkg/snap/pip) · **F5** (Boot — BIOS/UEFI/GRUB2/systemd) · **F6** (Comandos Avançados — sed/dd/nc/links/tar) · **F7** (Rsyslog — servidor central de logs + logrotate — v2.0 COMPLETO) · **I.7** (DHCP — isc-dhcp-server, leases, reservas MAC) · **I.8** (Samba — smb.conf, shares, smbpasswd) · **I.9** (Apache — VirtualHosts, mod_ssl, Certbot, proxy reverso) · **I.10** (OpenVPN — PKI Easy-RSA, split/full tunnel) · **I.11** (Traefik — ACME automático, middlewares, dashboard) · **I.12** (LDAP — OpenLDAP, DIT, LDIFS, PAM) · **I.13** (Pi-hole — DNS sinkhole, Unbound recursivo — v3.0 COMPLETO) · **I.14** (Ansible — playbooks, roles, Vault) · **I.15** (Prometheus+Grafana — PromQL, alertas, Alertmanager) · **I.16** (Kubernetes/K3s — kubectl, Helm, NetworkPolicy, PVC) · **I.17** (Terraform IaC — HCL, providers, state remoto, módulos — v4.0 parcial)
