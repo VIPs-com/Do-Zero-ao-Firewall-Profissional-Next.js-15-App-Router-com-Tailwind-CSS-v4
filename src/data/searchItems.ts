@@ -242,4 +242,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.13 — Pi-hole (/pihole)
   { id: 't-pihole',    category: 'Tópico',    title: 'Pi-hole — DNS Sinkhole para toda a rede',  description: 'Blocklists, gravity update, whitelist/blacklist, iptables DNS redirect e Unbound resolver local', href: '/pihole', icon: Shield },
   { id: 'g-pihole',    category: 'Glossário', title: 'DNS Sinkhole',                             description: 'Técnica que responde 0.0.0.0 para domínios de anúncios/malware, bloqueando antes de carregar',   href: '/pihole', icon: Globe },
+
+  // Sprint I.14 — Ansible (/ansible)
+  { id: 't-ansible',   category: 'Tópico',    title: 'Ansible para SysAdmins — IaC agentless',  description: 'Playbooks YAML, roles, Ansible Vault e Galaxy — automatize dezenas de servidores via SSH sem agente', href: '/ansible', icon: Terminal },
+  { id: 'g-ansible',   category: 'Glossário', title: 'Idempotência (Ansible)',                   description: 'Executar o mesmo playbook múltiplas vezes produz o mesmo resultado — Ansible verifica estado antes de agir', href: '/ansible', icon: Activity },
 ];

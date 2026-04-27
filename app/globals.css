@@ -270,6 +270,8 @@ html.light {
   .module-accent-ldap               { --mod: var(--color-layer-7); }
   /* Sprint I.13 — Pi-hole */
   .module-accent-pihole             { --mod: var(--color-ok); }
+  /* Sprint I.14 — Ansible */
+  .module-accent-ansible            { --mod: var(--color-err); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

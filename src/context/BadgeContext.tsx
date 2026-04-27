@@ -34,7 +34,8 @@ export type BadgeId =
   | 'openvpn-master'
   | 'traefik-master'
   | 'ldap-master'
-  | 'pihole-master';
+  | 'pihole-master'
+  | 'ansible-master';
 
 export interface BadgeDef {
   icon: string;
@@ -85,6 +86,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'traefik-master':       { icon: '🔀', title: 'Traefik Master',       desc: 'Proxy reverso cloud-native com HTTPS automático via ACME e middlewares declarativos via labels Docker' },
   'ldap-master':          { icon: '👥', title: 'LDAP Master',          desc: 'Diretório centralizado com OpenLDAP — usuários e grupos unificados para SSH, Samba e apps' },
   'pihole-master':        { icon: '🕳️', title: 'Pi-hole Master',       desc: 'DNS sinkhole protegendo toda a rede — anúncios e rastreadores bloqueados antes de carregar' },
+  'ansible-master':       { icon: '⚙️', title: 'Ansible Master',       desc: 'Infraestrutura como Código — playbooks, roles e Vault automatizando dezenas de servidores via SSH' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -153,7 +155,9 @@ export const ALL_CHECKLIST_IDS = [
   'ldap-instalado', 'ldap-usuarios', 'ldap-autenticacao',
   // Sprint I.13 — Pi-hole (/pihole)
   'pihole-instalado', 'pihole-dhcp', 'pihole-bloqueando',
-]; // 115 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.14 — Ansible (/ansible)
+  'ansible-instalado', 'ansible-playbook', 'ansible-roles',
+]; // 118 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -185,8 +189,9 @@ export const ALL_CHECKLIST_IDS = [
  * 33. /traefik
  * 34. /ldap
  * 35. /pihole
+ * 36. /ansible
  */
-export const CONTENT_PAGES_COUNT = 35;
+export const CONTENT_PAGES_COUNT = 36;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -333,6 +338,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['traefik-instalado'] && checklist['traefik-https'] && checklist['traefik-middleware']) unlockBadge('traefik-master');
     if (checklist['ldap-instalado'] && checklist['ldap-usuarios'] && checklist['ldap-autenticacao']) unlockBadge('ldap-master');
     if (checklist['pihole-instalado'] && checklist['pihole-dhcp'] && checklist['pihole-bloqueando']) unlockBadge('pihole-master');
+    if (checklist['ansible-instalado'] && checklist['ansible-playbook'] && checklist['ansible-roles']) unlockBadge('ansible-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -358,8 +364,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (86 de 115).
-    if (Object.values(checklist).filter(v => v).length >= 86) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (88 de 118).
+    if (Object.values(checklist).filter(v => v).length >= 88) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

@@ -350,6 +350,12 @@ export const ROUTE_SEO = {
       'Configure Pi-hole como DNS sinkhole: blocklists, whitelist, integração com DHCP, iptables para forçar DNS e Unbound como resolver local. Bloqueio de anúncios para toda a rede.',
     keywords: ['Pi-hole', 'DNS sinkhole', 'bloqueio de anúncios', 'blocklist', 'gravity', 'Unbound', 'DNS privacidade'],
   },
+  '/ansible': {
+    title: 'Ansible para SysAdmins | Playbooks · Roles · Vault · IaC',
+    description:
+      'Automatize a configuração de servidores com Ansible: inventário, comandos ad-hoc, playbooks YAML, templates Jinja2, roles reutilizáveis, Ansible Galaxy e Vault para segredos.',
+    keywords: ['Ansible', 'playbook', 'role', 'inventário', 'Ansible Vault', 'IaC', 'idempotente', 'automação de servidores'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

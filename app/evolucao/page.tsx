@@ -59,7 +59,7 @@ const PHASE_V4 = {
   badgeColor: 'bg-layer-6/15 text-layer-6 border-layer-6/30',
   status: 'Visão de Médio Prazo',
   modules: [
-    { name: 'Ansible para SysAdmins', slug: null, available: false, icon: '⚙️',  tags: ['IaC', 'playbooks', 'automação'] },
+    { name: 'Ansible para SysAdmins', slug: '/ansible', available: true,  icon: '⚙️',  tags: ['IaC', 'playbooks', 'automação'] },
     { name: 'Prometheus + Grafana',   slug: null, available: false, icon: '📊',  tags: ['métricas', 'dashboards', 'alertas'] },
     { name: 'Kubernetes / K3s',       slug: null, available: false, icon: '☸️',  tags: ['pods', 'NetworkPolicy', 'CNI'] },
     { name: 'Terraform',              slug: null, available: false, icon: '🏗️',  tags: ['IaC', 'providers', 'state'] },
