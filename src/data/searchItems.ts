@@ -244,6 +244,10 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'g-pihole',    category: 'Glossário', title: 'DNS Sinkhole',                             description: 'Técnica que responde 0.0.0.0 para domínios de anúncios/malware, bloqueando antes de carregar',   href: '/pihole', icon: Globe },
 
   // Sprint I.14 — Ansible (/ansible)
-  { id: 't-ansible',   category: 'Tópico',    title: 'Ansible para SysAdmins — IaC agentless',  description: 'Playbooks YAML, roles, Ansible Vault e Galaxy — automatize dezenas de servidores via SSH sem agente', href: '/ansible', icon: Terminal },
-  { id: 'g-ansible',   category: 'Glossário', title: 'Idempotência (Ansible)',                   description: 'Executar o mesmo playbook múltiplas vezes produz o mesmo resultado — Ansible verifica estado antes de agir', href: '/ansible', icon: Activity },
+  { id: 't-ansible',     category: 'Tópico',    title: 'Ansible para SysAdmins — IaC agentless',  description: 'Playbooks YAML, roles, Ansible Vault e Galaxy — automatize dezenas de servidores via SSH sem agente', href: '/ansible', icon: Terminal },
+  { id: 'g-ansible',     category: 'Glossário', title: 'Idempotência (Ansible)',                   description: 'Executar o mesmo playbook múltiplas vezes produz o mesmo resultado — Ansible verifica estado antes de agir', href: '/ansible', icon: Activity },
+
+  // Sprint I.15 — Prometheus + Grafana (/monitoring)
+  { id: 't-monitoring',  category: 'Tópico',    title: 'Prometheus + Grafana — Observabilidade',   description: 'Métricas com node_exporter, PromQL, dashboards Grafana (ID 1860) e alertas com Alertmanager', href: '/monitoring', icon: Activity },
+  { id: 'g-promql',      category: 'Glossário', title: 'PromQL — Prometheus Query Language',        description: 'Linguagem de consulta de séries temporais: rate(), increase(), sum by(), histograms e label matchers', href: '/monitoring', icon: TrendingUp },
 ];

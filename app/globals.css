@@ -272,6 +272,8 @@ html.light {
   .module-accent-pihole             { --mod: var(--color-ok); }
   /* Sprint I.14 — Ansible */
   .module-accent-ansible            { --mod: var(--color-err); }
+  /* Sprint I.15 — Prometheus + Grafana */
+  .module-accent-monitoring         { --mod: var(--color-warn); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

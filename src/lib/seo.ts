@@ -350,6 +350,12 @@ export const ROUTE_SEO = {
       'Configure Pi-hole como DNS sinkhole: blocklists, whitelist, integração com DHCP, iptables para forçar DNS e Unbound como resolver local. Bloqueio de anúncios para toda a rede.',
     keywords: ['Pi-hole', 'DNS sinkhole', 'bloqueio de anúncios', 'blocklist', 'gravity', 'Unbound', 'DNS privacidade'],
   },
+  '/monitoring': {
+    title: 'Prometheus + Grafana | Métricas · PromQL · Dashboards · Alertas',
+    description:
+      'Stack completa de observabilidade: Prometheus coletando métricas do node_exporter, PromQL para consultas, Grafana com dashboards prontos (ID 1860) e Alertmanager para notificações.',
+    keywords: ['Prometheus', 'Grafana', 'PromQL', 'node_exporter', 'Alertmanager', 'observabilidade', 'métricas', 'dashboards Linux'],
+  },
   '/ansible': {
     title: 'Ansible para SysAdmins | Playbooks · Roles · Vault · IaC',
     description:

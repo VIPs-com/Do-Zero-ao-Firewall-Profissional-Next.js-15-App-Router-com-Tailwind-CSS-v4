@@ -60,7 +60,7 @@ const PHASE_V4 = {
   status: 'Visão de Médio Prazo',
   modules: [
     { name: 'Ansible para SysAdmins', slug: '/ansible', available: true,  icon: '⚙️',  tags: ['IaC', 'playbooks', 'automação'] },
-    { name: 'Prometheus + Grafana',   slug: null, available: false, icon: '📊',  tags: ['métricas', 'dashboards', 'alertas'] },
+    { name: 'Prometheus + Grafana',   slug: '/monitoring', available: true,  icon: '📊',  tags: ['métricas', 'dashboards', 'alertas'] },
     { name: 'Kubernetes / K3s',       slug: null, available: false, icon: '☸️',  tags: ['pods', 'NetworkPolicy', 'CNI'] },
     { name: 'Terraform',              slug: null, available: false, icon: '🏗️',  tags: ['IaC', 'providers', 'state'] },
     { name: 'Suricata IDS/IPS',       slug: null, available: false, icon: '🛡️',  tags: ['regras', 'EVE JSON', 'IPS mode'] },
