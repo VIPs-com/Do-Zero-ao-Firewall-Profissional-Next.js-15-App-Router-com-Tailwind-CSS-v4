@@ -368,6 +368,12 @@ export const ROUTE_SEO = {
       'Automatize a configuração de servidores com Ansible: inventário, comandos ad-hoc, playbooks YAML, templates Jinja2, roles reutilizáveis, Ansible Galaxy e Vault para segredos.',
     keywords: ['Ansible', 'playbook', 'role', 'inventário', 'Ansible Vault', 'IaC', 'idempotente', 'automação de servidores'],
   },
+  '/terraform': {
+    title: 'Terraform IaC | HCL · Providers · State · Módulos · Workspaces',
+    description:
+      'Domine Infraestrutura como Código com Terraform: providers (Docker, AWS), recursos, data sources, variáveis, outputs, state remoto, módulos reutilizáveis e workspaces para múltiplos ambientes.',
+    keywords: ['Terraform', 'HCL', 'IaC', 'provider', 'state', 'módulo', 'workspace', 'init plan apply destroy', 'OpenTofu', 'infraestrutura imutável'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

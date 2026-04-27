@@ -276,6 +276,8 @@ html.light {
   .module-accent-monitoring         { --mod: var(--color-warn); }
   /* Sprint I.16 — Kubernetes / K3s */
   .module-accent-kubernetes         { --mod: var(--color-layer-3); }
+  /* Sprint I.17 — Terraform IaC */
+  .module-accent-terraform          { --mod: var(--color-layer-6); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

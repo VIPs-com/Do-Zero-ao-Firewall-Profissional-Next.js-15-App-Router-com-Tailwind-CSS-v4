@@ -254,4 +254,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.16 — Kubernetes / K3s (/kubernetes)
   { id: 't-kubernetes',  category: 'Tópico',    title: 'Kubernetes / K3s — Orquestração de Containers', description: 'K3s single-node, kubectl, Deployments, Services, NetworkPolicy, Ingress Traefik e Helm', href: '/kubernetes', icon: Network },
   { id: 'g-k8s-pod',     category: 'Glossário', title: 'Pod (Kubernetes)',                           description: 'Menor unidade deployável do Kubernetes — 1+ containers compartilhando rede e storage. Efêmero por natureza.', href: '/kubernetes', icon: Shield },
+
+  // Sprint I.17 — Terraform IaC (/terraform)
+  { id: 't-terraform',      category: 'Tópico',    title: 'Terraform IaC — Infraestrutura Declarativa', description: 'HCL declarativo: providers Docker/AWS, init→plan→apply→destroy, state, módulos e workspaces para múltiplos ambientes', href: '/terraform', icon: Server },
+  { id: 'g-terraform-state', category: 'Glossário', title: 'Terraform State (terraform.tfstate)',         description: 'Arquivo JSON que mapeia recursos HCL ↔ infraestrutura real. Armazenar remotamente (S3/GitLab) é obrigatório em equipes', href: '/terraform', icon: HardDrive },
 ];

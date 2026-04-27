@@ -144,6 +144,8 @@ const TOPICS: Topic[] = [
   { id: 'i02', num: 'I02', title: 'Prometheus + Grafana: node_exporter, PromQL (rate/increase/sum), dashboards ID 1860, regras de alerta e Alertmanager com email/Slack — observabilidade real.', layer: 'Infraestrutura · Observabilidade', layerClass: 'l7', href: '/monitoring', group: 'Infraestrutura Moderna' },
   // Sprint I.16 — Kubernetes / K3s (v4.0 Infraestrutura Moderna)
   { id: 'i03', num: 'I03', title: 'Kubernetes / K3s: Pod, Deployment, Service, ConfigMap/Secret, Ingress Traefik, NetworkPolicy com Calico e Helm — orquestração de containers do zero.', layer: 'Infraestrutura · Orquestração', layerClass: 'l3', href: '/kubernetes', group: 'Infraestrutura Moderna' },
+  // Sprint I.17 — Terraform IaC (v4.0 Infraestrutura Moderna)
+  { id: 'i04', num: 'I04', title: 'Terraform IaC: HCL declarativo, providers Docker/AWS, init→plan→apply→destroy, state remoto (S3/GitLab), módulos reutilizáveis e workspaces para múltiplos ambientes.', layer: 'Infraestrutura · IaC', layerClass: 'l3', href: '/terraform', group: 'Infraestrutura Moderna' },
 ];
 
 export default function TopicsPage() {
