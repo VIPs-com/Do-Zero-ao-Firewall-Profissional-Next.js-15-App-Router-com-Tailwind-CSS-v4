@@ -348,7 +348,7 @@ DNS sinkhole com blocklists gravity, Docker Compose macvlan (IP fixo na LAN), ip
 
 ---
 
-## Trilha v4.0 — Infraestrutura Moderna (4 módulos)
+## Trilha v4.0 — Infraestrutura Moderna (8 módulos)
 
 *Ferramentas que o mercado corporativo exige hoje.*
 
@@ -363,6 +363,27 @@ K3s (1 comando de instalação), conceitos core (Pod/Deployment/Service/Ingress/
 
 ### I04 — Terraform IaC · `/terraform`
 HCL declarativo, 7 conceitos core (Provider/Resource/Data Source/Variable/Output/State/Module), projeto Docker provider (main.tf+variables.tf+outputs.tf), workflow `init→plan→apply→destroy`, workspaces, state remoto (S3+DynamoDB, Terraform Cloud, GitLab), provider AWS (EC2+SG+EIP), `lifecycle`/`count`/`for_each`. Infra imutável, versionada, reproduzível.
+
+### I05 — Suricata IDS/IPS · `/suricata`
+IDS (passivo af-packet) vs IPS (inline NFQUEUE), `suricata.yaml` (HOME_NET, eve-log), anatomia de regras (ação/protocolo/cabeçalho/opções: alert/drop/pass/reject, msg/sid/rev/content/pcre/flow/threshold), Emerging Threats via `suricata-update` (~40.000 regras), EVE JSON + jq queries, modo IPS com `nftables queue` (fail-closed), integração Grafana/Loki/SIEM. Detecção e bloqueio de ameaças em tempo real.
+
+### I06 — eBPF & XDP · `/ebpf`
+eBPF: programa→verifier (segurança formal)→JIT→hook no kernel sem módulo, BCC tools (execsnoop/tcptracer/biolatency/opensnoop/funclatency), bpftrace (sintaxe AWK-like, probes kprobe/uprobe/tracepoint/usdt). XDP (eXpress Data Path): processamento antes do stack TCP/IP, modos native/offload/generic, XDP_DROP para mitigation de flood (programa C + Makefile + teste hping3). Observabilidade de kernel-space e proteção DDoS com overhead mínimo.
+
+### I07 — Service Mesh com Istio · `/service-mesh`
+Istio vs Linkerd vs Consul (tabela 7 critérios), arquitetura: istiod (control plane) + Envoy sidecar (data plane), instalação via `istioctl`. mTLS STRICT com SPIFFE/X.509 (PeerAuthentication YAML + AuthorizationPolicy deny-all). VirtualService: canary 90/10, A/B por header, retry+timeout, fault injection (delay/abort). DestinationRule: subsets e circuit breaker com `outlierDetection`. Observabilidade: Kiali (grafo de tráfego), Jaeger (distributed tracing), Grafana (métricas Envoy).
+
+### I08 — SRE & SLOs · `/sre`
+SLI/SLO/SLA hierarquia (regra fundamental: SLA < SLO), error budget com tabela dos 9s (99.9%=8.7h/ano, 99.99%=52min/ano), grid de decisão (budget restante → acelerar ou congelar deploys). PromQL para SLIs: recording rules de disponibilidade + latência P99 + burn rates (1h/6h). Alertas de burn rate: crítico 14.4× (1h) + warning 6× (6h). On-call saudável: anti-padrões (alert fatigue), runbook template markdown. Postmortem blameless: Just Culture, template 5 seções, grid blame vs sistêmico. Toil: identificar e eliminar.
+
+---
+
+## Trilha v5.0 — Cloud & Platform Engineering (em construção)
+
+*Nível sênior: automação de plataforma, observabilidade avançada e práticas de engenharia de software.*
+
+### C01 — CI/CD com GitHub Actions · `/cicd`
+6 conceitos core (Workflow/Job/Step/Action/Runner/Artifact), pipeline CI com jobs paralelos (lint+test) encadeados via `needs` até build + artifact upload, Docker build+push com `login-action`+`metadata-action` (semver+sha tags)+`build-push-action`+cache GHA, environments (staging auto + production com required reviewers), matrix strategy (node 18/20/22 × ubuntu/windows, fail-fast, exclude), scopes de secrets (repo/env/org), self-hosted runner (systemd service), workflows reutilizáveis (`workflow_call`), notificação Slack on-failure. Integração contínua e entrega contínua do zero ao ambiente de produção.
 
 ---
 [← Voltar ao indice](README.md)

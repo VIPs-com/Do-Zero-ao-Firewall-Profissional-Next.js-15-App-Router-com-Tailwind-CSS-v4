@@ -102,6 +102,16 @@ Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e ali
 | `monitoring` | `var(--color-warn)` | Prometheus + Grafana |
 | `kubernetes` | `var(--color-layer-3)` | Kubernetes / K3s |
 | `terraform` | `var(--color-layer-6)` | Terraform IaC |
+| `suricata` | `#dc2626` | Suricata IDS/IPS |
+| `ebpf` | `#8b5cf6` | eBPF & XDP |
+| `service-mesh` | `#06b6d4` | Service Mesh (Istio) |
+| `sre` | `#f59e0b` | SRE & SLOs |
+
+### v5.0 — Cloud & Platform Engineering
+
+| Slug | Cor/Token | Módulo |
+|---|---|---|
+| `cicd` | `#2563eb` | CI/CD com GitHub Actions |
 
 ## Como usar numa rota
 

@@ -3,14 +3,14 @@
 ## Arquivo central: `src/context/BadgeContext.tsx`
 
 Gerencia quatro dimensões de progresso:
-- **Badges** — 46 conquistas desbloqueáveis (5 são milestones com modal de celebração)
+- **Badges** — 51 conquistas desbloqueáveis (5 são milestones com modal de celebração)
 - **Páginas visitadas** — para badges de exploração e course-master
-- **Checkpoints** — 127 validações técnicas concluídas (ALL_CHECKLIST_IDS)
+- **Checkpoints** — 142 validações técnicas concluídas (ALL_CHECKLIST_IDS)
 - **Quiz score** — 0–100, persiste em localStorage
 
 ---
 
-## Tabela de badges (46 total)
+## Tabela de badges (51 total)
 
 | Ícone | Título | ID | Como desbloquear |
 |---|---|---|---|
@@ -29,7 +29,7 @@ Gerencia quatro dimensões de progresso:
 | 🚪 | Proxy Master | `proxy-master` | proxy-funciona + proxy-bloqueio |
 | 🔑 | Knocking Master | `knocking-master` | port-knocking |
 | **🎓** | **Graduado** | **`certificado`** | **Gerar o certificado de conclusão** ★ milestone |
-| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 95 checkpoints (75% dos 127)** ★ milestone |
+| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 106 checkpoints (75% dos 142)** ★ milestone |
 | 💀 | Pivoting Master | `pivoting-master` | pivoting-risk |
 | 🛡️ | Defensor da Topologia | `defensor-topologia` | Clicar em 3+ riscos da topologia |
 | ⏳ | Viajante do Tempo | `time-traveler` | Importar progresso via JSON |
@@ -60,6 +60,11 @@ Gerencia quatro dimensões de progresso:
 | 📊 | Monitoring Master | `monitoring-master` | monitoring-instalado + monitoring-dashboard + monitoring-alertas |
 | ☸️ | Kubernetes Master | `k8s-master` | k8s-instalado + k8s-deploy + k8s-network |
 | 🏗️ | Terraform Master | `terraform-master` | terraform-instalado + terraform-plan + terraform-modulos |
+| 🛡️ | Suricata Master | `suricata-master` | suricata-instalado + suricata-regras + suricata-ips |
+| ⚡ | eBPF Master | `ebpf-master` | ebpf-instalado + ebpf-trace + ebpf-xdp |
+| 🕸️ | Service Mesh Master | `service-mesh-master` | service-mesh-instalado + service-mesh-mtls + service-mesh-traffic |
+| 🎯 | SRE Master | `sre-master` | sre-slo-definido + sre-error-budget + sre-postmortem |
+| 🚀 | CI/CD Master | `cicd-master` | cicd-pipeline + cicd-secrets + cicd-runner |
 
 > ★ **Milestone badges** disparam o `MilestoneCelebration` modal em vez do toast de 4s.
 > `course-master` e `quiz-master` disparam também confetti (canvas-confetti, lazy-loaded).
@@ -70,7 +75,7 @@ Gerencia quatro dimensões de progresso:
 
 | Tier | Badges | Feedback |
 |------|--------|----------|
-| **Comum** | 41 badges | Toast slide-in 4s (canto inferior direito, z-50) |
+| **Comum** | 46 badges | Toast slide-in 4s (canto inferior direito, z-50) |
 | **Milestone** | 5 badges | Modal centralizado full-screen (z-200) + confetti para os 2 maiores |
 
 ```typescript
@@ -108,7 +113,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
 
 ---
 
-## Checkpoints de validação (127 IDs — ALL_CHECKLIST_IDS)
+## Checkpoints de validação (142 IDs — ALL_CHECKLIST_IDS)
 
 ```typescript
 // src/context/BadgeContext.tsx
@@ -188,8 +193,18 @@ const MILESTONE_BADGES = new Set<BadgeId>([
   'k8s-instalado', 'k8s-deploy', 'k8s-network',
   // Sprint I.17 — Terraform IaC (3)
   'terraform-instalado', 'terraform-plan', 'terraform-modulos',
+  // Sprint I.18 — Suricata IDS/IPS (3)
+  'suricata-instalado', 'suricata-regras', 'suricata-ips',
+  // Sprint I.19 — eBPF & XDP (3)
+  'ebpf-instalado', 'ebpf-trace', 'ebpf-xdp',
+  // Sprint I.20 — Service Mesh com Istio (3)
+  'service-mesh-instalado', 'service-mesh-mtls', 'service-mesh-traffic',
+  // Sprint I.21 — SRE & SLOs (3)
+  'sre-slo-definido', 'sre-error-budget', 'sre-postmortem',
+  // Sprint I.22 — CI/CD com GitHub Actions (3)
+  'cicd-pipeline', 'cicd-secrets', 'cicd-runner',
 ]
-// Total: 127 checkpoints
+// Total: 142 checkpoints
 ```
 
 ---
@@ -218,8 +233,8 @@ button > svg.text-ok {
 ## Linux Ninja — Threshold
 
 ```typescript
-// 75% de 127 checkpoints = 95
-if (Object.values(checklist).filter(v => v).length >= 95) unlockBadge('linux-ninja');
+// 75% de 142 checkpoints = 106 (floor)
+if (Object.values(checklist).filter(v => v).length >= 106) unlockBadge('linux-ninja');
 ```
 
 ---

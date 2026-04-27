@@ -540,6 +540,60 @@ Sprint I.17 ✅ Terraform IaC (/terraform)
   ├── Badge 🏗️ terraform-master (46º) · 3 checkpoints · module-accent layer-6
   └── checklistItemsCount 124→127 · totalTopics 73→74 · CONTENT_PAGES_COUNT 38→39
 
+Sprint I.18 ✅ Suricata IDS/IPS (/suricata)
+  ├── IDS vs IPS vs Firewall (tabela comparativa) · arquitetura af-packet (passivo) vs NFQUEUE (inline)
+  ├── suricata.yaml (HOME_NET, af-packet, eve-log) · anatomia de regras (ação/protocolo/cabeçalho/opções)
+  ├── Emerging Threats via suricata-update (et/open ~40.000 regras, cron de atualização)
+  ├── EVE JSON (eve.json, jq: top IPs, filtro por sid, alertas em tempo real)
+  ├── Modo IPS NFQUEUE (nftables queue + bypass + fail-closed) · integração Grafana/Loki/SIEM
+  ├── Badge 🛡️ suricata-master (47º) · 3 checkpoints · module-accent #dc2626
+  └── checklistItemsCount 127→130 · totalTopics 74→75 · CONTENT_PAGES_COUNT 39→40
+
+Sprint I.19 ✅ eBPF & XDP (/ebpf)
+  ├── eBPF vs módulos do kernel (tabela 5 critérios) · arquitetura: programa→verifier→JIT→hook
+  ├── BCC tools (execsnoop, tcptracer, biolatency, opensnoop, funclatency)
+  ├── bpftrace (sintaxe AWK-like, probes: kprobe/uprobe/tracepoint/usdt/hardware)
+  ├── XDP (eXpress Data Path): XDP_DROP/PASS/TX/REDIRECT, 3 modos (native/offload/generic)
+  ├── XDP drop em flood: programa C comentado + Makefile + teste hping3
+  ├── Observabilidade com cilium/ebpf-go · integração Grafana (métricas eBPF)
+  ├── Badge ⚡ ebpf-master (48º) · 3 checkpoints · module-accent #8b5cf6
+  └── checklistItemsCount 130→133 · totalTopics 75→76 · CONTENT_PAGES_COUNT 40→41
+
+Sprint I.20 ✅ Service Mesh com Istio (/service-mesh)
+  ├── Problema sem mesh (10 cards: service discovery, mTLS manual, observabilidade zero, etc.)
+  ├── Istio vs Linkerd vs Consul (tabela 7 critérios) · arquitetura: istiod→Envoy sidecar→mTLS→Kiali
+  ├── Instalação: istioctl precheck/install + namespace label + addons (kiali/jaeger/grafana)
+  ├── mTLS STRICT (PeerAuthentication YAML) · SPIFFE X.509 · AuthorizationPolicy deny-all + allow
+  ├── VirtualService: canary 90/10, A/B por header, retry+timeout, fault injection (delay/abort)
+  ├── DestinationRule: subsets v1/v2, circuit breaker (outlierDetection)
+  ├── Observabilidade: Kiali (grafo de serviços), Jaeger (tracing), Grafana (métricas Envoy)
+  ├── Badge 🕸️ service-mesh-master (49º) · 3 checkpoints · module-accent #06b6d4
+  └── checklistItemsCount 133→136 · totalTopics 76→77 · CONTENT_PAGES_COUNT 41→42
+
+Sprint I.21 ✅ SRE & SLOs (/sre) — v4.0 COMPLETO
+  ├── SLI/SLO/SLA hierarquia (SLI=métrica, SLO=meta interna, SLA=contrato externo, regra SLA < SLO)
+  ├── Error budget: tabela dos 9s (99.9%=8.7h/ano, 99.99%=52min), grid verde=acelerar/vermelho=congelar
+  ├── PromQL para SLIs: recording rules de disponibilidade + latência P99 + burn rates (1h/6h)
+  ├── Alertas de burn rate: crítico 14.4× (1h) + alerta 6× (6h) · Grafana dashboard restante de budget
+  ├── On-call: anti-padrões (WarnBox alert fatigue) · checklist acionável · runbook template markdown
+  ├── Postmortem blameless: Just Culture · template 5 seções · grid blame vs sistêmico
+  ├── Toil: tabela 5 linhas com como eliminar (automação, self-service, fixar root cause)
+  ├── Badge 🎯 sre-master (50º) · 3 checkpoints · module-accent #f59e0b
+  └── checklistItemsCount 136→139 · totalTopics 77→78 · CONTENT_PAGES_COUNT 42→43
+
+Sprint I.22 ✅ CI/CD com GitHub Actions (/cicd) — v5.0 INICIADA
+  ├── 6 conceitos core: Workflow/Job/Step/Action/Runner/Artifact
+  ├── CI pipeline: jobs paralelos lint+test → encadeamento via needs → build → artifact upload
+  ├── Docker build+push: login-action, metadata-action (semver+sha tags), build-push-action + cache GHA
+  ├── Environments (staging auto + production com required reviewers) · deploy via SSH
+  ├── Matrix strategy: node 18/20/22 × ubuntu/windows, fail-fast false, exclude
+  ├── Secrets (3 escopos: repo/env/org) · masking de valores dinâmicos · GITHUB_TOKEN
+  ├── Self-hosted runner (register+config.sh, svc.sh systemd) · WarnBox repo público
+  ├── Workflows reutilizáveis (workflow_call) · Slack notification on-failure
+  ├── Badge 🚀 cicd-master (51º) · 3 checkpoints · module-accent #2563eb
+  ├── checklistItemsCount 139→142 · totalTopics 78→79 · CONTENT_PAGES_COUNT 43→44
+  └── Novo grupo "Cloud & Platform Engineering" em /topicos (tópico C01)
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
