@@ -258,4 +258,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.17 — Terraform IaC (/terraform)
   { id: 't-terraform',      category: 'Tópico',    title: 'Terraform IaC — Infraestrutura Declarativa', description: 'HCL declarativo: providers Docker/AWS, init→plan→apply→destroy, state, módulos e workspaces para múltiplos ambientes', href: '/terraform', icon: Server },
   { id: 'g-terraform-state', category: 'Glossário', title: 'Terraform State (terraform.tfstate)',         description: 'Arquivo JSON que mapeia recursos HCL ↔ infraestrutura real. Armazenar remotamente (S3/GitLab) é obrigatório em equipes', href: '/terraform', icon: HardDrive },
+
+  // Sprint I.18 — Suricata IDS/IPS (/suricata)
+  { id: 't-suricata',       category: 'Tópico',    title: 'Suricata IDS/IPS — Detecção e Prevenção de Intrusões', description: 'IDS passivo (af-packet) e IPS inline (NFQUEUE): regras customizadas, Emerging Threats, EVE JSON e integração com nftables', href: '/suricata', icon: Shield },
+  { id: 'g-eve-json',       category: 'Glossário', title: 'EVE JSON (Suricata)',                                    description: 'Formato de log estruturado do Suricata — cada alerta, fluxo, DNS e HTTP é uma linha JSON pronta para Loki/Grafana/SIEM', href: '/suricata', icon: FileText },
 ];

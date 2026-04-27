@@ -374,6 +374,12 @@ export const ROUTE_SEO = {
       'Domine Infraestrutura como Código com Terraform: providers (Docker, AWS), recursos, data sources, variáveis, outputs, state remoto, módulos reutilizáveis e workspaces para múltiplos ambientes.',
     keywords: ['Terraform', 'HCL', 'IaC', 'provider', 'state', 'módulo', 'workspace', 'init plan apply destroy', 'OpenTofu', 'infraestrutura imutável'],
   },
+  '/suricata': {
+    title: 'Suricata IDS/IPS | Detecção e Prevenção de Intrusões no Linux',
+    description:
+      'Configure o Suricata como IDS e IPS inline: regras customizadas, Emerging Threats, EVE JSON estruturado, modo IPS com NFQUEUE e integração com nftables para proteção em tempo real.',
+    keywords: ['Suricata', 'IDS', 'IPS', 'NFQUEUE', 'EVE JSON', 'Emerging Threats', 'detecção de intrusão', 'af-packet', 'regras Suricata', 'segurança Linux'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

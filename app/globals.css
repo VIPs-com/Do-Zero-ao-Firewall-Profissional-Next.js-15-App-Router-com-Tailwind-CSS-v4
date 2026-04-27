@@ -279,6 +279,9 @@ html.light {
   /* Sprint I.17 — Terraform IaC */
   .module-accent-terraform          { --mod: var(--color-layer-6); }
 
+  /* Sprint I.18 — Suricata IDS/IPS */
+  .module-accent-suricata           { --mod: #dc2626; }
+
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.
      Zero mudança no JSX da página — só aplicar a classe na div raiz. */

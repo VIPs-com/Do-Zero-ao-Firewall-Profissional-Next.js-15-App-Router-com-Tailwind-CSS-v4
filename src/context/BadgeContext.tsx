@@ -38,7 +38,8 @@ export type BadgeId =
   | 'ansible-master'
   | 'monitoring-master'
   | 'k8s-master'
-  | 'terraform-master';
+  | 'terraform-master'
+  | 'suricata-master';
 
 export interface BadgeDef {
   icon: string;
@@ -93,6 +94,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'monitoring-master':    { icon: '📊', title: 'Monitoring Master',    desc: 'Observabilidade real: Prometheus coletando métricas, Grafana com dashboards e Alertmanager notificando incidentes' },
   'k8s-master':           { icon: '☸️', title: 'Kubernetes Master',    desc: 'Orquestração de containers com K3s — Pods, Deployments, Services, NetworkPolicy e Ingress dominados' },
   'terraform-master':     { icon: '🏗️', title: 'Terraform Master',     desc: 'Infraestrutura declarativa com HCL — providers, state, módulos e workspaces dominados do init ao apply' },
+  'suricata-master':      { icon: '🛡️', title: 'Suricata Master',      desc: 'IDS/IPS configurado — regras customizadas, EVE JSON estruturado e modo IPS inline com NFQUEUE dominados' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -169,7 +171,9 @@ export const ALL_CHECKLIST_IDS = [
   'k8s-instalado', 'k8s-deploy', 'k8s-network',
   // Sprint I.17 — Terraform IaC (/terraform)
   'terraform-instalado', 'terraform-plan', 'terraform-modulos',
-]; // 127 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.18 — Suricata IDS/IPS (/suricata)
+  'suricata-instalado', 'suricata-regras', 'suricata-ips',
+]; // 130 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -205,8 +209,9 @@ export const ALL_CHECKLIST_IDS = [
  * 37. /monitoring
  * 38. /kubernetes
  * 39. /terraform
+ * 40. /suricata
  */
-export const CONTENT_PAGES_COUNT = 39;
+export const CONTENT_PAGES_COUNT = 40;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -357,6 +362,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['monitoring-instalado'] && checklist['monitoring-dashboard'] && checklist['monitoring-alertas']) unlockBadge('monitoring-master');
     if (checklist['k8s-instalado'] && checklist['k8s-deploy'] && checklist['k8s-network']) unlockBadge('k8s-master');
     if (checklist['terraform-instalado'] && checklist['terraform-plan'] && checklist['terraform-modulos']) unlockBadge('terraform-master');
+    if (checklist['suricata-instalado'] && checklist['suricata-regras'] && checklist['suricata-ips']) unlockBadge('suricata-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -382,8 +388,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (95 de 127).
-    if (Object.values(checklist).filter(v => v).length >= 95) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (97 de 130 → floor(130*0.75) = 97).
+    if (Object.values(checklist).filter(v => v).length >= 97) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {
