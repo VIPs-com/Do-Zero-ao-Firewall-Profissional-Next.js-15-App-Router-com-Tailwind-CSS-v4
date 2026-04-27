@@ -274,6 +274,8 @@ html.light {
   .module-accent-ansible            { --mod: var(--color-err); }
   /* Sprint I.15 — Prometheus + Grafana */
   .module-accent-monitoring         { --mod: var(--color-warn); }
+  /* Sprint I.16 — Kubernetes / K3s */
+  .module-accent-kubernetes         { --mod: var(--color-layer-3); }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

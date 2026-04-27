@@ -350,6 +350,12 @@ export const ROUTE_SEO = {
       'Configure Pi-hole como DNS sinkhole: blocklists, whitelist, integração com DHCP, iptables para forçar DNS e Unbound como resolver local. Bloqueio de anúncios para toda a rede.',
     keywords: ['Pi-hole', 'DNS sinkhole', 'bloqueio de anúncios', 'blocklist', 'gravity', 'Unbound', 'DNS privacidade'],
   },
+  '/kubernetes': {
+    title: 'Kubernetes / K3s | Pods · Deployments · Services · NetworkPolicy · Ingress',
+    description:
+      'Orquestração de containers com K3s: instalação single-node, kubectl, Deployments, Services NodePort/ClusterIP, ConfigMap/Secret, Ingress com Traefik, NetworkPolicy e Helm.',
+    keywords: ['Kubernetes', 'K3s', 'kubectl', 'Pod', 'Deployment', 'Service', 'Ingress', 'NetworkPolicy', 'Helm', 'orquestração'],
+  },
   '/monitoring': {
     title: 'Prometheus + Grafana | Métricas · PromQL · Dashboards · Alertas',
     description:

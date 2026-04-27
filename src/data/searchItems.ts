@@ -250,4 +250,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.15 — Prometheus + Grafana (/monitoring)
   { id: 't-monitoring',  category: 'Tópico',    title: 'Prometheus + Grafana — Observabilidade',   description: 'Métricas com node_exporter, PromQL, dashboards Grafana (ID 1860) e alertas com Alertmanager', href: '/monitoring', icon: Activity },
   { id: 'g-promql',      category: 'Glossário', title: 'PromQL — Prometheus Query Language',        description: 'Linguagem de consulta de séries temporais: rate(), increase(), sum by(), histograms e label matchers', href: '/monitoring', icon: TrendingUp },
+
+  // Sprint I.16 — Kubernetes / K3s (/kubernetes)
+  { id: 't-kubernetes',  category: 'Tópico',    title: 'Kubernetes / K3s — Orquestração de Containers', description: 'K3s single-node, kubectl, Deployments, Services, NetworkPolicy, Ingress Traefik e Helm', href: '/kubernetes', icon: Network },
+  { id: 'g-k8s-pod',     category: 'Glossário', title: 'Pod (Kubernetes)',                           description: 'Menor unidade deployável do Kubernetes — 1+ containers compartilhando rede e storage. Efêmero por natureza.', href: '/kubernetes', icon: Shield },
 ];
