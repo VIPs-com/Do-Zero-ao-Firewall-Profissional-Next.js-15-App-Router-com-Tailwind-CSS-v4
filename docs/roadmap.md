@@ -385,6 +385,161 @@ Sprint ANIM ✅ Micro-animações no Checklist
   │       Desliza suavemente ao chegar no dashboard após marcar checkpoints.
   └── lint ✓ · test 42/42 ✓ · build 33/33 ✓
 
+Sprint EVOL ✅ Roadmap Visual em /evolucao
+  ├── app/evolucao/page.tsx: nova seção #roadmap-evolucao (3 fases v2.0/v3.0/v4.0)
+  │   ├── Grids de módulos disponíveis/em breve por fase
+  │   ├── Botão localStorage "Me avise sobre v2.0" (persiste interesse)
+  │   └── +1 searchItem (t-roadmap-evolucao)
+  └── lint ✓ · test 42/42 ✓ · build ✓
+
+Sprint I.3 ✅ Módulo Hardening (/hardening)
+  ├── SSH hardening (PasswordAuthentication no, Ed25519, AllowUsers)
+  ├── sysctl security (SYN cookies, ASLR, rp_filter)
+  ├── AppArmor (aa-enforce Nginx, aa-logprof, aa-status)
+  ├── Badge 🔐 hardening-master · 3 checkpoints · module-accent #a3e635
+  └── CONTENT_PAGES_COUNT 20→21 · checklistItemsCount 60→63 · totalTopics 45→46
+
+Sprint I.4 ✅ Módulo Docker Networking (/docker)
+  ├── Bridge/host/none drivers · redes customizadas + DNS interno
+  ├── Port mapping = DNAT automático · chains DOCKER/DOCKER-USER no iptables
+  ├── Docker Compose redes declarativas (frontend/backend/internal)
+  ├── Badge 🐳 docker-master · 3 checkpoints · module-accent #2496ed
+  └── CONTENT_PAGES_COUNT 21→22 · checklistItemsCount 63→66 · totalTopics 46→47
+
+Sprint F1-F3 ✅ Trilha Fundamentos Linux v2.0 (10 módulos)
+  ├── /fundamentos (índice) + /fhs + /comandos + /editores + /processos
+  │   + /permissoes + /discos + /logs-basicos + /backup + /shell-script + /cron
+  ├── FUNDAMENTOS_ORDER em courseOrder.ts · ModuleNav com prop order=
+  ├── Badge 🐧 fundamentos-master · 10 checkpoints · CTA "Novo no Linux?" na home
+  ├── +11 searchItems (85 total) · tópicos F01-F10 em /topicos
+  └── CONTENT_PAGES_COUNT 22→24 · checklistItemsCount 66→76 · totalTopics 47→57
+
+Sprint Polish-F ✅ Fundamentos Rich Edition
+  ├── 7 módulos enriquecidos: /processos, /permissoes, /discos, /logs-basicos,
+  │   /backup, /shell-script, /cron
+  └── FluxoCard + WindowsComparisonBox + InfoBox/WarnBox + exercícios expandidos
+
+Sprint I.5 ✅ SSH com 2FA / TOTP (/ssh-2fa)
+  ├── libpam-google-authenticator · /etc/pam.d/sshd · KbdInteractiveAuthentication
+  ├── TOTP teoria (HMAC + RFC 6238) · rollback seguro · integração Fail2ban
+  ├── Badge 📱 ssh-2fa-master · 3 checkpoints · module-accent #f59e0b
+  └── CONTENT_PAGES_COUNT 24→25(?) · checklistItemsCount 76→79 · totalTopics 57→58
+
+Sprint I.6 ✅ Docker Compose (/docker-compose)
+  ├── Anatomia completa do docker-compose.yml · redes frontend/backend/internal
+  ├── Volumes nomeados/bind/tmpfs · .env + Docker Secrets · healthcheck + replicas
+  ├── Badge 🐙 compose-master · 3 checkpoints · module-accent #1d63ed
+  └── CONTENT_PAGES_COUNT →25 · checklistItemsCount 79→82 · totalTopics 58→59
+
+Sprint Polish-I ✅ Módulos Intermediários Rich Edition + Quiz++
+  ├── /wireguard: geração de chaves, wg0.conf, wg-quick, wg show, troubleshooting
+  ├── /fail2ban: tail auth.log → failregex → maxretry → iptables REJECT → auto-unban
+  ├── /nftables: basic ruleset, blocklist set, iptables-translate (fix: trackPageVisit ausente)
+  └── Quiz: 33→50 perguntas (+17: WireGuard×3, Fail2ban×3, nftables×3, Hardening×2, Docker×2, Compose×2, SSH 2FA×2)
+
+Sprint F4 ✅ Instalação de Programas (/pacotes)
+  ├── apt (update/upgrade/install/purge/autoremove/search) · dpkg · repositórios + PPAs
+  ├── snap (sandboxed, auto-update) · pip3 + venv (melhor prática Python)
+  ├── Badge 📦 pacotes-master · 3 checkpoints · module-accent #22c55e
+  └── checklistItemsCount 82→85 · totalTopics 59→60 · FUNDAMENTOS_ORDER 10→11
+
+Sprint F5 ✅ Processo de Boot (/boot)
+  ├── BIOS/UEFI → POST → GRUB2 (update-grub, parâmetros kernel) → kernel+initrd
+  ├── systemd PID 1 (targets: poweroff/rescue/multi-user/graphical) · systemd-analyze blame
+  ├── Badge 🖥️ boot-master · 3 checkpoints · module-accent warn
+  └── checklistItemsCount 85→88 · totalTopics 60→61 · FUNDAMENTOS_ORDER 11→12
+
+Sprint F6 ✅ Comandos Avançados (/comandos-avancados)
+  ├── sed (substituição in-place, filtro linhas) · dd (backup de disco, gravar ISO — "disk destroyer")
+  ├── nc/NetCat (testar portas, listener, banner grabbing, transferência de arquivo)
+  ├── Links simbólicos vs hard links (ln -s, ln, inodes) · compactação (tar+gzip/bzip2/xz, zip)
+  ├── Badge 🔧 cmd-avancados-master · 3 checkpoints · module-accent layer-5
+  └── checklistItemsCount 88→91 · totalTopics 61→62 · FUNDAMENTOS_ORDER 12→13
+
+Sprint F7 ✅ Logs Centralizados com Rsyslog (/rsyslog)
+  ├── rsyslog vs journald · facilities (kern/auth/daemon/mail/user) · priorities (emerg→debug)
+  ├── Servidor central (imtcp/imudp porta 514) · cliente remoto (@@servidor:514)
+  ├── logrotate · filtros $programname · integração SIEM
+  ├── Badge 📡 rsyslog-master · 3 checkpoints · module-accent layer-4
+  └── checklistItemsCount 91→94 · totalTopics 62→63 · FUNDAMENTOS_ORDER 13→14 · v2.0 COMPLETO ✅
+
+Sprint I.7 ✅ Servidor DHCP (/dhcp)
+  ├── DORA (Discover/Offer/Request/Ack) · isc-dhcp-server · dhcpd.conf
+  ├── Subnet/range/routers/dns-servers · reservas por MAC · leases · iptables 67/68 UDP
+  ├── Badge 🌐 dhcp-master · 3 checkpoints · module-accent info
+  └── checklistItemsCount 94→97 · totalTopics 63→64 · novo grupo "Servidores e Serviços" em /topicos
+
+Sprint I.8 ✅ Samba File Sharing (/samba)
+  ├── smb.conf (workgroup, shares público/privado/homes) · smbpasswd · permissões
+  ├── Firewall 137/138 UDP + 139/445 TCP · acesso Windows \\IP\pasta · smbclient + mount.cifs
+  ├── Badge 🗂️ samba-master · 3 checkpoints · module-accent layer-6
+  └── checklistItemsCount 97→100 · totalTopics 64→65
+
+Sprint I.9 ✅ Apache Web Server (/apache)
+  ├── /etc/apache2/ · a2ensite/a2dissite · a2enmod · .htaccess · SSL Certbot + autoassinado
+  ├── Proxy reverso (ProxyPass/ProxyPassReverse) · Apache vs Nginx tabela comparativa
+  ├── Badge 🌍 apache-master · 3 checkpoints · module-accent warn
+  └── checklistItemsCount 100→103 · totalTopics 65→66
+
+Sprint I.10 ✅ OpenVPN (/openvpn)
+  ├── PKI com Easy-RSA (init-pki, build-ca, build-server, gen-dh, ta.key)
+  ├── server.conf (porta 1194 UDP, dev tun, AES-256-GCM) · script gerar-cliente.sh
+  ├── iptables NAT+FORWARD para 10.8.0.0/24 · revogação com CRL
+  ├── Badge 🔒 openvpn-master · 3 checkpoints · module-accent layer-3
+  └── checklistItemsCount 103→106 · totalTopics 66→67
+
+Sprint I.11 ✅ Traefik Proxy Reverso (/traefik)
+  ├── docker-compose com Traefik (exposedbydefault=false, ACME/Let's Encrypt)
+  ├── Middlewares: redirect HTTP→HTTPS, basicauth htpasswd, rate-limit, HSTS headers
+  ├── Dashboard seguro · stack completa (traefik+app+postgres, redes public/internal)
+  ├── Badge 🔀 traefik-master · 3 checkpoints · module-accent accent-2
+  └── checklistItemsCount 106→109 · totalTopics 67→68
+
+Sprint I.12 ✅ LDAP / OpenLDAP (/ldap)
+  ├── DIT (DN, dc, ou, cn, uid, objectClass) · slapd + dpkg-reconfigure
+  ├── LDIF (OUs usuarios/grupos) · inetOrgPerson+posixAccount+shadowAccount
+  ├── LDAPS (TLS autoassinado + OLC) · PAM (libpam-ldapd+nslcd → login SSH via LDAP)
+  ├── Badge 👥 ldap-master · 3 checkpoints · module-accent layer-7
+  └── checklistItemsCount 109→112 · totalTopics 68→69
+
+Sprint I.13 ✅ Pi-hole (/pihole)
+  ├── DNS sinkhole · Docker Compose (macvlan) · porta 53 conflito systemd-resolved
+  ├── DHCP distribui Pi-hole como DNS · iptables DNAT forçar DNS · gravity + blocklists
+  ├── Unbound como resolver recursivo local (porta 5335)
+  ├── Badge 🕳️ pihole-master · 3 checkpoints · module-accent ok
+  └── checklistItemsCount 112→115 · totalTopics 69→70 · v3.0 COMPLETO ✅
+
+Sprint I.14 ✅ Ansible para SysAdmins (/ansible)
+  ├── Ansible vs Puppet/Chef/Salt · inventário INI · ad-hoc · playbooks YAML
+  ├── Jinja2 templates (loop/when/register) · roles (galaxy init, estrutura completa)
+  ├── Ansible Galaxy + Vault (create/edit/view, --vault-password-file)
+  ├── Badge ⚙️ ansible-master · 3 checkpoints · module-accent err
+  └── checklistItemsCount 115→118 · totalTopics 70→71 · novo grupo "Infraestrutura Moderna"
+
+Sprint I.15 ✅ Prometheus + Grafana (/monitoring)
+  ├── 3 pilares observabilidade · Prometheus pull-based TSDB (scraping 15s)
+  ├── Docker Compose (prometheus+node_exporter+alertmanager+grafana)
+  ├── PromQL (rate/irate/increase/sum/avg) · dashboards ID 1860 · alert_rules.yml
+  ├── Alertmanager (routes, group_by, email+Slack, inhibit_rules)
+  ├── Badge 📊 monitoring-master · 3 checkpoints · module-accent warn
+  └── checklistItemsCount 118→121 · totalTopics 71→72
+
+Sprint I.16 ✅ Kubernetes / K3s (/kubernetes)
+  ├── K3s vs K8s vs minikube · conceitos core (Pod/Deployment/Service/Ingress/ConfigMap/Secret/PVC)
+  ├── kubectl · manifestos YAML (RollingUpdate + readinessProbe) · ConfigMap+Secret
+  ├── Ingress Traefik + cert-manager · NetworkPolicy (requer Calico em K3s) · Helm
+  ├── Badge ☸️ k8s-master · 3 checkpoints · module-accent layer-3
+  └── checklistItemsCount 121→124 · totalTopics 72→73 · CONTENT_PAGES_COUNT →38
+
+Sprint I.17 ✅ Terraform IaC (/terraform)
+  ├── Terraform vs Ansible (provisionamento vs configuração)
+  ├── 7 conceitos core: Provider/Resource/Data Source/Variable/Output/State/Module
+  ├── Projeto Docker provider (main.tf+variables.tf+outputs.tf)
+  ├── Workflow init→plan→apply→destroy · .tfvars · workspaces · state remoto (S3/GitLab/TFC)
+  ├── Módulos reutilizáveis · provider AWS (EC2+SG+EIP+user_data) · lifecycle/count/for_each
+  ├── Badge 🏗️ terraform-master (46º) · 3 checkpoints · module-accent layer-6
+  └── checklistItemsCount 124→127 · totalTopics 73→74 · CONTENT_PAGES_COUNT 38→39
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

@@ -266,4 +266,103 @@ nft list ruleset > /etc/nftables.conf
 > Ver deep dive `nftables-vs-iptables` em `/nftables` para comparação completa.
 
 ---
+
+## Trilha v2.0 — Fundamentos Linux (14 módulos em `/fundamentos`)
+
+*Para iniciantes vindos do Windows ou sem experiência Linux prévia.*
+
+### F01 — Estrutura do Sistema (FHS) · `/fhs`
+Hierarquia do Filesystem Linux: `/etc` (configuração), `/var` (dados variáveis), `/proc` (kernel virtual), `/usr` (programas), `/home` (usuários). Essencial para saber onde cada coisa mora.
+
+### F02 — Comandos Essenciais · `/comandos`
+`ls`, `cd`, `cp`, `mv`, `rm`, `find`, `grep`, `pipe |`, `redirecionamento >/>>`... A caixa de ferramentas básica que todo SysAdmin usa diariamente.
+
+### F03 — Editores: nano e VIM · `/editores`
+nano para iniciantes (Ctrl+O salva, Ctrl+X sai). VIM em 4 modos: Normal/Insert/Visual/Command. `:wq`, `dd`, `yy`, `/busca` — suficiente para editar configs em produção.
+
+### F04 — Gerenciamento de Processos · `/processos`
+`ps aux`, `top`/`htop`, `kill`/`killall`, `systemctl start/stop/enable/status`, `journalctl -u servico`. Controle total sobre o que está rodando no servidor.
+
+### F05 — Permissões e Usuários · `/permissoes`
+`chmod` (octal e simbólico), `chown`, `useradd`/`usermod`/`userdel`, `sudo`, `/etc/sudoers`. O modelo de segurança Unix explicado com analogias do mundo real.
+
+### F06 — Discos e Partições · `/discos`
+`fdisk`/`parted`, `mkfs`, `mount`/`umount`, `/etc/fstab`, `df -h`, `du -sh`. Do particionamento ao ponto de montagem persistente.
+
+### F07 — Logs e Monitoramento · `/logs-basicos`
+`journalctl` (com/sem filtros), `/var/log/syslog`/`auth.log`/`nginx/`, `tail -f` para monitoramento em tempo real. A base para diagnosticar qualquer problema.
+
+### F08 — Backup e Restauração · `/backup`
+`tar -czf` / `tar -xzf`, `rsync` (local e remoto via SSH), `scp`, estratégias 3-2-1. Backup que nunca foi testado é apenas ilusão de segurança.
+
+### F09 — Shell Script Bash · `/shell-script`
+Variáveis, `$()`, `if/elif/else`, `for`/`while`, funções, `$1`/`$@`, `exit 0/1`. Scripts reais para automatizar tarefas repetitivas de SysAdmin.
+
+### F10 — Agendamento de Tarefas · `/cron`
+`crontab -e`, sintaxe `* * * * *`, `@reboot`, `systemd timers` como alternativa moderna. Automação silenciosa que roda enquanto você dorme.
+
+### F11 — Instalação de Programas · `/pacotes`
+`apt update/upgrade/install/purge/autoremove`, `dpkg -i/.deb`, repositórios + PPAs, `snap`, `pip3` + venv. Fecha o paradoxo: todo módulo usa `apt install` sem nunca explicá-lo.
+
+### F12 — Processo de Boot · `/boot`
+BIOS/UEFI → GRUB2 → kernel/initrd → systemd PID 1 → targets. `systemd-analyze blame` para depurar boot lento. `journalctl -b` para logs do boot atual.
+
+### F13 — Comandos Avançados · `/comandos-avancados`
+**sed** (substituição in-place), **dd** (cópia de disco/ISO — o "disk destroyer"), **nc/NetCat** (diagnóstico de rede), **ln -s** (links simbólicos vs hard), **gzip/tar/zip** (compactação completa).
+
+### F14 — Logs Centralizados com Rsyslog · `/rsyslog`
+`rsyslog.conf` (facilities × priorities), servidor central (imtcp porta 514), cliente remoto (`@@servidor:514`), `logrotate` com compress/delaycompress. Imprescindível para compliance e forense.
+
+---
+
+## Trilha v3.0 — Servidores e Serviços (9 módulos)
+
+*Serviços de infraestrutura que completam o laboratório.*
+
+### S01 — Servidor DHCP · `/dhcp`
+`isc-dhcp-server`, `dhcpd.conf` (subnet/range/routers/dns-servers), reservas por MAC address, `/var/lib/dhcp/dhcpd.leases`. Fecha o ciclo: LAN distribui IPs automaticamente como em produção.
+
+### S02 — Samba — File Sharing · `/samba`
+`smb.conf`, shares público/privado/homes, `smbpasswd` (usuário Samba ≠ usuário Linux), acesso `\\IP\pasta` no Windows Explorer, `smbclient`/`mount.cifs` no Linux. Portas 137/138 UDP + 139/445 TCP.
+
+### S03 — Apache Web Server · `/apache`
+`a2ensite`/`a2dissite`, VirtualHosts por nome, `a2enmod rewrite/ssl/proxy`, SSL com Certbot + autoassinado, proxy reverso `ProxyPass`. Comparativo honesto Apache vs Nginx em 9 critérios.
+
+### S04 — OpenVPN · `/openvpn`
+PKI com Easy-RSA (CA + server cert + gen-dh + ta.key), `server.conf` (1194 UDP, dev tun, AES-256-GCM), `client.ovpn` inline, split/full tunnel, revogação com CRL. Vs WireGuard vs IPSec: quando usar cada um.
+
+### S05 — Traefik Proxy Reverso · `/traefik`
+Docker Compose com labels automáticas, ACME/Let's Encrypt via `tlschallenge`, middlewares (basicauth, rate-limit, HSTS, redirect HTTP→HTTPS), dashboard seguro. Complemento natural do Docker Compose.
+
+### S06 — LDAP / OpenLDAP · `/ldap`
+DIT (DN/dc/ou/cn/uid), slapd, LDIF com OUs e inetOrgPerson+posixAccount+shadowAccount, LDAPS (TLS), PAM com `libpam-ldapd+nslcd` → login SSH via LDAP. Active Directory simplificado para Linux.
+
+### S07 — Docker Networking · `/docker`
+Bridge/host/none drivers, redes customizadas + DNS interno, port mapping = DNAT automático, chains `DOCKER`/`DOCKER-USER` no iptables. Visão completa de como Docker interage com a rede do host.
+
+### S08 — Docker Compose · `/docker-compose`
+Stack completa Nginx+App+PostgreSQL, redes `frontend`/`backend`/`internal`, volumes nomeados/bind/tmpfs, `.env` + Docker Secrets, `healthcheck` + `deploy.replicas`. Orquestração local sem Kubernetes.
+
+### S09 — Pi-hole · `/pihole`
+DNS sinkhole com blocklists gravity, Docker Compose macvlan (IP fixo na LAN), iptables DNAT para forçar DNS, whitelist/blacklist/regex, Unbound como resolver recursivo local (porta 5335, privacidade máxima).
+
+---
+
+## Trilha v4.0 — Infraestrutura Moderna (4 módulos)
+
+*Ferramentas que o mercado corporativo exige hoje.*
+
+### I01 — Ansible para SysAdmins · `/ansible`
+Agentless IaC via SSH, inventário INI, comandos ad-hoc, playbooks YAML (tasks/handlers/notify), templates Jinja2 (`loop`/`when`/`register`), roles (galaxy init), Ansible Galaxy, Vault (`ansible-vault create`). Automatize dezenas de servidores com um único `ansible-playbook`.
+
+### I02 — Prometheus + Grafana · `/monitoring`
+Arquitetura pull-based (TSDB, scraping 15s), Docker Compose completo (prometheus+node_exporter+alertmanager+grafana), PromQL (`rate()`, `irate()`, `sum by()`), dashboards prontos (ID 1860), `alert_rules.yml`, Alertmanager com email+Slack+`inhibit_rules`. Os 3 pilares da observabilidade.
+
+### I03 — Kubernetes / K3s · `/kubernetes`
+K3s (1 comando de instalação), conceitos core (Pod/Deployment/Service/Ingress/ConfigMap/Secret/Namespace/PVC), kubectl, manifestos YAML com `RollingUpdate`+`readinessProbe`, NetworkPolicy (requer Calico em K3s), Helm. Orquestração de containers do zero em ambiente real.
+
+### I04 — Terraform IaC · `/terraform`
+HCL declarativo, 7 conceitos core (Provider/Resource/Data Source/Variable/Output/State/Module), projeto Docker provider (main.tf+variables.tf+outputs.tf), workflow `init→plan→apply→destroy`, workspaces, state remoto (S3+DynamoDB, Terraform Cloud, GitLab), provider AWS (EC2+SG+EIP), `lifecycle`/`count`/`for_each`. Infra imutável, versionada, reproduzível.
+
+---
 [← Voltar ao indice](README.md)

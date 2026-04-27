@@ -65,10 +65,25 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 cheat-sheet/              ← Referência rápida de comandos
 │   ├── 📁 wireguard/                ← Módulo 10: WireGuard VPN (Sprint I.1)
 │   ├── 📁 fail2ban/                 ← Módulo 11: Fail2ban (Sprint I.2)
-│   ├── 📁 topicos/                  ← Índice dos 26 tópicos práticos
-│   ├── 📁 quiz/                     ← Avaliação gamificada
+│   ├── 📁 topicos/                  ← Índice dos 74 tópicos práticos
+│   ├── 📁 quiz/                     ← Avaliação gamificada (50 perguntas)
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
-│   └── 📁 certificado/              ← Certificado de conclusão
+│   ├── 📁 certificado/              ← Certificado de conclusão
+│   │
+│   │   ── v2.0 Fundamentos Linux ──────────────────────────────────
+│   ├── 📁 fundamentos/              ← Índice da trilha Fundamentos
+│   ├── 📁 fhs/ · /comandos/ · /editores/ · /processos/ · /permissoes/
+│   ├── 📁 discos/ · /logs-basicos/ · /backup/ · /shell-script/ · /cron/
+│   ├── 📁 pacotes/ · /boot/ · /comandos-avancados/ · /rsyslog/
+│   │
+│   │   ── v3.0 Servidores e Serviços ──────────────────────────────
+│   ├── 📁 dhcp/ · /samba/ · /apache/ · /openvpn/
+│   ├── 📁 traefik/ · /ldap/ · /pihole/
+│   │   (docker/ e docker-compose/ também aqui)
+│   │
+│   │   ── v4.0 Infraestrutura Moderna ─────────────────────────────
+│   ├── 📁 ansible/ · /monitoring/ · /kubernetes/ · /terraform/
+│   └── 📁 (v5.0 em planejamento: CI/CD, Service Mesh, SRE)
 │
 ├── 📄 proxy.ts                      ← Sprint E: CSP nonce per-request
 ├── 📄 next.config.ts                ← Headers de segurança estáticos
@@ -82,7 +97,9 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 04-global-search.spec.ts     ← ⌘K abre, navega, ESC fecha
 │   ├── 05-theme-persistence.spec.ts ← Toggle dark/light + badge night-owl
 │   ├── 06-export-import-time-traveler.spec.ts ← Download + upload + badge
-│   └── 07-dashboard-counters.spec.ts ← 3/35 checklist, 75% quiz, 0/21 badges
+│   ├── 07-dashboard-counters.spec.ts ← 3/127 checklist, 75% quiz, 0/46 badges
+│   ├── 08-module-nav.spec.ts         ← Navegação sequencial Anterior/Próximo
+│   └── 09-milestone-celebration.spec.ts ← Modal de conquista + confetti
 │
 └── 📁 src/
     ├── 📁 components/
@@ -108,8 +125,9 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── quizQuestions.ts         ← Perguntas do quiz extraídas (Sprint F)
-    │   ├── searchItems.ts           ← Índice da busca global (54 itens)
+    │   ├── quizQuestions.ts         ← 50 perguntas do quiz (Sprint F + Polish-I)
+    │   ├── searchItems.ts           ← Índice da busca global (121 itens)
+    │   ├── courseOrder.ts           ← COURSE_ORDER (25 módulos) + FUNDAMENTOS_ORDER (14)
     │   └── deepDives.tsx            ← Conteúdo dos 6 modais avançados
     │
     └── 📁 lib/
@@ -125,10 +143,12 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **18** (exclui home/quiz/dashboard/certificado/topicos) |
-| `totalTopics` | `app/dashboard/page.tsx` | **26** |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | **35** (igual a `ALL_CHECKLIST_IDS.length`) |
-| Texto na Home | `app/page.tsx` | "26 tópicos práticos" |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **39** (base do badge deep-diver) |
+| `totalTopics` | `app/dashboard/page.tsx` | **74** |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **127** (igual a `ALL_CHECKLIST_IDS.length`) |
+| Badges | `src/context/BadgeContext.tsx` | **46** |
+| searchItems | `src/data/searchItems.ts` | **121** |
+| Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
 
 Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.
 
