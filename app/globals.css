@@ -288,6 +288,9 @@ html.light {
   /* Sprint I.20 — Service Mesh (Istio) */
   .module-accent-service-mesh       { --mod: #06b6d4; }
 
+  /* Sprint I.21 — SRE & SLOs */
+  .module-accent-sre                { --mod: #f59e0b; }
+
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.
      Zero mudança no JSX da página — só aplicar a classe na div raiz. */

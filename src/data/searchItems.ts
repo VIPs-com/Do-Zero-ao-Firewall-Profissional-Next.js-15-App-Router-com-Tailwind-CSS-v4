@@ -270,4 +270,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.20 — Service Mesh com Istio (/service-mesh)
   { id: 't-service-mesh',   category: 'Tópico',    title: 'Service Mesh com Istio — mTLS e Traffic Management',   description: 'Istio injeta sidecar Envoy em cada pod: mTLS automático, VirtualService para canary, DestinationRule com circuit breaker e Kiali para observabilidade', href: '/service-mesh', icon: Network },
   { id: 'g-virtual-service', category: 'Glossário', title: 'VirtualService (Istio)',                               description: 'CRD do Istio que define regras de roteamento: peso por subset (canary), match por header (A/B test), retry, timeout e injeção de falhas', href: '/service-mesh', icon: FileText },
+
+  // Sprint I.21 — SRE & SLOs (/sre)
+  { id: 't-sre',            category: 'Tópico',    title: 'SRE & SLOs — Confiabilidade como Engenharia',           description: 'SLIs/SLOs com Prometheus, error budget calculado, alertas de burn rate, runbooks acionáveis e postmortem blameless', href: '/sre', icon: Activity },
+  { id: 'g-error-budget',   category: 'Glossário', title: 'Error Budget (SRE)',                                    description: 'Quantidade de falha permitida dentro da janela do SLO. Budget sobrando = acelerar deploys. Budget esgotado = congelar e focar em confiabilidade', href: '/sre', icon: FileText },
 ];

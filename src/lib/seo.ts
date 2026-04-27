@@ -386,6 +386,12 @@ export const ROUTE_SEO = {
       'Domine eBPF e XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.',
     keywords: ['eBPF', 'XDP', 'BCC', 'bpftrace', 'Cilium', 'Falco', 'observabilidade Linux', 'kernel programming', 'tcpconnect', 'execsnoop', 'NetworkPolicy'],
   },
+  '/sre': {
+    title: 'SRE & SLOs | Site Reliability Engineering na Prática com Prometheus',
+    description:
+      'Implemente SRE do zero: defina SLIs e SLOs reais, calcule error budget, configure alertas de burn rate no Prometheus, escreva runbooks acionáveis e conduza postmortems blameless.',
+    keywords: ['SRE', 'SLO', 'SLI', 'error budget', 'burn rate', 'postmortem blameless', 'on-call', 'toil', 'Prometheus', 'PromQL', 'confiabilidade'],
+  },
   '/service-mesh': {
     title: 'Service Mesh com Istio | mTLS, Traffic Management e Observabilidade em Kubernetes',
     description:

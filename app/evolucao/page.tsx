@@ -57,7 +57,7 @@ const PHASE_V4 = {
   name: 'Infraestrutura Moderna',
   color: 'border-layer-6/40 bg-layer-6/5',
   badgeColor: 'bg-layer-6/15 text-layer-6 border-layer-6/30',
-  status: '7 disponíveis · 1 em breve',
+  status: '8 disponíveis · 0 em breve ✅',
   modules: [
     { name: 'Ansible para SysAdmins', slug: '/ansible',        available: true,  icon: '⚙️',  tags: ['IaC', 'playbooks', 'automação'] },
     { name: 'Prometheus + Grafana',   slug: '/monitoring',     available: true,  icon: '📊',  tags: ['métricas', 'dashboards', 'alertas'] },
@@ -66,7 +66,7 @@ const PHASE_V4 = {
     { name: 'Suricata IDS/IPS',       slug: '/suricata',       available: true,  icon: '🛡️',  tags: ['regras', 'EVE JSON', 'IPS mode'] },
     { name: 'eBPF & XDP',            slug: '/ebpf',           available: true,  icon: '⚡',  tags: ['kernel', 'bpftrace', 'Cilium'] },
     { name: 'Service Mesh (Istio)',   slug: '/service-mesh',   available: true,  icon: '🕸️',  tags: ['mTLS', 'VirtualService', 'Kiali'] },
-    { name: 'SRE & SLOs',            slug: null, available: false, icon: '🎯',  tags: ['error budget', 'alerting', 'on-call'] },
+    { name: 'SRE & SLOs',            slug: '/sre',            available: true,  icon: '🎯',  tags: ['error budget', 'burn rate', 'postmortem'] },
   ],
 };
 

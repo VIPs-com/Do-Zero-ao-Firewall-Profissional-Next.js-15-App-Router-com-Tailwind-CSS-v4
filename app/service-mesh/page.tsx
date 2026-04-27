@@ -689,10 +689,13 @@ istioctl dashboard kiali`}
             <ChevronLeft size={16} />
             <span>Anterior: eBPF &amp; XDP</span>
           </Link>
-          <span className="flex items-center gap-2 text-text-2/40 text-sm cursor-not-allowed">
+          <Link
+            href="/sre"
+            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
+          >
             <span>Próximo: SRE &amp; SLOs</span>
             <ChevronRight size={16} />
-          </span>
+          </Link>
         </div>
 
       </div>

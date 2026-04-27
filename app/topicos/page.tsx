@@ -152,6 +152,8 @@ const TOPICS: Topic[] = [
   { id: 'i06', num: 'I06', title: 'eBPF & XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.', layer: 'Kernel · Observabilidade', layerClass: 'l2', href: '/ebpf', group: 'Infraestrutura Moderna' },
   // Sprint I.20 — Service Mesh com Istio (v4.0 Infraestrutura Moderna)
   { id: 'i07', num: 'I07', title: 'Service Mesh com Istio: sidecar Envoy, mTLS automático (SPIFFE/X.509), VirtualService (canary/A-B), DestinationRule (circuit breaker), AuthorizationPolicy e observabilidade com Kiali/Jaeger.', layer: 'Camada 7 · mTLS', layerClass: 'l7', href: '/service-mesh', group: 'Infraestrutura Moderna' },
+  // Sprint I.21 — SRE & SLOs (v4.0 Infraestrutura Moderna)
+  { id: 'i08', num: 'I08', title: 'SRE & SLOs: SLIs/SLOs com Prometheus (recording rules + burn rate), error budget como ferramenta de decisão, alertas por sintoma, runbooks acionáveis e postmortem blameless.', layer: 'Cultura · Confiabilidade', layerClass: 'l7', href: '/sre', group: 'Infraestrutura Moderna' },
 ];
 
 export default function TopicsPage() {
