@@ -266,4 +266,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.19 — eBPF & XDP (/ebpf)
   { id: 't-ebpf',           category: 'Tópico',    title: 'eBPF & XDP — Programação no Kernel Linux',             description: 'BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance e Cilium CNI para Kubernetes', href: '/ebpf', icon: Zap },
   { id: 'g-bpftrace',       category: 'Glossário', title: 'bpftrace — Linguagem de Scripting para eBPF',           description: 'DSL de alto nível que compila para bytecode eBPF — kprobes, tracepoints e USDTs com sintaxe parecida com awk/DTrace', href: '/ebpf', icon: FileText },
+
+  // Sprint I.20 — Service Mesh com Istio (/service-mesh)
+  { id: 't-service-mesh',   category: 'Tópico',    title: 'Service Mesh com Istio — mTLS e Traffic Management',   description: 'Istio injeta sidecar Envoy em cada pod: mTLS automático, VirtualService para canary, DestinationRule com circuit breaker e Kiali para observabilidade', href: '/service-mesh', icon: Network },
+  { id: 'g-virtual-service', category: 'Glossário', title: 'VirtualService (Istio)',                               description: 'CRD do Istio que define regras de roteamento: peso por subset (canary), match por header (A/B test), retry, timeout e injeção de falhas', href: '/service-mesh', icon: FileText },
 ];

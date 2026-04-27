@@ -386,6 +386,12 @@ export const ROUTE_SEO = {
       'Domine eBPF e XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.',
     keywords: ['eBPF', 'XDP', 'BCC', 'bpftrace', 'Cilium', 'Falco', 'observabilidade Linux', 'kernel programming', 'tcpconnect', 'execsnoop', 'NetworkPolicy'],
   },
+  '/service-mesh': {
+    title: 'Service Mesh com Istio | mTLS, Traffic Management e Observabilidade em Kubernetes',
+    description:
+      'Configure Istio no Kubernetes: mTLS automático com SPIFFE, VirtualService para canary deploy, DestinationRule com circuit breaker, AuthorizationPolicy e observabilidade com Kiali, Jaeger e Grafana.',
+    keywords: ['Istio', 'Service Mesh', 'mTLS', 'Envoy', 'VirtualService', 'DestinationRule', 'Kiali', 'Jaeger', 'canary deploy', 'circuit breaker', 'SPIFFE'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

@@ -285,6 +285,9 @@ html.light {
   /* Sprint I.19 — eBPF & XDP */
   .module-accent-ebpf               { --mod: #8b5cf6; }
 
+  /* Sprint I.20 — Service Mesh (Istio) */
+  .module-accent-service-mesh       { --mod: #06b6d4; }
+
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.
      Zero mudança no JSX da página — só aplicar a classe na div raiz. */
