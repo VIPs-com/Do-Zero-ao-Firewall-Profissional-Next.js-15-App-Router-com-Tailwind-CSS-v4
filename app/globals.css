@@ -282,6 +282,9 @@ html.light {
   /* Sprint I.18 — Suricata IDS/IPS */
   .module-accent-suricata           { --mod: #dc2626; }
 
+  /* Sprint I.19 — eBPF & XDP */
+  .module-accent-ebpf               { --mod: #8b5cf6; }
+
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.
      Zero mudança no JSX da página — só aplicar a classe na div raiz. */

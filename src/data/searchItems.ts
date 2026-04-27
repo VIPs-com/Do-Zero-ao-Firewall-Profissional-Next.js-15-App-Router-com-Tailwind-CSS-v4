@@ -262,4 +262,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.18 — Suricata IDS/IPS (/suricata)
   { id: 't-suricata',       category: 'Tópico',    title: 'Suricata IDS/IPS — Detecção e Prevenção de Intrusões', description: 'IDS passivo (af-packet) e IPS inline (NFQUEUE): regras customizadas, Emerging Threats, EVE JSON e integração com nftables', href: '/suricata', icon: Shield },
   { id: 'g-eve-json',       category: 'Glossário', title: 'EVE JSON (Suricata)',                                    description: 'Formato de log estruturado do Suricata — cada alerta, fluxo, DNS e HTTP é uma linha JSON pronta para Loki/Grafana/SIEM', href: '/suricata', icon: FileText },
+
+  // Sprint I.19 — eBPF & XDP (/ebpf)
+  { id: 't-ebpf',           category: 'Tópico',    title: 'eBPF & XDP — Programação no Kernel Linux',             description: 'BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance e Cilium CNI para Kubernetes', href: '/ebpf', icon: Zap },
+  { id: 'g-bpftrace',       category: 'Glossário', title: 'bpftrace — Linguagem de Scripting para eBPF',           description: 'DSL de alto nível que compila para bytecode eBPF — kprobes, tracepoints e USDTs com sintaxe parecida com awk/DTrace', href: '/ebpf', icon: FileText },
 ];

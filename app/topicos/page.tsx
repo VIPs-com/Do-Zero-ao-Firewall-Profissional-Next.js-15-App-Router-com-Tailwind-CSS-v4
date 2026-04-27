@@ -148,6 +148,8 @@ const TOPICS: Topic[] = [
   { id: 'i04', num: 'I04', title: 'Terraform IaC: HCL declarativo, providers Docker/AWS, init→plan→apply→destroy, state remoto (S3/GitLab), módulos reutilizáveis e workspaces para múltiplos ambientes.', layer: 'Infraestrutura · IaC', layerClass: 'l3', href: '/terraform', group: 'Infraestrutura Moderna' },
   // Sprint I.18 — Suricata IDS/IPS (v4.0 Infraestrutura Moderna)
   { id: 'i05', num: 'I05', title: 'Suricata IDS/IPS: modo IDS passivo (af-packet) e IPS inline (NFQUEUE), regras customizadas com EVE JSON, Emerging Threats e integração com nftables.', layer: 'Segurança · IDS/IPS', layerClass: 'l4', href: '/suricata', group: 'Infraestrutura Moderna' },
+  // Sprint I.19 — eBPF & XDP (v4.0 Infraestrutura Moderna)
+  { id: 'i06', num: 'I06', title: 'eBPF & XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.', layer: 'Kernel · Observabilidade', layerClass: 'l2', href: '/ebpf', group: 'Infraestrutura Moderna' },
 ];
 
 export default function TopicsPage() {

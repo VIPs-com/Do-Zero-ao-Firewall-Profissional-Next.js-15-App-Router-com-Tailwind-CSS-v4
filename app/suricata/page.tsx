@@ -624,10 +624,13 @@ sudo kill -USR2 \$(cat /var/run/suricata.pid)`}
             <ChevronLeft size={16} />
             <span>Anterior: Terraform IaC</span>
           </Link>
-          <span className="flex items-center gap-2 text-text-2/40 text-sm cursor-not-allowed">
+          <Link
+            href="/ebpf"
+            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
+          >
             <span>Próximo: eBPF &amp; XDP</span>
             <ChevronRight size={16} />
-          </span>
+          </Link>
         </div>
 
       </div>

@@ -380,6 +380,12 @@ export const ROUTE_SEO = {
       'Configure o Suricata como IDS e IPS inline: regras customizadas, Emerging Threats, EVE JSON estruturado, modo IPS com NFQUEUE e integração com nftables para proteção em tempo real.',
     keywords: ['Suricata', 'IDS', 'IPS', 'NFQUEUE', 'EVE JSON', 'Emerging Threats', 'detecção de intrusão', 'af-packet', 'regras Suricata', 'segurança Linux'],
   },
+  '/ebpf': {
+    title: 'eBPF & XDP | Programação no Kernel Linux para Observabilidade e Segurança',
+    description:
+      'Domine eBPF e XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.',
+    keywords: ['eBPF', 'XDP', 'BCC', 'bpftrace', 'Cilium', 'Falco', 'observabilidade Linux', 'kernel programming', 'tcpconnect', 'execsnoop', 'NetworkPolicy'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;
