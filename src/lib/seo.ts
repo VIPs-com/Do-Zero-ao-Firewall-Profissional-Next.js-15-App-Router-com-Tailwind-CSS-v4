@@ -386,6 +386,12 @@ export const ROUTE_SEO = {
       'Domine eBPF e XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.',
     keywords: ['eBPF', 'XDP', 'BCC', 'bpftrace', 'Cilium', 'Falco', 'observabilidade Linux', 'kernel programming', 'tcpconnect', 'execsnoop', 'NetworkPolicy'],
   },
+  '/cicd': {
+    title: 'CI/CD com GitHub Actions | Pipelines Automatizados do Push ao Deploy',
+    description:
+      'Configure pipelines CI/CD profissionais com GitHub Actions: lint/test/build em paralelo, Docker build e push no ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runners no Linux.',
+    keywords: ['GitHub Actions', 'CI/CD', 'pipeline', 'workflow', 'Docker', 'self-hosted runner', 'environments', 'secrets', 'deploy automático', 'DevOps'],
+  },
   '/sre': {
     title: 'SRE & SLOs | Site Reliability Engineering na Prática com Prometheus',
     description:

@@ -42,7 +42,8 @@ export type BadgeId =
   | 'suricata-master'
   | 'ebpf-master'
   | 'service-mesh-master'
-  | 'sre-master';
+  | 'sre-master'
+  | 'cicd-master';
 
 export interface BadgeDef {
   icon: string;
@@ -101,6 +102,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'ebpf-master':          { icon: '⚡', title: 'eBPF Master',           desc: 'Programas eBPF no kernel — BCC tools, bpftrace, XDP e Cilium dominados para observabilidade e segurança em tempo real' },
   'service-mesh-master':  { icon: '🕸️', title: 'Service Mesh Master',  desc: 'Istio dominado — mTLS automático, VirtualService, DestinationRule, circuit breaker e observabilidade com Kiali/Jaeger sem alterar a aplicação' },
   'sre-master':           { icon: '🎯', title: 'SRE Master',            desc: 'Confiabilidade como engenharia — SLIs/SLOs definidos, error budget calculado, alertas de burn rate e postmortem blameless estruturado' },
+  'cicd-master':          { icon: '🚀', title: 'CI/CD Master',          desc: 'Pipeline automatizado do zero — lint/test/build em paralelo, Docker push, deploy com environments e self-hosted runner configurado' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -185,7 +187,9 @@ export const ALL_CHECKLIST_IDS = [
   'service-mesh-instalado', 'service-mesh-mtls', 'service-mesh-traffic',
   // Sprint I.21 — SRE & SLOs (/sre)
   'sre-slo-definido', 'sre-error-budget', 'sre-postmortem',
-]; // 139 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.22 — CI/CD com GitHub Actions (/cicd)
+  'cicd-pipeline', 'cicd-secrets', 'cicd-runner',
+]; // 142 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -225,8 +229,9 @@ export const ALL_CHECKLIST_IDS = [
  * 41. /ebpf
  * 42. /service-mesh
  * 43. /sre
+ * 44. /cicd
  */
-export const CONTENT_PAGES_COUNT = 43;
+export const CONTENT_PAGES_COUNT = 44;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -381,6 +386,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['ebpf-instalado'] && checklist['ebpf-trace'] && checklist['ebpf-xdp']) unlockBadge('ebpf-master');
     if (checklist['service-mesh-instalado'] && checklist['service-mesh-mtls'] && checklist['service-mesh-traffic']) unlockBadge('service-mesh-master');
     if (checklist['sre-slo-definido'] && checklist['sre-error-budget'] && checklist['sre-postmortem']) unlockBadge('sre-master');
+    if (checklist['cicd-pipeline'] && checklist['cicd-secrets'] && checklist['cicd-runner']) unlockBadge('cicd-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -406,8 +412,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (104 de 139 → floor(139*0.75) = 104).
-    if (Object.values(checklist).filter(v => v).length >= 104) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (106 de 142 → floor(142*0.75) = 106).
+    if (Object.values(checklist).filter(v => v).length >= 106) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

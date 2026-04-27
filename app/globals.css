@@ -291,6 +291,9 @@ html.light {
   /* Sprint I.21 — SRE & SLOs */
   .module-accent-sre                { --mod: #f59e0b; }
 
+  /* Sprint I.22 — CI/CD com GitHub Actions */
+  .module-accent-cicd               { --mod: #2563eb; }
+
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.
      Zero mudança no JSX da página — só aplicar a classe na div raiz. */

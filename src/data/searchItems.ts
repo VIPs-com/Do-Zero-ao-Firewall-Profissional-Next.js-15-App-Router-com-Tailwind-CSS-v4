@@ -274,4 +274,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.21 — SRE & SLOs (/sre)
   { id: 't-sre',            category: 'Tópico',    title: 'SRE & SLOs — Confiabilidade como Engenharia',           description: 'SLIs/SLOs com Prometheus, error budget calculado, alertas de burn rate, runbooks acionáveis e postmortem blameless', href: '/sre', icon: Activity },
   { id: 'g-error-budget',   category: 'Glossário', title: 'Error Budget (SRE)',                                    description: 'Quantidade de falha permitida dentro da janela do SLO. Budget sobrando = acelerar deploys. Budget esgotado = congelar e focar em confiabilidade', href: '/sre', icon: FileText },
+
+  // Sprint I.22 — CI/CD com GitHub Actions (/cicd)
+  { id: 't-cicd',           category: 'Tópico',    title: 'CI/CD com GitHub Actions — Pipeline Completo',          description: 'Workflow com lint/test/build em paralelo, Docker push no ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runners', href: '/cicd', icon: Zap },
+  { id: 'g-github-actions', category: 'Glossário', title: 'GitHub Actions — Workflow, Job, Step e Runner',         description: 'Arquivo YAML em .github/workflows/ com jobs paralelos, steps sequenciais, actions do Marketplace e runners GitHub-hosted ou self-hosted', href: '/cicd', icon: FileText },
 ];

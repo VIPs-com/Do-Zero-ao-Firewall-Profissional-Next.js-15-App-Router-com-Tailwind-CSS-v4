@@ -154,6 +154,8 @@ const TOPICS: Topic[] = [
   { id: 'i07', num: 'I07', title: 'Service Mesh com Istio: sidecar Envoy, mTLS automático (SPIFFE/X.509), VirtualService (canary/A-B), DestinationRule (circuit breaker), AuthorizationPolicy e observabilidade com Kiali/Jaeger.', layer: 'Camada 7 · mTLS', layerClass: 'l7', href: '/service-mesh', group: 'Infraestrutura Moderna' },
   // Sprint I.21 — SRE & SLOs (v4.0 Infraestrutura Moderna)
   { id: 'i08', num: 'I08', title: 'SRE & SLOs: SLIs/SLOs com Prometheus (recording rules + burn rate), error budget como ferramenta de decisão, alertas por sintoma, runbooks acionáveis e postmortem blameless.', layer: 'Cultura · Confiabilidade', layerClass: 'l7', href: '/sre', group: 'Infraestrutura Moderna' },
+  // Sprint I.22 — CI/CD com GitHub Actions (v5.0 Cloud & Platform Engineering)
+  { id: 'c01', num: 'C01', title: 'CI/CD com GitHub Actions: lint/test/build em paralelo, Docker build+push ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runner como serviço systemd.', layer: 'DevOps · Automação', layerClass: 'l5', href: '/cicd', group: 'Cloud & Platform Engineering' },
 ];
 
 export default function TopicsPage() {
