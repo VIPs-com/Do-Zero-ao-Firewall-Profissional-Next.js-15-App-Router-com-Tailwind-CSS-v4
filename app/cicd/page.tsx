@@ -780,10 +780,13 @@ jobs:
             <ChevronLeft size={16} />
             <span>Anterior: SRE &amp; SLOs</span>
           </Link>
-          <span className="flex items-center gap-2 text-text-2/40 text-sm cursor-not-allowed">
+          <Link
+            href="/opnsense"
+            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
+          >
             <span>Próximo: OPNsense</span>
             <ChevronRight size={16} />
-          </span>
+          </Link>
         </div>
 
       </div>

@@ -278,4 +278,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.22 — CI/CD com GitHub Actions (/cicd)
   { id: 't-cicd',           category: 'Tópico',    title: 'CI/CD com GitHub Actions — Pipeline Completo',          description: 'Workflow com lint/test/build em paralelo, Docker push no ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runners', href: '/cicd', icon: Zap },
   { id: 'g-github-actions', category: 'Glossário', title: 'GitHub Actions — Workflow, Job, Step e Runner',         description: 'Arquivo YAML em .github/workflows/ com jobs paralelos, steps sequenciais, actions do Marketplace e runners GitHub-hosted ou self-hosted', href: '/cicd', icon: FileText },
+
+  // Sprint I.23 — OPNsense / pfSense (/opnsense)
+  { id: 't-opnsense',       category: 'Tópico',    title: 'OPNsense — Firewall Enterprise com Web UI',             description: 'Regras de firewall via GUI, Port Forward (DNAT), Aliases, VPN WireGuard/OpenVPN com wizard, IDS/IPS Suricata plugin e Alta Disponibilidade com CARP', href: '/opnsense', icon: Shield },
+  { id: 'g-carp',           category: 'Glossário', title: 'CARP — Common Address Redundancy Protocol',             description: 'Protocolo de IP virtual compartilhado entre firewalls para Alta Disponibilidade. O Master anuncia o VIP; se cair, o Backup assume em segundos sem alterar configs nos clientes', href: '/opnsense', icon: FileText },
 ];

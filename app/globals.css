@@ -293,6 +293,8 @@ html.light {
 
   /* Sprint I.22 — CI/CD com GitHub Actions */
   .module-accent-cicd               { --mod: #2563eb; }
+  /* Sprint I.23 — OPNsense / pfSense */
+  .module-accent-opnsense           { --mod: #d94f00; }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

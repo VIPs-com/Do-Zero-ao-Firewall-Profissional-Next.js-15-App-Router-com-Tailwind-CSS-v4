@@ -156,6 +156,8 @@ const TOPICS: Topic[] = [
   { id: 'i08', num: 'I08', title: 'SRE & SLOs: SLIs/SLOs com Prometheus (recording rules + burn rate), error budget como ferramenta de decisão, alertas por sintoma, runbooks acionáveis e postmortem blameless.', layer: 'Cultura · Confiabilidade', layerClass: 'l7', href: '/sre', group: 'Infraestrutura Moderna' },
   // Sprint I.22 — CI/CD com GitHub Actions (v5.0 Cloud & Platform Engineering)
   { id: 'c01', num: 'C01', title: 'CI/CD com GitHub Actions: lint/test/build em paralelo, Docker build+push ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runner como serviço systemd.', layer: 'DevOps · Automação', layerClass: 'l5', href: '/cicd', group: 'Cloud & Platform Engineering' },
+  // Sprint I.23 — OPNsense / pfSense (v5.0 Cloud & Platform Engineering)
+  { id: 'c02', num: 'C02', title: 'OPNsense: firewall enterprise com Web UI — regras por interface (ingress), Aliases, Port Forward (DNAT), VPN WireGuard/OpenVPN wizard, Suricata IDS/IPS integrado e Alta Disponibilidade com CARP.', layer: 'Firewall · Enterprise', layerClass: 'l3', href: '/opnsense', group: 'Cloud & Platform Engineering' },
 ];
 
 export default function TopicsPage() {

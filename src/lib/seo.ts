@@ -392,6 +392,12 @@ export const ROUTE_SEO = {
       'Configure pipelines CI/CD profissionais com GitHub Actions: lint/test/build em paralelo, Docker build e push no ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runners no Linux.',
     keywords: ['GitHub Actions', 'CI/CD', 'pipeline', 'workflow', 'Docker', 'self-hosted runner', 'environments', 'secrets', 'deploy automático', 'DevOps'],
   },
+  '/opnsense': {
+    title: 'OPNsense | Firewall Enterprise com GUI, VPN Integrada e IDS/IPS',
+    description:
+      'Configure o OPNsense como firewall profissional: regras via Web UI, aliases, Port Forward (DNAT), VPN WireGuard/OpenVPN com wizard, IDS/IPS com Suricata plugin e Alta Disponibilidade com CARP.',
+    keywords: ['OPNsense', 'pfSense', 'firewall', 'GUI', 'CARP', 'alta disponibilidade', 'Suricata', 'WireGuard', 'OpenVPN', 'NAT', 'Port Forward', 'FreeBSD'],
+  },
   '/sre': {
     title: 'SRE & SLOs | Site Reliability Engineering na Prática com Prometheus',
     description:
