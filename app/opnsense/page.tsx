@@ -533,10 +533,13 @@ curl -s -k \
             <ChevronLeft size={16} />
             <span>Anterior: CI/CD GitHub Actions</span>
           </Link>
-          <span className="flex items-center gap-2 text-text-2/40 text-sm cursor-not-allowed">
+          <Link
+            href="/nextcloud"
+            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
+          >
             <span>Próximo: Nextcloud</span>
             <ChevronRight size={16} />
-          </span>
+          </Link>
         </div>
 
       </div>

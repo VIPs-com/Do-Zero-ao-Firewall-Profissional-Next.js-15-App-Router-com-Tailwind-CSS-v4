@@ -282,4 +282,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.23 — OPNsense / pfSense (/opnsense)
   { id: 't-opnsense',       category: 'Tópico',    title: 'OPNsense — Firewall Enterprise com Web UI',             description: 'Regras de firewall via GUI, Port Forward (DNAT), Aliases, VPN WireGuard/OpenVPN com wizard, IDS/IPS Suricata plugin e Alta Disponibilidade com CARP', href: '/opnsense', icon: Shield },
   { id: 'g-carp',           category: 'Glossário', title: 'CARP — Common Address Redundancy Protocol',             description: 'Protocolo de IP virtual compartilhado entre firewalls para Alta Disponibilidade. O Master anuncia o VIP; se cair, o Backup assume em segundos sem alterar configs nos clientes', href: '/opnsense', icon: FileText },
+
+  // Sprint I.24 — Nextcloud (/nextcloud)
+  { id: 't-nextcloud',      category: 'Tópico',    title: 'Nextcloud — Nuvem Pessoal Self-hosted',                 description: 'Docker Compose com MariaDB+Redis, Traefik SSL automático, integração LDAP, apps CalDAV/CardDAV/Talk, object storage MinIO e backup 3-2-1', href: '/nextcloud', icon: Globe },
+  { id: 'g-caldav',         category: 'Glossário', title: 'CalDAV / CardDAV — Protocolos de Sincronização',        description: 'CalDAV sincroniza calendários entre clientes (Google Calendar, Apple, Thunderbird). CardDAV sincroniza contatos. Ambos baseados em WebDAV — HTTP com extensões para dados estruturados', href: '/nextcloud', icon: FileText },
 ];

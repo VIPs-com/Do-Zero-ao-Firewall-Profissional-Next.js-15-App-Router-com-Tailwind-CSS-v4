@@ -392,6 +392,12 @@ export const ROUTE_SEO = {
       'Configure pipelines CI/CD profissionais com GitHub Actions: lint/test/build em paralelo, Docker build e push no ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runners no Linux.',
     keywords: ['GitHub Actions', 'CI/CD', 'pipeline', 'workflow', 'Docker', 'self-hosted runner', 'environments', 'secrets', 'deploy automático', 'DevOps'],
   },
+  '/nextcloud': {
+    title: 'Nextcloud | Nuvem Pessoal Self-hosted com Docker Compose e LDAP',
+    description:
+      'Configure sua nuvem pessoal com Nextcloud: Docker Compose com MariaDB e Redis, HTTPS via Traefik, integração LDAP, apps Calendar/Contacts/Talk, object storage MinIO e estratégia de backup 3-2-1.',
+    keywords: ['Nextcloud', 'self-hosted', 'nuvem pessoal', 'Docker Compose', 'CalDAV', 'CardDAV', 'LDAP', 'MinIO', 'S3', 'backup', 'LGPD'],
+  },
   '/opnsense': {
     title: 'OPNsense | Firewall Enterprise com GUI, VPN Integrada e IDS/IPS',
     description:

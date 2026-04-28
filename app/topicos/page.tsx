@@ -158,6 +158,8 @@ const TOPICS: Topic[] = [
   { id: 'c01', num: 'C01', title: 'CI/CD com GitHub Actions: lint/test/build em paralelo, Docker build+push ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runner como serviço systemd.', layer: 'DevOps · Automação', layerClass: 'l5', href: '/cicd', group: 'Cloud & Platform Engineering' },
   // Sprint I.23 — OPNsense / pfSense (v5.0 Cloud & Platform Engineering)
   { id: 'c02', num: 'C02', title: 'OPNsense: firewall enterprise com Web UI — regras por interface (ingress), Aliases, Port Forward (DNAT), VPN WireGuard/OpenVPN wizard, Suricata IDS/IPS integrado e Alta Disponibilidade com CARP.', layer: 'Firewall · Enterprise', layerClass: 'l3', href: '/opnsense', group: 'Cloud & Platform Engineering' },
+  // Sprint I.24 — Nextcloud (v5.0 Cloud & Platform Engineering)
+  { id: 'c03', num: 'C03', title: 'Nextcloud self-hosted: Docker Compose (Nextcloud+MariaDB+Redis+Traefik), CalDAV/CardDAV, integração LDAP, object storage MinIO, backup 3-2-1 automatizado e apps Calendar/Contacts/Talk.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/nextcloud', group: 'Cloud & Platform Engineering' },
 ];
 
 export default function TopicsPage() {

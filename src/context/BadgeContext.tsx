@@ -44,7 +44,8 @@ export type BadgeId =
   | 'service-mesh-master'
   | 'sre-master'
   | 'cicd-master'
-  | 'opnsense-master';
+  | 'opnsense-master'
+  | 'nextcloud-master';
 
 export interface BadgeDef {
   icon: string;
@@ -105,6 +106,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'sre-master':           { icon: '🎯', title: 'SRE Master',            desc: 'Confiabilidade como engenharia — SLIs/SLOs definidos, error budget calculado, alertas de burn rate e postmortem blameless estruturado' },
   'cicd-master':          { icon: '🚀', title: 'CI/CD Master',          desc: 'Pipeline automatizado do zero — lint/test/build em paralelo, Docker push, deploy com environments e self-hosted runner configurado' },
   'opnsense-master':      { icon: '🔥', title: 'OPNsense Master',       desc: 'Firewall enterprise dominado — regras via GUI, Port Forward, VPN (WireGuard/OpenVPN) e IDS/IPS com Suricata integrado' },
+  'nextcloud-master':     { icon: '☁️', title: 'Nextcloud Master',      desc: 'Nuvem pessoal self-hosted operacional — Docker Compose com MariaDB+Redis, HTTPS via Traefik, apps CalDAV/CardDAV e backup automatizado' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -193,7 +195,9 @@ export const ALL_CHECKLIST_IDS = [
   'cicd-pipeline', 'cicd-secrets', 'cicd-runner',
   // Sprint I.23 — OPNsense / pfSense (/opnsense)
   'opnsense-instalado', 'opnsense-regras', 'opnsense-vpn',
-]; // 145 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.24 — Nextcloud (/nextcloud)
+  'nextcloud-instalado', 'nextcloud-ssl', 'nextcloud-apps',
+]; // 148 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -235,8 +239,9 @@ export const ALL_CHECKLIST_IDS = [
  * 43. /sre
  * 44. /cicd
  * 45. /opnsense
+ * 46. /nextcloud
  */
-export const CONTENT_PAGES_COUNT = 45;
+export const CONTENT_PAGES_COUNT = 46;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -393,6 +398,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['sre-slo-definido'] && checklist['sre-error-budget'] && checklist['sre-postmortem']) unlockBadge('sre-master');
     if (checklist['cicd-pipeline'] && checklist['cicd-secrets'] && checklist['cicd-runner']) unlockBadge('cicd-master');
     if (checklist['opnsense-instalado'] && checklist['opnsense-regras'] && checklist['opnsense-vpn']) unlockBadge('opnsense-master');
+    if (checklist['nextcloud-instalado'] && checklist['nextcloud-ssl'] && checklist['nextcloud-apps']) unlockBadge('nextcloud-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -418,8 +424,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (108 de 145 → floor(145*0.75) = 108).
-    if (Object.values(checklist).filter(v => v).length >= 108) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (111 de 148 → floor(148*0.75) = 111).
+    if (Object.values(checklist).filter(v => v).length >= 111) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {
