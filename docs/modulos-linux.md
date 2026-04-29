@@ -378,12 +378,21 @@ SLI/SLO/SLA hierarquia (regra fundamental: SLA < SLO), error budget com tabela d
 
 ---
 
-## Trilha v5.0 — Cloud & Platform Engineering (em construção)
+## Trilha v5.0 — Cloud & Platform Engineering ✅ COMPLETA
 
 *Nível sênior: automação de plataforma, observabilidade avançada e práticas de engenharia de software.*
 
 ### C01 — CI/CD com GitHub Actions · `/cicd`
 6 conceitos core (Workflow/Job/Step/Action/Runner/Artifact), pipeline CI com jobs paralelos (lint+test) encadeados via `needs` até build + artifact upload, Docker build+push com `login-action`+`metadata-action` (semver+sha tags)+`build-push-action`+cache GHA, environments (staging auto + production com required reviewers), matrix strategy (node 18/20/22 × ubuntu/windows, fail-fast, exclude), scopes de secrets (repo/env/org), self-hosted runner (systemd service), workflows reutilizáveis (`workflow_call`), notificação Slack on-failure. Integração contínua e entrega contínua do zero ao ambiente de produção.
+
+### C02 — OPNsense / pfSense · `/opnsense`
+Firewall enterprise com Web UI: tabela comparativa OPNsense vs pfSense (7 critérios), instalação VM 3 NICs (WAN/LAN/DMZ), mapa da interface, regras de firewall por interface (pf avaliado ingress), Aliases (IP/Network/Port/URL), Port Forward = DNAT com equivalências iptables, VPN WireGuard nativo + OpenVPN wizard, plugin Suricata IDS/IPS, Alta Disponibilidade com CARP (FluxoCard failover), API REST e backup automático via cron.
+
+### C03 — Nextcloud — Nuvem Pessoal Self-hosted · `/nextcloud`
+Self-hosted cloud storage: Docker Compose stack (Nextcloud+MariaDB+Redis+Traefik com labels ACME), pós-instalação essencial (occ config:system, Redis cache/locking, cron container, 2FA TOTP), 8 apps integradas (Calendar/CalDAV, Contacts/CardDAV, Talk, Collabora Online, Mail, Deck, Maps, Backup), integração LDAP para SSO, object storage MinIO S3-compatible, estratégia de backup 3-2-1 (rsync local + remoto + rclone cloud).
+
+### C04 — eBPF Avançado + Cilium · `/ebpf-avancado`
+CNI eBPF nativo no K3s: Cilium substituindo kube-proxy (O(1) eBPF map vs O(N) iptables) e flannel (sem overhead VXLAN), instalação K3s bare + helm install Cilium com `kubeProxyReplacement=true`, Hubble CLI+UI para observabilidade de fluxos L7 em tempo real (`hubble observe --verdict DROPPED`, service map), CiliumNetworkPolicy L3/L4 (default-deny + whitelist por labels) e L7 (HTTP path/method, DNS `toFQDNs` com update dinâmico), eBPF load balancing com DSR, Tetragon runtime security (TracingPolicy `Sigkill` para nc/ncat, detectar acesso `/etc/shadow`), eBPF maps avançados (LRU_HASH, RINGBUF, PERCPU_HASH), bpftrace avançado (kprobes, uprobes, histogramas).
 
 ---
 [← Voltar ao indice](README.md)

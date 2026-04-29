@@ -3,14 +3,14 @@
 ## Arquivo central: `src/context/BadgeContext.tsx`
 
 Gerencia quatro dimensões de progresso:
-- **Badges** — 51 conquistas desbloqueáveis (5 são milestones com modal de celebração)
+- **Badges** — 54 conquistas desbloqueáveis (5 são milestones com modal de celebração)
 - **Páginas visitadas** — para badges de exploração e course-master
-- **Checkpoints** — 142 validações técnicas concluídas (ALL_CHECKLIST_IDS)
+- **Checkpoints** — 151 validações técnicas concluídas (ALL_CHECKLIST_IDS)
 - **Quiz score** — 0–100, persiste em localStorage
 
 ---
 
-## Tabela de badges (51 total)
+## Tabela de badges (54 total)
 
 | Ícone | Título | ID | Como desbloquear |
 |---|---|---|---|
@@ -29,7 +29,7 @@ Gerencia quatro dimensões de progresso:
 | 🚪 | Proxy Master | `proxy-master` | proxy-funciona + proxy-bloqueio |
 | 🔑 | Knocking Master | `knocking-master` | port-knocking |
 | **🎓** | **Graduado** | **`certificado`** | **Gerar o certificado de conclusão** ★ milestone |
-| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 106 checkpoints (75% dos 142)** ★ milestone |
+| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 113 checkpoints (75% dos 151)** ★ milestone |
 | 💀 | Pivoting Master | `pivoting-master` | pivoting-risk |
 | 🛡️ | Defensor da Topologia | `defensor-topologia` | Clicar em 3+ riscos da topologia |
 | ⏳ | Viajante do Tempo | `time-traveler` | Importar progresso via JSON |
@@ -65,6 +65,9 @@ Gerencia quatro dimensões de progresso:
 | 🕸️ | Service Mesh Master | `service-mesh-master` | service-mesh-instalado + service-mesh-mtls + service-mesh-traffic |
 | 🎯 | SRE Master | `sre-master` | sre-slo-definido + sre-error-budget + sre-postmortem |
 | 🚀 | CI/CD Master | `cicd-master` | cicd-pipeline + cicd-secrets + cicd-runner |
+| 🔥 | OPNsense Master | `opnsense-master` | opnsense-instalado + opnsense-regras + opnsense-vpn |
+| ☁️ | Nextcloud Master | `nextcloud-master` | nextcloud-instalado + nextcloud-ssl + nextcloud-apps |
+| 🧬 | eBPF Avançado Master | `ebpf-avancado-master` | cilium-instalado + hubble-habilitado + tetragon-seguranca |
 
 > ★ **Milestone badges** disparam o `MilestoneCelebration` modal em vez do toast de 4s.
 > `course-master` e `quiz-master` disparam também confetti (canvas-confetti, lazy-loaded).
@@ -75,7 +78,7 @@ Gerencia quatro dimensões de progresso:
 
 | Tier | Badges | Feedback |
 |------|--------|----------|
-| **Comum** | 46 badges | Toast slide-in 4s (canto inferior direito, z-50) |
+| **Comum** | 49 badges | Toast slide-in 4s (canto inferior direito, z-50) |
 | **Milestone** | 5 badges | Modal centralizado full-screen (z-200) + confetti para os 2 maiores |
 
 ```typescript
@@ -113,7 +116,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
 
 ---
 
-## Checkpoints de validação (142 IDs — ALL_CHECKLIST_IDS)
+## Checkpoints de validação (151 IDs — ALL_CHECKLIST_IDS)
 
 ```typescript
 // src/context/BadgeContext.tsx
@@ -203,8 +206,14 @@ const MILESTONE_BADGES = new Set<BadgeId>([
   'sre-slo-definido', 'sre-error-budget', 'sre-postmortem',
   // Sprint I.22 — CI/CD com GitHub Actions (3)
   'cicd-pipeline', 'cicd-secrets', 'cicd-runner',
+  // Sprint I.23 — OPNsense / pfSense (3)
+  'opnsense-instalado', 'opnsense-regras', 'opnsense-vpn',
+  // Sprint I.24 — Nextcloud (3)
+  'nextcloud-instalado', 'nextcloud-ssl', 'nextcloud-apps',
+  // Sprint I.25 — eBPF Avançado + Cilium (3)
+  'cilium-instalado', 'hubble-habilitado', 'tetragon-seguranca',
 ]
-// Total: 142 checkpoints
+// Total: 151 checkpoints
 ```
 
 ---

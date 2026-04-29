@@ -112,6 +112,9 @@ Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e ali
 | Slug | Cor/Token | Módulo |
 |---|---|---|
 | `cicd` | `#2563eb` | CI/CD com GitHub Actions |
+| `opnsense` | `#d94f00` | OPNsense / pfSense |
+| `nextcloud` | `#0082c9` | Nextcloud — Nuvem Pessoal |
+| `ebpf-avancado` | `#6d28d9` | eBPF Avançado + Cilium |
 
 ## Como usar numa rota
 

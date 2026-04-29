@@ -2,7 +2,7 @@
 
 Plataforma educacional interativa em português que ensina segurança de redes Linux (iptables, NAT, DNS, SSL, VPN, etc.) de forma gamificada. Laboratório real com três zonas: WAN, DMZ e LAN.
 
-**Next.js 16.2.2** · **React 19** · **TypeScript 5.8** · **Tailwind CSS v4** · **Turbopack**
+**Next.js 16.2.3** · **React 19** · **TypeScript 5.8** · **Tailwind CSS v4** · **Turbopack**
 
 ---
 
@@ -18,7 +18,7 @@ npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 47 rotas próprias (build reporta 52/52 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera 50 rotas próprias (build reporta 69/69 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 47 rotas — todas 'use client' (25 COURSE_ORDER + 15 trilha Fundamentos + 2 v3.0 + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
+  [rota]/page.tsx           # 50 rotas — todas 'use client' (25 COURSE_ORDER + 16 trilha Fundamentos + 4 v3.0 + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 44 (Sprint I.22: +cicd) |
-| `totalTopics` | `app/dashboard/page.tsx` | 79 (Sprint I.22: +CI/CD) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 142 (Sprint I.22: +3 checkpoints cicd) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 47 (Sprint I.25: +ebpf-avancado) |
+| `totalTopics` | `app/dashboard/page.tsx` | 82 (Sprint I.25: +eBPF Avançado) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 151 (Sprint I.25: +3 checkpoints ebpf-avancado) |
 | Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 51 (Sprint I.22: +cicd-master) |
-| searchItems | `src/data/searchItems.ts` | 131 (Sprint I.22: +2 cicd) |
+| Badges | `src/context/BadgeContext.tsx` | 54 (Sprint I.25: +ebpf-avancado-master) |
+| searchItems | `src/data/searchItems.ts` | 137 (Sprint I.25: +2 ebpf-avancado) |
 
 ---
 
@@ -377,6 +377,9 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint I.20 (Service Mesh com Istio): `/service-mesh` — problema dos microserviços sem mesh (retry/timeout duplicado, TLS manual, zero visibilidade), comparativo Istio vs Linkerd vs Consul vs Cilium (tabela 7 critérios), arquitetura FluxoCard (istiod→Envoy sidecar→mTLS→Telemetria→Kiali/Grafana), instalação (istioctl precheck, perfil demo, injeção automática de sidecar, addons prometheus/kiali/jaeger), mTLS STRICT com PeerAuthentication + SPIFFE/X.509, AuthorizationPolicy (deny-all + allow por principal SPIFFE), VirtualService (canary 90/10, roteamento por header A/B test, retry+timeout, injeção de falhas), DestinationRule (subsets por label, circuit breaker com outlierDetection), Ingress Gateway (Gateway + VirtualService para tráfego externo, TLS terminação), observabilidade (Kiali service graph, Jaeger distributed tracing, Grafana dashboards), WindowsComparisonBox (IIS ARR/WCF ↔ Istio), 4 erros comuns expansíveis; badge 🕸️ service-mesh-master (49º badge); 3 checkpoints (service-mesh-instalado, service-mesh-mtls, service-mesh-traffic); module-accent-service-mesh #06b6d4; CONTENT_PAGES_COUNT 41→42, checklistItemsCount 133→136, totalTopics 76→77, linux-ninja threshold 99→102; tópico I07 em /topicos; /evolucao v4.0 Service Mesh marcado disponível (7 disponíveis · 1 em breve); +2 searchItems (127 total); E2E 3/136 + 0/49.
 - ✅ Sprint I.21 (SRE & SLOs): `/sre` — hierarquia SLI/SLO/SLA (cards comparativos + regra de ouro SLA < SLO), FluxoCard Da métrica ao contrato, error budget como ferramenta de decisão (tabela de noves, budget sobrando→acelerar vs esgotado→frear, error budget pertence ao produto não a uma equipe), implementação com Prometheus (recording rules SLI disponibilidade e latência P99, burn rate 1h e 6h, alertas burn rate crítico 14.4× e alto 6×, dashboard Grafana com budget restante em %), on-call sustentável (alertas acionáveis vs não-acionáveis, urgência page/slack/ticket, estrutura de runbook completo), postmortem blameless (Just Culture, template 5 seções: resumo/timeline/causa raiz/fatores contribuintes/ações corretivas, linguagem sistêmica vs culpa), toil (tabela com 5 exemplos de toil e como eliminar), WindowsComparisonBox (ITIL/ITSM ↔ SRE moderno), 4 armadilhas comuns expansíveis; badge 🎯 sre-master (50º badge); 3 checkpoints (sre-slo-definido, sre-error-budget, sre-postmortem); module-accent-sre #f59e0b (âmbar); CONTENT_PAGES_COUNT 42→43, checklistItemsCount 136→139, totalTopics 77→78, linux-ninja threshold 102→104; tópico I08 em /topicos; /evolucao v4.0 COMPLETO (8 disponíveis · 0 em breve ✅); +2 searchItems (129 total); E2E 3/139 + 0/50.
 - ✅ Sprint I.22 (CI/CD com GitHub Actions): `/cicd` — anatomia de workflow (Workflow/Job/Step/Action/Runner/Artifact em cards), FluxoCard Push→Lint+Test→Build→Staging→Prod com aprovação, primeiro workflow CI completo (lint+test em paralelo, upload artifact coverage, needs: para encadear build), Docker build+push no ghcr.io (docker/login-action, docker/metadata-action tags semver+sha, docker/build-push-action com cache BuildKit gha), environments (staging automático + production com required reviewers, SSH deploy via docker compose), matrix strategy (node 18/20/22 × ubuntu/windows, fail-fast: false, exclude), secrets (escopos Repository/Environment/Organization, mascarar valor dinâmico, GITHUB_TOKEN automático), self-hosted runner (useradd github-runner, config.sh, svc.sh install como systemd, group docker, sudoers NOPASSWD), reusable workflows (workflow_call com inputs/secrets), notificação Slack em falha, WindowsComparisonBox (Azure DevOps/Jenkins ↔ GitHub Actions), 4 erros comuns expansíveis; badge 🚀 cicd-master (51º badge); 3 checkpoints (cicd-pipeline, cicd-secrets, cicd-runner); module-accent-cicd #2563eb; CONTENT_PAGES_COUNT 43→44, checklistItemsCount 139→142, totalTopics 78→79, linux-ninja threshold 104→106; tópico C01 em /topicos (novo grupo "Cloud & Platform Engineering"); /evolucao v5.0 CI/CD marcado disponível (1 disponível · 3 em breve); +2 searchItems (131 total); E2E 3/142 + 0/51.
+- ✅ Sprint I.23 (OPNsense / pfSense): `/opnsense` — OPNsense vs pfSense (tabela 7 critérios), instalação VM (3 NICs: WAN/LAN/DMZ), mapa da Web UI, regras de firewall por interface (pf avaliado ingress), Aliases, Port Forward = DNAT (equivalências iptables), VPN WireGuard + OpenVPN wizard, Suricata IDS/IPS plugin (3 etapas), CARP HA (FluxoCard: MASTER→BACKUP→VIP), API REST + backup automático, WindowsComparisonBox (RRAS/NPS ↔ OPNsense); badge 🔥 opnsense-master (52º badge); 3 checkpoints (opnsense-instalado, opnsense-regras, opnsense-vpn); module-accent-opnsense #d94f00; CONTENT_PAGES_COUNT 44→45, checklistItemsCount 142→145, totalTopics 79→80, linux-ninja threshold 106→108; tópico C02 em /topicos; /evolucao v5.0 OPNsense disponível (2 disponíveis · 2 em breve); +2 searchItems (133 total); E2E 3/145 + 0/52.
+- ✅ Sprint I.24 (Nextcloud — Nuvem Pessoal): `/nextcloud` — Nextcloud vs ownCloud/Seafile/Google Drive (tabela), Docker Compose stack completa (Nextcloud+MariaDB+Redis+Traefik com labels ACME), FluxoCard Traefik→Nextcloud→MariaDB→Redis, wizard pós-instalação (occ config:system, Redis cache, cron container), tabela de 8 apps (Calendar/Contacts/Talk/Collabora/Mail/Deck/Maps/Backup), integração LDAP (link → Sprint I.12), object storage MinIO S3-compatible, script bash backup 3-2-1 (local+remoto+cloud), WindowsComparisonBox (OneDrive/SharePoint ↔ Nextcloud); badge ☁️ nextcloud-master (53º badge); 3 checkpoints (nextcloud-instalado, nextcloud-ssl, nextcloud-apps); module-accent-nextcloud #0082c9; CONTENT_PAGES_COUNT 45→46, checklistItemsCount 145→148, totalTopics 80→81, linux-ninja threshold 108→111; tópico C03 em /topicos; /evolucao v5.0 Nextcloud disponível (3 disponíveis · 1 em breve); +2 searchItems (135 total); E2E 3/148 + 0/53.
+- ✅ Sprint I.25 (eBPF Avançado + Cilium): `/ebpf-avancado` — Cilium vs kube-proxy/flannel (por que O(1) eBPF map vs O(N) iptables), instalação K3s sem CNI + helm install Cilium (kubeProxyReplacement=true, Hubble Relay+UI), Hubble CLI (observe --verdict DROPPED, port-forward relay:4245, Hubble UI service map), CiliumNetworkPolicy L3/L4 (default-deny + whitelist por labels), L7 (HTTP path/method, rules/http), DNS (toFQDNs com update dinâmico), eBPF LB (DSR, cilium bpf lb list, tabela iptables vs eBPF), Tetragon (TracingPolicy Sigkill para nc/ncat, detectar acesso /etc/shadow, tetra getevents), eBPF maps avançados (LRU_HASH, PERCPU_HASH, RINGBUF, PROG_ARRAY — tabela de tipos), bpftrace avançado (kprobes latência read(), uprobes app Go, top I/O disco), WindowsComparisonBox (Azure CNI+Defender ↔ Cilium+Tetragon); badge 🧬 ebpf-avancado-master (54º badge); 3 checkpoints (cilium-instalado, hubble-habilitado, tetragon-seguranca); module-accent-ebpf-avancado #6d28d9; CONTENT_PAGES_COUNT 46→47, checklistItemsCount 148→151, totalTopics 81→82, linux-ninja threshold 111→113; tópico C04 em /topicos; /evolucao v5.0 COMPLETO (4 disponíveis · 0 em breve ✅); +2 searchItems (137 total); E2E 3/151 + 0/54.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

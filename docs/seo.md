@@ -1,11 +1,11 @@
 # SEO — Fonte Unica (Sprint B)
 
-Toda a configuração de metadata vive em **`src/lib/seo.ts`**. Isso é essencial para manter consistência: todas as 61 rotas apontam para o mesmo helper e aparecem automaticamente no sitemap.
+Toda a configuração de metadata vive em **`src/lib/seo.ts`**. Isso é essencial para manter consistência: todas as 64 rotas apontam para o mesmo helper e aparecem automaticamente no sitemap.
 
 ## Arquivo central: `src/lib/seo.ts`
 
 - `SITE_CONFIG` — nome do site, URL base, keywords globais, theme color, autor
-- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 61 rotas
+- `ROUTE_SEO` — mapa `{ '/rota': { title, description } }` para as 64 rotas
 - `buildMetadata(route)` — helper que gera `Metadata` completo com Open Graph + Twitter + canonical
 
 ## Como adicionar SEO a uma nova rota

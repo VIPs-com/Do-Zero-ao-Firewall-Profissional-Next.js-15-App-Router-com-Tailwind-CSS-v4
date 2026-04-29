@@ -594,6 +594,41 @@ Sprint I.22 ✅ CI/CD com GitHub Actions (/cicd) — v5.0 INICIADA
   ├── checklistItemsCount 139→142 · totalTopics 78→79 · CONTENT_PAGES_COUNT 43→44
   └── Novo grupo "Cloud & Platform Engineering" em /topicos (tópico C01)
 
+Sprint I.23 ✅ OPNsense / pfSense (/opnsense) — v5.0
+  ├── OPNsense vs pfSense: tabela 7 critérios (base, GUI, plugins, HA, updates, licença, comunidade)
+  ├── Instalação VM com 3 NICs (WAN/LAN/DMZ) · mapa da Web UI · regras por interface (pf ingress)
+  ├── Aliases (IP/Network/Port/URL) · Port Forward = DNAT · equivalências iptables↔OPNsense
+  ├── VPN: WireGuard nativo + OpenVPN wizard · Suricata IDS/IPS plugin (3 etapas)
+  ├── CARP HA: FluxoCard MASTER→BACKUP→failover→VIP reassign
+  ├── API REST (GET /api/firewall/filter) · backup automático via cron
+  ├── Badge 🔥 opnsense-master (52º) · 3 checkpoints · module-accent #d94f00
+  └── checklistItemsCount 142→145 · totalTopics 79→80 · CONTENT_PAGES_COUNT 44→45
+
+Sprint I.24 ✅ Nextcloud — Nuvem Pessoal Self-hosted (/nextcloud) — v5.0
+  ├── Nextcloud vs ownCloud/Seafile/Google Drive: tabela comparativa
+  ├── Docker Compose stack: Nextcloud + MariaDB + Redis + Traefik (labels ACME, volumes persistentes)
+  ├── Pós-instalação: occ config:system, Redis cache/locking, cron container, 2FA TOTP
+  ├── 8 apps: Calendar(CalDAV), Contacts(CardDAV), Talk, Collabora Online, Mail, Deck, Maps, Backup
+  ├── Integração LDAP: server discovery, user mapping, group mapping (link → Sprint I.12)
+  ├── Object storage MinIO: S3-compatible, .env OBJECTSTORE_*, lifecycle policies
+  ├── Backup 3-2-1: script bash (rsync local + rsync remoto + rclone cloud)
+  ├── Badge ☁️ nextcloud-master (53º) · 3 checkpoints · module-accent #0082c9
+  └── checklistItemsCount 145→148 · totalTopics 80→81 · CONTENT_PAGES_COUNT 45→46
+
+Sprint I.25 ✅ eBPF Avançado + Cilium (/ebpf-avancado) — v5.0 COMPLETA
+  ├── Cilium vs kube-proxy/flannel: O(1) eBPF map vs O(N) iptables · sem VXLAN overhead
+  ├── Instalação K3s bare (--flannel-backend=none) + helm install Cilium (kubeProxyReplacement=true)
+  ├── Hubble: CLI (observe --verdict DROPPED, port-forward relay:4245) · Hubble UI service map
+  ├── CiliumNetworkPolicy L3/L4: default-deny + whitelist por labels
+  ├── CiliumNetworkPolicy L7: HTTP path/method · DNS toFQDNs (update dinâmico sem restart)
+  ├── eBPF LB: cilium bpf lb list · DSR mode · Maglev hashing
+  ├── Tetragon: TracingPolicy Sigkill para nc/ncat · detectar acesso /etc/shadow · tetra getevents
+  ├── eBPF maps: LRU_HASH/PERCPU_HASH/RINGBUF/PROG_ARRAY — tabela de tipos e casos de uso
+  ├── bpftrace avançado: kprobes (latência read()), uprobes (app Go), tracepoint I/O disco
+  ├── Badge 🧬 ebpf-avancado-master (54º) · 3 checkpoints · module-accent #6d28d9
+  ├── checklistItemsCount 148→151 · totalTopics 81→82 · CONTENT_PAGES_COUNT 46→47
+  └── /evolucao v5.0 COMPLETO: 4 disponíveis · 0 em breve ✅
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
