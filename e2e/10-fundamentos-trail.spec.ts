@@ -4,22 +4,24 @@ import { test, expect } from './fixtures';
  * Sprint T-Fund — E2E da Trilha Fundamentos Linux
  *
  * Cobre os principais comportamentos observáveis:
- *   1. /fundamentos renderiza o índice com os 10 módulos listados
+ *   1. /fundamentos renderiza o índice com os 15 módulos listados
  *   2. Visitar /fhs registra a visita no localStorage
  *   3. Checkpoint de um módulo Fundamentos é contabilizado no dashboard
  *   4. Badge fundamentos-master seeded aparece no dashboard
  *   5. ModuleNav em /fhs: sem Anterior, Próximo aponta para /comandos
  *   6. ModuleNav em /comandos: Anterior (FHS) + Próximo (Editores)
- *   7. ModuleNav em /cron: Anterior (Shell Script), sem Próximo
- *   8. Badge fundamentos-master desbloqueado ao completar todos os 10 checkpoints
+ *   7. ModuleNav em /ssh-proxy: tem Anterior (Rsyslog), sem Próximo (F15 = último)
+ *   8. Badge fundamentos-master desbloqueado ao completar os 14 checkpoints exigidos
  *
- * Os checkpoints da trilha Fundamentos (10 IDs):
+ * Os checkpoints exigidos para o badge fundamentos-master (14 IDs — 1 por módulo):
  *   fhs-explorado | comandos-praticados | editores-usados | processos-controlados |
  *   permissoes-configuradas | discos-mapeados | logs-lidos | backup-criado |
- *   script-escrito | tarefa-agendada
+ *   script-escrito | tarefa-agendada | apt-atualizado | bios-uefi-entendido |
+ *   sed-dominado | rsyslog-configurado
  */
 
 const ALL_FUNDAMENTOS_CHECKPOINTS: Record<string, boolean> = {
+  // F01–F10 (módulos originais)
   'fhs-explorado': true,
   'comandos-praticados': true,
   'editores-usados': true,
@@ -30,21 +32,27 @@ const ALL_FUNDAMENTOS_CHECKPOINTS: Record<string, boolean> = {
   'backup-criado': true,
   'script-escrito': true,
   'tarefa-agendada': true,
+  // F11–F14 (módulos adicionados em F4-F7)
+  'apt-atualizado': true,
+  'bios-uefi-entendido': true,
+  'sed-dominado': true,
+  'rsyslog-configurado': true,
 };
 
 // ── 1. Índice /fundamentos ─────────────────────────────────────────────────
 
-test('/fundamentos renderiza o índice com os 10 módulos', async ({ page }) => {
+test('/fundamentos renderiza o índice com os 15 módulos', async ({ page }) => {
   await page.goto('/fundamentos');
   await page.waitForLoadState('networkidle');
 
   // Título da trilha
   await expect(page.getByRole('heading', { name: /fundamentos linux/i })).toBeVisible();
 
-  // Os 10 módulos devem estar listados (verificamos uma amostra)
-  await expect(page.getByText(/Estrutura do Sistema/i).first()).toBeVisible(); // Módulo 01
-  await expect(page.getByText(/Comandos Essenciais/i).first()).toBeVisible();  // Módulo 02
-  await expect(page.getByText(/Agendamento de Tarefas/i).first()).toBeVisible(); // Módulo 10
+  // Amostra de módulos que devem estar listados
+  await expect(page.getByText(/Estrutura do Sistema/i).first()).toBeVisible(); // F01
+  await expect(page.getByText(/Comandos Essenciais/i).first()).toBeVisible();  // F02
+  await expect(page.getByText(/Agendamento de Tarefas/i).first()).toBeVisible(); // F10
+  await expect(page.getByText(/SSH como Proxy/i).first()).toBeVisible();       // F15
 });
 
 // ── 2. Rastreamento de visita ──────────────────────────────────────────────
@@ -80,8 +88,8 @@ test('checkpoint de módulo Fundamentos é contabilizado no dashboard', async ({
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos deve mostrar 1/76
-  await expect(page.getByText('1/76')).toBeVisible();
+  // Labs Concluídos deve mostrar 1/154 (checklistItemsCount atual)
+  await expect(page.getByText('1/154')).toBeVisible();
 });
 
 // ── 4. Badge fundamentos-master seeded aparece no dashboard ───────────────
@@ -95,6 +103,8 @@ test('badge fundamentos-master seeded aparece no dashboard', async ({ page }) =>
         'fhs-explorado': true, 'comandos-praticados': true, 'editores-usados': true,
         'processos-controlados': true, 'permissoes-configuradas': true, 'discos-mapeados': true,
         'logs-lidos': true, 'backup-criado': true, 'script-escrito': true, 'tarefa-agendada': true,
+        'apt-atualizado': true, 'bios-uefi-entendido': true,
+        'sed-dominado': true, 'rsyslog-configurado': true,
       })
     );
   });
@@ -136,22 +146,22 @@ test('ModuleNav em /comandos: tem Anterior (FHS) e Próximo (Editores)', async (
   await expect(next).toHaveAttribute('href', '/editores');
 });
 
-test('ModuleNav em /cron: tem Anterior (Shell Script), sem Próximo', async ({ page }) => {
-  await page.goto('/cron');
+test('ModuleNav em /ssh-proxy: tem Anterior (Rsyslog), sem Próximo (F15 = último)', async ({ page }) => {
+  await page.goto('/ssh-proxy');
   await page.waitForLoadState('networkidle');
 
-  // Anterior aponta para /shell-script
-  const prev = page.getByRole('link', { name: /shell|script|anterior/i });
+  // Anterior aponta para /rsyslog (F14)
+  const prev = page.getByRole('link', { name: /rsyslog|logs centralizados|anterior/i });
   await expect(prev).toBeVisible();
-  await expect(prev).toHaveAttribute('href', '/shell-script');
+  await expect(prev).toHaveAttribute('href', '/rsyslog');
 
-  // Último módulo: sem botão Próximo
+  // Último módulo da trilha: sem botão Próximo
   await expect(page.getByRole('link', { name: /próximo/i })).not.toBeVisible();
 });
 
 // ── 8. Desbloqueio real do badge via checkpoints ───────────────────────────
 
-test('fundamentos-master é desbloqueado ao completar os 10 checkpoints', async ({ page }) => {
+test('fundamentos-master é desbloqueado ao completar os 14 checkpoints exigidos', async ({ page }) => {
   // Seed checklist completo SEM pré-seedar o badge
   await page.evaluate(
     (checkpoints) => {

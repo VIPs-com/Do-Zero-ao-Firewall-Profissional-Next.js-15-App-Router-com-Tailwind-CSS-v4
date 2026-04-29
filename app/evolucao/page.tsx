@@ -12,7 +12,7 @@ const PHASE_V2 = {
   name: 'Fundamentos Linux',
   color: 'border-accent/40 bg-accent/5',
   badgeColor: 'bg-accent/15 text-accent border-accent/30',
-  status: '16 disponíveis · completo!',
+  status: '17 disponíveis · completo!',
   modules: [
     { name: 'Estrutura do Sistema (FHS)',   slug: '/fhs',               available: true,  icon: '🐧', tags: ['/etc', '/var', 'mapa do sistema'] },
     { name: 'Comandos Essenciais',          slug: '/comandos',          available: true,  icon: '💻', tags: ['ls', 'grep', 'find', 'pipe'] },
@@ -30,6 +30,7 @@ const PHASE_V2 = {
     { name: 'Processo de Boot do Linux',    slug: '/boot',              available: true,  icon: '🖥️', tags: ['GRUB', 'initrd', 'systemd targets'] },
     { name: 'Comandos Avançados',           slug: '/comandos-avancados', available: true,  icon: '🔧', tags: ['sed', 'dd', 'nc', 'ln', 'gzip'] },
     { name: 'Logs Centralizados (Rsyslog)', slug: '/rsyslog',           available: true,  icon: '📡', tags: ['rsyslog', 'facilities', 'logrotate'] },
+    { name: 'SSH como Proxy SOCKS',         slug: '/ssh-proxy',         available: true,  icon: '🚇', tags: ['-D SOCKS5', '-L/-R forward', 'Jump Host'] },
   ],
 };
 
