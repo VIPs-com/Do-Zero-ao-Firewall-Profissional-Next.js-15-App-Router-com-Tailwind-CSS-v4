@@ -57,7 +57,7 @@ src/
   data/
     quizQuestions.ts        # perguntas do quiz — 111 perguntas (Sprint Quiz++: +58 módulos F4-F7/I.7-I.25; +3 SSH-PROXY)
     searchItems.ts          # 139 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
-    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (14 módulos Fundamentos) para ModuleNav
+    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/

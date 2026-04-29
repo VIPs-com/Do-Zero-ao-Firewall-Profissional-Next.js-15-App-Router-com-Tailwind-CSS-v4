@@ -1,9 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Terminal, Network, Shield, Wifi, Globe, Lock, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Terminal, Network, Shield, Wifi, Globe, Lock, AlertTriangle } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
+import { FUNDAMENTOS_ORDER } from '@/data/courseOrder';
+import { ModuleNav } from '@/components/ui/ModuleNav';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { StepItem, ChecklistItem } from '@/components/ui/Steps';
 import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
@@ -54,14 +55,7 @@ export default function SshProxyPage() {
     <div className="module-accent-ssh-proxy max-w-4xl mx-auto px-4 py-10 space-y-10">
 
       {/* Navegação Anterior / Próximo */}
-      <div className="flex items-center justify-between text-sm">
-        <Link href="/pihole" className="flex items-center gap-1 text-text-3 hover:text-accent transition-colors">
-          <ChevronLeft size={16} />Pi-hole
-        </Link>
-        <Link href="/ansible" className="flex items-center gap-1 text-text-3 hover:text-accent transition-colors">
-          Ansible<ChevronRight size={16} />
-        </Link>
-      </div>
+      <ModuleNav currentPath="/ssh-proxy" order={FUNDAMENTOS_ORDER} />
 
       {/* Hero */}
       <section className="module-hero pb-2">
@@ -581,14 +575,7 @@ curl --socks5 localhost:1080 https://ifconfig.me`} />
       </section>
 
       {/* Navegação Rodapé */}
-      <div className="flex items-center justify-between pt-6 border-t border-border text-sm">
-        <Link href="/pihole" className="flex items-center gap-1 text-text-3 hover:text-accent transition-colors">
-          <ChevronLeft size={16} />Anterior: Pi-hole
-        </Link>
-        <Link href="/ansible" className="flex items-center gap-1 text-text-3 hover:text-accent transition-colors">
-          Próximo: Ansible<ChevronRight size={16} />
-        </Link>
-      </div>
+      <ModuleNav currentPath="/ssh-proxy" order={FUNDAMENTOS_ORDER} />
     </div>
   );
 }
