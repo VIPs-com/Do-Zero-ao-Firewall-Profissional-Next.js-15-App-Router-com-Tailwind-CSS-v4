@@ -4,7 +4,7 @@ import { test, expect } from './fixtures';
  * Testa se o Dashboard exibe os contadores corretos a partir de estado pré-injetado.
  *
  * Constantes em app/dashboard/page.tsx:
- *   totalTopics = 83          (Sprint SSH-PROXY: +1 /ssh-proxy)
+ *   totalTopics = 84          (Audit fix: TOPICS.length=84 — sub-entries 27b/47b contam)
  *   checklistItemsCount = 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy)
  *   BADGE_DEFS tem 55 chaves  (Sprint SSH-PROXY: +ssh-proxy-master)
  *

@@ -66,7 +66,7 @@ const FEATURES = [
 ];
 
 const STATS = [
-  { icon: <Layers size={20} className="text-accent" />, value: '83', label: 'Tópicos práticos' },
+  { icon: <Layers size={20} className="text-accent" />, value: '84', label: 'Tópicos práticos' },
   { icon: <BookOpen size={20} className="text-info" />, value: '48', label: 'Módulos de conteúdo' },
   { icon: <Award size={20} className="text-ok" />, value: '55', label: 'Badges desbloqueáveis' },
   { icon: <Star size={20} className="text-warn" />, value: '7', label: 'Camadas OSI na prática' },
@@ -93,7 +93,7 @@ export default function Home() {
           </h1>
           <p className="text-lg text-text-2 leading-relaxed mb-10 max-w-lg">
             Aprenda a construir um firewall Linux completo, dominando iptables, NAT, DNS, HTTPS,
-            Proxy, VPN IPSec, WireGuard e Fail2ban. <strong>83 tópicos práticos</strong> com diagnóstico por camadas OSI.
+            Proxy, VPN IPSec, WireGuard e Fail2ban. <strong>84 tópicos práticos</strong> com diagnóstico por camadas OSI.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link href="/instalacao" className="btn-primary px-8 py-3 text-base">
