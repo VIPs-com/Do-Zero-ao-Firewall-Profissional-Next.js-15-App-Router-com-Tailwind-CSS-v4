@@ -60,7 +60,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'quiz-expert':        { icon: '🥇', title: 'Expert',             desc: 'Score ≥ 80% no Quiz' },
   'quiz-master':        { icon: '🏆', title: 'Mestre',             desc: 'Score 100% no Quiz' },
   'explorer':           { icon: '🗺️', title: 'Explorador',         desc: 'Visitou 5+ páginas diferentes' },
-  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 47 páginas de conteúdo' },
+  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 48 páginas de conteúdo' },
   'night-owl':          { icon: '🦉', title: 'Coruja Noturna',     desc: 'Ativou o Dark Mode' },
   'searcher':           { icon: '🔍', title: 'Investigador',       desc: 'Usou a busca global' },
   'topology-pro':       { icon: '🖧', title: 'Topólogo',           desc: 'Clicou em 5+ elementos da topologia' },
@@ -208,7 +208,7 @@ export const ALL_CHECKLIST_IDS = [
 ]; // 154 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
- * PÁGINAS DE CONTEÚDO (47 rotas técnicas). Base do badge 'deep-diver'.
+ * PÁGINAS DE CONTEÚDO (48 rotas técnicas). Base do badge 'deep-diver'.
  * Não inclui: /, /quiz, /dashboard, /certificado, /topicos.
  * ClientLayout chama trackPageVisit(pathname) em toda navegação.
  * Atualizar este número e a lista se novas rotas forem adicionadas.

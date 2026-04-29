@@ -105,9 +105,9 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 48 (Sprint SSH-PROXY: +ssh-proxy) |
-| `totalTopics` | `app/dashboard/page.tsx` | 83 (Sprint SSH-PROXY: +/ssh-proxy) |
+| `totalTopics` | `app/dashboard/page.tsx` | 84 (Audit fix: TOPICS.length=84 — sub-entries 27b/47b contam) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
-| Texto na Home | `app/page.tsx` | "83 tópicos práticos" + stats: 83/48/55/7 |
+| Texto na Home | `app/page.tsx` | "84 tópicos práticos" + stats: 84/48/55/7 |
 | Badges | `src/context/BadgeContext.tsx` | 55 (Sprint SSH-PROXY: +ssh-proxy-master) |
 | searchItems | `src/data/searchItems.ts` | 139 (Sprint SSH-PROXY: +2 ssh-proxy) |
 
