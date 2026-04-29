@@ -55,8 +55,8 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 111 perguntas (Sprint Quiz++: +58 módulos F4-F7/I.7-I.25; +3 SSH-PROXY)
-    searchItems.ts          # 139 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    quizQuestions.ts        # perguntas do quiz — 105 perguntas (Audit fix: 105 real vs 111 claimed; base 49 + Quiz++ 53 + SSH-PROXY 3)
+    searchItems.ts          # 137 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -109,7 +109,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
 | Texto na Home | `app/page.tsx` | "84 tópicos práticos" + stats: 84/48/55/7 |
 | Badges | `src/context/BadgeContext.tsx` | 55 (Sprint SSH-PROXY: +ssh-proxy-master) |
-| searchItems | `src/data/searchItems.ts` | 139 (Sprint SSH-PROXY: +2 ssh-proxy) |
+| searchItems | `src/data/searchItems.ts` | 137 (Audit fix: 137 real; t-ssh-proxy + g-ssh-tunnel incluídos) |
 
 ---
 
