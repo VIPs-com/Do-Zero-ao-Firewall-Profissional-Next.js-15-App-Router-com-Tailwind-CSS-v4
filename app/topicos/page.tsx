@@ -138,6 +138,8 @@ const TOPICS: Topic[] = [
   { id: 's05', num: 'S05', title: 'Traefik Proxy Reverso: labels Docker, HTTPS automático via ACME, middlewares (redirect, basicauth, rate-limit) e dashboard integrado — cloud-native.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/traefik', group: 'Servidores e Serviços' },
   { id: 's06', num: 'S06', title: 'LDAP / OpenLDAP: DIT, OUs, usuários posixAccount, ldapadd/ldapsearch, LDAPS com TLS e PAM — autenticação única para SSH, Samba e apps.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/ldap', group: 'Servidores e Serviços' },
   { id: 's07', num: 'S07', title: 'Pi-hole: DNS sinkhole com blocklists gravity, whitelist/blacklist, integração DHCP, iptables DNS redirect e Unbound resolver local para toda a rede.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/pihole', group: 'Servidores e Serviços' },
+  // Sprint SSH-PROXY
+  { id: 's08', num: 'S08', title: 'SSH como Proxy SOCKS: ssh -D (SOCKS5 dinâmico), -L port forwarding local, -R remoto, Jump Host com -J, autossh persistente e ~/.ssh/config para produção.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/ssh-proxy', group: 'Servidores e Serviços' },
   // Sprint I.14 — Ansible (v4.0 Infraestrutura Moderna)
   { id: 'i01', num: 'I01', title: 'Ansible para SysAdmins: inventário, comandos ad-hoc, playbooks YAML com tasks/handlers/templates, roles reutilizáveis, Ansible Galaxy e Vault para segredos.', layer: 'Infraestrutura · IaC', layerClass: 'l3', href: '/ansible', group: 'Infraestrutura Moderna' },
   // Sprint I.15 — Prometheus + Grafana (v4.0 Infraestrutura Moderna)

@@ -392,6 +392,12 @@ export const ROUTE_SEO = {
       'Configure pipelines CI/CD profissionais com GitHub Actions: lint/test/build em paralelo, Docker build e push no ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runners no Linux.',
     keywords: ['GitHub Actions', 'CI/CD', 'pipeline', 'workflow', 'Docker', 'self-hosted runner', 'environments', 'secrets', 'deploy automático', 'DevOps'],
   },
+  '/ssh-proxy': {
+    title: 'SSH como Proxy SOCKS | Tunneling, Port Forwarding e Jump Host',
+    description:
+      'Use SSH como proxy SOCKS5 com -D, port forwarding local e remoto com -L/-R, Jump Host com -J, autossh para túneis persistentes e ~/.ssh/config para produtividade máxima.',
+    keywords: ['SSH', 'SOCKS5', 'proxy', 'port forwarding', 'SSH tunnel', 'jump host', 'autossh', 'ssh -D', 'ssh -L', 'ssh -R', 'ProxyJump', 'SSH config'],
+  },
   '/ebpf-avancado': {
     title: 'eBPF Avançado + Cilium | CNI eBPF, Hubble, NetworkPolicy L7 e Tetragon',
     description:

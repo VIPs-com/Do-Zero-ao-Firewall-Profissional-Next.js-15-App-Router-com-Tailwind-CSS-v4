@@ -46,7 +46,8 @@ export type BadgeId =
   | 'cicd-master'
   | 'opnsense-master'
   | 'nextcloud-master'
-  | 'ebpf-avancado-master';
+  | 'ebpf-avancado-master'
+  | 'ssh-proxy-master';
 
 export interface BadgeDef {
   icon: string;
@@ -83,7 +84,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 25 módulos do curso em sequência' },
   'hardening-master':   { icon: '🔐', title: 'Hardening Master',      desc: 'SSH, sysctl e AppArmor configurados corretamente' },
   'docker-master':      { icon: '🐳', title: 'Docker Master',         desc: 'Redes Docker, bridge customizada e iptables integrado' },
-  'fundamentos-master': { icon: '🐧', title: 'Fundamentos Master',    desc: 'Completou todos os 10 módulos da Trilha Fundamentos Linux' },
+  'fundamentos-master': { icon: '🐧', title: 'Fundamentos Master',    desc: 'Completou todos os 14 módulos da Trilha Fundamentos Linux' },
   'ssh-2fa-master':     { icon: '📱', title: 'SSH 2FA Master',        desc: 'SSH protegido com autenticação de dois fatores (TOTP)' },
   'compose-master':     { icon: '🐙', title: 'Compose Master',        desc: 'Orquestrou uma stack completa com Docker Compose — redes, volumes e secrets' },
   'pacotes-master':     { icon: '📦', title: 'Package Master',        desc: 'Dominou apt, dpkg, snap e pip — instalação e gestão de software no Linux' },
@@ -109,6 +110,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'opnsense-master':      { icon: '🔥', title: 'OPNsense Master',       desc: 'Firewall enterprise dominado — regras via GUI, Port Forward, VPN (WireGuard/OpenVPN) e IDS/IPS com Suricata integrado' },
   'nextcloud-master':       { icon: '☁️', title: 'Nextcloud Master',        desc: 'Nuvem pessoal self-hosted operacional — Docker Compose com MariaDB+Redis, HTTPS via Traefik, apps CalDAV/CardDAV e backup automatizado' },
   'ebpf-avancado-master':   { icon: '🧬', title: 'eBPF Avançado Master',    desc: 'Cilium CNI substituindo kube-proxy, Hubble para observabilidade de fluxos L7, CiliumNetworkPolicy DNS/HTTP e Tetragon detectando anomalias runtime' },
+  'ssh-proxy-master':       { icon: '🚇', title: 'SSH Tunnel Master',       desc: 'Dominou SSH como proxy SOCKS5 (-D), port forwarding local/remoto (-L/-R) e Jump Hosts para acesso seguro a redes privadas' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -201,7 +203,9 @@ export const ALL_CHECKLIST_IDS = [
   'nextcloud-instalado', 'nextcloud-ssl', 'nextcloud-apps',
   // Sprint I.25 — eBPF Avançado + Cilium (/ebpf-avancado)
   'cilium-instalado', 'hubble-habilitado', 'tetragon-seguranca',
-]; // 151 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint SSH-PROXY — SSH como Proxy SOCKS (/ssh-proxy)
+  'ssh-dinamico', 'ssh-local', 'ssh-jump',
+]; // 154 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (47 rotas técnicas). Base do badge 'deep-diver'.
@@ -245,8 +249,9 @@ export const ALL_CHECKLIST_IDS = [
  * 45. /opnsense
  * 46. /nextcloud
  * 47. /ebpf-avancado
+ * 48. /ssh-proxy
  */
-export const CONTENT_PAGES_COUNT = 47;
+export const CONTENT_PAGES_COUNT = 48;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -405,6 +410,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['opnsense-instalado'] && checklist['opnsense-regras'] && checklist['opnsense-vpn']) unlockBadge('opnsense-master');
     if (checklist['nextcloud-instalado'] && checklist['nextcloud-ssl'] && checklist['nextcloud-apps']) unlockBadge('nextcloud-master');
     if (checklist['cilium-instalado'] && checklist['hubble-habilitado'] && checklist['tetragon-seguranca']) unlockBadge('ebpf-avancado-master');
+    // Sprint SSH-PROXY — SSH como Proxy SOCKS
+    if (checklist['ssh-dinamico'] && checklist['ssh-local'] && checklist['ssh-jump']) unlockBadge('ssh-proxy-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -423,15 +430,17 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['rosetta-stone-explored']
     ) unlockBadge('explorador-mundos');
 
-    // Sprint F1-F3 — Trilha Fundamentos Linux
+    // Sprint F1-F7 — Trilha Fundamentos Linux (14 módulos)
     if (
       checklist['fhs-explorado'] && checklist['comandos-praticados'] && checklist['editores-usados'] &&
       checklist['processos-controlados'] && checklist['permissoes-configuradas'] && checklist['discos-mapeados'] &&
-      checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
+      checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada'] &&
+      checklist['apt-atualizado'] && checklist['bios-uefi-entendido'] &&
+      checklist['sed-dominado'] && checklist['rsyslog-configurado']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (113 de 151 → floor(151*0.75) = 113).
-    if (Object.values(checklist).filter(v => v).length >= 113) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (115 de 154 → floor(154*0.75) = 115).
+    if (Object.values(checklist).filter(v => v).length >= 115) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

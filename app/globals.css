@@ -299,6 +299,8 @@ html.light {
   .module-accent-nextcloud          { --mod: #0082c9; }
   /* Sprint I.25 — eBPF Avançado + Cilium */
   .module-accent-ebpf-avancado      { --mod: #6d28d9; }
+  /* Sprint SSH-PROXY — SSH como Proxy SOCKS */
+  .module-accent-ssh-proxy          { --mod: #0ea5e9; }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

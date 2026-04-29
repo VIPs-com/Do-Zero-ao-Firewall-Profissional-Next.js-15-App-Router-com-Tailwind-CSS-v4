@@ -38,7 +38,7 @@ const PHASE_V3 = {
   name: 'Servidores e Serviços',
   color: 'border-info/40 bg-info/5',
   badgeColor: 'bg-info/15 text-info border-info/30',
-  status: '9 disponíveis · 0 em breve ✅',
+  status: '10 disponíveis · 0 em breve ✅',
   modules: [
     { name: 'Docker Networking',         slug: '/docker',         available: true,  icon: '🐳', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
     { name: 'Docker Compose',            slug: '/docker-compose', available: true,  icon: '🐙', tags: ['multi-container', 'networks', 'secrets'] },
@@ -49,6 +49,7 @@ const PHASE_V3 = {
     { name: 'Traefik Proxy Reverso',     slug: '/traefik',        available: true,  icon: '🔀', tags: ['labels', 'ACME', 'middlewares'] },
     { name: 'LDAP / OpenLDAP',           slug: '/ldap',           available: true,  icon: '👥', tags: ['diretório', 'autenticação', 'AD-like'] },
     { name: 'Pi-hole',                   slug: '/pihole',         available: true,  icon: '🕳️', tags: ['DNS', 'bloqueio de anúncios', 'privacy'] },
+    { name: 'SSH como Proxy SOCKS',      slug: '/ssh-proxy',      available: true,  icon: '🚇', tags: ['-D SOCKS5', '-L/-R', 'Jump Host'] },
   ],
 };
 

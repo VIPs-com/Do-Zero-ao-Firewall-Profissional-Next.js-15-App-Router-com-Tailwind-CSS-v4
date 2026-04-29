@@ -290,4 +290,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.25 — eBPF Avançado + Cilium (/ebpf-avancado)
   { id: 't-ebpf-avancado',  category: 'Tópico',    title: 'eBPF Avançado + Cilium — CNI e Runtime Security',       description: 'Cilium substituindo kube-proxy (eBPF LB), Hubble para observabilidade de fluxos L7, CiliumNetworkPolicy HTTP path e DNS, Tetragon TracingPolicy bloqueando execuções suspeitas', href: '/ebpf-avancado', icon: Zap },
   { id: 'g-cilium-hubble',  category: 'Glossário', title: 'Cilium + Hubble — CNI eBPF e Observabilidade',          description: 'Cilium é um CNI que usa eBPF para networking e segurança em Kubernetes — substitui kube-proxy e flannel. Hubble é sua camada de observabilidade: captura fluxos L3/L4/L7 em tempo real sem modificar a aplicação', href: '/ebpf-avancado', icon: FileText },
+
+  // Sprint SSH-PROXY — SSH como Proxy SOCKS (/ssh-proxy)
+  { id: 't-ssh-proxy',      category: 'Tópico',    title: 'SSH como Proxy SOCKS — Tunneling e Port Forwarding',    description: 'ssh -D SOCKS5 proxy, -L port forwarding local, -R remoto, -J Jump Host, autossh persistente, ~/.ssh/config para produção', href: '/ssh-proxy', icon: Zap },
+  { id: 'g-ssh-tunnel',     category: 'Glossário', title: 'SSH Tunnel — Port Forwarding Local, Remoto e Dinâmico', description: 'SSH tunnel encapsula tráfego TCP dentro de uma sessão SSH cifrada. -L redireciona porta local para host remoto, -R cria listener no servidor, -D cria proxy SOCKS5 dinâmico para qualquer destino', href: '/ssh-proxy', icon: FileText },
 ];
