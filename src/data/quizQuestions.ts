@@ -596,6 +596,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'systemd-analyze blame lista todos os serviços em ordem decrescente de tempo de inicialização. Útil para identificar o gargalo do boot. Use systemd-analyze critical-chain para ver a cadeia crítica.',
   },
 
+  {
+    text: 'Após editar o /etc/default/grub, qual comando gera o arquivo /boot/grub/grub.cfg com as novas configurações?',
+    badge: '🖥️ Boot',
+    options: ['grub-install /dev/sda', 'update-grub', 'grub-mkconfig', 'systemctl reload grub'],
+    correct: 1,
+    explanation: 'update-grub é um wrapper de grub-mkconfig que lê /etc/default/grub e os scripts em /etc/grub.d/ e gera /boot/grub/grub.cfg. Sem rodá-lo, as mudanças no arquivo de configuração não têm efeito.',
+  },
+
   // ========== Comandos Avançados (Sprint F6) ==========
   {
     text: 'Qual o efeito de "sed -i.bak \'s/old/new/g\' arquivo.txt"?',
@@ -659,6 +667,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     explanation: '@servidor:514 envia logs via UDP (rápido, sem confirmação de entrega). @@servidor:514 usa TCP (garante entrega mas usa mais recursos). Em produção, prefira @@ para logs críticos de segurança.',
   },
+  {
+    text: 'No logrotate, o que a diretiva "rotate 7" configura?',
+    badge: '📡 Rsyslog',
+    options: [
+      'Rotaciona o log a cada 7 dias automaticamente',
+      'Mantém 7 versões comprimidas do log e apaga a mais antiga na próxima rotação',
+      'Comprime o log após 7 dias sem rotação',
+      'Limita o tamanho máximo do log a 7 MB',
+    ],
+    correct: 1,
+    explanation: '"rotate 7" significa que o logrotate mantém 7 arquivos rotacionados (syslog.1 … syslog.7). Na oitava rotação, o arquivo mais antigo é excluído. Combinado com "daily", isso equivale a 1 semana de histórico.',
+  },
 
   // ========== Servidor DHCP (Sprint I.7) ==========
   {
@@ -685,6 +705,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     explanation: 'Uma reserva DHCP vincula um MAC address a um IP fixo: host servidor { hardware ethernet aa:bb:cc:dd:ee:ff; fixed-address 192.168.1.10; }. O servidor sempre entregará o mesmo IP para aquele MAC, mas via DHCP.',
   },
+  {
+    text: 'Onde o isc-dhcp-server registra todas as concessões de IP ativas (leases)?',
+    badge: '🌐 DHCP',
+    options: [
+      '/etc/dhcp/dhcpd.conf',
+      '/var/log/dhcpd.log',
+      '/var/lib/dhcp/dhcpd.leases',
+      '/run/dhcp/active.db',
+    ],
+    correct: 2,
+    explanation: '/var/lib/dhcp/dhcpd.leases é o banco de leases: cada concessão ativa contém IP, MAC, hostname e tempo de expiração. Útil para diagnosticar quais IPs estão em uso e qual MAC recebeu qual endereço. O arquivo é persistido em disco e sobrevive a reboots.',
+  },
 
   // ========== Samba — File Sharing (Sprint I.8) ==========
   {
@@ -705,6 +737,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['139', '137', '445', '3389'],
     correct: 2,
     explanation: 'A porta 445 (SMB direto sobre TCP) é a forma moderna de acesso. A porta 139 era usada com NetBIOS Session Service (legado). Hoje o Windows e o Samba preferem 445. O firewall deve liberar 445/TCP + 137-138/UDP.',
+  },
+  {
+    text: 'No smb.conf, o que "valid users = @ti" configura para um compartilhamento?',
+    badge: '🗂️ Samba',
+    options: [
+      'Permite apenas o usuário chamado "ti" acessar o share',
+      'Permite apenas membros do grupo Linux "ti" acessar o share',
+      'Define "ti" como administrador com controle total',
+      'Redireciona o acesso para um servidor LDAP chamado "ti"',
+    ],
+    correct: 1,
+    explanation: 'No smb.conf, o prefixo @ antes de um nome indica grupo Linux. "valid users = @ti" restringe o acesso ao share apenas para membros do grupo "ti". Para múltiplos grupos: "valid users = @ti @gerencia". O usuário ainda precisa ter senha Samba configurada via smbpasswd.',
   },
 
   // ========== Apache Web Server (Sprint I.9) ==========
@@ -732,6 +776,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     explanation: 'mod_rewrite é o módulo de manipulação de URLs do Apache. Permite redirecionar HTTP→HTTPS (RedirectMatch), criar URLs amigáveis (/produto/123 → /index.php?id=123) e bloquear requisições por padrão. É base de quase todo .htaccess.',
   },
+  {
+    text: 'Por que usar .htaccess é considerado mais lento do que configurar diretamente no bloco <Directory> do VirtualHost?',
+    badge: '🌍 Apache',
+    options: [
+      '.htaccess usa uma sintaxe mais antiga e menos otimizada',
+      'O Apache verifica se existe um .htaccess em cada diretório do caminho para cada requisição',
+      '.htaccess não suporta mod_rewrite, exigindo mais processamento',
+      '.htaccess é processado por um processo separado do Apache',
+    ],
+    correct: 1,
+    explanation: 'Para cada requisição, o Apache percorre todos os diretórios do caminho (/, /var/, /var/www/, /var/www/html/) verificando se existe .htaccess. Isso resulta em múltiplas operações de I/O em disco. Com "AllowOverride None" no VirtualHost, o Apache nem procura — tudo configurado no VirtualHost é carregado uma única vez na inicialização.',
+  },
 
   // ========== OpenVPN (Sprint I.10) ==========
   {
@@ -752,6 +808,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'tun cria uma interface de rede L3 — clientes recebem IPs e o tráfego é roteado. tap cria uma interface L2 — clientes ficam na mesma broadcast domain (como um switch virtual). Para acesso remoto à internet, use tun. Para bridging de redes locais, use tap.',
+  },
+  {
+    text: 'Qual porta e protocolo o OpenVPN usa por padrão, e por que UDP é preferível a TCP neste caso?',
+    badge: '🔒 OpenVPN',
+    options: [
+      '443/TCP — disfarça o tráfego como HTTPS e é mais confiável',
+      '1194/UDP — evita o problema "TCP-over-TCP meltdown" e tem latência menor',
+      '500/UDP — o mesmo do IKEv2 para compatibilidade máxima com firewalls',
+      '1194/TCP — garante entrega ordenada dos pacotes VPN',
+    ],
+    correct: 1,
+    explanation: '1194/UDP é o padrão do OpenVPN. UDP é preferível porque o próprio protocolo VPN cuida da retransmissão internamente. TCP-over-TCP é problemático: se a conexão TCP interna tiver perda, o TCP externo também retransmite — causando cascata de retransmissões (TCP meltdown). UDP elimina essa interferência.',
   },
 
   // ========== Traefik Proxy Reverso (Sprint I.11) ==========
@@ -779,6 +847,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     explanation: 'Entrypoints são os pontos de entrada do Traefik — as portas em que ele escuta. Convencionalmente: "web" (porta 80, HTTP) e "websecure" (porta 443, HTTPS). Um router é ligado a um entrypoint para decidir para onde encaminhar o tráfego.',
   },
+  {
+    text: 'Onde o Traefik armazena os certificados Let\'s Encrypt gerados via ACME para que sobrevivam a reinicializações do container?',
+    badge: '🔀 Traefik',
+    options: [
+      'Em memória — são solicitados novamente a cada restart',
+      'No /etc/letsencrypt/ dentro do container Traefik',
+      'No arquivo acme.json mapeado como volume persistente no host',
+      'No banco de dados interno do Traefik em /var/lib/traefik/',
+    ],
+    correct: 2,
+    explanation: 'O Traefik salva todos os certificados ACME em acme.json (ex: /letsencrypt/acme.json no container). Para persistir entre reinicializações, esse arquivo deve ser mapeado como volume. Sem o volume, o Traefik solicitaria novos certificados a cada restart — podendo atingir os rate limits da Let\'s Encrypt (50 certs/domínio/semana).',
+  },
 
   // ========== LDAP / OpenLDAP (Sprint I.12) ==========
   {
@@ -799,6 +879,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['inetOrgPerson', 'posixAccount', 'organizationalUnit', 'groupOfNames'],
     correct: 1,
     explanation: 'posixAccount define os atributos necessários para login Unix: uidNumber, gidNumber, homeDirectory, loginShell. Combinado com inetOrgPerson (cn, sn, mail) e shadowAccount (política de senha), o usuário pode logar via PAM+nslcd.',
+  },
+  {
+    text: 'Qual comando ldapsearch lista todas as entradas com objectClass posixAccount na OU "usuarios" do domínio empresa.com?',
+    badge: '👥 LDAP',
+    options: [
+      'ldap search -filter posixAccount -ou usuarios',
+      'ldapsearch -x -b "ou=usuarios,dc=empresa,dc=com" "(objectClass=posixAccount)"',
+      'slapcat -s "ou=usuarios" -f posixAccount',
+      'ldapget -base usuarios -class posixAccount',
+    ],
+    correct: 1,
+    explanation: 'ldapsearch -x usa autenticação simples (sem SASL); -b define o search base (ponto de partida na árvore DIT); o filtro entre parênteses segue a sintaxe LDAP RFC 4515. Para buscar atributos específicos, acrescente-os no final: "... uid cn mail".',
   },
 
   // ========== Pi-hole (Sprint I.13) ==========
@@ -825,6 +917,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'pihole -g (gravity update) baixa novamente todas as blocklists configuradas, consolida os domínios no gravity.db e recarrega o FTL (DNS engine). É o equivalente ao "apt update" do Pi-hole — deve ser executado periodicamente.',
+  },
+  {
+    text: 'Por que combinar Pi-hole com uma regra DNAT no iptables é recomendado em redes corporativas?',
+    badge: '🕳️ Pi-hole',
+    options: [
+      'O DNAT acelera as respostas DNS redirecionando para cache local',
+      'Impede que dispositivos burlem o Pi-hole usando servidores DNS externos (como 8.8.8.8) configurados manualmente',
+      'Habilita automaticamente DNS sobre HTTPS (DoH) no Pi-hole',
+      'O Pi-hole não funciona sem regra DNAT — ela é obrigatória para instalações Docker',
+    ],
+    correct: 1,
+    explanation: 'Sem DNAT, um usuário ou dispositivo pode configurar 8.8.8.8 como DNS e contornar o Pi-hole. Com "iptables -t nat -A PREROUTING -p udp --dport 53 ! -d 192.168.1.1 -j DNAT --to 192.168.1.1:53", todo DNS da rede é redirecionado para o Pi-hole — ninguém escapa.',
   },
 
   // ========== Ansible (Sprint I.14) ==========
@@ -879,6 +983,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Prometheus usa modelo pull: a cada intervalo (padrão 15s), ele faz HTTP GET no /metrics de cada target. Isso simplifica descoberta, facilita debug (você mesmo pode curl o endpoint) e o target não precisa saber do Prometheus.',
+  },
+  {
+    text: 'O que são "recording rules" no Prometheus e qual sua principal vantagem?',
+    badge: '📊 Monitoring',
+    options: [
+      'Regras que gravam alertas no log de auditoria do Prometheus',
+      'Pré-calculam expressões PromQL custosas e salvam como novas séries temporais — reduzem latência de dashboards',
+      'Configurações de remote write para exportar métricas para o InfluxDB',
+      'Regras que habilitam a gravação de métricas em disco com retenção estendida',
+    ],
+    correct: 1,
+    explanation: 'Recording rules pré-calculam queries PromQL pesadas (ex: sum(rate(requests[5m])) by (service)) e as salvam como novas métricas. Dashboards Grafana com muitos painéis se tornam mais rápidos porque leem métricas pré-calculadas em vez de recalcular queries complexas a cada atualização.',
   },
 
   // ========== Kubernetes / K3s (Sprint I.16) ==========
@@ -939,6 +1055,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 2,
     explanation: 'O tfstate é a "memória" do Terraform: sabe que o recurso aws_instance.web corresponde à VM "i-0abc123" na AWS. Sem ele, Terraform perde o rastreamento — não consegue atualizar nem destruir recursos existentes. Use remote state (S3, Terraform Cloud) em equipes.',
   },
+  {
+    text: 'O que "terraform apply -auto-approve" faz de diferente do "terraform apply" padrão?',
+    badge: '🏗️ Terraform',
+    options: [
+      'Aplica apenas os recursos com o tag auto=true',
+      'Pula o "terraform plan" e aplica direto sem mostrar o diff',
+      'Aplica as mudanças sem exibir o prompt interativo de confirmação — ideal para pipelines CI/CD',
+      'Aplica e faz rollback automático em caso de erro',
+    ],
+    correct: 2,
+    explanation: '"terraform apply" exibe o plan e aguarda "yes" interativo. "-auto-approve" bypassa essa confirmação — essencial em pipelines CI/CD onde não há operador para confirmar. Use com cautela: sem revisão humana, um apply destrutivo executa imediatamente.',
+  },
 
   // ========== Suricata IDS/IPS (Sprint I.18) ==========
   {
@@ -964,6 +1092,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'EVE (Extensible Event Format) é o formato de log principal do Suricata: cada linha é um JSON com tipo (alert, flow, dns, http, tls), timestamp, IPs, portas e detalhes. Facilita integração com Elasticsearch/Grafana/SIEM sem parser customizado.',
+  },
+  {
+    text: 'O que o comando "suricata-update" faz?',
+    badge: '🛡️ Suricata',
+    options: [
+      'Atualiza o binário do Suricata para a versão mais recente via apt',
+      'Baixa e atualiza as regras de detecção (Emerging Threats e outras fontes configuradas)',
+      'Reinicia o processo Suricata aplicando a nova configuração do suricata.yaml',
+      'Exporta os alertas do EVE JSON para um servidor SIEM remoto',
+    ],
+    correct: 1,
+    explanation: 'suricata-update é a ferramenta oficial de gerenciamento de regras. Baixa sources configuradas (ex: et/open com ~40.000 regras), resolve conflitos, aplica modificações locais e recarrega as regras. Deve ser executado periodicamente via cron para manter as assinaturas atualizadas.',
   },
 
   // ========== eBPF & XDP (Sprint I.19) ==========
@@ -991,6 +1131,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 2,
     explanation: 'XDP_DROP descarta o pacote no driver da NIC, antes mesmo de alocar um skb (socket buffer). É o método mais eficiente de mitigação de DDoS — throughputs de 100Gbps são possíveis porque o pacote nunca entra no stack Linux.',
   },
+  {
+    text: 'O que a ferramenta "execsnoop" do BCC mostra em tempo real?',
+    badge: '⚡ eBPF',
+    options: [
+      'O consumo de CPU de cada executável em execução no sistema',
+      'Cada chamada de sistema execve: PID, processo pai, comando executado e argumentos',
+      'Os arquivos executáveis mais acessados nas últimas 24 horas',
+      'As permissões de execução de cada binário no PATH',
+    ],
+    correct: 1,
+    explanation: 'execsnoop usa kprobes eBPF para interceptar a syscall execve em tempo real. Cada linha mostra: PCOMM (processo pai), PID, PPID, RET (código de retorno) e ARGS (executável + argumentos). Essencial para detectar spawning anômalo de processos — ex: um webserver executando curl ou bash.',
+  },
 
   // ========== Service Mesh com Istio (Sprint I.20) ==========
   {
@@ -1016,6 +1168,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'VirtualService define como o tráfego é roteado PARA um serviço: split de peso (90% stable, 10% canary), roteamento por header (X-Version: v2), retry automático (3 tentativas, 25ms timeout), injeção de falha para chaos testing. DestinationRule define os subsets.',
+  },
+  {
+    text: 'O que uma DestinationRule do Istio define, complementando o VirtualService?',
+    badge: '🕸️ Service Mesh',
+    options: [
+      'As regras de roteamento por porcentagem entre versões do serviço',
+      'As permissões de acesso entre serviços (quem pode chamar quem)',
+      'Os subsets (versões) de um serviço e políticas de circuit breaker, retries e TLS por subset',
+      'Os certificados mTLS individuais de cada pod no mesh',
+    ],
+    correct: 2,
+    explanation: 'DestinationRule define os subsets (ex: version: v1 e version: v2 por label) e as políticas de tráfego: circuit breaker (outlierDetection — ejeta hosts com erros), timeouts de conexão, configurações TLS por subset. O VirtualService decide PARA ONDE rotear; a DestinationRule define COMO chegar.',
   },
 
   // ========== SRE & SLOs (Sprint I.21) ==========
@@ -1076,6 +1240,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 2,
     explanation: 'Um environment com required reviewers cria um "deployment protection rule": o workflow pausa e envia notificação aos aprovadores. Apenas após aprovação explícita no GitHub o job continua. Evita deploys acidentais em production.',
   },
+  {
+    text: 'O que é "matrix strategy" em um workflow do GitHub Actions?',
+    badge: '🚀 CI/CD',
+    options: [
+      'Uma estratégia de rollback que reverte automaticamente deploys com falha',
+      'Executa o mesmo job em paralelo para múltiplas combinações de variáveis (ex: node 18/20/22 × ubuntu/windows)',
+      'Um padrão para dividir a test suite em múltiplos shards para execução paralela',
+      'Uma configuração para balancear a carga entre múltiplos runners GitHub-hosted',
+    ],
+    correct: 1,
+    explanation: 'matrix: {node: [18, 20, 22], os: [ubuntu, windows]} gera 6 jobs em paralelo (3×2). Cada job recebe matrix.node e matrix.os como variáveis. Ideal para testar compatibilidade multi-versão. "fail-fast: false" garante que todos os jobs concluam mesmo se um falhar.',
+  },
 
   // ========== OPNsense / pfSense (Sprint I.23) ==========
   {
@@ -1102,6 +1278,18 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 1,
     explanation: 'CARP permite que dois firewalls compartilhem um VIP (Virtual IP). O MASTER anuncia via multicast; se parar de responder, o BACKUP assume o VIP em segundos. Os clientes nunca percebem a troca — eles sempre usam o VIP.',
   },
+  {
+    text: 'O que são "Aliases" no OPNsense e por que simplificam o gerenciamento de regras?',
+    badge: '🔥 OPNsense',
+    options: [
+      'Nomes alternativos para interfaces de rede (WAN, LAN, DMZ)',
+      'Grupos nomeados e reutilizáveis de IPs, redes, portas ou domínios usados em múltiplas regras de firewall',
+      'Certificados SSL alternativos para múltiplos domínios no mesmo IP',
+      'Redirecionamentos DNS para resolver hostnames internos',
+    ],
+    correct: 1,
+    explanation: 'Aliases agrupam IPs/redes/portas/domínios em um nome simbólico. Ex: o alias "SERVIDORES_DMZ" com 3 IPs pode ser usado em 20 regras. Para adicionar um novo servidor, você atualiza apenas o alias — todas as regras são atualizadas automaticamente. Reduz erros e facilita auditoria.',
+  },
 
   // ========== Nextcloud (Sprint I.24) ==========
   {
@@ -1122,6 +1310,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['iCalendar (ICS)', 'CalDAV', 'Exchange ActiveSync', 'WebDAV'],
     correct: 1,
     explanation: 'CalDAV (Calendar Distributed Authoring and Versioning) é o protocolo padrão para sincronização bidirecional de calendários. O Nextcloud implementa CalDAV sobre HTTPS. O mesmo princípio vale para contatos: CardDAV.',
+  },
+  {
+    text: 'Qual ferramenta de linha de comando do Nextcloud permite ajustar configurações do sistema sem usar a interface web?',
+    badge: '☁️ Nextcloud',
+    options: ['nextcloud-admin', 'nc-config', 'occ', 'ncadmin'],
+    correct: 2,
+    explanation: '"occ" (ownCloud Console, herdado do ownCloud) é a CLI do Nextcloud. Permite: occ config:system:set (ajustar config.php), occ maintenance:mode --on/off, occ user:add, occ app:enable, occ db:convert-filecache-bigint (migrations). Em containers Docker: docker exec -u www-data nextcloud php occ ...',
   },
 
   // ========== eBPF Avançado + Cilium (Sprint I.25) ==========

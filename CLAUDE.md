@@ -55,7 +55,7 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 105 perguntas (Audit fix: 105 real vs 111 claimed; base 49 + Quiz++ 53 + SSH-PROXY 3)
+    quizQuestions.ts        # perguntas do quiz — 122 perguntas (Sprint Quiz Completo: +17 perguntas, todos os módulos com ≥3 questões)
     searchItems.ts          # 137 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
@@ -383,6 +383,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Quiz++ (cobertura de 23 módulos): +58 perguntas em `src/data/quizQuestions.ts` cobrindo todos os módulos sem coverage (F4-F7, I.7-I.25); total quiz 50→108 perguntas.
 - ✅ Fixes de consistência: deep-diver desc "20 páginas"→"47 páginas", BadgeContext comment "20 rotas"→"47 rotas", home stats 58/24/30→82/47/54, fundamentos-master trigger 10→14 checkpoints (Sprint F1-F7 completo).
 - ✅ Sprint SSH-PROXY (SSH como Proxy SOCKS): `/ssh-proxy` — SOCKS5 dinâmico (-D), port forwarding local (-L) e remoto (-R), Jump Host (-J/ProxyJump), autossh com systemd para túneis persistentes, ~/.ssh/config completo com ControlMaster, WindowsComparisonBox PuTTY/plink ↔ OpenSSH, 4 erros comuns; badge 🚇 ssh-proxy-master (55º badge); 3 checkpoints (ssh-dinamico, ssh-local, ssh-jump); module-accent-ssh-proxy #0ea5e9; CONTENT_PAGES_COUNT 47→48, checklistItemsCount 151→154, totalTopics 82→83, linux-ninja threshold 113→115; tópico S08 em /topicos; /evolucao v3.0 10 disponíveis ✅; +2 searchItems (139 total); E2E 3/154 + 0/55; +3 quiz questions (total 111).
+- ✅ Sprint Quiz Completo: +17 perguntas em `src/data/quizQuestions.ts` — 1 pergunta adicional por módulo que só tinha 2 (F5, F7, I.7-I.13, I.15, I.17-I.24); todos os módulos agora têm ≥3 questões; total 105→122 perguntas.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
