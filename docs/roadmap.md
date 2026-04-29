@@ -629,6 +629,23 @@ Sprint I.25 ✅ eBPF Avançado + Cilium (/ebpf-avancado) — v5.0 COMPLETA
   ├── checklistItemsCount 148→151 · totalTopics 81→82 · CONTENT_PAGES_COUNT 46→47
   └── /evolucao v5.0 COMPLETO: 4 disponíveis · 0 em breve ✅
 
+Sprint Quiz++ ✅ Cobertura de todos os módulos
+  ├── +58 perguntas cobrindo 23 módulos sem coverage (F4-F7 · I.7-I.25)
+  └── Total quiz: 50→108 perguntas
+
+Sprint SSH-PROXY ✅ SSH como Proxy SOCKS (/ssh-proxy) — v3.0 COMPLETA
+  ├── SOCKS5 dinâmico (-D): ssh -D 1080, proxychains, curl --socks5-hostname
+  ├── Port forwarding local (-L): postgresql via localhost, múltiplos forwards
+  ├── Port forwarding remoto (-R): expor serviço local via servidor público
+  ├── Jump Host (-J / ProxyJump): saltos simples e encadeados
+  ├── autossh + systemd: serviço de túnel persistente com restart automático
+  ├── ~/.ssh/config: ControlMaster, ControlPersist, ProxyJump declarativo
+  ├── WindowsComparisonBox: PuTTY/plink ↔ OpenSSH
+  ├── 4 erros comuns: connection refused, bind in use, AllowTcpForwarding, DNS leak
+  ├── Badge 🚇 ssh-proxy-master (55º) · 3 checkpoints · module-accent #0ea5e9
+  ├── checklistItemsCount 151→154 · totalTopics 82→83 · CONTENT_PAGES_COUNT 47→48
+  └── /evolucao v3.0: 10 disponíveis · 0 em breve ✅
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

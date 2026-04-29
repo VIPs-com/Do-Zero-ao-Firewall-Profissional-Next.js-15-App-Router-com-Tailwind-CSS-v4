@@ -93,6 +93,7 @@ Cada rota de conteúdo tem um accent dedicado. Os tokens ficam em `@theme` e ali
 | `traefik` | `var(--color-accent-2)` | Traefik Proxy Reverso |
 | `ldap` | `var(--color-layer-7)` | LDAP / OpenLDAP |
 | `pihole` | `var(--color-ok)` | Pi-hole |
+| `ssh-proxy` | `#0ea5e9` | SSH como Proxy SOCKS |
 
 ### v4.0 — Infraestrutura Moderna
 

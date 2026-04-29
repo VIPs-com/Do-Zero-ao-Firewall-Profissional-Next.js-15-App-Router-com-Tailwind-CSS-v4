@@ -315,7 +315,7 @@ BIOS/UEFI → GRUB2 → kernel/initrd → systemd PID 1 → targets. `systemd-an
 
 ---
 
-## Trilha v3.0 — Servidores e Serviços (9 módulos)
+## Trilha v3.0 — Servidores e Serviços (10 módulos)
 
 *Serviços de infraestrutura que completam o laboratório.*
 
@@ -345,6 +345,9 @@ Stack completa Nginx+App+PostgreSQL, redes `frontend`/`backend`/`internal`, volu
 
 ### S09 — Pi-hole · `/pihole`
 DNS sinkhole com blocklists gravity, Docker Compose macvlan (IP fixo na LAN), iptables DNAT para forçar DNS, whitelist/blacklist/regex, Unbound como resolver recursivo local (porta 5335, privacidade máxima).
+
+### S10 — SSH como Proxy SOCKS · `/ssh-proxy`
+SSH como canivete de rede: SOCKS5 dinâmico com `-D` (proxychains, browser seguro), port forwarding local `-L` (acesso a DB interno via localhost), remoto `-R` (expor serviço local via servidor público), Jump Host `-J`/ProxyJump (saltos encadeados sem VPN), autossh com systemd para túneis persistentes, `~/.ssh/config` com ControlMaster.
 
 ---
 

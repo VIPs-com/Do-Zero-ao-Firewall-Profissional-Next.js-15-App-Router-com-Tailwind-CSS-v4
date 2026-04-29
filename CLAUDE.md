@@ -55,8 +55,8 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz extraídas (Sprint F — code splitting) — 50 perguntas (Sprint Polish-I: +17)
-    searchItems.ts          # 107 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    quizQuestions.ts        # perguntas do quiz — 111 perguntas (Sprint Quiz++: +58 módulos F4-F7/I.7-I.25; +3 SSH-PROXY)
+    searchItems.ts          # 139 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (14 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 47 (Sprint I.25: +ebpf-avancado) |
-| `totalTopics` | `app/dashboard/page.tsx` | 82 (Sprint I.25: +eBPF Avançado) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 151 (Sprint I.25: +3 checkpoints ebpf-avancado) |
-| Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
-| Badges | `src/context/BadgeContext.tsx` | 54 (Sprint I.25: +ebpf-avancado-master) |
-| searchItems | `src/data/searchItems.ts` | 137 (Sprint I.25: +2 ebpf-avancado) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 48 (Sprint SSH-PROXY: +ssh-proxy) |
+| `totalTopics` | `app/dashboard/page.tsx` | 83 (Sprint SSH-PROXY: +/ssh-proxy) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
+| Texto na Home | `app/page.tsx` | "83 tópicos práticos" + stats: 83/48/55/7 |
+| Badges | `src/context/BadgeContext.tsx` | 55 (Sprint SSH-PROXY: +ssh-proxy-master) |
+| searchItems | `src/data/searchItems.ts` | 139 (Sprint SSH-PROXY: +2 ssh-proxy) |
 
 ---
 
@@ -380,6 +380,9 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint I.23 (OPNsense / pfSense): `/opnsense` — OPNsense vs pfSense (tabela 7 critérios), instalação VM (3 NICs: WAN/LAN/DMZ), mapa da Web UI, regras de firewall por interface (pf avaliado ingress), Aliases, Port Forward = DNAT (equivalências iptables), VPN WireGuard + OpenVPN wizard, Suricata IDS/IPS plugin (3 etapas), CARP HA (FluxoCard: MASTER→BACKUP→VIP), API REST + backup automático, WindowsComparisonBox (RRAS/NPS ↔ OPNsense); badge 🔥 opnsense-master (52º badge); 3 checkpoints (opnsense-instalado, opnsense-regras, opnsense-vpn); module-accent-opnsense #d94f00; CONTENT_PAGES_COUNT 44→45, checklistItemsCount 142→145, totalTopics 79→80, linux-ninja threshold 106→108; tópico C02 em /topicos; /evolucao v5.0 OPNsense disponível (2 disponíveis · 2 em breve); +2 searchItems (133 total); E2E 3/145 + 0/52.
 - ✅ Sprint I.24 (Nextcloud — Nuvem Pessoal): `/nextcloud` — Nextcloud vs ownCloud/Seafile/Google Drive (tabela), Docker Compose stack completa (Nextcloud+MariaDB+Redis+Traefik com labels ACME), FluxoCard Traefik→Nextcloud→MariaDB→Redis, wizard pós-instalação (occ config:system, Redis cache, cron container), tabela de 8 apps (Calendar/Contacts/Talk/Collabora/Mail/Deck/Maps/Backup), integração LDAP (link → Sprint I.12), object storage MinIO S3-compatible, script bash backup 3-2-1 (local+remoto+cloud), WindowsComparisonBox (OneDrive/SharePoint ↔ Nextcloud); badge ☁️ nextcloud-master (53º badge); 3 checkpoints (nextcloud-instalado, nextcloud-ssl, nextcloud-apps); module-accent-nextcloud #0082c9; CONTENT_PAGES_COUNT 45→46, checklistItemsCount 145→148, totalTopics 80→81, linux-ninja threshold 108→111; tópico C03 em /topicos; /evolucao v5.0 Nextcloud disponível (3 disponíveis · 1 em breve); +2 searchItems (135 total); E2E 3/148 + 0/53.
 - ✅ Sprint I.25 (eBPF Avançado + Cilium): `/ebpf-avancado` — Cilium vs kube-proxy/flannel (por que O(1) eBPF map vs O(N) iptables), instalação K3s sem CNI + helm install Cilium (kubeProxyReplacement=true, Hubble Relay+UI), Hubble CLI (observe --verdict DROPPED, port-forward relay:4245, Hubble UI service map), CiliumNetworkPolicy L3/L4 (default-deny + whitelist por labels), L7 (HTTP path/method, rules/http), DNS (toFQDNs com update dinâmico), eBPF LB (DSR, cilium bpf lb list, tabela iptables vs eBPF), Tetragon (TracingPolicy Sigkill para nc/ncat, detectar acesso /etc/shadow, tetra getevents), eBPF maps avançados (LRU_HASH, PERCPU_HASH, RINGBUF, PROG_ARRAY — tabela de tipos), bpftrace avançado (kprobes latência read(), uprobes app Go, top I/O disco), WindowsComparisonBox (Azure CNI+Defender ↔ Cilium+Tetragon); badge 🧬 ebpf-avancado-master (54º badge); 3 checkpoints (cilium-instalado, hubble-habilitado, tetragon-seguranca); module-accent-ebpf-avancado #6d28d9; CONTENT_PAGES_COUNT 46→47, checklistItemsCount 148→151, totalTopics 81→82, linux-ninja threshold 111→113; tópico C04 em /topicos; /evolucao v5.0 COMPLETO (4 disponíveis · 0 em breve ✅); +2 searchItems (137 total); E2E 3/151 + 0/54.
+- ✅ Sprint Quiz++ (cobertura de 23 módulos): +58 perguntas em `src/data/quizQuestions.ts` cobrindo todos os módulos sem coverage (F4-F7, I.7-I.25); total quiz 50→108 perguntas.
+- ✅ Fixes de consistência: deep-diver desc "20 páginas"→"47 páginas", BadgeContext comment "20 rotas"→"47 rotas", home stats 58/24/30→82/47/54, fundamentos-master trigger 10→14 checkpoints (Sprint F1-F7 completo).
+- ✅ Sprint SSH-PROXY (SSH como Proxy SOCKS): `/ssh-proxy` — SOCKS5 dinâmico (-D), port forwarding local (-L) e remoto (-R), Jump Host (-J/ProxyJump), autossh com systemd para túneis persistentes, ~/.ssh/config completo com ControlMaster, WindowsComparisonBox PuTTY/plink ↔ OpenSSH, 4 erros comuns; badge 🚇 ssh-proxy-master (55º badge); 3 checkpoints (ssh-dinamico, ssh-local, ssh-jump); module-accent-ssh-proxy #0ea5e9; CONTENT_PAGES_COUNT 47→48, checklistItemsCount 151→154, totalTopics 82→83, linux-ninja threshold 113→115; tópico S08 em /topicos; /evolucao v3.0 10 disponíveis ✅; +2 searchItems (139 total); E2E 3/154 + 0/55; +3 quiz questions (total 111).
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

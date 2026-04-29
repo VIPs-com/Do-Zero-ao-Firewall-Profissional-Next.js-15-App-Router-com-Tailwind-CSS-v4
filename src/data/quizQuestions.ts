@@ -1156,4 +1156,42 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 2,
     explanation: 'action: Sigkill envia SIGKILL no hook do kprobe __x64_sys_execve — antes mesmo do novo processo executar uma única instrução. Para uma nc tentando abrir conexão: o processo morre antes de criar qualquer socket.',
   },
+
+  // ========== SSH como Proxy SOCKS (Sprint SSH-PROXY) ==========
+  {
+    text: 'Qual a diferença fundamental entre "ssh -L 5432:db.lan:5432 user@bastion" e "ssh -D 1080 user@bastion"?',
+    badge: '🚇 SSH Tunneling',
+    options: [
+      '-L cria um proxy SOCKS5 dinâmico; -D faz forward de uma porta específica',
+      '-L redireciona uma porta local para um destino fixo; -D cria um proxy SOCKS5 que roteia para qualquer destino',
+      '-L é mais seguro porque usa TLS adicional; -D usa apenas SSH',
+      '-L funciona sem autenticação; -D exige chave SSH',
+    ],
+    correct: 1,
+    explanation: '-L (Local Forward) cria um túnel fixo: porta local → host:porta remota específica. -D (Dynamic) cria um proxy SOCKS5: o cliente decide o destino em tempo real — ideal para browser, curl, ou qualquer app que suporte SOCKS.',
+  },
+  {
+    text: 'Um desenvolvedor quer acessar um painel interno em http://painel.lan:8080 usando o bastion como intermediário. Qual comando usar?',
+    badge: '🚇 SSH Tunneling',
+    options: [
+      'ssh -R 8080:painel.lan:8080 user@bastion',
+      'ssh -D 8080 user@bastion',
+      'ssh -L 8080:painel.lan:8080 user@bastion',
+      'ssh -J painel.lan user@bastion',
+    ],
+    correct: 2,
+    explanation: '-L (Local Forward) é o correto: "redirecione minha porta local 8080 para painel.lan:8080 visto pelo bastion". Depois basta abrir http://localhost:8080 no browser. O bastion age como pivot — acessa painel.lan que só é acessível a partir da rede interna.',
+  },
+  {
+    text: 'O que o flag -J faz no comando "ssh -J bastion.empresa.com admin@192.168.10.50"?',
+    badge: '🚇 SSH Tunneling',
+    options: [
+      'Abre duas sessões SSH paralelas para redundância',
+      'Usa o bastion como Jump Host: conecta ao bastion e de lá salta para 192.168.10.50, tudo transparente',
+      'Envia o tráfego por duas rotas diferentes para balanceamento',
+      'Cria um túnel SOCKS5 via bastion para acessar 192.168.10.50',
+    ],
+    correct: 1,
+    explanation: 'ProxyJump (-J) encadeia conexões SSH sem abrir shell no intermediário. O cliente SSH negocia uma sessão ao bastion e pede para o bastion fazer TCP forward até 192.168.10.50:22. Para o destino final, a conexão parece vir do bastion. Pode encadear múltiplos saltos com vírgula: -J hop1,hop2,hop3.',
+  },
 ];
