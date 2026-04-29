@@ -45,7 +45,8 @@ export type BadgeId =
   | 'sre-master'
   | 'cicd-master'
   | 'opnsense-master'
-  | 'nextcloud-master';
+  | 'nextcloud-master'
+  | 'ebpf-avancado-master';
 
 export interface BadgeDef {
   icon: string;
@@ -106,7 +107,8 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'sre-master':           { icon: '🎯', title: 'SRE Master',            desc: 'Confiabilidade como engenharia — SLIs/SLOs definidos, error budget calculado, alertas de burn rate e postmortem blameless estruturado' },
   'cicd-master':          { icon: '🚀', title: 'CI/CD Master',          desc: 'Pipeline automatizado do zero — lint/test/build em paralelo, Docker push, deploy com environments e self-hosted runner configurado' },
   'opnsense-master':      { icon: '🔥', title: 'OPNsense Master',       desc: 'Firewall enterprise dominado — regras via GUI, Port Forward, VPN (WireGuard/OpenVPN) e IDS/IPS com Suricata integrado' },
-  'nextcloud-master':     { icon: '☁️', title: 'Nextcloud Master',      desc: 'Nuvem pessoal self-hosted operacional — Docker Compose com MariaDB+Redis, HTTPS via Traefik, apps CalDAV/CardDAV e backup automatizado' },
+  'nextcloud-master':       { icon: '☁️', title: 'Nextcloud Master',        desc: 'Nuvem pessoal self-hosted operacional — Docker Compose com MariaDB+Redis, HTTPS via Traefik, apps CalDAV/CardDAV e backup automatizado' },
+  'ebpf-avancado-master':   { icon: '🧬', title: 'eBPF Avançado Master',    desc: 'Cilium CNI substituindo kube-proxy, Hubble para observabilidade de fluxos L7, CiliumNetworkPolicy DNS/HTTP e Tetragon detectando anomalias runtime' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -197,7 +199,9 @@ export const ALL_CHECKLIST_IDS = [
   'opnsense-instalado', 'opnsense-regras', 'opnsense-vpn',
   // Sprint I.24 — Nextcloud (/nextcloud)
   'nextcloud-instalado', 'nextcloud-ssl', 'nextcloud-apps',
-]; // 148 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint I.25 — eBPF Avançado + Cilium (/ebpf-avancado)
+  'cilium-instalado', 'hubble-habilitado', 'tetragon-seguranca',
+]; // 151 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (20 rotas técnicas). Base do badge 'deep-diver'.
@@ -240,8 +244,9 @@ export const ALL_CHECKLIST_IDS = [
  * 44. /cicd
  * 45. /opnsense
  * 46. /nextcloud
+ * 47. /ebpf-avancado
  */
-export const CONTENT_PAGES_COUNT = 46;
+export const CONTENT_PAGES_COUNT = 47;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -399,6 +404,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['cicd-pipeline'] && checklist['cicd-secrets'] && checklist['cicd-runner']) unlockBadge('cicd-master');
     if (checklist['opnsense-instalado'] && checklist['opnsense-regras'] && checklist['opnsense-vpn']) unlockBadge('opnsense-master');
     if (checklist['nextcloud-instalado'] && checklist['nextcloud-ssl'] && checklist['nextcloud-apps']) unlockBadge('nextcloud-master');
+    if (checklist['cilium-instalado'] && checklist['hubble-habilitado'] && checklist['tetragon-seguranca']) unlockBadge('ebpf-avancado-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
     // Sprint SIGMA Fase 2 — todos os 11 checkpoints avançados
     if (
@@ -424,8 +430,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (111 de 148 → floor(148*0.75) = 111).
-    if (Object.values(checklist).filter(v => v).length >= 111) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (113 de 151 → floor(151*0.75) = 113).
+    if (Object.values(checklist).filter(v => v).length >= 113) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

@@ -56,13 +56,13 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  // Sprint I.24: +1 tópico Nextcloud → 80+1 = 81
-  const totalTopics = 81;
+  // Sprint I.25: +1 tópico eBPF Avançado → 81+1 = 82
+  const totalTopics = 82;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
-  // Sprint I.24: +3 checkpoints Nextcloud → 145+3 = 148
-  const checklistItemsCount = 148;
+  // Sprint I.25: +3 checkpoints ebpf-avancado → 148+3 = 151
+  const checklistItemsCount = 151;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 

@@ -392,6 +392,12 @@ export const ROUTE_SEO = {
       'Configure pipelines CI/CD profissionais com GitHub Actions: lint/test/build em paralelo, Docker build e push no ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runners no Linux.',
     keywords: ['GitHub Actions', 'CI/CD', 'pipeline', 'workflow', 'Docker', 'self-hosted runner', 'environments', 'secrets', 'deploy automático', 'DevOps'],
   },
+  '/ebpf-avancado': {
+    title: 'eBPF Avançado + Cilium | CNI eBPF, Hubble, NetworkPolicy L7 e Tetragon',
+    description:
+      'Aprofunde eBPF com Cilium: substitua kube-proxy e flannel por CNI nativo eBPF, use Hubble para observabilidade de fluxos L7 em tempo real, defina CiliumNetworkPolicy até HTTP path e DNS, e detecte anomalias runtime com Tetragon TracingPolicy.',
+    keywords: ['Cilium', 'eBPF', 'Hubble', 'CiliumNetworkPolicy', 'Tetragon', 'kube-proxy replacement', 'CNI', 'K3s', 'DSR', 'bpftrace', 'L7 policy', 'runtime security'],
+  },
   '/nextcloud': {
     title: 'Nextcloud | Nuvem Pessoal Self-hosted com Docker Compose e LDAP',
     description:

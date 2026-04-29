@@ -75,12 +75,12 @@ const PHASE_V5 = {
   name: 'Cloud & Platform Engineering',
   color: 'border-layer-7/40 bg-layer-7/5',
   badgeColor: 'bg-layer-7/15 text-layer-7 border-layer-7/30',
-  status: '3 disponíveis · 1 em breve',
+  status: '4 disponíveis · 0 em breve ✅',
   modules: [
-    { name: 'CI/CD com GitHub Actions',  slug: '/cicd',      available: true,  icon: '🚀', tags: ['pipeline', 'deploy', 'workflows'] },
-    { name: 'OPNsense / pfSense',        slug: '/opnsense',  available: true,  icon: '🔥', tags: ['enterprise', 'HA', 'web UI'] },
-    { name: 'Nextcloud — Nuvem Pessoal', slug: '/nextcloud', available: true,  icon: '☁️', tags: ['storage', 'caldav', 'self-hosted'] },
-    { name: 'eBPF Avançado + Cilium',    slug: null,    available: false, icon: '🧬', tags: ['CNI', 'eBPF networking', 'Hubble'] },
+    { name: 'CI/CD com GitHub Actions',  slug: '/cicd',           available: true, icon: '🚀', tags: ['pipeline', 'deploy', 'workflows'] },
+    { name: 'OPNsense / pfSense',        slug: '/opnsense',       available: true, icon: '🔥', tags: ['enterprise', 'HA', 'web UI'] },
+    { name: 'Nextcloud — Nuvem Pessoal', slug: '/nextcloud',      available: true, icon: '☁️', tags: ['storage', 'caldav', 'self-hosted'] },
+    { name: 'eBPF Avançado + Cilium',    slug: '/ebpf-avancado',  available: true, icon: '🧬', tags: ['CNI', 'eBPF networking', 'Hubble'] },
   ],
 };
 

@@ -297,6 +297,8 @@ html.light {
   .module-accent-opnsense           { --mod: #d94f00; }
   /* Sprint I.24 — Nextcloud */
   .module-accent-nextcloud          { --mod: #0082c9; }
+  /* Sprint I.25 — eBPF Avançado + Cilium */
+  .module-accent-ebpf-avancado      { --mod: #6d28d9; }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

@@ -286,4 +286,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint I.24 — Nextcloud (/nextcloud)
   { id: 't-nextcloud',      category: 'Tópico',    title: 'Nextcloud — Nuvem Pessoal Self-hosted',                 description: 'Docker Compose com MariaDB+Redis, Traefik SSL automático, integração LDAP, apps CalDAV/CardDAV/Talk, object storage MinIO e backup 3-2-1', href: '/nextcloud', icon: Globe },
   { id: 'g-caldav',         category: 'Glossário', title: 'CalDAV / CardDAV — Protocolos de Sincronização',        description: 'CalDAV sincroniza calendários entre clientes (Google Calendar, Apple, Thunderbird). CardDAV sincroniza contatos. Ambos baseados em WebDAV — HTTP com extensões para dados estruturados', href: '/nextcloud', icon: FileText },
+
+  // Sprint I.25 — eBPF Avançado + Cilium (/ebpf-avancado)
+  { id: 't-ebpf-avancado',  category: 'Tópico',    title: 'eBPF Avançado + Cilium — CNI e Runtime Security',       description: 'Cilium substituindo kube-proxy (eBPF LB), Hubble para observabilidade de fluxos L7, CiliumNetworkPolicy HTTP path e DNS, Tetragon TracingPolicy bloqueando execuções suspeitas', href: '/ebpf-avancado', icon: Zap },
+  { id: 'g-cilium-hubble',  category: 'Glossário', title: 'Cilium + Hubble — CNI eBPF e Observabilidade',          description: 'Cilium é um CNI que usa eBPF para networking e segurança em Kubernetes — substitui kube-proxy e flannel. Hubble é sua camada de observabilidade: captura fluxos L3/L4/L7 em tempo real sem modificar a aplicação', href: '/ebpf-avancado', icon: FileText },
 ];
