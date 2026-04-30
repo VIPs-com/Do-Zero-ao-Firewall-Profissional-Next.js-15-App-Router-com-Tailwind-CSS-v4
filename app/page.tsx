@@ -152,8 +152,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Novo no Linux? CTA Banner */}
-      <section className="max-w-7xl mx-auto px-4 pb-8">
+      {/* Trail CTAs — Fundamentos (iniciante) + Avançados (pós-firewall) */}
+      <section className="max-w-7xl mx-auto px-4 pb-8 grid sm:grid-cols-2 gap-3">
         <motion.div
           initial={undefined}
           whileInView={{ opacity: 1, y: 0 }}
@@ -172,6 +172,28 @@ export default function Home() {
             className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#6366f1] text-white font-semibold text-sm hover:bg-[#4f46e5] transition-colors"
           >
             Começar aqui
+            <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </motion.div>
+
+        <motion.div
+          initial={undefined}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-[rgba(14,165,233,0.08)] border border-[rgba(14,165,233,0.3)]"
+        >
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <span className="text-2xl" aria-hidden="true">🚀</span>
+            <div>
+              <p className="font-bold text-sm text-info">Já domina o Firewall?</p>
+              <p className="text-xs text-text-2">Trilha Avançada — Kubernetes, Ansible, eBPF e muito mais.</p>
+            </div>
+          </div>
+          <Link
+            href="/avancados"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-info text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+          >
+            Explorar
             <ArrowRight size={14} aria-hidden="true" />
           </Link>
         </motion.div>

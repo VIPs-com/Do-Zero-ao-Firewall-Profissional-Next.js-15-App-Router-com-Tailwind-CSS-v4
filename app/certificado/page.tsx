@@ -336,6 +336,30 @@ export default function CertificatePage() {
         </div>
       </section>
 
+      {/* Próxima Trilha */}
+      <section className="mt-10 grid sm:grid-cols-2 gap-4 no-print">
+        <div className="p-6 rounded-xl bg-[rgba(14,165,233,0.07)] border border-[rgba(14,165,233,0.25)] flex flex-col gap-3">
+          <p className="font-bold text-sm text-info">🚀 Próxima Trilha — Avançada</p>
+          <p className="text-xs text-text-2 leading-relaxed">
+            Expanda suas habilidades: DHCP, Samba, Apache, OpenVPN, Traefik, Kubernetes,
+            Ansible, Prometheus, Terraform, eBPF e muito mais — 19 módulos.
+          </p>
+          <Link href="/avancados" className="mt-auto inline-flex items-center gap-1.5 text-xs font-bold text-info hover:underline">
+            Ver Trilha Avançada →
+          </Link>
+        </div>
+        <div className="p-6 rounded-xl bg-bg-2 border border-border flex flex-col gap-3">
+          <p className="font-bold text-sm">📊 Seu Dashboard</p>
+          <p className="text-xs text-text-2 leading-relaxed">
+            Acompanhe badges desbloqueados, progresso do checklist e pontuação do quiz.
+            O badge <strong>Course Master</strong> aguarda quem visita todos os 25 módulos.
+          </p>
+          <Link href="/dashboard" className="mt-auto inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline">
+            Ver Dashboard →
+          </Link>
+        </div>
+      </section>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/certificado" />
     </div>
