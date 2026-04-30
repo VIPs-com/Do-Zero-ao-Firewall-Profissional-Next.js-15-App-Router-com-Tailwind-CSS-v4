@@ -55,7 +55,7 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 164 perguntas (firewall=62, fundamentos=45, avancados=57; Sprint QUIZ-COVER: +13 para módulos com <3 questões)
+    quizQuestions.ts        # perguntas do quiz — 173 perguntas (firewall=71, fundamentos=45, avancados=57; Sprint QUIZ-LATE: +9 para Pivoteamento/Laboratorio/Proxmox)
     searchItems.ts          # 148 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
@@ -397,6 +397,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint GLOSSARIO-ADVANCED: +12 termos ao glossário (mTLS, Sidecar Proxy, VirtualService, Circuit Breaker, CNI, NetworkPolicy, Pipeline CI/CD, GitOps, IDS/IPS, CARP, Burn Rate, Trace/Tracing); total 73→85 termos; trackPageVisit adicionado em /glossario, /certificado, /evolucao (3 páginas COURSE_ORDER que não contavam para deep-diver); deep-diver "(61 disponíveis)"→"(62 disponíveis)"; +4 searchItems glossário (148 total); /cheat-sheet +11 comandos (SSH Proxy, CI/CD, Monitoring, K8s rollout) e DEVOPS/SERVERS_CATEGORIES atualizadas.
 - ✅ Sprint QUIZ-FIX: SSH-PROXY 3 questões corrigidas trail 'avancados'→'fundamentos' (fundamentos 42→45, avancados 60→57; total 151).
 - ✅ Sprint QUIZ-COVER: +13 questões para módulos com <3 cobertura — DNAT(+2), Port Knocking(+2), Diagnóstico SSL(+2), Camada 3(+1), Análise de Pacotes(+1), systemd(+1), Hardening(+1), Docker(+1), Compose(+1), SSH 2FA(+1); total 151→164 (firewall=62, fundamentos=45, avancados=57).
+- ✅ Sprint QUIZ-LATE-MODULES: +9 questões para módulos sem cobertura — Pivoteamento (🎭 +3: FORWARD DROP, reverse shell, egress filtering), Laboratório (🧪 +3: vmx/svm check, KVM tipo 1 vs VirtualBox tipo 2, virsh/libvirt), Proxmox (🖥️ +3: porta 8006, bridges vmbr, pveversion); total 164→173 (firewall=71, fundamentos=45, avancados=57).
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
