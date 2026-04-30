@@ -1794,7 +1794,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     trail: 'avancados',
   },
 
-  // ========== SSH como Proxy SOCKS (Sprint SSH-PROXY) ==========
+  // ========== SSH como Proxy SOCKS (Sprint SSH-PROXY) — F15 Fundamentos ==========
   {
     text: 'Qual a diferença fundamental entre "ssh -L 5432:db.lan:5432 user@bastion" e "ssh -D 1080 user@bastion"?',
     badge: '🚇 SSH Tunneling',
@@ -1806,7 +1806,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: '-L (Local Forward) cria um túnel fixo: porta local → host:porta remota específica. -D (Dynamic) cria um proxy SOCKS5: o cliente decide o destino em tempo real — ideal para browser, curl, ou qualquer app que suporte SOCKS.',
-    trail: 'avancados',
+    trail: 'fundamentos',
   },
   {
     text: 'Um desenvolvedor quer acessar um painel interno em http://painel.lan:8080 usando o bastion como intermediário. Qual comando usar?',
@@ -1819,7 +1819,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: '-L (Local Forward) é o correto: "redirecione minha porta local 8080 para painel.lan:8080 visto pelo bastion". Depois basta abrir http://localhost:8080 no browser. O bastion age como pivot — acessa painel.lan que só é acessível a partir da rede interna.',
-    trail: 'avancados',
+    trail: 'fundamentos',
   },
   {
     text: 'O que o flag -J faz no comando "ssh -J bastion.empresa.com admin@192.168.10.50"?',
@@ -1832,6 +1832,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'ProxyJump (-J) encadeia conexões SSH sem abrir shell no intermediário. O cliente SSH negocia uma sessão ao bastion e pede para o bastion fazer TCP forward até 192.168.10.50:22. Para o destino final, a conexão parece vir do bastion. Pode encadear múltiplos saltos com vírgula: -J hop1,hop2,hop3.',
-    trail: 'avancados',
+    trail: 'fundamentos',
   },
 ];
