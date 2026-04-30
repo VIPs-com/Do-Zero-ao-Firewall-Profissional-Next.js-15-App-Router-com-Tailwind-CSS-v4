@@ -390,6 +390,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Advanced-Trail: `ADVANCED_ORDER` (19 módulos v3.0→v5.0) em `courseOrder.ts`; badge 🌐 advanced-master (56º — visitar todos os 19); seção "Módulos Avançados" no dashboard com barra de progresso + grid de módulos (links, ✓ visitado); MILESTONE_BADGES inclui advanced-master; home stats badges 55→56; 6 novos testes vitest para ADVANCED_ORDER (57 testes total); E2E 07-dashboard-counters 0/55→0/56.
 - ✅ Sprint Advanced-Nav: `ModuleNav` estendido para aceitar `SimpleModule[]` (prev/next derivados do índice quando não há campos explícitos); ModuleNav adicionado em todos os 19 módulos avançados substituindo navs hardcoded díspares; fix de import mislocado em monitoring/page.tsx (import Python no code block interferiu com lastIndexOf).
 - ✅ Sprint PROGRESS-DROPDOWN: `ProgressDropdown` reescrito com 3 abas — Firewall (25), Fundamentos (15), Avançados (19); botão exibe total X/59; barra de progresso e lista de módulos por aba; cores distintas por trilha (accent/indigo/info); a11y preservada (role=tablist, aria-selected, focus trap).
+- ✅ fix(home): stats módulos 48→59 (25+15+19 trilhas); deep-diver desc atualizado "48+ de 59".
+- ✅ Sprint QUIZ-TRAIL: campo `trail: QuizTrail` adicionado a todas as 152 questões via script (firewall=50, fundamentos=45, avancados=57); seletor de trilha (4 opções: Todas/Firewall/Fundamentos/Avançados) na tela de início do quiz com radio semantico + contagem por trilha.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
