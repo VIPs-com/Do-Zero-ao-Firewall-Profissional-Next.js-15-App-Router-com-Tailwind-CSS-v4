@@ -6,6 +6,8 @@
  * componente de página focado apenas em lógica/UI.
  */
 
+export type QuizTrail = 'firewall' | 'fundamentos' | 'avancados';
+
 export interface QuizQuestion {
   text: string;
   badge: string;
@@ -13,6 +15,8 @@ export interface QuizQuestion {
   /** Índice (0-based) da opção correta em `options`. */
   correct: number;
   explanation: string;
+  /** Trilha do workshop à qual a questão pertence. */
+  trail: QuizTrail;
 }
 
 export const QUIZ_QUESTIONS: QuizQuestion[] = [
@@ -28,6 +32,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'sysctl -w net.ipv4.ip_forward=1 ativa o roteamento IP até o próximo reboot.',
+    trail: 'firewall',
   },
   {
     text: 'Qual a diferença entre SNAT e MASQUERADE?',
@@ -40,6 +45,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'SNAT requer IP fixo especificado; MASQUERADE descobre o IP automaticamente (útil para DHCP).',
+    trail: 'firewall',
   },
   {
     text: 'O DNAT é configurado em qual chain do iptables?',
@@ -47,6 +53,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['INPUT', 'OUTPUT', 'PREROUTING', 'POSTROUTING'],
     correct: 2,
     explanation: 'DNAT precisa acontecer ANTES da decisão de roteamento, por isso fica no PREROUTING.',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando mostra a lista de IPs autorizados pelo Port Knocking?',
@@ -59,6 +66,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'O módulo recent mantém a lista em /proc/net/xt_recent/ com o nome da lista (ex: abre-ssh).',
+    trail: 'firewall',
   },
   {
     text: 'Qual a função da regra ESTABLISHED no iptables?',
@@ -71,6 +79,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'ESTABLISHED permite que respostas de conexões já autorizadas passem sem verificar regras novamente.',
+    trail: 'firewall',
   },
 
   // ========== DNS ==========
@@ -80,6 +89,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Registro A', 'Registro CNAME', 'Registro MX', 'Registro PTR'],
     correct: 3,
     explanation: 'PTR (Pointer) é usado para DNS reverso, associando um IP a um nome de domínio.',
+    trail: 'firewall',
   },
   {
     text: 'Qual protocolo o DNS usa na porta 53?',
@@ -87,6 +97,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Apenas TCP', 'Apenas UDP', 'UDP e TCP', 'ICMP'],
     correct: 2,
     explanation: 'DNS usa UDP para consultas curtas e TCP para transferências de zona e respostas longas.',
+    trail: 'firewall',
   },
   {
     text: 'O que é o registro SOA no DNS?',
@@ -99,6 +110,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'SOA (Start of Authority) define TTL, serial, refresh, retry e expire da zona DNS.',
+    trail: 'firewall',
   },
 
   // ========== SSL/TLS ==========
@@ -113,6 +125,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     explanation: 'PKI é a infraestrutura de chave pública que gerencia certificados digitais.',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando gera uma chave privada RSA 2048 bits?',
@@ -125,6 +138,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'openssl genrsa é o comando correto para gerar chave RSA com OpenSSL.',
+    trail: 'firewall',
   },
   {
     text: 'Qual a função do cabeçalho HSTS?',
@@ -137,6 +151,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     explanation: 'HSTS (HTTP Strict Transport Security) força o navegador a usar HTTPS mesmo se o usuário digitar HTTP.',
+    trail: 'firewall',
   },
 
   // ========== Squid Proxy ==========
@@ -146,6 +161,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['80', '443', '3128', '8080'],
     correct: 2,
     explanation: 'Squid escuta na porta 3128 por padrão.',
+    trail: 'firewall',
   },
   {
     text: 'Qual a diferença entre dstdomain e url_regex no Squid?',
@@ -158,6 +174,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'dstdomain verifica só o domínio (mais rápido, funciona com HTTPS); url_regex analisa URL inteira (mais lento).',
+    trail: 'firewall',
   },
   {
     text: 'Qual a melhor prática para HTTPS no Squid?',
@@ -170,6 +187,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Como HTTPS criptografa a URL, o Squid só vê o domínio. dstdomain é a melhor prática.',
+    trail: 'firewall',
   },
 
   // ========== DIAGNÓSTICO ==========
@@ -184,6 +202,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 3,
     explanation: 'Ping por IP funciona, mas por nome não → o DNS está quebrado. Elimina Camadas 1-4 de uma vez!',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando mostra a tabela ARP (mapeamento IP → MAC) da sua máquina?',
@@ -191,6 +210,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['ip link show', 'ip neigh show', 'ss -tulpn', 'tcpdump -i any'],
     correct: 1,
     explanation: 'ip neigh show mostra a tabela ARP, essencial para diagnóstico da Camada 2.',
+    trail: 'firewall',
   },
   {
     text: 'O que significa a flag [R] em uma captura de tcpdump?',
@@ -203,6 +223,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'RST (Reset) indica que a conexão foi rejeitada — geralmente firewall bloqueando ou serviço não ouvindo.',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando captura tráfego na porta 443 e salva em arquivo para análise no Wireshark?',
@@ -215,6 +236,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     explanation: 'tcpdump -w captura.pcap salva em formato PCAP, que pode ser aberto no Wireshark.',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando mostra as portas abertas e os serviços ouvindo no servidor?',
@@ -222,6 +244,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['iptables -L -n -v', 'ip route show', 'ss -tulpn', 'conntrack -L'],
     correct: 2,
     explanation: 'ss -tulpn lista todas as portas abertas e qual processo está escutando em cada uma.',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando verifica o handshake SSL/TLS de um servidor?',
@@ -234,6 +257,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'openssl s_client conecta e mostra todo o handshake SSL/TLS, incluindo certificado e cifras negociadas.',
+    trail: 'firewall',
   },
 
   // ========== VPN & IPSec ==========
@@ -243,6 +267,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['ESP', 'AH', 'IKE', 'NAT-T'],
     correct: 2,
     explanation: 'IKE (Internet Key Exchange) é o protocolo responsável por estabelecer e gerenciar as chaves de criptografia no IPSec.',
+    trail: 'firewall',
   },
   {
     text: 'Qual a porta padrão do IKE (Internet Key Exchange) no IPSec?',
@@ -250,6 +275,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['500/UDP', '4500/UDP', '50/ESP', '51/AH'],
     correct: 0,
     explanation: 'IKE usa a porta 500/UDP para negociação inicial. NAT-T usa a porta 4500/UDP quando há NAT no caminho.',
+    trail: 'firewall',
   },
   {
     text: 'O que é NAT-T (NAT Traversal) no IPSec?',
@@ -262,6 +288,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'NAT-T encapsula pacotes ESP em UDP na porta 4500 para que possam atravessar roteadores NAT sem problemas.',
+    trail: 'firewall',
   },
   {
     text: 'Qual é a versão mais moderna do IKE, que suporta MOBIKE (roaming entre redes)?',
@@ -269,6 +296,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['IKEv1', 'IKEv2', 'IKEv3', 'IKE-MOBIKE'],
     correct: 1,
     explanation: 'IKEv2 é a versão moderna, mais rápida e segura. Suporta MOBIKE, permitindo que a VPN continue ativa ao mudar de rede (ex: Wi-Fi → 4G).',
+    trail: 'firewall',
   },
   {
     text: 'Qual implementação de IPSec é mais usada no Linux?',
@@ -276,6 +304,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['OpenVPN', 'WireGuard', 'StrongSwan', 'ipsec-tools'],
     correct: 2,
     explanation: 'StrongSwan é a implementação mais popular de IPSec no Linux, suportando IKEv1, IKEv2, certificados X.509 e integração com sistemas de autenticação.',
+    trail: 'firewall',
   },
   {
     text: 'O que é MOBIKE no contexto de VPN IPSec?',
@@ -288,6 +317,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     explanation: 'MOBIKE (Mobility and Multihoming) é uma extensão do IKEv2 que permite que a VPN mantenha a conexão ativa mesmo quando o dispositivo muda de rede (ex: Wi-Fi para 4G).',
+    trail: 'firewall',
   },
 
   // ========== Persistência & Operações (Sprint R) ==========
@@ -302,6 +332,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'iptables-save exporta todas as regras no formato que iptables-restore consegue reimportar.',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando restaura regras iptables a partir de um arquivo salvo?',
@@ -314,6 +345,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'iptables-restore lê o formato gerado por iptables-save e aplica todas as regras atomicamente.',
+    trail: 'firewall',
   },
   {
     text: 'No systemd, qual diretiva garante que o serviço de firewall inicie APÓS a rede estar disponível?',
@@ -326,6 +358,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'After=network-online.target garante que a rede esteja plenamente funcional antes do serviço iniciar.',
+    trail: 'firewall',
   },
   {
     text: 'Qual flag do iptables permite especificar múltiplas portas em uma única regra?',
@@ -338,6 +371,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'O módulo multiport (-m multiport) permite listar várias portas com --dports em uma regra só.',
+    trail: 'firewall',
   },
   {
     text: 'O que acontece quando um pacote atinge uma regra LOG no iptables?',
@@ -350,6 +384,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'LOG é um target não-terminante: registra o pacote no syslog e continua avaliando as regras seguintes. Você precisa de um DROP ou ACCEPT depois.',
+    trail: 'firewall',
   },
   {
     text: 'Para que serve o RemainAfterExit=yes no firewall.service?',
@@ -362,6 +397,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Com Type=oneshot e RemainAfterExit=yes, o systemd marca o serviço como "active (exited)" após o script terminar. Sem isso, o status ficaria "inactive" e systemctl stop não chamaria o ExecStop.',
+    trail: 'firewall',
   },
 
   // ========== WireGuard ==========
@@ -371,6 +407,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['RSA-4096', 'AES-256-GCM', 'Curve25519', 'Diffie-Hellman clássico'],
     correct: 2,
     explanation: 'WireGuard usa Curve25519 para ECDH (troca de chaves) e ChaCha20-Poly1305 para cifragem de dados — mais rápido que AES em hardware sem AES-NI.',
+    trail: 'firewall',
   },
   {
     text: 'O que significa AllowedIPs = 0.0.0.0/0 na configuração de um cliente WireGuard?',
@@ -383,6 +420,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'AllowedIPs = 0.0.0.0/0 é o "full tunnel" — todo o tráfego do cliente é roteado pelo servidor WireGuard. Para split tunnel, use apenas a subnet específica (ex: 10.0.0.0/24).',
+    trail: 'firewall',
   },
   {
     text: 'Qual porta e protocolo o WireGuard usa por padrão?',
@@ -390,6 +428,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['1194/UDP (como OpenVPN)', '500/UDP (como IKEv1)', '51820/UDP', '4500/TCP'],
     correct: 2,
     explanation: 'WireGuard usa UDP pela porta 51820 por padrão (configurável com ListenPort). UDP é essencial para o desempenho — WireGuard não suporta TCP.',
+    trail: 'firewall',
   },
 
   // ========== Fail2ban ==========
@@ -404,6 +443,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'Uma jail é a unidade de configuração do Fail2ban: define qual log monitorar (logpath), qual padrão detectar (filter/failregex) e qual ação executar ao atingir maxretry.',
+    trail: 'firewall',
   },
   {
     text: 'Por que editar jail.local e não jail.conf diretamente no Fail2ban?',
@@ -416,6 +456,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'jail.conf é sobrescrito a cada atualização do pacote. jail.local herda todos os defaults do jail.conf e sobrescreve apenas as chaves que você define — suas configurações nunca são perdidas.',
+    trail: 'firewall',
   },
   {
     text: 'O que o parâmetro findtime controla no Fail2ban?',
@@ -428,6 +469,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'findtime define a janela de tempo: se um IP fizer maxretry falhas dentro de findtime segundos, ele é banido. Ex: maxretry=3 + findtime=600 = 3 falhas em 10 minutos.',
+    trail: 'firewall',
   },
 
   // ========== nftables ==========
@@ -442,6 +484,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'No iptables, bloquear 1000 IPs exige 1000 regras avaliadas sequencialmente (O(n)). No nftables, um set usa hash/lookup em O(1) — o mesmo tempo independente de ter 1 ou 1 milhão de entradas.',
+    trail: 'firewall',
   },
   {
     text: 'O que o comando "nft flush ruleset" faz?',
@@ -454,6 +497,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'nft flush ruleset remove completamente todas as tabelas, chains e regras ativas. Cuidado em produção: equivale a um "iptables -F + iptables -X" em todas as tabelas de uma vez.',
+    trail: 'firewall',
   },
   {
     text: 'Qual ferramenta converte automaticamente regras iptables para sintaxe nftables?',
@@ -461,6 +505,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['nft convert', 'iptables-translate', 'nft import', 'iptables-to-nft'],
     correct: 1,
     explanation: 'iptables-translate converte uma regra iptables para o equivalente nftables. Ex: iptables-translate -A INPUT -p tcp --dport 22 -j ACCEPT → nft add rule ip filter input tcp dport 22 accept.',
+    trail: 'firewall',
   },
 
   // ========== Hardening Linux ==========
@@ -470,6 +515,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['RequireKey yes', 'PasswordAuthentication no', 'AuthMethod publickey', 'DisablePasswords yes'],
     correct: 1,
     explanation: 'PasswordAuthentication no desativa login por senha no SSH. Após configurar, apenas autenticação por chave pública funciona. SEMPRE teste a chave antes de aplicar para não se trancar fora do servidor.',
+    trail: 'firewall',
   },
   {
     text: 'O que o sysctl kernel.randomize_va_space = 2 habilita no Linux?',
@@ -482,6 +528,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'ASLR (Address Space Layout Randomization) com valor 2 randomiza completamente o espaço de endereçamento (pilha, heap, bibliotecas). Dificulta exploits de buffer overflow que dependem de endereços fixos.',
+    trail: 'firewall',
   },
 
   // ========== Docker Networking ==========
@@ -496,6 +543,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'O Docker cria automaticamente uma regra DNAT na chain DOCKER (na tabela nat, em PREROUTING): pacotes chegando na porta 8080 do host são redirecionados para a porta 80 do container. É o mesmo conceito do módulo DNAT, automatizado.',
+    trail: 'firewall',
   },
   {
     text: 'Qual comando inspeciona as configurações de uma rede Docker, mostrando subnet e containers conectados?',
@@ -503,6 +551,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['docker inspect --network bridge', 'docker network inspect bridge', 'docker ps --format network', 'docker network ls --verbose'],
     correct: 1,
     explanation: 'docker network inspect NOME mostra todas as configurações da rede: subnet, gateway, driver e quais containers estão conectados com seus IPs internos.',
+    trail: 'firewall',
   },
 
   // ========== Docker Compose ==========
@@ -517,6 +566,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'internal: true na definição da rede bloqueia qualquer tráfego externo — nem saída para a internet é permitida. Ideal para redes de banco de dados que não precisam de acesso externo e não devem tê-lo.',
+    trail: 'firewall',
   },
   {
     text: 'Qual a diferença entre "docker compose down" e "docker compose down -v"?',
@@ -529,6 +579,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'docker compose down apenas para e remove containers e redes. O flag -v também remove os volumes nomeados definidos no compose file — apagando dados do banco e qualquer dado persistido. Use com extremo cuidado em produção.',
+    trail: 'firewall',
   },
 
   // ========== SSH 2FA / TOTP ==========
@@ -543,6 +594,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'TOTP (Time-based One-Time Password, RFC 6238) gera um código de 6 dígitos usando HMAC-SHA1(secret, floor(unixtime/30)). Cada código é válido por 30 segundos e só pode ser usado uma vez.',
+    trail: 'firewall',
   },
   {
     text: 'Em qual arquivo PAM a linha do Google Authenticator deve ser adicionada para proteger o SSH com 2FA?',
@@ -550,6 +602,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['/etc/pam.d/login', '/etc/pam.d/sshd', '/etc/ssh/pam.conf', '/etc/security/pam_google.conf'],
     correct: 1,
     explanation: '/etc/pam.d/sshd é o arquivo PAM específico do OpenSSH. Adicionar "auth required pam_google_authenticator.so" nele faz o SSH chamar o módulo TOTP durante a autenticação.',
+    trail: 'firewall',
   },
 
   // ========== Estrutura do Sistema — FHS (F01) ==========
@@ -559,6 +612,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['/usr/bin', '/opt', '/bin', '/sbin'],
     correct: 2,
     explanation: '/bin contém binários essenciais (ls, cp, bash) que devem estar disponíveis no boot, antes de /usr ser montado. Em sistemas modernos (Ubuntu 20.04+) /bin é um symlink para /usr/bin, mas o padrão FHS reserva /bin para esse propósito.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual diretório do FHS é montado como tmpfs (RAM) e contém arquivos temporários de processos em execução, sendo limpo a cada boot?',
@@ -566,6 +620,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['/tmp', '/run', '/var/tmp', '/dev/shm'],
     correct: 1,
     explanation: '/run é montado como tmpfs pelo systemd antes de qualquer serviço subir. Contém PIDs, sockets e locks de processos. /tmp pode sobreviver ao reboot dependendo da configuração; /var/tmp sempre sobrevive.',
+    trail: 'fundamentos',
   },
   {
     text: 'No Linux, o diretório /proc é um sistema de arquivos virtual que expõe informações do kernel. Qual arquivo em /proc contém os parâmetros passados ao kernel durante o boot?',
@@ -573,6 +628,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['/proc/version', '/proc/modules', '/proc/cmdline', '/proc/sys/kernel/boot'],
     correct: 2,
     explanation: '/proc/cmdline exibe exatamente a linha de comando passada ao kernel pelo bootloader (GRUB). Exemplo: "BOOT_IMAGE=/vmlinuz root=/dev/sda1 ro quiet splash". Útil para diagnosticar parâmetros de boot.',
+    trail: 'fundamentos',
   },
 
   // ========== Comandos Essenciais (F02) ==========
@@ -582,6 +638,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['cat -n arquivo.log', 'tail -f -n 20 arquivo.log', 'head -20 arquivo.log', 'watch cat arquivo.log'],
     correct: 1,
     explanation: 'tail -f segue o arquivo (follow mode) e -n 20 define o número inicial de linhas exibidas. É o comando mais usado por sysadmins para monitorar logs ao vivo, como tail -f /var/log/syslog.',
+    trail: 'fundamentos',
   },
   {
     text: 'Como encontrar todos os arquivos .conf no diretório /etc modificados nos últimos 7 dias?',
@@ -594,6 +651,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'find /etc -name "*.conf" -mtime -7 usa -mtime -7 para "modificado há menos de 7 dias". O sinal importa: -7 = menos de 7 dias atrás, +7 = mais de 7 dias atrás, 7 = exatamente 7 dias atrás.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual operador de redirecionamento ADICIONA saída ao final de um arquivo sem sobrescrevê-lo?',
@@ -601,6 +659,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['>', '>>', '|', '2>'],
     correct: 1,
     explanation: '>> redireciona a saída padrão (stdout) ADICIONANDO ao final do arquivo. Um único > sobrescreve. | (pipe) conecta processos. 2> redireciona apenas stderr. Exemplo: echo "entrada" >> /var/log/meu.log',
+    trail: 'fundamentos',
   },
 
   // ========== Editores de Texto (F03) ==========
@@ -610,6 +669,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Modo de inserção (i)', 'Modo visual (v)', 'Modo normal (Esc), digitando :wq', 'Modo de substituição (R)'],
     correct: 2,
     explanation: ':wq (write + quit) é executado no modo de comandos do vim. Para chegar lá, pressione Esc primeiro. Alternativas: :w salva sem sair, :q! sai sem salvar, ZZ equivale a :wq. Nunca tente salvar estando em modo de inserção.',
+    trail: 'fundamentos',
   },
   {
     text: 'Como substituir TODAS as ocorrências da palavra "senha" por "password" em um arquivo aberto no vim?',
@@ -622,6 +682,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: ':%s/senha/password/g — % aplica ao arquivo inteiro, s é substituição, /g substitui todas as ocorrências na linha. Sem g, só a primeira ocorrência de cada linha é substituída. Adicione /c ao final para confirmar cada substituição.',
+    trail: 'fundamentos',
   },
   {
     text: 'No nano, qual atalho de teclado exibe a linha de ajuda com os comandos disponíveis?',
@@ -629,6 +690,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Ctrl+H', 'Ctrl+G', 'F1', 'Alt+H'],
     correct: 1,
     explanation: 'Ctrl+G exibe o menu de ajuda do nano (G de Get Help). Ctrl+X sai, Ctrl+O salva, Ctrl+W busca, Ctrl+K corta linha, Ctrl+U cola. Os atalhos também aparecem na barra inferior do nano.',
+    trail: 'fundamentos',
   },
 
   // ========== Gerenciamento de Processos (F04) ==========
@@ -638,6 +700,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['ps aux', 'top', 'htop', 'pstree'],
     correct: 1,
     explanation: 'top exibe processos em tempo real com atualização a cada 3 segundos. Pressione k para kill, r para renice, q para sair. htop é uma versão aprimorada com interface colorida, mas pode não estar instalado por padrão. ps aux é uma fotografia estática.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual sinal do kill encerra um processo imediatamente, sem dar chance ao processo de executar rotinas de cleanup?',
@@ -645,6 +708,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['SIGTERM (15)', 'SIGHUP (1)', 'SIGKILL (9)', 'SIGINT (2)'],
     correct: 2,
     explanation: 'SIGKILL (9) é enviado diretamente ao kernel — o processo não pode capturá-lo, ignorá-lo ou executar limpeza. Use como último recurso. A boa prática é tentar SIGTERM primeiro (kill PID), aguardar, e só então kill -9 PID.',
+    trail: 'fundamentos',
   },
   {
     text: 'Como iniciar um serviço nginx e garantir que ele suba automaticamente após reboot?',
@@ -657,6 +721,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'systemctl start inicia agora, systemctl enable cria o symlink em /etc/systemd/system/multi-user.target.wants/ para subir no boot. Os dois são independentes — você pode fazer um sem o outro. systemctl enable --now faz os dois em um único comando.',
+    trail: 'fundamentos',
   },
 
   // ========== Permissões e Usuários (F05) ==========
@@ -671,6 +736,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: '-rwxr-x--- divide-se em: dono=rwx, grupo=r-x, outros=---. O grupo tem leitura (r) e execução (x) mas NÃO escrita. Em número octal: dono=7, grupo=5, outros=0 → chmod 750.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual é o valor padrão de umask em sistemas Linux que resulta em permissões 644 para arquivos novos e 755 para diretórios novos?',
@@ -678,6 +744,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['022', '077', '002', '133'],
     correct: 0,
     explanation: 'umask 022 subtrai das permissões máximas: arquivos base 666 - 022 = 644 (rw-r--r--), diretórios base 777 - 022 = 755 (rwxr-xr-x). umask 077 dá 600/700 (privado), umask 002 dá 664/775 (grupo pode escrever).',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual comando transfere a propriedade do arquivo config.txt para o usuário www-data e grupo www-data?',
@@ -690,6 +757,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'chown usuário:grupo arquivo altera dono e grupo simultaneamente. chown www-data config.txt muda só o dono. chgrp www-data config.txt muda só o grupo. Para aplicar recursivamente a um diretório: chown -R www-data:www-data /var/www.',
+    trail: 'fundamentos',
   },
 
   // ========== Discos e Partições (F06) ==========
@@ -699,6 +767,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['du -sh /*', 'lsblk -f', 'df -h', 'fdisk -l'],
     correct: 2,
     explanation: 'df -h (disk free, human-readable) mostra uso por filesystem montado com unidades KB/MB/GB. du -sh mede uso de diretórios específicos. lsblk lista dispositivos de bloco. fdisk -l lista partições sem mostrar uso real.',
+    trail: 'fundamentos',
   },
   {
     text: 'Após criar uma nova partição com fdisk, qual comando é necessário para criar um sistema de arquivos ext4 nela?',
@@ -706,6 +775,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['mount -t ext4 /dev/sdb1 /mnt', 'mkfs.ext4 /dev/sdb1', 'format /dev/sdb1 ext4', 'fsck /dev/sdb1'],
     correct: 1,
     explanation: 'mkfs.ext4 formata a partição com o sistema de arquivos ext4. É equivalente a mkfs -t ext4. Apenas após mkfs a partição pode ser montada com mount. fsck verifica/repara um sistema já existente; mount apenas monta.',
+    trail: 'fundamentos',
   },
   {
     text: 'Para que uma partição seja montada automaticamente no boot, onde sua entrada deve ser registrada?',
@@ -713,6 +783,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['/etc/mtab', '/proc/mounts', '/etc/fstab', '/etc/mount.conf'],
     correct: 2,
     explanation: '/etc/fstab (filesystem table) lista todos os sistemas de arquivos a montar no boot com dispositivo, ponto de montagem, tipo, opções, dump e pass. /etc/mtab e /proc/mounts são listas dos sistemas atualmente montados (geradas dinamicamente).',
+    trail: 'fundamentos',
   },
 
   // ========== Logs e Monitoramento Básico (F07) ==========
@@ -727,6 +798,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'journalctl -b filtra o boot atual (-b 0 ou apenas -b), -p err filtra por prioridade err e acima (err, crit, alert, emerg). Equivalente: -p 3. dmesg --level=err funciona para logs do kernel, mas journalctl é mais completo.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual arquivo de log registra tentativas de autenticação SSH no Ubuntu/Debian?',
@@ -734,6 +806,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['/var/log/syslog', '/var/log/auth.log', '/var/log/secure', '/var/log/ssh.log'],
     correct: 1,
     explanation: '/var/log/auth.log (Debian/Ubuntu) registra autenticações: SSH, sudo, su, PAM. Em RHEL/CentOS o equivalente é /var/log/secure. Monitorar esse arquivo é essencial para detectar tentativas de força bruta. Exemplo: tail -f /var/log/auth.log | grep "Failed".',
+    trail: 'fundamentos',
   },
   {
     text: 'Como monitorar em tempo real apenas as mensagens do serviço nginx no journald?',
@@ -746,6 +819,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'journalctl -u nginx -f: -u filtra pela unit systemd (nginx.service), -f ativa follow mode (como tail -f). Combina: journalctl -u nginx -f --since "10 min ago". Alternativa: journalctl -fu nginx (ordem diferente, mesmo resultado).',
+    trail: 'fundamentos',
   },
 
   // ========== Backup e Restauração (F08) ==========
@@ -755,6 +829,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['--mirror', '--delete', '--sync', '--prune'],
     correct: 1,
     explanation: 'rsync --delete remove do destino arquivos que não existem mais na origem, criando um mirror real. Cuidado: combine com -n (dry-run) primeiro para verificar o que será deletado. Sem --delete, rsync só adiciona/atualiza, nunca remove.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual comando cria um arquivo compactado backup.tar.gz a partir do diretório /etc, preservando permissões e propriedades?',
@@ -767,6 +842,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'tar -czf: -c cria, -z comprime com gzip, -f especifica o arquivo de saída. tar preserva permissões Unix, proprietários, timestamps e links simbólicos por padrão. Para restaurar: tar -xzf backup.tar.gz -C /destino.',
+    trail: 'fundamentos',
   },
   {
     text: 'Na estratégia de backup 3-2-1, o que os números representam?',
@@ -779,6 +855,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Regra 3-2-1: 3 cópias dos dados (original + 2 backups), em 2 tipos de mídia diferentes (ex: HDD + cloud), sendo 1 delas offsite (fora das instalações). Protege contra falha de hardware, desastre local e ransomware simultaneamente.',
+    trail: 'fundamentos',
   },
 
   // ========== Shell Script Bash (F09) ==========
@@ -793,6 +870,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: '[ -f arquivo ] testa se o arquivo existe E é um arquivo regular. Outros testes: -d (diretório), -e (existe, qualquer tipo), -r (legível), -w (gravável), -x (executável), -s (tamanho > 0). A sintaxe if [ condição ]; then ... fi é padrão POSIX.',
+    trail: 'fundamentos',
   },
   {
     text: 'Como iterar sobre todos os arquivos .log do diretório /var/log em um script bash?',
@@ -805,6 +883,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     explanation: 'for file in /var/log/*.log usa expansão de glob do bash — mais seguro que $(ls) pois lida corretamente com espaços nos nomes. A variável $file contém o caminho completo a cada iteração. Sempre use aspas: "$file" para segurança.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual variável especial em bash contém o código de retorno do último comando executado?',
@@ -812,6 +891,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['$0', '$?', '$#', '$!'],
     correct: 1,
     explanation: '$? contém o exit code do último comando: 0 = sucesso, diferente de 0 = erro. Essencial para tratamento de erros: if ! comando; then echo "falhou: $?"; fi. $0 = nome do script, $# = número de argumentos, $! = PID do último processo em background.',
+    trail: 'fundamentos',
   },
 
   // ========== Agendamento de Tarefas — Cron (F10) ==========
@@ -826,6 +906,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     explanation: 'A sintaxe crontab é: minuto hora dia-mês mês dia-semana comando. "30 3 * * *" = minuto 30, hora 3, qualquer dia/mês/dia-da-semana → 03:30 diariamente. Mnemônico: "Minuto Hora Dia Mês DiaSemana".',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual entrada especial do cron executa um comando na inicialização do sistema, uma única vez?',
@@ -833,6 +914,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['@boot', '@reboot', '@startup', '@init'],
     correct: 1,
     explanation: '@reboot é um atalho especial do cron que executa o comando uma vez quando o sistema inicia (mais precisamente quando o cron daemon inicia). Outros atalhos: @hourly, @daily, @weekly, @monthly, @yearly. É equivalente a "0 0 * * *" para @daily.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual comando lista os cron jobs do usuário atual sem abrir o editor?',
@@ -840,6 +922,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['cron -l', 'crontab -l', 'crontab --list', 'cat /etc/crontab'],
     correct: 1,
     explanation: 'crontab -l lista os cron jobs do usuário atual (l de list). crontab -e abre o editor. crontab -r REMOVE todos os cron jobs sem confirmação (cuidado!). /etc/crontab é o cron do sistema, separado dos crontabs de usuário em /var/spool/cron/crontabs/.',
+    trail: 'fundamentos',
   },
 
   // ========== Instalação de Programas (Sprint F4) ==========
@@ -854,6 +937,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'apt remove desinstala o pacote mas mantém os arquivos de configuração em /etc (útil para reinstalar com as mesmas configs). apt purge remove tudo — binários + configs. Para limpar completamente, use purge.',
+    trail: 'fundamentos',
   },
   {
     text: 'Para instalar um pacote .deb baixado manualmente (fora de repositório), qual comando usar?',
@@ -861,6 +945,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['apt install ./pacote.deb', 'dpkg -i pacote.deb', 'pkg install pacote.deb', 'rpm -ivh pacote.deb'],
     correct: 1,
     explanation: 'dpkg -i instala pacotes .deb diretamente. Se houver dependências faltando, rode "apt --fix-broken install" logo depois. Alternativamente, "apt install ./pacote.deb" (com ./) resolve dependências automaticamente.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual comando lista todos os pacotes instalados no sistema com dpkg?',
@@ -868,6 +953,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['dpkg --list', 'dpkg -l', 'apt list --installed', 'dpkg -q all'],
     correct: 1,
     explanation: 'dpkg -l lista todos os pacotes com status (ii = instalado, rc = removido com config restante). A coluna de status indica: primeiro char = desejado, segundo = atual, terceiro = erro.',
+    trail: 'fundamentos',
   },
 
   // ========== Processo de Boot (Sprint F5) ==========
@@ -877,6 +963,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['graphical.target', 'multi-user.target', 'rescue.target', 'network.target'],
     correct: 1,
     explanation: 'multi-user.target é o equivalente ao runlevel 3 — todos os serviços de rede ativos, múltiplos usuários podem logar, sem GUI. Servidores Linux tipicamente usam este target como padrão.',
+    trail: 'fundamentos',
   },
   {
     text: 'Qual comando identifica quais serviços estão atrasando o boot, mostrando o tempo de cada um?',
@@ -884,6 +971,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['journalctl --boot-time', 'systemctl status --all', 'systemd-analyze blame', 'dmesg --timing'],
     correct: 2,
     explanation: 'systemd-analyze blame lista todos os serviços em ordem decrescente de tempo de inicialização. Útil para identificar o gargalo do boot. Use systemd-analyze critical-chain para ver a cadeia crítica.',
+    trail: 'fundamentos',
   },
 
   {
@@ -892,6 +980,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['grub-install /dev/sda', 'update-grub', 'grub-mkconfig', 'systemctl reload grub'],
     correct: 1,
     explanation: 'update-grub é um wrapper de grub-mkconfig que lê /etc/default/grub e os scripts em /etc/grub.d/ e gera /boot/grub/grub.cfg. Sem rodá-lo, as mudanças no arquivo de configuração não têm efeito.',
+    trail: 'fundamentos',
   },
 
   // ========== Comandos Avançados (Sprint F6) ==========
@@ -906,6 +995,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: '-i edita o arquivo in-place; .bak é a extensão do backup criado antes da edição. Sem o .bak, o arquivo seria editado sem backup algum. O flag g na substituição garante que TODAS as ocorrências na linha sejam trocadas.',
+    trail: 'fundamentos',
   },
   {
     text: 'Por que o comando DD é chamado informalmente de "disk destroyer"?',
@@ -918,6 +1008,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'dd if=/dev/sda of=/dev/sdb copia sda para sdb (correto). Mas dd if=/dev/sdb of=/dev/sda sobrescreve sda com sdb — apagando tudo. Sempre confira duas vezes if= e of= antes de executar.',
+    trail: 'fundamentos',
   },
   {
     text: 'O comando "nc -zv 10.0.0.1 443" faz o quê?',
@@ -930,6 +1021,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: '-z é o modo "zero I/O" (só testa conectividade sem enviar dados), -v é verbose. É o substituto mais simples para telnet em diagnóstico de rede: se responder "succeeded" a porta está aberta e acessível.',
+    trail: 'fundamentos',
   },
 
   // ========== Logs Centralizados — Rsyslog (Sprint F7) ==========
@@ -944,6 +1036,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'A sintaxe é facility.prioridade destino. auth é o facility de autenticação; warn inclui warn, err, crit, alert e emerg (todas as prioridades iguais ou acima). Para capturar tudo do facility auth: auth.*',
+    trail: 'fundamentos',
   },
   {
     text: 'No rsyslog, qual a diferença entre "@servidor:514" e "@@servidor:514"?',
@@ -956,6 +1049,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: '@servidor:514 envia logs via UDP (rápido, sem confirmação de entrega). @@servidor:514 usa TCP (garante entrega mas usa mais recursos). Em produção, prefira @@ para logs críticos de segurança.',
+    trail: 'fundamentos',
   },
   {
     text: 'No logrotate, o que a diretiva "rotate 7" configura?',
@@ -968,6 +1062,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: '"rotate 7" significa que o logrotate mantém 7 arquivos rotacionados (syslog.1 … syslog.7). Na oitava rotação, o arquivo mais antigo é excluído. Combinado com "daily", isso equivale a 1 semana de histórico.',
+    trail: 'fundamentos',
   },
 
   // ========== Servidor DHCP (Sprint I.7) ==========
@@ -982,6 +1077,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'DORA é o fluxo de 4 mensagens: o cliente envia Discover (broadcast), o servidor responde com Offer (proposta de IP), o cliente envia Request (aceita a oferta), o servidor confirma com Acknowledge. Após o ACK, o cliente usa o IP.',
+    trail: 'avancados',
   },
   {
     text: 'Como reservar um IP fixo para um dispositivo específico no isc-dhcp-server?',
@@ -994,6 +1090,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Uma reserva DHCP vincula um MAC address a um IP fixo: host servidor { hardware ethernet aa:bb:cc:dd:ee:ff; fixed-address 192.168.1.10; }. O servidor sempre entregará o mesmo IP para aquele MAC, mas via DHCP.',
+    trail: 'avancados',
   },
   {
     text: 'Onde o isc-dhcp-server registra todas as concessões de IP ativas (leases)?',
@@ -1006,6 +1103,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: '/var/lib/dhcp/dhcpd.leases é o banco de leases: cada concessão ativa contém IP, MAC, hostname e tempo de expiração. Útil para diagnosticar quais IPs estão em uso e qual MAC recebeu qual endereço. O arquivo é persistido em disco e sobrevive a reboots.',
+    trail: 'avancados',
   },
 
   // ========== Samba — File Sharing (Sprint I.8) ==========
@@ -1020,6 +1118,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'O Samba usa o hash NT (NTLM), o mesmo do Windows, que é incompatível com os hashes do /etc/shadow. Por isso smbpasswd cria um banco separado. Um usuário precisa existir no Linux E ter senha Samba configurada.',
+    trail: 'avancados',
   },
   {
     text: 'Qual porta TCP é usada pelo SMB moderno (direct hosting, sem NetBIOS)?',
@@ -1027,6 +1126,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['139', '137', '445', '3389'],
     correct: 2,
     explanation: 'A porta 445 (SMB direto sobre TCP) é a forma moderna de acesso. A porta 139 era usada com NetBIOS Session Service (legado). Hoje o Windows e o Samba preferem 445. O firewall deve liberar 445/TCP + 137-138/UDP.',
+    trail: 'avancados',
   },
   {
     text: 'No smb.conf, o que "valid users = @ti" configura para um compartilhamento?',
@@ -1039,6 +1139,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'No smb.conf, o prefixo @ antes de um nome indica grupo Linux. "valid users = @ti" restringe o acesso ao share apenas para membros do grupo "ti". Para múltiplos grupos: "valid users = @ti @gerencia". O usuário ainda precisa ter senha Samba configurada via smbpasswd.',
+    trail: 'avancados',
   },
 
   // ========== Apache Web Server (Sprint I.9) ==========
@@ -1053,6 +1154,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     explanation: 'a2ensite cria symlink de sites-available/ para sites-enabled/ (habilita um VirtualHost). a2enmod cria symlink de mods-available/ para mods-enabled/ (habilita um módulo como mod_rewrite ou mod_ssl). Ambos requerem "systemctl reload apache2".',
+    trail: 'avancados',
   },
   {
     text: 'O que o módulo "mod_rewrite" do Apache permite fazer?',
@@ -1065,6 +1167,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'mod_rewrite é o módulo de manipulação de URLs do Apache. Permite redirecionar HTTP→HTTPS (RedirectMatch), criar URLs amigáveis (/produto/123 → /index.php?id=123) e bloquear requisições por padrão. É base de quase todo .htaccess.',
+    trail: 'avancados',
   },
   {
     text: 'Por que usar .htaccess é considerado mais lento do que configurar diretamente no bloco <Directory> do VirtualHost?',
@@ -1077,6 +1180,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Para cada requisição, o Apache percorre todos os diretórios do caminho (/, /var/, /var/www/, /var/www/html/) verificando se existe .htaccess. Isso resulta em múltiplas operações de I/O em disco. Com "AllowOverride None" no VirtualHost, o Apache nem procura — tudo configurado no VirtualHost é carregado uma única vez na inicialização.',
+    trail: 'avancados',
   },
 
   // ========== OpenVPN (Sprint I.10) ==========
@@ -1086,6 +1190,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['openssl-pki', 'Easy-RSA', 'certbot', 'cfssl'],
     correct: 1,
     explanation: 'Easy-RSA é a ferramenta oficial do projeto OpenVPN para gerenciar PKI. Cria a CA (Certificate Authority), assina certificados de servidor e clientes, e gerencia revogação (CRL). É instalada junto com o pacote openvpn.',
+    trail: 'avancados',
   },
   {
     text: 'O que diferencia "dev tun" de "dev tap" na configuração do OpenVPN?',
@@ -1098,6 +1203,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'tun cria uma interface de rede L3 — clientes recebem IPs e o tráfego é roteado. tap cria uma interface L2 — clientes ficam na mesma broadcast domain (como um switch virtual). Para acesso remoto à internet, use tun. Para bridging de redes locais, use tap.',
+    trail: 'avancados',
   },
   {
     text: 'Qual porta e protocolo o OpenVPN usa por padrão, e por que UDP é preferível a TCP neste caso?',
@@ -1110,6 +1216,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: '1194/UDP é o padrão do OpenVPN. UDP é preferível porque o próprio protocolo VPN cuida da retransmissão internamente. TCP-over-TCP é problemático: se a conexão TCP interna tiver perda, o TCP externo também retransmite — causando cascata de retransmissões (TCP meltdown). UDP elimina essa interferência.',
+    trail: 'avancados',
   },
 
   // ========== Traefik Proxy Reverso (Sprint I.11) ==========
@@ -1124,6 +1231,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'O Traefik se conecta à API do Docker (/var/run/docker.sock) e monitora eventos em tempo real. Quando um container sobe com labels traefik.http.routers.*, ele cria automaticamente as rotas — sem recarregar a configuração.',
+    trail: 'avancados',
   },
   {
     text: 'O que é um "entrypoint" no Traefik?',
@@ -1136,6 +1244,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Entrypoints são os pontos de entrada do Traefik — as portas em que ele escuta. Convencionalmente: "web" (porta 80, HTTP) e "websecure" (porta 443, HTTPS). Um router é ligado a um entrypoint para decidir para onde encaminhar o tráfego.',
+    trail: 'avancados',
   },
   {
     text: 'Onde o Traefik armazena os certificados Let\'s Encrypt gerados via ACME para que sobrevivam a reinicializações do container?',
@@ -1148,6 +1257,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'O Traefik salva todos os certificados ACME em acme.json (ex: /letsencrypt/acme.json no container). Para persistir entre reinicializações, esse arquivo deve ser mapeado como volume. Sem o volume, o Traefik solicitaria novos certificados a cada restart — podendo atingir os rate limits da Let\'s Encrypt (50 certs/domínio/semana).',
+    trail: 'avancados',
   },
 
   // ========== LDAP / OpenLDAP (Sprint I.12) ==========
@@ -1162,6 +1272,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'DN é o caminho completo de uma entrada: cn=joao,ou=usuarios,dc=empresa,dc=com. Cada componente (RDN) identifica um nível da árvore. É como um path de arquivo — único e absoluto. O slapd usa o DN para localizar e autenticar entradas.',
+    trail: 'avancados',
   },
   {
     text: 'Qual objectClass combina atributos Unix (UID, GID, home) com LDAP para login no sistema?',
@@ -1169,6 +1280,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['inetOrgPerson', 'posixAccount', 'organizationalUnit', 'groupOfNames'],
     correct: 1,
     explanation: 'posixAccount define os atributos necessários para login Unix: uidNumber, gidNumber, homeDirectory, loginShell. Combinado com inetOrgPerson (cn, sn, mail) e shadowAccount (política de senha), o usuário pode logar via PAM+nslcd.',
+    trail: 'avancados',
   },
   {
     text: 'Qual comando ldapsearch lista todas as entradas com objectClass posixAccount na OU "usuarios" do domínio empresa.com?',
@@ -1181,6 +1293,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'ldapsearch -x usa autenticação simples (sem SASL); -b define o search base (ponto de partida na árvore DIT); o filtro entre parênteses segue a sintaxe LDAP RFC 4515. Para buscar atributos específicos, acrescente-os no final: "... uid cn mail".',
+    trail: 'avancados',
   },
 
   // ========== Pi-hole (Sprint I.13) ==========
@@ -1195,6 +1308,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Pi-hole é um DNS sinkhole: quando um cliente resolve "ads.tracker.com", o Pi-hole retorna 0.0.0.0 (IP inválido) em vez do IP real. O browser tenta conectar em 0.0.0.0, falha imediatamente — anúncio nunca carrega.',
+    trail: 'avancados',
   },
   {
     text: 'O que o comando "pihole -g" faz?',
@@ -1207,6 +1321,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'pihole -g (gravity update) baixa novamente todas as blocklists configuradas, consolida os domínios no gravity.db e recarrega o FTL (DNS engine). É o equivalente ao "apt update" do Pi-hole — deve ser executado periodicamente.',
+    trail: 'avancados',
   },
   {
     text: 'Por que combinar Pi-hole com uma regra DNAT no iptables é recomendado em redes corporativas?',
@@ -1219,6 +1334,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Sem DNAT, um usuário ou dispositivo pode configurar 8.8.8.8 como DNS e contornar o Pi-hole. Com "iptables -t nat -A PREROUTING -p udp --dport 53 ! -d 192.168.1.1 -j DNAT --to 192.168.1.1:53", todo DNS da rede é redirecionado para o Pi-hole — ninguém escapa.',
+    trail: 'avancados',
   },
 
   // ========== Ansible (Sprint I.14) ==========
@@ -1228,6 +1344,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Module', 'Playbook', 'Role', 'Inventory'],
     correct: 2,
     explanation: 'Roles organizam o código Ansible em estrutura padronizada: tasks/, handlers/, templates/, files/, vars/, defaults/, meta/. Uma role é reutilizável entre projetos e pode ser compartilhada via Ansible Galaxy.',
+    trail: 'avancados',
   },
   {
     text: 'O que o Ansible Vault faz?',
@@ -1240,6 +1357,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'ansible-vault encrypt arquivo.yml criptografa com AES-256-CBC usando uma senha. O arquivo pode ser armazenado no git com segurança. Na execução, --ask-vault-pass ou --vault-password-file descriptografa na memória.',
+    trail: 'avancados',
   },
   {
     text: 'Qual a principal diferença entre Ansible e Terraform?',
@@ -1252,6 +1370,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'Terraform provisiona infraestrutura (cria VMs, redes, databases na cloud). Ansible configura o que está dentro dos servidores (instala pacotes, edita configs, habilita serviços). São complementares: Terraform cria a VM, Ansible configura ela.',
+    trail: 'avancados',
   },
 
   // ========== Prometheus + Grafana (Sprint I.15) ==========
@@ -1261,6 +1380,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['increase(requests_total[5m])', 'rate(requests_total[5m])', 'delta(requests_total[5m])', 'sum(requests_total[5m])'],
     correct: 1,
     explanation: 'rate() calcula a taxa por segundo de um counter usando regressão linear na janela de tempo. increase() dá o crescimento absoluto na janela (não por segundo). Use rate() para gráficos de throughput; irate() para detecção de picos.',
+    trail: 'avancados',
   },
   {
     text: 'O que é "scraping" no modelo de coleta de dados do Prometheus?',
@@ -1273,6 +1393,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Prometheus usa modelo pull: a cada intervalo (padrão 15s), ele faz HTTP GET no /metrics de cada target. Isso simplifica descoberta, facilita debug (você mesmo pode curl o endpoint) e o target não precisa saber do Prometheus.',
+    trail: 'avancados',
   },
   {
     text: 'O que são "recording rules" no Prometheus e qual sua principal vantagem?',
@@ -1285,6 +1406,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Recording rules pré-calculam queries PromQL pesadas (ex: sum(rate(requests[5m])) by (service)) e as salvam como novas métricas. Dashboards Grafana com muitos painéis se tornam mais rápidos porque leem métricas pré-calculadas em vez de recalcular queries complexas a cada atualização.',
+    trail: 'avancados',
   },
 
   // ========== Kubernetes / K3s (Sprint I.16) ==========
@@ -1294,6 +1416,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Pod', 'StatefulSet', 'Deployment', 'DaemonSet'],
     correct: 2,
     explanation: 'Deployment gerencia um ReplicaSet que mantém N réplicas do Pod rodando. Se um Pod morrer, o ReplicaSet cria um novo. Deployment também gerencia rolling updates (RollingUpdate strategy) e rollbacks.',
+    trail: 'avancados',
   },
   {
     text: 'O que distingue um Service ClusterIP de um NodePort no Kubernetes?',
@@ -1306,6 +1429,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'ClusterIP cria um IP virtual acessível apenas dentro do cluster (Pod→Pod). NodePort expõe a porta em todos os nós do cluster via porta alta (30000-32767) — acessível externamente. Para produção, prefira Ingress + ClusterIP.',
+    trail: 'avancados',
   },
   {
     text: 'O que uma NetworkPolicy com "podSelector: {}" e sem regras ingress faz no Kubernetes?',
@@ -1318,6 +1442,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'Uma NetworkPolicy selecionando todos os pods (podSelector: {}) com ingress: [] implementa default-deny: nenhum tráfego de entrada é permitido a menos que outra policy o permita explicitamente. É a base de segmentação de rede no Kubernetes.',
+    trail: 'avancados',
   },
 
   // ========== Terraform IaC (Sprint I.17) ==========
@@ -1332,6 +1457,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'terraform plan lê o terraform.tfstate (estado atual), conecta ao provider para verificar o estado real e compara com o código .tf. Mostra + (criar), ~ (modificar), - (destruir) — sem executar nada. Sempre revise o plan antes do apply.',
+    trail: 'avancados',
   },
   {
     text: 'Por que o arquivo terraform.tfstate é crítico e não deve ser deletado?',
@@ -1344,6 +1470,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'O tfstate é a "memória" do Terraform: sabe que o recurso aws_instance.web corresponde à VM "i-0abc123" na AWS. Sem ele, Terraform perde o rastreamento — não consegue atualizar nem destruir recursos existentes. Use remote state (S3, Terraform Cloud) em equipes.',
+    trail: 'avancados',
   },
   {
     text: 'O que "terraform apply -auto-approve" faz de diferente do "terraform apply" padrão?',
@@ -1356,6 +1483,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: '"terraform apply" exibe o plan e aguarda "yes" interativo. "-auto-approve" bypassa essa confirmação — essencial em pipelines CI/CD onde não há operador para confirmar. Use com cautela: sem revisão humana, um apply destrutivo executa imediatamente.',
+    trail: 'avancados',
   },
 
   // ========== Suricata IDS/IPS (Sprint I.18) ==========
@@ -1370,6 +1498,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'No modo IDS (af-packet), o Suricata recebe cópias dos pacotes em modo promíscuo — detecta e alerta, mas não interfere. No modo IPS (NFQUEUE), os pacotes passam pelo Suricata antes de serem encaminhados — pode DROP o pacote antes de chegar ao destino.',
+    trail: 'avancados',
   },
   {
     text: 'O que é o "EVE JSON" no Suricata?',
@@ -1382,6 +1511,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'EVE (Extensible Event Format) é o formato de log principal do Suricata: cada linha é um JSON com tipo (alert, flow, dns, http, tls), timestamp, IPs, portas e detalhes. Facilita integração com Elasticsearch/Grafana/SIEM sem parser customizado.',
+    trail: 'avancados',
   },
   {
     text: 'O que o comando "suricata-update" faz?',
@@ -1394,6 +1524,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'suricata-update é a ferramenta oficial de gerenciamento de regras. Baixa sources configuradas (ex: et/open com ~40.000 regras), resolve conflitos, aplica modificações locais e recarrega as regras. Deve ser executado periodicamente via cron para manter as assinaturas atualizadas.',
+    trail: 'avancados',
   },
 
   // ========== eBPF & XDP (Sprint I.19) ==========
@@ -1408,6 +1539,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'Antes de carregar, o verificador eBPF analisa o bytecode: sem loops infinitos, sem acessos a memória inválida, sem syscalls proibidas. Um LKM com bug pode travar o kernel; um programa eBPF inválido é simplesmente rejeitado na carga.',
+    trail: 'avancados',
   },
   {
     text: 'O que o hook XDP_DROP faz e qual sua principal vantagem?',
@@ -1420,6 +1552,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'XDP_DROP descarta o pacote no driver da NIC, antes mesmo de alocar um skb (socket buffer). É o método mais eficiente de mitigação de DDoS — throughputs de 100Gbps são possíveis porque o pacote nunca entra no stack Linux.',
+    trail: 'avancados',
   },
   {
     text: 'O que a ferramenta "execsnoop" do BCC mostra em tempo real?',
@@ -1432,6 +1565,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'execsnoop usa kprobes eBPF para interceptar a syscall execve em tempo real. Cada linha mostra: PCOMM (processo pai), PID, PPID, RET (código de retorno) e ARGS (executável + argumentos). Essencial para detectar spawning anômalo de processos — ex: um webserver executando curl ou bash.',
+    trail: 'avancados',
   },
 
   // ========== Service Mesh com Istio (Sprint I.20) ==========
@@ -1446,6 +1580,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'mTLS (mutual TLS) exige que ambos os lados apresentem certificados X.509. O Istio injeta proxies Envoy que gerenciam os certificados automaticamente (via SPIFFE/SPIRE). Cada serviço tem identidade criptográfica única — sem mTLS manual no código da aplicação.',
+    trail: 'avancados',
   },
   {
     text: 'O que um VirtualService do Istio controla?',
@@ -1458,6 +1593,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'VirtualService define como o tráfego é roteado PARA um serviço: split de peso (90% stable, 10% canary), roteamento por header (X-Version: v2), retry automático (3 tentativas, 25ms timeout), injeção de falha para chaos testing. DestinationRule define os subsets.',
+    trail: 'avancados',
   },
   {
     text: 'O que uma DestinationRule do Istio define, complementando o VirtualService?',
@@ -1470,6 +1606,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'DestinationRule define os subsets (ex: version: v1 e version: v2 por label) e as políticas de tráfego: circuit breaker (outlierDetection — ejeta hosts com erros), timeouts de conexão, configurações TLS por subset. O VirtualService decide PARA ONDE rotear; a DestinationRule define COMO chegar.',
+    trail: 'avancados',
   },
 
   // ========== SRE & SLOs (Sprint I.21) ==========
@@ -1484,6 +1621,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'Error budget = (1 - SLO) × período. Um SLO de 99,9% em 30 dias tem ~43 minutos de error budget. Enquanto há budget sobrando, a equipe pode lançar features; quando o budget se esgota, todas as mudanças são congeladas até o período seguinte.',
+    trail: 'avancados',
   },
   {
     text: 'O que distingue um SLI de um SLO?',
@@ -1496,6 +1634,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'SLI (Service Level Indicator) é a medição: "99,95% das requests retornaram < 200ms esta semana". SLO (Objective) é o target: "SLI de latência deve ser ≥ 99,9%". SLA (Agreement) é o contrato com penalidades — geralmente mais conservador que o SLO interno.',
+    trail: 'avancados',
   },
   {
     text: 'Um SLO de 99,9% ao mês equivale a quanto tempo de indisponibilidade permitido?',
@@ -1503,6 +1642,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['~4 horas e 22 minutos', '~43 minutos', '~8 horas', '~2 minutos'],
     correct: 1,
     explanation: '(1 - 0,999) × 30 × 24 × 60 = 0,001 × 43.200 = 43,2 minutos. É útil memorizar: 99,9% = ~43 min/mês, 99,99% = ~4,3 min/mês, 99,999% = ~26 seg/mês. Esses números guiam decisões de arquitetura e custo.',
+    trail: 'avancados',
   },
 
   // ========== CI/CD com GitHub Actions (Sprint I.22) ==========
@@ -1517,6 +1657,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'needs: [lint, test] faz o job atual aguardar que lint e test completem com sucesso. Se qualquer dependência falhar, o job não executa. Isso cria pipelines sequenciais (build só roda se testes passam) enquanto jobs independentes rodam em paralelo.',
+    trail: 'avancados',
   },
   {
     text: 'Qual a principal diferença entre um environment "staging" e um environment com "required reviewers" no GitHub Actions?',
@@ -1529,6 +1670,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'Um environment com required reviewers cria um "deployment protection rule": o workflow pausa e envia notificação aos aprovadores. Apenas após aprovação explícita no GitHub o job continua. Evita deploys acidentais em production.',
+    trail: 'avancados',
   },
   {
     text: 'O que é "matrix strategy" em um workflow do GitHub Actions?',
@@ -1541,6 +1683,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'matrix: {node: [18, 20, 22], os: [ubuntu, windows]} gera 6 jobs em paralelo (3×2). Cada job recebe matrix.node e matrix.os como variáveis. Ideal para testar compatibilidade multi-versão. "fail-fast: false" garante que todos os jobs concluam mesmo se um falhar.',
+    trail: 'avancados',
   },
 
   // ========== OPNsense / pfSense (Sprint I.23) ==========
@@ -1555,6 +1698,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: 'O pf (packet filter) do FreeBSD/OPNsense avalia regras no ingresso de cada interface. Uma regra na interface LAN bloqueia tráfego entrando pela LAN. Para bloquear tráfego saindo pela WAN, crie a regra na interface WAN.',
+    trail: 'avancados',
   },
   {
     text: 'O que é o protocolo CARP usado pelo OPNsense para Alta Disponibilidade?',
@@ -1567,6 +1711,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'CARP permite que dois firewalls compartilhem um VIP (Virtual IP). O MASTER anuncia via multicast; se parar de responder, o BACKUP assume o VIP em segundos. Os clientes nunca percebem a troca — eles sempre usam o VIP.',
+    trail: 'avancados',
   },
   {
     text: 'O que são "Aliases" no OPNsense e por que simplificam o gerenciamento de regras?',
@@ -1579,6 +1724,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Aliases agrupam IPs/redes/portas/domínios em um nome simbólico. Ex: o alias "SERVIDORES_DMZ" com 3 IPs pode ser usado em 20 regras. Para adicionar um novo servidor, você atualiza apenas o alias — todas as regras são atualizadas automaticamente. Reduz erros e facilita auditoria.',
+    trail: 'avancados',
   },
 
   // ========== Nextcloud (Sprint I.24) ==========
@@ -1593,6 +1739,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'Sem Redis, o Nextcloud usa file locking baseado em sistema de arquivos — lento e sujeito a race conditions. Com Redis (memcache.locking = Redis), os locks são atômicos e em memória. Também serve de cache de sessão PHP, reduzindo consultas ao banco.',
+    trail: 'avancados',
   },
   {
     text: 'Qual protocolo aberto o Nextcloud usa para sincronizar calendários com clientes como Thunderbird ou Apple Calendar?',
@@ -1600,6 +1747,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['iCalendar (ICS)', 'CalDAV', 'Exchange ActiveSync', 'WebDAV'],
     correct: 1,
     explanation: 'CalDAV (Calendar Distributed Authoring and Versioning) é o protocolo padrão para sincronização bidirecional de calendários. O Nextcloud implementa CalDAV sobre HTTPS. O mesmo princípio vale para contatos: CardDAV.',
+    trail: 'avancados',
   },
   {
     text: 'Qual ferramenta de linha de comando do Nextcloud permite ajustar configurações do sistema sem usar a interface web?',
@@ -1607,6 +1755,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['nextcloud-admin', 'nc-config', 'occ', 'ncadmin'],
     correct: 2,
     explanation: '"occ" (ownCloud Console, herdado do ownCloud) é a CLI do Nextcloud. Permite: occ config:system:set (ajustar config.php), occ maintenance:mode --on/off, occ user:add, occ app:enable, occ db:convert-filecache-bigint (migrations). Em containers Docker: docker exec -u www-data nextcloud php occ ...',
+    trail: 'avancados',
   },
 
   // ========== eBPF Avançado + Cilium (Sprint I.25) ==========
@@ -1621,6 +1770,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'kube-proxy cria regras iptables DNAT para cada endpoint de cada Service. Com 10k Services = ~40k regras = avaliação sequencial O(N). Cilium usa BPF_MAP_TYPE_LRU_HASH com lookup O(1) — o mesmo tempo para 10 ou 100.000 Services.',
+    trail: 'avancados',
   },
   {
     text: 'O que o comando "hubble observe --verdict DROPPED" exibe?',
@@ -1633,6 +1783,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'O Hubble captura cada decisão de forwarding no kernel. --verdict DROPPED filtra apenas os fluxos bloqueados — essencial para debugar políticas. A saída inclui origem, destino, porta, protocolo e o motivo: "policy-denied", "unknown-connection", etc.',
+    trail: 'avancados',
   },
   {
     text: 'Qual action do Tetragon TracingPolicy termina um processo no momento do execve, antes de qualquer instrução rodar?',
@@ -1640,6 +1791,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['action: Block', 'action: Deny', 'action: Sigkill', 'action: Terminate'],
     correct: 2,
     explanation: 'action: Sigkill envia SIGKILL no hook do kprobe __x64_sys_execve — antes mesmo do novo processo executar uma única instrução. Para uma nc tentando abrir conexão: o processo morre antes de criar qualquer socket.',
+    trail: 'avancados',
   },
 
   // ========== SSH como Proxy SOCKS (Sprint SSH-PROXY) ==========
@@ -1654,6 +1806,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: '-L (Local Forward) cria um túnel fixo: porta local → host:porta remota específica. -D (Dynamic) cria um proxy SOCKS5: o cliente decide o destino em tempo real — ideal para browser, curl, ou qualquer app que suporte SOCKS.',
+    trail: 'avancados',
   },
   {
     text: 'Um desenvolvedor quer acessar um painel interno em http://painel.lan:8080 usando o bastion como intermediário. Qual comando usar?',
@@ -1666,6 +1819,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 2,
     explanation: '-L (Local Forward) é o correto: "redirecione minha porta local 8080 para painel.lan:8080 visto pelo bastion". Depois basta abrir http://localhost:8080 no browser. O bastion age como pivot — acessa painel.lan que só é acessível a partir da rede interna.',
+    trail: 'avancados',
   },
   {
     text: 'O que o flag -J faz no comando "ssh -J bastion.empresa.com admin@192.168.10.50"?',
@@ -1678,5 +1832,6 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'ProxyJump (-J) encadeia conexões SSH sem abrir shell no intermediário. O cliente SSH negocia uma sessão ao bastion e pede para o bastion fazer TCP forward até 192.168.10.50:22. Para o destino final, a conexão parece vir do bastion. Pode encadear múltiplos saltos com vírgula: -J hop1,hop2,hop3.',
+    trail: 'avancados',
   },
 ];

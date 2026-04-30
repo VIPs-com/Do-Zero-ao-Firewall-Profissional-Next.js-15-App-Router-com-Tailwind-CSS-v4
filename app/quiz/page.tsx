@@ -6,18 +6,31 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, XCircle, RefreshCw, Award, ChevronRight, ChevronLeft, Trophy, Search, Circle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
-import { QUIZ_QUESTIONS, type QuizQuestion } from '@/data/quizQuestions';
+import { QUIZ_QUESTIONS, type QuizQuestion, type QuizTrail } from '@/data/quizQuestions';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 
 /* Sprint F — perguntas extraídas para src/data/quizQuestions.ts (reduz o bundle da rota /quiz). */
-const QUESTIONS: QuizQuestion[] = QUIZ_QUESTIONS;
+/* Sprint QUIZ-TRAIL — filtro por trilha na tela de início. */
+
+const TRAIL_OPTIONS: Array<{ value: QuizTrail | 'all'; label: string; count: number; color: string }> = [
+  { value: 'all',         label: 'Todas as Trilhas', count: QUIZ_QUESTIONS.length,                                         color: 'border-accent text-accent' },
+  { value: 'firewall',    label: '🔥 Firewall',       count: QUIZ_QUESTIONS.filter(q => q.trail === 'firewall').length,    color: 'border-[#e05a2b] text-[#e05a2b]' },
+  { value: 'fundamentos', label: '🐧 Fundamentos',    count: QUIZ_QUESTIONS.filter(q => q.trail === 'fundamentos').length, color: 'border-[#6366f1] text-[#6366f1]' },
+  { value: 'avancados',   label: '🚀 Avançados',      count: QUIZ_QUESTIONS.filter(q => q.trail === 'avancados').length,   color: 'border-info text-info' },
+];
 
 export default function QuizPage() {
   const [started, setStarted] = useState(false);
+  const [selectedTrail, setSelectedTrail] = useState<QuizTrail | 'all'>('all');
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResult, setShowResult] = useState(false);
   const { updateQuizScore, trackPageVisit } = useBadges();
+
+  const QUESTIONS: QuizQuestion[] = useMemo(
+    () => selectedTrail === 'all' ? QUIZ_QUESTIONS : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail),
+    [selectedTrail],
+  );
 
   useEffect(() => {
     trackPageVisit('quiz');
@@ -32,10 +45,10 @@ export default function QuizPage() {
   const score = useMemo(() => {
     let correct = 0;
     Object.entries(answers).forEach(([idx, ans]) => {
-      if (ans === QUESTIONS[parseInt(idx)].correct) correct++;
+      if (ans === QUESTIONS[parseInt(idx)]?.correct) correct++;
     });
     return correct;
-  }, [answers]);
+  }, [answers, QUESTIONS]);
 
   const percentage = Math.round((score / QUESTIONS.length) * 100);
 
@@ -53,6 +66,7 @@ export default function QuizPage() {
     setCurrentIdx(0);
     setShowResult(false);
     setStarted(false);
+    // não reseta selectedTrail — o usuário pode querer repetir a mesma trilha
   };
 
   if (!started) {
@@ -67,24 +81,38 @@ export default function QuizPage() {
             <Search size={40} />
           </div>
           <h1 className="text-4xl font-bold mb-4">Desafio Final</h1>
-          <p className="text-text-2 mb-8 max-w-md mx-auto leading-relaxed">
-            Teste seus conhecimentos em Firewall Linux, DNS, Proxy, SSL e VPN. 
-            São <strong>{QUESTIONS.length} questões</strong> que cobrem todo o conteúdo do workshop.
+          <p className="text-text-2 mb-6 max-w-md mx-auto leading-relaxed">
+            Teste seus conhecimentos em Linux, Redes, Segurança e Infraestrutura.
+            Escolha a trilha ou pratique com todas as questões.
           </p>
-          
-          <div className="grid grid-cols-2 gap-4 mb-10 text-left">
-            <div className="p-4 rounded-xl bg-bg-3 border border-border">
-              <div className="text-[10px] uppercase tracking-widest text-text-3 mb-1">Dificuldade</div>
-              <div className="text-sm font-bold text-accent">Intermediário</div>
-            </div>
-            <div className="p-4 rounded-xl bg-bg-3 border border-border">
-              <div className="text-[10px] uppercase tracking-widest text-text-3 mb-1">Tempo Médio</div>
-              <div className="text-sm font-bold text-accent">10-15 min</div>
-            </div>
+
+          {/* Seletor de trilha */}
+          <div className="grid grid-cols-2 gap-3 mb-8 text-left" role="radiogroup" aria-label="Selecionar trilha do quiz">
+            {TRAIL_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                role="radio"
+                aria-checked={selectedTrail === opt.value}
+                onClick={() => setSelectedTrail(opt.value)}
+                className={cn(
+                  'p-4 rounded-xl border-2 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+                  selectedTrail === opt.value
+                    ? cn('bg-bg-3', opt.color)
+                    : 'border-border text-text-2 hover:border-accent/50',
+                  opt.value === 'all' && 'col-span-2',
+                )}
+              >
+                <div className={cn('text-sm font-bold', selectedTrail === opt.value ? opt.color.split(' ')[1] : '')}>{opt.label}</div>
+                <div className="text-xs text-text-3 mt-0.5">{opt.count} questões</div>
+              </button>
+            ))}
           </div>
 
-          <button onClick={() => setStarted(true)} className="btn-primary w-full py-4 text-lg">
-            Começar Agora
+          <button
+            onClick={() => setStarted(true)}
+            className="btn-primary w-full py-4 text-lg"
+          >
+            Começar — {QUESTIONS.length} questões
             <ChevronRight size={20} />
           </button>
         </motion.div>
