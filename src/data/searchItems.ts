@@ -305,4 +305,10 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint AVANCADOS-INDEX — índice da trilha avançada (/avancados)
   { id: 't-avancados',      category: 'Tópico',    title: 'Trilha Avançada — 19 Módulos v3.0→v5.0',                description: 'Índice da trilha avançada: DHCP, Samba, Apache, OpenVPN, Traefik, LDAP, Pi-hole, Ansible, Prometheus, Kubernetes, Terraform, Suricata, eBPF, Service Mesh, SRE, CI/CD, Nextcloud', href: '/avancados', icon: Server },
   { id: 'g-advanced-trail', category: 'Tópico',    title: 'Servidores e Serviços (v3.0) — Progresso da Trilha',    description: 'Acompanhe o progresso em todos os 19 módulos avançados com indicadores de conclusão por checkpoint — DHCP a eBPF Avançado', href: '/avancados', icon: Globe },
+
+  // Sprint SEARCH-GLOSSARY — termos avançados do glossário
+  { id: 'g-mtls',           category: 'Glossário', title: 'mTLS — Mutual TLS',                                     description: 'Autenticação bidirecional onde cliente E servidor trocam certificados. Istio aplica mTLS automaticamente entre serviços via sidecar Envoy — sem alterar o código da aplicação', href: '/service-mesh', icon: Lock },
+  { id: 'g-gitops',         category: 'Glossário', title: 'GitOps — Git como fonte de verdade da infra',           description: 'Toda mudança de infraestrutura passa por Pull Request. Um operador (ArgoCD, Flux) sincroniza o cluster com o estado declarado no repositório — auditável e reversível', href: '/cicd', icon: GitMerge },
+  { id: 'g-circuit-breaker',category: 'Glossário', title: 'Circuit Breaker — Resiliência em Microserviços',        description: 'Padrão que "abre o circuito" após N falhas consecutivas, evitando sobrecarga em cascata. No Istio: outlierDetection com consecutiveErrors e ejectionTime', href: '/service-mesh', icon: Zap },
+  { id: 'g-ids-ips',        category: 'Glossário', title: 'IDS vs IPS — Detecção vs Prevenção de Intrusões',       description: 'IDS monitora passivamente e alerta. IPS age inline e bloqueia o tráfego malicioso. Suricata opera em modo IDS (af-packet) ou IPS (NFQUEUE + nftables queue)', href: '/suricata', icon: Shield },
 ];
