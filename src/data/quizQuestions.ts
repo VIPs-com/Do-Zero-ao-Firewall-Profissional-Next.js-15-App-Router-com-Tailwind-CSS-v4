@@ -552,6 +552,296 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: '/etc/pam.d/sshd é o arquivo PAM específico do OpenSSH. Adicionar "auth required pam_google_authenticator.so" nele faz o SSH chamar o módulo TOTP durante a autenticação.',
   },
 
+  // ========== Estrutura do Sistema — FHS (F01) ==========
+  {
+    text: 'No FHS (Filesystem Hierarchy Standard), qual diretório armazena os binários essenciais do sistema disponíveis antes de qualquer sistema de arquivos adicional ser montado?',
+    badge: '🗂️ FHS',
+    options: ['/usr/bin', '/opt', '/bin', '/sbin'],
+    correct: 2,
+    explanation: '/bin contém binários essenciais (ls, cp, bash) que devem estar disponíveis no boot, antes de /usr ser montado. Em sistemas modernos (Ubuntu 20.04+) /bin é um symlink para /usr/bin, mas o padrão FHS reserva /bin para esse propósito.',
+  },
+  {
+    text: 'Qual diretório do FHS é montado como tmpfs (RAM) e contém arquivos temporários de processos em execução, sendo limpo a cada boot?',
+    badge: '🗂️ FHS',
+    options: ['/tmp', '/run', '/var/tmp', '/dev/shm'],
+    correct: 1,
+    explanation: '/run é montado como tmpfs pelo systemd antes de qualquer serviço subir. Contém PIDs, sockets e locks de processos. /tmp pode sobreviver ao reboot dependendo da configuração; /var/tmp sempre sobrevive.',
+  },
+  {
+    text: 'No Linux, o diretório /proc é um sistema de arquivos virtual que expõe informações do kernel. Qual arquivo em /proc contém os parâmetros passados ao kernel durante o boot?',
+    badge: '🗂️ FHS',
+    options: ['/proc/version', '/proc/modules', '/proc/cmdline', '/proc/sys/kernel/boot'],
+    correct: 2,
+    explanation: '/proc/cmdline exibe exatamente a linha de comando passada ao kernel pelo bootloader (GRUB). Exemplo: "BOOT_IMAGE=/vmlinuz root=/dev/sda1 ro quiet splash". Útil para diagnosticar parâmetros de boot.',
+  },
+
+  // ========== Comandos Essenciais (F02) ==========
+  {
+    text: 'Qual comando exibe as últimas 20 linhas de um arquivo de log em tempo real, atualizando conforme novas linhas são escritas?',
+    badge: '💻 Comandos',
+    options: ['cat -n arquivo.log', 'tail -f -n 20 arquivo.log', 'head -20 arquivo.log', 'watch cat arquivo.log'],
+    correct: 1,
+    explanation: 'tail -f segue o arquivo (follow mode) e -n 20 define o número inicial de linhas exibidas. É o comando mais usado por sysadmins para monitorar logs ao vivo, como tail -f /var/log/syslog.',
+  },
+  {
+    text: 'Como encontrar todos os arquivos .conf no diretório /etc modificados nos últimos 7 dias?',
+    badge: '💻 Comandos',
+    options: [
+      'ls -lt /etc/*.conf | head',
+      'find /etc -name "*.conf" -mtime -7',
+      'grep -r ".conf" /etc --newer=7',
+      'locate /etc/*.conf -days 7',
+    ],
+    correct: 1,
+    explanation: 'find /etc -name "*.conf" -mtime -7 usa -mtime -7 para "modificado há menos de 7 dias". O sinal importa: -7 = menos de 7 dias atrás, +7 = mais de 7 dias atrás, 7 = exatamente 7 dias atrás.',
+  },
+  {
+    text: 'Qual operador de redirecionamento ADICIONA saída ao final de um arquivo sem sobrescrevê-lo?',
+    badge: '💻 Comandos',
+    options: ['>', '>>', '|', '2>'],
+    correct: 1,
+    explanation: '>> redireciona a saída padrão (stdout) ADICIONANDO ao final do arquivo. Um único > sobrescreve. | (pipe) conecta processos. 2> redireciona apenas stderr. Exemplo: echo "entrada" >> /var/log/meu.log',
+  },
+
+  // ========== Editores de Texto (F03) ==========
+  {
+    text: 'No editor vim, em qual modo você deve estar para salvar o arquivo e sair?',
+    badge: '📝 Editores',
+    options: ['Modo de inserção (i)', 'Modo visual (v)', 'Modo normal (Esc), digitando :wq', 'Modo de substituição (R)'],
+    correct: 2,
+    explanation: ':wq (write + quit) é executado no modo de comandos do vim. Para chegar lá, pressione Esc primeiro. Alternativas: :w salva sem sair, :q! sai sem salvar, ZZ equivale a :wq. Nunca tente salvar estando em modo de inserção.',
+  },
+  {
+    text: 'Como substituir TODAS as ocorrências da palavra "senha" por "password" em um arquivo aberto no vim?',
+    badge: '📝 Editores',
+    options: [
+      ':replace senha password',
+      ':%s/senha/password/g',
+      ':find senha | replace password',
+      '/senha → r → password',
+    ],
+    correct: 1,
+    explanation: ':%s/senha/password/g — % aplica ao arquivo inteiro, s é substituição, /g substitui todas as ocorrências na linha. Sem g, só a primeira ocorrência de cada linha é substituída. Adicione /c ao final para confirmar cada substituição.',
+  },
+  {
+    text: 'No nano, qual atalho de teclado exibe a linha de ajuda com os comandos disponíveis?',
+    badge: '📝 Editores',
+    options: ['Ctrl+H', 'Ctrl+G', 'F1', 'Alt+H'],
+    correct: 1,
+    explanation: 'Ctrl+G exibe o menu de ajuda do nano (G de Get Help). Ctrl+X sai, Ctrl+O salva, Ctrl+W busca, Ctrl+K corta linha, Ctrl+U cola. Os atalhos também aparecem na barra inferior do nano.',
+  },
+
+  // ========== Gerenciamento de Processos (F04) ==========
+  {
+    text: 'Qual comando exibe os processos em tempo real, ordenados por uso de CPU, permitindo interação para matar processos?',
+    badge: '⚙️ Processos',
+    options: ['ps aux', 'top', 'htop', 'pstree'],
+    correct: 1,
+    explanation: 'top exibe processos em tempo real com atualização a cada 3 segundos. Pressione k para kill, r para renice, q para sair. htop é uma versão aprimorada com interface colorida, mas pode não estar instalado por padrão. ps aux é uma fotografia estática.',
+  },
+  {
+    text: 'Qual sinal do kill encerra um processo imediatamente, sem dar chance ao processo de executar rotinas de cleanup?',
+    badge: '⚙️ Processos',
+    options: ['SIGTERM (15)', 'SIGHUP (1)', 'SIGKILL (9)', 'SIGINT (2)'],
+    correct: 2,
+    explanation: 'SIGKILL (9) é enviado diretamente ao kernel — o processo não pode capturá-lo, ignorá-lo ou executar limpeza. Use como último recurso. A boa prática é tentar SIGTERM primeiro (kill PID), aguardar, e só então kill -9 PID.',
+  },
+  {
+    text: 'Como iniciar um serviço nginx e garantir que ele suba automaticamente após reboot?',
+    badge: '⚙️ Processos',
+    options: [
+      'service nginx start && update-rc.d nginx enable',
+      'systemctl start nginx && systemctl enable nginx',
+      'nginx -s start && chkconfig nginx on',
+      '/etc/init.d/nginx start && rc-update add nginx',
+    ],
+    correct: 1,
+    explanation: 'systemctl start inicia agora, systemctl enable cria o symlink em /etc/systemd/system/multi-user.target.wants/ para subir no boot. Os dois são independentes — você pode fazer um sem o outro. systemctl enable --now faz os dois em um único comando.',
+  },
+
+  // ========== Permissões e Usuários (F05) ==========
+  {
+    text: 'Um arquivo tem permissões -rwxr-x---. Quais são os direitos do GRUPO sobre esse arquivo?',
+    badge: '🔑 Permissões',
+    options: [
+      'Leitura, escrita e execução (rwx)',
+      'Apenas leitura (r--)',
+      'Leitura e execução (r-x)',
+      'Nenhuma permissão (---)',
+    ],
+    correct: 2,
+    explanation: '-rwxr-x--- divide-se em: dono=rwx, grupo=r-x, outros=---. O grupo tem leitura (r) e execução (x) mas NÃO escrita. Em número octal: dono=7, grupo=5, outros=0 → chmod 750.',
+  },
+  {
+    text: 'Qual é o valor padrão de umask em sistemas Linux que resulta em permissões 644 para arquivos novos e 755 para diretórios novos?',
+    badge: '🔑 Permissões',
+    options: ['022', '077', '002', '133'],
+    correct: 0,
+    explanation: 'umask 022 subtrai das permissões máximas: arquivos base 666 - 022 = 644 (rw-r--r--), diretórios base 777 - 022 = 755 (rwxr-xr-x). umask 077 dá 600/700 (privado), umask 002 dá 664/775 (grupo pode escrever).',
+  },
+  {
+    text: 'Qual comando transfere a propriedade do arquivo config.txt para o usuário www-data e grupo www-data?',
+    badge: '🔑 Permissões',
+    options: [
+      'chmod www-data:www-data config.txt',
+      'chown www-data:www-data config.txt',
+      'chgrp www-data config.txt && chmod www-data config.txt',
+      'usermod -o www-data config.txt',
+    ],
+    correct: 1,
+    explanation: 'chown usuário:grupo arquivo altera dono e grupo simultaneamente. chown www-data config.txt muda só o dono. chgrp www-data config.txt muda só o grupo. Para aplicar recursivamente a um diretório: chown -R www-data:www-data /var/www.',
+  },
+
+  // ========== Discos e Partições (F06) ==========
+  {
+    text: 'Qual comando exibe o espaço em disco usado e disponível em todos os sistemas de arquivos montados, em formato legível por humanos?',
+    badge: '💾 Discos',
+    options: ['du -sh /*', 'lsblk -f', 'df -h', 'fdisk -l'],
+    correct: 2,
+    explanation: 'df -h (disk free, human-readable) mostra uso por filesystem montado com unidades KB/MB/GB. du -sh mede uso de diretórios específicos. lsblk lista dispositivos de bloco. fdisk -l lista partições sem mostrar uso real.',
+  },
+  {
+    text: 'Após criar uma nova partição com fdisk, qual comando é necessário para criar um sistema de arquivos ext4 nela?',
+    badge: '💾 Discos',
+    options: ['mount -t ext4 /dev/sdb1 /mnt', 'mkfs.ext4 /dev/sdb1', 'format /dev/sdb1 ext4', 'fsck /dev/sdb1'],
+    correct: 1,
+    explanation: 'mkfs.ext4 formata a partição com o sistema de arquivos ext4. É equivalente a mkfs -t ext4. Apenas após mkfs a partição pode ser montada com mount. fsck verifica/repara um sistema já existente; mount apenas monta.',
+  },
+  {
+    text: 'Para que uma partição seja montada automaticamente no boot, onde sua entrada deve ser registrada?',
+    badge: '💾 Discos',
+    options: ['/etc/mtab', '/proc/mounts', '/etc/fstab', '/etc/mount.conf'],
+    correct: 2,
+    explanation: '/etc/fstab (filesystem table) lista todos os sistemas de arquivos a montar no boot com dispositivo, ponto de montagem, tipo, opções, dump e pass. /etc/mtab e /proc/mounts são listas dos sistemas atualmente montados (geradas dinamicamente).',
+  },
+
+  // ========== Logs e Monitoramento Básico (F07) ==========
+  {
+    text: 'Qual comando exibe os logs do boot atual, mostrando apenas mensagens de erro (prioridade err e acima)?',
+    badge: '📋 Logs',
+    options: [
+      'cat /var/log/boot.log | grep ERROR',
+      'journalctl -b -p err',
+      'dmesg --level=err',
+      'systemctl log --boot --priority=error',
+    ],
+    correct: 1,
+    explanation: 'journalctl -b filtra o boot atual (-b 0 ou apenas -b), -p err filtra por prioridade err e acima (err, crit, alert, emerg). Equivalente: -p 3. dmesg --level=err funciona para logs do kernel, mas journalctl é mais completo.',
+  },
+  {
+    text: 'Qual arquivo de log registra tentativas de autenticação SSH no Ubuntu/Debian?',
+    badge: '📋 Logs',
+    options: ['/var/log/syslog', '/var/log/auth.log', '/var/log/secure', '/var/log/ssh.log'],
+    correct: 1,
+    explanation: '/var/log/auth.log (Debian/Ubuntu) registra autenticações: SSH, sudo, su, PAM. Em RHEL/CentOS o equivalente é /var/log/secure. Monitorar esse arquivo é essencial para detectar tentativas de força bruta. Exemplo: tail -f /var/log/auth.log | grep "Failed".',
+  },
+  {
+    text: 'Como monitorar em tempo real apenas as mensagens do serviço nginx no journald?',
+    badge: '📋 Logs',
+    options: [
+      'tail -f /var/log/nginx/error.log',
+      'journalctl -u nginx -f',
+      'watch journalctl nginx',
+      'systemctl logs nginx --follow',
+    ],
+    correct: 1,
+    explanation: 'journalctl -u nginx -f: -u filtra pela unit systemd (nginx.service), -f ativa follow mode (como tail -f). Combina: journalctl -u nginx -f --since "10 min ago". Alternativa: journalctl -fu nginx (ordem diferente, mesmo resultado).',
+  },
+
+  // ========== Backup e Restauração (F08) ==========
+  {
+    text: 'Qual opção do rsync garante que arquivos deletados na origem sejam também deletados no destino, mantendo um espelho exato?',
+    badge: '💾 Backup',
+    options: ['--mirror', '--delete', '--sync', '--prune'],
+    correct: 1,
+    explanation: 'rsync --delete remove do destino arquivos que não existem mais na origem, criando um mirror real. Cuidado: combine com -n (dry-run) primeiro para verificar o que será deletado. Sem --delete, rsync só adiciona/atualiza, nunca remove.',
+  },
+  {
+    text: 'Qual comando cria um arquivo compactado backup.tar.gz a partir do diretório /etc, preservando permissões e propriedades?',
+    badge: '💾 Backup',
+    options: [
+      'zip -r backup.tar.gz /etc',
+      'tar -czf backup.tar.gz /etc',
+      'gzip -r /etc > backup.tar.gz',
+      'cp -a /etc backup.tar.gz',
+    ],
+    correct: 1,
+    explanation: 'tar -czf: -c cria, -z comprime com gzip, -f especifica o arquivo de saída. tar preserva permissões Unix, proprietários, timestamps e links simbólicos por padrão. Para restaurar: tar -xzf backup.tar.gz -C /destino.',
+  },
+  {
+    text: 'Na estratégia de backup 3-2-1, o que os números representam?',
+    badge: '💾 Backup',
+    options: [
+      '3 backups diários, 2 semanais, 1 mensal',
+      '3 cópias, em 2 mídias diferentes, com 1 cópia offsite',
+      '3 servidores, 2 regiões, 1 provedor cloud',
+      '3 snapshots, 2 réplicas, 1 backup frio',
+    ],
+    correct: 1,
+    explanation: 'Regra 3-2-1: 3 cópias dos dados (original + 2 backups), em 2 tipos de mídia diferentes (ex: HDD + cloud), sendo 1 delas offsite (fora das instalações). Protege contra falha de hardware, desastre local e ransomware simultaneamente.',
+  },
+
+  // ========== Shell Script Bash (F09) ==========
+  {
+    text: 'Em um script bash, qual construção verifica se o arquivo /etc/nginx/nginx.conf existe antes de reiniciar o Nginx?',
+    badge: '🖥️ Shell Script',
+    options: [
+      'if exists /etc/nginx/nginx.conf; then systemctl restart nginx; fi',
+      'if [ -f /etc/nginx/nginx.conf ]; then systemctl restart nginx; fi',
+      'if file /etc/nginx/nginx.conf = true; then restart; fi',
+      'test -exists /etc/nginx/nginx.conf && restart nginx',
+    ],
+    correct: 1,
+    explanation: '[ -f arquivo ] testa se o arquivo existe E é um arquivo regular. Outros testes: -d (diretório), -e (existe, qualquer tipo), -r (legível), -w (gravável), -x (executável), -s (tamanho > 0). A sintaxe if [ condição ]; then ... fi é padrão POSIX.',
+  },
+  {
+    text: 'Como iterar sobre todos os arquivos .log do diretório /var/log em um script bash?',
+    badge: '🖥️ Shell Script',
+    options: [
+      'for file in /var/log/*.log; do echo $file; done',
+      'foreach file (/var/log/*.log) { echo $file }',
+      'loop file in $(ls /var/log/*.log); do echo $file; done',
+      'while read file < /var/log/*.log; do echo $file; done',
+    ],
+    correct: 0,
+    explanation: 'for file in /var/log/*.log usa expansão de glob do bash — mais seguro que $(ls) pois lida corretamente com espaços nos nomes. A variável $file contém o caminho completo a cada iteração. Sempre use aspas: "$file" para segurança.',
+  },
+  {
+    text: 'Qual variável especial em bash contém o código de retorno do último comando executado?',
+    badge: '🖥️ Shell Script',
+    options: ['$0', '$?', '$#', '$!'],
+    correct: 1,
+    explanation: '$? contém o exit code do último comando: 0 = sucesso, diferente de 0 = erro. Essencial para tratamento de erros: if ! comando; then echo "falhou: $?"; fi. $0 = nome do script, $# = número de argumentos, $! = PID do último processo em background.',
+  },
+
+  // ========== Agendamento de Tarefas — Cron (F10) ==========
+  {
+    text: 'Qual é a sintaxe correta de uma entrada crontab para executar o script /opt/backup.sh todo dia às 03:30?',
+    badge: '⏰ Cron',
+    options: [
+      '30 3 * * * /opt/backup.sh',
+      '3 30 * * * /opt/backup.sh',
+      '* * 3 30 * /opt/backup.sh',
+      '30 03 daily /opt/backup.sh',
+    ],
+    correct: 0,
+    explanation: 'A sintaxe crontab é: minuto hora dia-mês mês dia-semana comando. "30 3 * * *" = minuto 30, hora 3, qualquer dia/mês/dia-da-semana → 03:30 diariamente. Mnemônico: "Minuto Hora Dia Mês DiaSemana".',
+  },
+  {
+    text: 'Qual entrada especial do cron executa um comando na inicialização do sistema, uma única vez?',
+    badge: '⏰ Cron',
+    options: ['@boot', '@reboot', '@startup', '@init'],
+    correct: 1,
+    explanation: '@reboot é um atalho especial do cron que executa o comando uma vez quando o sistema inicia (mais precisamente quando o cron daemon inicia). Outros atalhos: @hourly, @daily, @weekly, @monthly, @yearly. É equivalente a "0 0 * * *" para @daily.',
+  },
+  {
+    text: 'Qual comando lista os cron jobs do usuário atual sem abrir o editor?',
+    badge: '⏰ Cron',
+    options: ['cron -l', 'crontab -l', 'crontab --list', 'cat /etc/crontab'],
+    correct: 1,
+    explanation: 'crontab -l lista os cron jobs do usuário atual (l de list). crontab -e abre o editor. crontab -r REMOVE todos os cron jobs sem confirmação (cuidado!). /etc/crontab é o cron do sistema, separado dos crontabs de usuário em /var/spool/cron/crontabs/.',
+  },
+
   // ========== Instalação de Programas (Sprint F4) ==========
   {
     text: 'Qual a diferença entre "apt remove" e "apt purge" no Debian/Ubuntu?',
