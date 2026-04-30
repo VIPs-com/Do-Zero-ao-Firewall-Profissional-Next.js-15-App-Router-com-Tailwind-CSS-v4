@@ -55,7 +55,7 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 152 perguntas (Sprint Quiz Fundamentos F1-F10: +30 perguntas, cobertura completa da trilha Fundamentos)
+    quizQuestions.ts        # perguntas do quiz — 151 perguntas (firewall=49, fundamentos=45, avancados=57; SSH-PROXY trail fix)
     searchItems.ts          # 148 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
