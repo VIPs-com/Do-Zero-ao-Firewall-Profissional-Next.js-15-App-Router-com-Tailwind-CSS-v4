@@ -123,10 +123,16 @@ export default function EvolutionPage() {
             Pós-Workshop · O Futuro é Agora
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">🚀 A Evolução Natural</h1>
-          <p className="text-text-2 text-lg max-w-2xl leading-relaxed">
+          <p className="text-text-2 text-lg max-w-2xl leading-relaxed mb-8">
             Você dominou o <strong>iptables</strong>, entendeu o <strong>NAT</strong> e configurou serviços críticos do zero.
             Agora, conheça as tecnologias modernas que o mercado corporativo exige hoje.
           </p>
+          <Link
+            href="/avancados"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-accent-2 transition-colors"
+          >
+            🚀 Explorar Trilha Avançada (19 módulos)
+          </Link>
         </div>
         <Rocket className="absolute -bottom-10 -right-10 text-accent/5 w-64 h-64 rotate-12" />
       </div>
