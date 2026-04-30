@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Search, Book, Hash, Shield, Globe, Lock, Terminal, Zap, Activity } from 'lucide-react';
+import { Search, Book, Hash, Shield, Globe, Lock, Terminal, Zap, Activity, Server, Network } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 
@@ -79,6 +79,39 @@ const GLOSSARY: Term[] = [
   { term: "SOA", definition: "Start of Authority — registro DNS obrigatório que define parâmetros da zona: serial, refresh, retry, expire e TTL negativo.", category: "DNS", icon: <Terminal size={14} /> },
   { term: "Vim", definition: "Editor de texto modal do terminal Linux. Modo inserção (i), sair sem salvar (:q!), sair salvando (:wq), apagar linha (dd).", category: "Sistema", icon: <Terminal size={14} /> },
   { term: "tcpdump", definition: "Ferramenta de captura de pacotes no terminal. Salva em formato PCAP para análise posterior no Wireshark.", category: "Diagnóstico", icon: <Search size={14} /> },
+
+  // Fundamentos Linux — termos essenciais
+  { term: "FHS", definition: "Filesystem Hierarchy Standard — padrão que define a estrutura de diretórios do Linux: /etc (configs), /var (dados variáveis), /usr (programas), /home (usuários), /tmp (temporário).", category: "Sistema", icon: <Terminal size={14} /> },
+  { term: "umask", definition: "Máscara de permissões que define os direitos padrão de novos arquivos e diretórios. umask 022 gera 644 para arquivos (666-022) e 755 para diretórios (777-022).", category: "Sistema", icon: <Terminal size={14} /> },
+  { term: "cron", definition: "Daemon de agendamento de tarefas. Sintaxe: 'minuto hora dia mês dia-semana comando'. Ex: '30 2 * * * backup.sh' roda às 02:30 todo dia.", category: "Sistema", icon: <Terminal size={14} /> },
+  { term: "GRUB", definition: "Grand Unified Bootloader — gerenciador de boot padrão do Linux. Configurado em /etc/default/grub; aplicar com update-grub. Permite escolher kernel e parâmetros na inicialização.", category: "Sistema", icon: <Terminal size={14} /> },
+  { term: "rsyslog", definition: "Daemon de logs do Linux que processa e encaminha mensagens de sistema. Suporta centralização remota via TCP/UDP porta 514 com template por hostname.", category: "Sistema", icon: <Terminal size={14} /> },
+
+  // Containers
+  { term: "Container", definition: "Processo isolado que usa namespaces + cgroups + filesystem overlay. Mais leve que uma VM — não inclui kernel próprio, compartilha o do host.", category: "Containers", icon: <Server size={14} /> },
+  { term: "Image", definition: "Template somente-leitura para criar containers. Composta por camadas (layers) empilhadas. Imagens são imutáveis; o container adiciona uma camada de escrita por cima.", category: "Containers", icon: <Server size={14} /> },
+  { term: "Volume", definition: "Mecanismo de armazenamento persistente externo ao container. Sobrevive ao ciclo de vida do container. Tipos: named volume (gerenciado pelo Docker), bind mount (diretório do host) e tmpfs (RAM).", category: "Containers", icon: <Server size={14} /> },
+  { term: "Dockerfile", definition: "Arquivo de instruções para construir uma imagem Docker. Cada instrução (FROM, RUN, COPY, CMD) cria uma camada imutável. docker build lê o Dockerfile e gera a imagem.", category: "Containers", icon: <Server size={14} /> },
+  { term: "Registry", definition: "Repositório de imagens Docker. Docker Hub é o padrão público; GitHub Container Registry (ghcr.io) e Harbor são opções self-hosted. docker push/pull transfere imagens.", category: "Containers", icon: <Server size={14} /> },
+
+  // Kubernetes
+  { term: "Pod", definition: "Menor unidade deployável do Kubernetes — agrupa 1+ containers que compartilham rede (mesmo IP) e storage. Efêmero por natureza: se o pod morre, o IP muda.", category: "Kubernetes", icon: <Network size={14} /> },
+  { term: "Deployment", definition: "Controller do K8s que gerencia um conjunto de pods idênticos (réplicas). Suporta rolling update (troca gradual) e rollback automático em caso de falha.", category: "Kubernetes", icon: <Network size={14} /> },
+  { term: "Service", definition: "Abstração que expõe pods via IP/DNS estável. Tipos: ClusterIP (interno), NodePort (porta no host), LoadBalancer (IP externo via cloud). O kube-proxy implementa as regras de roteamento.", category: "Kubernetes", icon: <Network size={14} /> },
+  { term: "Namespace", definition: "Isolamento lógico de recursos dentro de um cluster K8s. Permite multi-tenancy: equipes diferentes usam o mesmo cluster com quotas e políticas independentes.", category: "Kubernetes", icon: <Network size={14} /> },
+  { term: "Ingress", definition: "Recurso K8s que roteia tráfego HTTP/HTTPS externo para Services internos com base em hostname e path. Requer um Ingress Controller (Traefik, Nginx) para funcionar.", category: "Kubernetes", icon: <Network size={14} /> },
+
+  // DevOps & IaC
+  { term: "Playbook", definition: "Arquivo YAML do Ansible com lista ordenada de tasks a executar em hosts. Cada task usa um módulo (apt, copy, service). Executado com ansible-playbook -i inventory playbook.yml.", category: "DevOps & IaC", icon: <Zap size={14} /> },
+  { term: "Idempotência", definition: "Propriedade de uma operação que produz o mesmo resultado independente de quantas vezes for executada. Pilar do Ansible: verificar o estado antes de agir, não apenas executar cegamente.", category: "DevOps & IaC", icon: <Zap size={14} /> },
+  { term: "HCL", definition: "HashiCorp Configuration Language — linguagem declarativa usada no Terraform. Descreve a infraestrutura desejada (o 'quê'), não os passos para criá-la (o 'como').", category: "DevOps & IaC", icon: <Zap size={14} /> },
+  { term: "State (Terraform)", definition: "Arquivo terraform.tfstate que mapeia recursos HCL à infraestrutura real. Deve ser armazenado remotamente (S3, GitLab HTTP) em equipes para evitar conflitos.", category: "DevOps & IaC", icon: <Zap size={14} /> },
+
+  // Observabilidade
+  { term: "SLO", definition: "Service Level Objective — meta interna de confiabilidade. Ex: 99,9% de requisições com latência < 200ms. Mais restritivo que o SLA contratual; serve como buffer de segurança.", category: "Observabilidade", icon: <Activity size={14} /> },
+  { term: "Error Budget", definition: "Percentual de falha permitida dentro da janela do SLO. Budget sobrando → acelerar deploys. Budget esgotado → congelar features e focar em confiabilidade. Pertence ao produto, não à infra.", category: "Observabilidade", icon: <Activity size={14} /> },
+  { term: "PromQL", definition: "Prometheus Query Language — linguagem de consulta de séries temporais. Funções: rate() (taxa/s), increase() (total no período), sum by() (agregar). Ex: rate(http_requests_total[5m]).", category: "Observabilidade", icon: <Activity size={14} /> },
+  { term: "Exporter", definition: "Agente que coleta métricas de um sistema e as expõe no formato Prometheus via endpoint /metrics. Ex: node_exporter (sistema), mysqld_exporter (banco), nginx-exporter (web).", category: "Observabilidade", icon: <Activity size={14} /> },
 ];
 
 export default function GlossaryPage() {
