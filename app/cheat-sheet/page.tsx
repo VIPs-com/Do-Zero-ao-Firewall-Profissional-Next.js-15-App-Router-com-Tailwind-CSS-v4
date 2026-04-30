@@ -70,6 +70,31 @@ const COMMANDS: Command[] = [
 
   // nftables (Sprint R)
   { id: 'nft-list', cmd: 'nft list ruleset', desc: 'Lista todas as tabelas, chains e regras nftables ativas.', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
+
+  // Docker & Docker Compose (v3.0+)
+  { id: 'docker-ps', cmd: 'docker ps -a', desc: 'Lista todos os containers (rodando e parados) com status.', layer: 'Camada 7', layerClass: 'l7', category: 'Docker' },
+  { id: 'docker-logs', cmd: 'docker logs -f --tail 100 nome', desc: 'Segue logs de um container em tempo real (últimas 100 linhas).', layer: 'Camada 7', layerClass: 'l7', category: 'Docker' },
+  { id: 'docker-exec', cmd: 'docker exec -it nome bash', desc: 'Abre shell interativo dentro de um container rodando.', layer: 'Camada 7', layerClass: 'l7', category: 'Docker' },
+  { id: 'docker-stats', cmd: 'docker stats --no-stream', desc: 'Snapshot de uso de CPU, memória e rede por container.', layer: 'Camada 7', layerClass: 'l7', category: 'Docker' },
+  { id: 'compose-up', cmd: 'docker compose up -d --build', desc: 'Sobe a stack em background, reconstruindo imagens alteradas.', layer: 'Camada 7', layerClass: 'l7', category: 'Docker' },
+  { id: 'compose-logs', cmd: 'docker compose logs -f servico', desc: 'Segue logs de um serviço específico da stack Compose.', layer: 'Camada 7', layerClass: 'l7', category: 'Docker' },
+  { id: 'docker-net', cmd: 'docker network inspect nome-da-rede', desc: 'Inspeciona sub-rede, gateway e containers de uma bridge Docker.', layer: 'Camada 3', layerClass: 'l3', category: 'Docker' },
+
+  // Ansible (v4.0)
+  { id: 'ansible-ping', cmd: 'ansible all -m ping -i inventory.ini', desc: 'Testa conectividade SSH com todos os hosts do inventário.', layer: 'Camada 7', layerClass: 'l7', category: 'Ansible' },
+  { id: 'ansible-check', cmd: 'ansible-playbook -i inventory.ini playbook.yml --check', desc: 'Dry-run do playbook — mostra o que mudaria sem aplicar.', layer: 'Camada 7', layerClass: 'l7', category: 'Ansible' },
+  { id: 'ansible-vault', cmd: 'ansible-vault encrypt group_vars/all/secrets.yml', desc: 'Criptografa arquivo de variáveis sensíveis com AES-256.', layer: 'Camada 7', layerClass: 'l7', category: 'Ansible' },
+
+  // Kubernetes / K3s (v4.0)
+  { id: 'kubectl-get', cmd: 'kubectl get pods -n namespace -o wide', desc: 'Lista pods com IPs, nós e tempo de execução.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
+  { id: 'kubectl-logs', cmd: 'kubectl logs -f pod/nome -n namespace', desc: 'Segue logs de um pod em tempo real (equivalente ao docker logs -f).', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
+  { id: 'kubectl-describe', cmd: 'kubectl describe pod nome -n namespace', desc: 'Exibe eventos, condições e estado detalhado de um pod. Essencial para debug.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
+  { id: 'kubectl-apply', cmd: 'kubectl apply -f manifest.yaml', desc: 'Aplica ou atualiza recursos a partir de um manifesto declarativo.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
+
+  // Terraform (v4.0)
+  { id: 'tf-plan', cmd: 'terraform plan -out=tfplan', desc: 'Calcula e salva as mudanças necessárias sem aplicá-las.', layer: 'Camada 7', layerClass: 'l7', category: 'Terraform' },
+  { id: 'tf-apply', cmd: 'terraform apply tfplan', desc: 'Aplica exatamente o plano gerado pelo terraform plan.', layer: 'Camada 7', layerClass: 'l7', category: 'Terraform' },
+  { id: 'tf-state', cmd: 'terraform state list', desc: 'Lista todos os recursos gerenciados no state file.', layer: 'Camada 7', layerClass: 'l7', category: 'Terraform' },
 ];
 
 const SOS_STEPS: TroubleshootingStep[] = [
@@ -133,11 +158,14 @@ export default function CheatSheetPage() {
     trackPageVisit('cheat-sheet');
   }, [trackPageVisit]);
 
+  const DEVOPS_CATEGORIES = ['Docker', 'Ansible', 'Kubernetes', 'Terraform'];
+
   const filteredCommands = COMMANDS.filter(cmd => {
-    const matchesSearch = cmd.cmd.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = cmd.cmd.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          cmd.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          cmd.category.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = activeFilter === 'all' || cmd.layerClass === activeFilter;
+    const matchesFilter = activeFilter === 'all'
+      || (activeFilter === 'devops' ? DEVOPS_CATEGORIES.includes(cmd.category) : cmd.layerClass === activeFilter);
     return matchesSearch && matchesFilter;
   });
 
@@ -178,6 +206,7 @@ export default function CheatSheetPage() {
             { id: 'l6', label: '🔒 Camada 6' },
             { id: 'l4', label: '🔌 Camada 4' },
             { id: 'l3', label: '🌐 Camada 3' },
+            { id: 'devops', label: '🚀 DevOps' },
           ].map(filter => (
             <button
               key={filter.id}
@@ -398,6 +427,180 @@ export default function CheatSheetPage() {
           </div>
         </div>
       </div>
+
+      {/* DevOps & Infraestrutura Moderna */}
+      <section id="devops" className="mt-8 p-6 rounded-xl bg-bg-2 border border-border">
+        <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
+          <Server size={20} className="text-accent" aria-hidden="true" />
+          DevOps &amp; Infraestrutura Moderna — Workflows de Referência
+        </h2>
+        <p className="text-sm text-text-2 mb-6">
+          Workflows completos para os módulos v3.0–v5.0. Do container ao cluster, do playbook ao pipeline.
+        </p>
+
+        {/* Docker Compose */}
+        <div className="mb-8">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
+            <span aria-hidden="true">🐳</span> Docker Compose — Ciclo Completo
+          </h3>
+          <CodeBlock lang="bash" code={`# Subir stack (build + start em background)
+docker compose up -d --build
+
+# Ver status dos serviços
+docker compose ps
+
+# Seguir logs de um serviço específico
+docker compose logs -f nginx
+
+# Escalar serviço horizontalmente
+docker compose up -d --scale app=3
+
+# Executar comando em container rodando
+docker exec -it $(docker compose ps -q app) bash
+
+# Parar e remover containers + redes (preserva volumes)
+docker compose down
+
+# Parar e remover TUDO (containers + redes + volumes)
+docker compose down -v
+
+# Inspecionar rede criada pelo Compose
+docker network inspect projeto_backend`} />
+        </div>
+
+        {/* Ansible */}
+        <div className="mb-8">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
+            <span aria-hidden="true">⚙️</span> Ansible — Ad-hoc + Playbooks
+          </h3>
+          <CodeBlock lang="bash" code={`# Testar conectividade com todos os hosts
+ansible all -m ping -i inventory.ini
+
+# Executar comando ad-hoc em grupo de servidores
+ansible webservers -m shell -a "systemctl status nginx" -i inventory.ini
+
+# Instalar pacote em todos os hosts (com sudo)
+ansible all -m apt -a "name=nginx state=present" -b -i inventory.ini
+
+# Dry-run: ver o que o playbook mudaria (sem aplicar)
+ansible-playbook -i inventory.ini playbook.yml --check --diff
+
+# Executar playbook com vault (pede senha interativa)
+ansible-playbook -i inventory.ini playbook.yml --ask-vault-pass
+
+# Limitar execução a um host específico
+ansible-playbook -i inventory.ini playbook.yml --limit servidor-web-01
+
+# Rodar apenas as tasks com tag "nginx"
+ansible-playbook -i inventory.ini playbook.yml --tags nginx`} />
+        </div>
+
+        {/* kubectl */}
+        <div className="mb-8">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
+            <span aria-hidden="true">☸️</span> kubectl — Operações Essenciais
+          </h3>
+          <CodeBlock lang="bash" code={`# Ver todos os recursos no namespace
+kubectl get all -n producao
+
+# Aplicar/atualizar manifesto declarativo
+kubectl apply -f deployment.yaml
+
+# Detalhar eventos de um pod (debug de CrashLoopBackOff)
+kubectl describe pod nome-do-pod -n producao
+
+# Seguir logs em tempo real
+kubectl logs -f deployment/minha-app -n producao
+
+# Abrir shell em pod rodando
+kubectl exec -it pod/nome -n producao -- bash
+
+# Escalar deployment
+kubectl scale deployment minha-app --replicas=3 -n producao
+
+# Rollback para versão anterior
+kubectl rollout undo deployment/minha-app -n producao
+
+# Ver histórico de rollouts
+kubectl rollout history deployment/minha-app -n producao
+
+# Port-forward para testar localmente
+kubectl port-forward svc/minha-app 8080:80 -n producao`} />
+        </div>
+
+        {/* Terraform */}
+        <div className="mb-8">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
+            <span aria-hidden="true">🏗️</span> Terraform — Fluxo IaC
+          </h3>
+          <CodeBlock lang="bash" code={`# Inicializar providers e backend
+terraform init
+
+# Formatar código HCL automaticamente
+terraform fmt -recursive
+
+# Validar sintaxe dos arquivos .tf
+terraform validate
+
+# Planejar mudanças e salvar em arquivo
+terraform plan -out=tfplan
+
+# Aplicar exatamente o plano salvo
+terraform apply tfplan
+
+# Listar recursos gerenciados no state
+terraform state list
+
+# Ver detalhes de um recurso no state
+terraform state show aws_instance.web
+
+# Importar recurso existente para o state
+terraform import aws_instance.web i-0abc123def456
+
+# Destruir TODA a infraestrutura gerenciada
+terraform destroy
+
+# Usar workspace para ambientes separados
+terraform workspace new staging
+terraform workspace select staging`} />
+          <WarnBox title="terraform destroy é irreversível">
+            <p className="text-sm text-text-2">
+              Sempre rode <code>terraform plan</code> antes de <code>destroy</code> para confirmar o que será removido.
+              Em produção, use <code>prevent_destroy = true</code> no lifecycle de recursos críticos.
+            </p>
+          </WarnBox>
+        </div>
+
+        {/* CI/CD GitHub Actions */}
+        <div className="mb-2">
+          <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
+            <span aria-hidden="true">🚀</span> GitHub Actions — CLI de Observabilidade
+          </h3>
+          <CodeBlock lang="bash" code={`# Listar workflows do repositório
+gh workflow list
+
+# Ver últimas execuções de um workflow
+gh run list --workflow=ci.yml --limit 10
+
+# Ver logs de uma execução específica
+gh run view RUN_ID --log
+
+# Disparar workflow manualmente (workflow_dispatch)
+gh workflow run ci.yml --ref main
+
+# Cancelar execução em andamento
+gh run cancel RUN_ID
+
+# Ver segredos do repositório (apenas nomes, não valores)
+gh secret list
+
+# Definir segredo via CLI
+gh secret set DEPLOY_KEY < ~/.ssh/id_ed25519
+
+# Listar environments e seus status
+gh api repos/:owner/:repo/environments | jq '.environments[].name'`} />
+        </div>
+      </section>
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/cheat-sheet" />

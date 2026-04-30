@@ -24,8 +24,19 @@ function ErrorModal({ title, children, icon }: { title: string; children: React.
         <span className="ml-auto text-text-3 text-xs">ver solução →</span>
       </button>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setOpen(false)}>
-          <div className="bg-bg-2 border border-border rounded-xl max-w-lg w-full p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60"
+          role="button"
+          tabIndex={0}
+          aria-label="Fechar modal"
+          onClick={() => setOpen(false)}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') setOpen(false); }}
+        >
+          <div
+            className="bg-bg-2 border border-border rounded-xl max-w-lg w-full p-6 shadow-2xl"
+            role="presentation"
+            onClick={e => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-text">{title}</h3>
               <button onClick={() => setOpen(false)} className="text-text-3 hover:text-text text-xl leading-none">×</button>
