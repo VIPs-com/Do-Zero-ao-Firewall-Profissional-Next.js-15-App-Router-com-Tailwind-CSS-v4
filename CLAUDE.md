@@ -56,7 +56,7 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz — 152 perguntas (Sprint Quiz Fundamentos F1-F10: +30 perguntas, cobertura completa da trilha Fundamentos)
-    searchItems.ts          # 137 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 142 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -109,7 +109,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
 | Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/48/56/7 |
 | Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
-| searchItems | `src/data/searchItems.ts` | 143 (Sprint Search-Audit: +5 novos — WireGuard×2, Fail2ban×2, DevOps cheat; +2 descrições corrigidas) |
+| searchItems | `src/data/searchItems.ts` | 142 (auditado 2026-04-30: conta real via grep) |
 
 ---
 
