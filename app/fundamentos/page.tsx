@@ -8,16 +8,21 @@ import { useBadges } from '@/context/BadgeContext';
 import { FUNDAMENTOS_ORDER } from '@/data/courseOrder';
 
 const MODULES = [
-  { path: '/fhs',          num: '01', title: 'Estrutura do Sistema (FHS)',  icon: '🗂️',  checkpoint: 'fhs-explorado',          desc: '/etc, /var, /usr, /home — o mapa do Linux' },
-  { path: '/comandos',     num: '02', title: 'Comandos Essenciais',         icon: '💻',  checkpoint: 'comandos-praticados',     desc: 'ls, cd, grep, find, pipe e muito mais' },
-  { path: '/editores',     num: '03', title: 'Editores de Texto',           icon: '📝',  checkpoint: 'editores-usados',         desc: 'nano para edições, VIM para produção' },
-  { path: '/processos',    num: '04', title: 'Gerenciamento de Processos',  icon: '⚙️',  checkpoint: 'processos-controlados',   desc: 'ps, top, kill, systemctl — controle total' },
-  { path: '/permissoes',   num: '05', title: 'Permissões e Usuários',       icon: '🔑',  checkpoint: 'permissoes-configuradas', desc: 'chmod, chown, useradd, sudo' },
-  { path: '/discos',       num: '06', title: 'Discos e Partições',          icon: '💾',  checkpoint: 'discos-mapeados',         desc: 'fdisk, lsblk, mount, df, du, dd' },
-  { path: '/logs-basicos', num: '07', title: 'Logs e Monitoramento',        icon: '📋',  checkpoint: 'logs-lidos',              desc: 'journalctl, /var/log/, tail -f' },
-  { path: '/backup',       num: '08', title: 'Backup e Restauração',        icon: '🗄️',  checkpoint: 'backup-criado',           desc: 'rsync, tar, scp — proteja seus dados' },
-  { path: '/shell-script', num: '09', title: 'Shell Script',                icon: '📜',  checkpoint: 'script-escrito',          desc: 'Variáveis, if, for, funções em bash' },
-  { path: '/cron',         num: '10', title: 'Agendamento de Tarefas',      icon: '🕐',  checkpoint: 'tarefa-agendada',         desc: 'crontab, systemd timers, at' },
+  { path: '/fhs',                num: '01', title: 'Estrutura do Sistema (FHS)',    icon: '🗂️',  checkpoint: 'fhs-explorado',          desc: '/etc, /var, /usr, /home — o mapa do Linux' },
+  { path: '/comandos',           num: '02', title: 'Comandos Essenciais',           icon: '💻',  checkpoint: 'comandos-praticados',     desc: 'ls, cd, grep, find, pipe e muito mais' },
+  { path: '/editores',           num: '03', title: 'Editores de Texto',             icon: '📝',  checkpoint: 'editores-usados',         desc: 'nano para edições, VIM para produção' },
+  { path: '/processos',          num: '04', title: 'Gerenciamento de Processos',    icon: '⚙️',  checkpoint: 'processos-controlados',   desc: 'ps, top, kill, systemctl — controle total' },
+  { path: '/permissoes',         num: '05', title: 'Permissões e Usuários',         icon: '🔑',  checkpoint: 'permissoes-configuradas', desc: 'chmod, chown, useradd, sudo' },
+  { path: '/discos',             num: '06', title: 'Discos e Partições',            icon: '💾',  checkpoint: 'discos-mapeados',         desc: 'fdisk, lsblk, mount, df, du, dd' },
+  { path: '/logs-basicos',       num: '07', title: 'Logs e Monitoramento',          icon: '📋',  checkpoint: 'logs-lidos',              desc: 'journalctl, /var/log/, tail -f' },
+  { path: '/backup',             num: '08', title: 'Backup e Restauração',          icon: '🗄️',  checkpoint: 'backup-criado',           desc: 'rsync, tar, scp — proteja seus dados' },
+  { path: '/shell-script',       num: '09', title: 'Shell Script',                  icon: '📜',  checkpoint: 'script-escrito',          desc: 'Variáveis, if, for, funções em bash' },
+  { path: '/cron',               num: '10', title: 'Agendamento de Tarefas',        icon: '🕐',  checkpoint: 'tarefa-agendada',         desc: 'crontab, systemd timers, at' },
+  { path: '/pacotes',            num: '11', title: 'Instalação de Programas',       icon: '📦',  checkpoint: 'apt-atualizado',          desc: 'apt, dpkg, snap, pip — gestão de software' },
+  { path: '/boot',               num: '12', title: 'Processo de Boot',              icon: '🖥️',  checkpoint: 'bios-uefi-entendido',     desc: 'BIOS/UEFI, GRUB2, kernel, initrd, systemd' },
+  { path: '/comandos-avancados', num: '13', title: 'Comandos Avançados',            icon: '🔧',  checkpoint: 'sed-dominado',            desc: 'sed, dd, nc, links simbólicos, compactação' },
+  { path: '/rsyslog',            num: '14', title: 'Logs Centralizados (Rsyslog)',  icon: '📡',  checkpoint: 'rsyslog-configurado',     desc: 'rsyslog, servidor central, logrotate' },
+  { path: '/ssh-proxy',          num: '15', title: 'SSH como Proxy SOCKS',          icon: '🚇',  checkpoint: 'ssh-dinamico',            desc: 'SSH -D/-L/-R/-J, túneis persistentes com autossh' },
 ];
 
 const CHECKLIST_IDS = MODULES.map(m => m.checkpoint);
@@ -50,14 +55,14 @@ export default function FundamentosPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[rgba(99,102,241,0.3)] text-[#6366f1] text-[10px] font-bold uppercase tracking-wider mb-4">
             <Terminal size={11} />
-            Trilha v2.0 · 10 Módulos
+            Trilha v2.0 · 15 Módulos
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             🐧 Fundamentos Linux
           </h1>
           <p className="text-text-2 text-lg max-w-2xl leading-relaxed mb-6">
             Nunca abriu um terminal? Começa aqui. Esta trilha ensina Linux do zero —
-            do sistema de arquivos até scripts de automação — antes de configurar qualquer firewall.
+            do sistema de arquivos a SSH avançado — antes de configurar qualquer firewall.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -92,7 +97,7 @@ export default function FundamentosPage() {
         </div>
         {allDone && (
           <p className="mt-3 text-sm text-ok font-semibold flex items-center gap-2">
-            <CheckCircle2 size={14} /> Trilha concluída! Badge 🐧 Fundamentos Master desbloqueado.
+            <CheckCircle2 size={14} /> Trilha concluída! Badge 🐧 Fundamentos Master desbloqueado. Você está pronto para o Firewall.
           </p>
         )}
       </div>

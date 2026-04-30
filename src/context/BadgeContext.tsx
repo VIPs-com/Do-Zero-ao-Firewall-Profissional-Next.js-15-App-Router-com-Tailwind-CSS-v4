@@ -84,7 +84,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'course-master':      { icon: '🎯', title: 'Mestre do Curso',       desc: 'Visitou todos os 25 módulos do curso em sequência' },
   'hardening-master':   { icon: '🔐', title: 'Hardening Master',      desc: 'SSH, sysctl e AppArmor configurados corretamente' },
   'docker-master':      { icon: '🐳', title: 'Docker Master',         desc: 'Redes Docker, bridge customizada e iptables integrado' },
-  'fundamentos-master': { icon: '🐧', title: 'Fundamentos Master',    desc: 'Completou todos os 14 módulos da Trilha Fundamentos Linux' },
+  'fundamentos-master': { icon: '🐧', title: 'Fundamentos Master',    desc: 'Completou todos os 15 módulos da Trilha Fundamentos Linux' },
   'ssh-2fa-master':     { icon: '📱', title: 'SSH 2FA Master',        desc: 'SSH protegido com autenticação de dois fatores (TOTP)' },
   'compose-master':     { icon: '🐙', title: 'Compose Master',        desc: 'Orquestrou uma stack completa com Docker Compose — redes, volumes e secrets' },
   'pacotes-master':     { icon: '📦', title: 'Package Master',        desc: 'Dominou apt, dpkg, snap e pip — instalação e gestão de software no Linux' },
@@ -430,13 +430,13 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['rosetta-stone-explored']
     ) unlockBadge('explorador-mundos');
 
-    // Sprint F1-F7 — Trilha Fundamentos Linux (14 módulos)
+    // Sprint F1-F7 + SSH-PROXY — Trilha Fundamentos Linux (15 módulos)
     if (
       checklist['fhs-explorado'] && checklist['comandos-praticados'] && checklist['editores-usados'] &&
       checklist['processos-controlados'] && checklist['permissoes-configuradas'] && checklist['discos-mapeados'] &&
       checklist['logs-lidos'] && checklist['backup-criado'] && checklist['script-escrito'] && checklist['tarefa-agendada'] &&
       checklist['apt-atualizado'] && checklist['bios-uefi-entendido'] &&
-      checklist['sed-dominado'] && checklist['rsyslog-configurado']
+      checklist['sed-dominado'] && checklist['rsyslog-configurado'] && checklist['ssh-dinamico']
     ) unlockBadge('fundamentos-master');
 
     // Linux Ninja: desbloqueado com 75% do checklist (115 de 154 → floor(154*0.75) = 115).
