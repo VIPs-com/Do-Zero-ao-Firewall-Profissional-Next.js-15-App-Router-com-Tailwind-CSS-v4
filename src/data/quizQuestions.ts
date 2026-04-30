@@ -48,11 +48,50 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     trail: 'firewall',
   },
   {
+    text: 'Para que serve o parâmetro "net.ipv4.conf.all.rp_filter = 1" no sysctl?',
+    badge: '🌐 Camada 3',
+    options: [
+      'Ativa o roteamento entre interfaces de rede',
+      'Habilita proteção contra IP spoofing (Reverse Path Filter)',
+      'Desativa o ICMP redirect para prevenir ataques MiTM',
+      'Configura o tamanho máximo do buffer de pacotes IP',
+    ],
+    correct: 1,
+    explanation: 'rp_filter (Reverse Path Filter) verifica se o pacote chegou pela interface correta para o IP de origem. Se um pacote com IP de origem 1.2.3.4 chegar pela interface LAN mas a rota para 1.2.3.4 é pela WAN, o kernel descarta — evita IP spoofing.',
+    trail: 'firewall',
+  },
+  {
     text: 'O DNAT é configurado em qual chain do iptables?',
     badge: '🎯 DNAT',
     options: ['INPUT', 'OUTPUT', 'PREROUTING', 'POSTROUTING'],
     correct: 2,
     explanation: 'DNAT precisa acontecer ANTES da decisão de roteamento, por isso fica no PREROUTING.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Um servidor interno na LAN (192.168.57.10:80) deve ser acessado da WAN. Qual regra DNAT está correta?',
+    badge: '🎯 DNAT',
+    options: [
+      'iptables -t nat -A POSTROUTING -p tcp --dport 80 -j DNAT --to-destination 192.168.57.10:80',
+      'iptables -t nat -A PREROUTING -p tcp --dport 80 -j DNAT --to-destination 192.168.57.10:80',
+      'iptables -A FORWARD -p tcp --dport 80 -j ACCEPT',
+      'iptables -t nat -A INPUT -p tcp --dport 80 -j DNAT --to-destination 192.168.57.10:80',
+    ],
+    correct: 1,
+    explanation: 'DNAT fica na tabela nat, chain PREROUTING. Também é necessário uma regra FORWARD permitindo o tráfego após o DNAT.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Por que o módulo conntrack é essencial para o DNAT funcionar corretamente?',
+    badge: '🎯 DNAT',
+    options: [
+      'Ele bloqueia pacotes duplicados na tradução de endereços',
+      'Ele rastreia conexões e aplica DNAT reverso automaticamente nas respostas',
+      'Ele autentica o servidor de destino antes de redirecionar',
+      'Ele verifica se a porta destino está aberta antes do redirect',
+    ],
+    correct: 1,
+    explanation: 'O conntrack garante que as respostas do servidor interno (que têm IP origem 192.168.57.10) sejam traduzidas de volta para o IP do firewall automaticamente — sem isso o cliente não receberia as respostas.',
     trail: 'firewall',
   },
   {
@@ -66,6 +105,32 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'O módulo recent mantém a lista em /proc/net/xt_recent/ com o nome da lista (ex: abre-ssh).',
+    trail: 'firewall',
+  },
+  {
+    text: 'Por que o Port Knocking não substitui completamente a regra ESTABLISHED no iptables?',
+    badge: '🔑 Port Knocking',
+    options: [
+      'Porque o Port Knocking só funciona com IPv6',
+      'Porque o módulo recent expira após um timer curto, mas o conntrack mantém conexões já estabelecidas indefinidamente',
+      'Porque ESTABLISHED só funciona na chain INPUT, não no PREROUTING',
+      'Porque o Port Knocking usa UDP e ESTABLISHED só funciona com TCP',
+    ],
+    correct: 1,
+    explanation: 'São dois mecanismos independentes: o Port Knocking abre a porta temporariamente (timer de segundos). O conntrack ESTABLISHED mantém conexões já autorizadas pelo tempo necessário. Sem ESTABLISHED, cada pacote de uma sessão SSH teria que "bater" de novo.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Um atacante monitora a rede e replay os mesmos pacotes de knock. O que acontece?',
+    badge: '🔑 Port Knocking',
+    options: [
+      'O ataque funciona: replicar os pacotes abre a porta normalmente',
+      'O ataque falha se houver timeout: o módulo recent expira a entrada antes do replay',
+      'O ataque sempre falha porque iptables usa checksums únicos',
+      'O ataque funciona apenas se os pacotes forem enviados em menos de 1 segundo',
+    ],
+    correct: 1,
+    explanation: 'O módulo recent usa timestamps. Se o replay demorar mais que o timeout da sequência (ex: 10s), a entrada expira e o replay não abre nada. Para maior segurança, use Port Knocking com sequências únicas por sessão (SPA — Single Packet Auth).',
     trail: 'firewall',
   },
   {
@@ -239,6 +304,19 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     trail: 'firewall',
   },
   {
+    text: 'Qual filtro tcpdump captura apenas pacotes SYN (início de conexão TCP) sem os ACK?',
+    badge: '🦈 Análise de Pacotes',
+    options: [
+      'tcpdump -i any tcp',
+      'tcpdump -i any "tcp[13] == 2"',
+      'tcpdump -i any "tcp flags SYN"',
+      'tcpdump -i any "tcp[tcpflags] & tcp-syn != 0 and not tcp-ack"',
+    ],
+    correct: 3,
+    explanation: '"tcp[tcpflags] & tcp-syn != 0 and not tcp-ack" captura pacotes com flag SYN sem ACK — exatamente os pacotes de início de nova conexão. Útil para detectar port scans ou conexões legítimas.',
+    trail: 'firewall',
+  },
+  {
     text: 'Qual comando mostra as portas abertas e os serviços ouvindo no servidor?',
     badge: '🔧 Diagnóstico',
     options: ['iptables -L -n -v', 'ip route show', 'ss -tulpn', 'conntrack -L'],
@@ -257,6 +335,32 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'openssl s_client conecta e mostra todo o handshake SSL/TLS, incluindo certificado e cifras negociadas.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Qual comando exibe o conteúdo completo (datas de validade, CN, SANs) de um certificado SSL em arquivo PEM?',
+    badge: '🔒 Diagnóstico SSL',
+    options: [
+      'openssl verify -in cert.pem',
+      'openssl x509 -in cert.pem -text -noout',
+      'openssl s_client -cert cert.pem',
+      'openssl req -in cert.pem -noout -text',
+    ],
+    correct: 1,
+    explanation: 'openssl x509 -text -noout decodifica e exibe todo o certificado: subject, issuer, validity, SANs, extensões. Essencial para depurar "certificate expired" ou "hostname mismatch".',
+    trail: 'firewall',
+  },
+  {
+    text: 'O Nginx retorna "SSL_ERROR_RX_RECORD_TOO_LONG" para o cliente. Qual é a causa mais provável?',
+    badge: '🔒 Diagnóstico SSL',
+    options: [
+      'O certificado SSL está expirado',
+      'O Nginx está servindo HTTP puro na porta 443 (falta listen 443 ssl)',
+      'O cliente não suporta TLS 1.3',
+      'O arquivo dhparam.pem foi gerado com tamanho insuficiente',
+    ],
+    correct: 1,
+    explanation: 'Esse erro clássico ocorre quando o cliente tenta fazer handshake TLS mas recebe uma resposta HTTP pura — o servidor está ouvindo na 443 mas sem SSL configurado. Verificar: "listen 443 ssl" + ssl_certificate no bloco server do Nginx.',
     trail: 'firewall',
   },
 
@@ -399,6 +503,19 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Com Type=oneshot e RemainAfterExit=yes, o systemd marca o serviço como "active (exited)" após o script terminar. Sem isso, o status ficaria "inactive" e systemctl stop não chamaria o ExecStop.',
     trail: 'firewall',
   },
+  {
+    text: 'Qual comando exibe os serviços que mais atrasaram o boot do sistema?',
+    badge: '⚙️ systemd',
+    options: [
+      'journalctl -b --priority=crit',
+      'systemctl list-units --type=service',
+      'systemd-analyze blame',
+      'dmesg | grep slow',
+    ],
+    correct: 2,
+    explanation: '"systemd-analyze blame" lista os serviços ordenados pelo tempo que levaram para iniciar — essencial para diagnosticar boots lentos e decidir quais serviços desativar.',
+    trail: 'firewall',
+  },
 
   // ========== WireGuard ==========
   {
@@ -531,6 +648,20 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     trail: 'firewall',
   },
 
+  {
+    text: 'Qual módulo do AppArmor "força" um perfil de segurança em um processo, bloqueando ações não autorizadas?',
+    badge: '🔐 Hardening',
+    options: [
+      'aa-status',
+      'aa-enforce',
+      'aa-complain',
+      'aa-disable',
+    ],
+    correct: 1,
+    explanation: '"aa-enforce" coloca o perfil em modo enforce: ações não permitidas são bloqueadas e registradas. "aa-complain" apenas loga sem bloquear — útil para criar perfis. "aa-status" apenas lista perfis ativos.',
+    trail: 'firewall',
+  },
+
   // ========== Docker Networking ==========
   {
     text: 'O que acontece no iptables quando você usa a flag -p 8080:80 no Docker?',
@@ -551,6 +682,20 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['docker inspect --network bridge', 'docker network inspect bridge', 'docker ps --format network', 'docker network ls --verbose'],
     correct: 1,
     explanation: 'docker network inspect NOME mostra todas as configurações da rede: subnet, gateway, driver e quais containers estão conectados com seus IPs internos.',
+    trail: 'firewall',
+  },
+
+  {
+    text: 'O que a chain DOCKER-USER permite fazer que a chain DOCKER não permite?',
+    badge: '🐳 Docker',
+    options: [
+      'Criar regras persistentes que sobrevivem ao reinício do Docker',
+      'Adicionar regras de filtragem que o Docker não sobrescreve automaticamente',
+      'Bloquear containers de acessar a internet',
+      'Definir limites de bandwidth por container',
+    ],
+    correct: 1,
+    explanation: 'A chain DOCKER é gerenciada exclusivamente pelo daemon Docker — ele a recria/sobrescreve. A DOCKER-USER é invocada antes da DOCKER e preserva suas regras. Adicione bloqueios e restrições na DOCKER-USER, não na DOCKER.',
     trail: 'firewall',
   },
 
@@ -582,6 +727,20 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     trail: 'firewall',
   },
 
+  {
+    text: 'No docker-compose.yml, qual campo garante que um serviço só inicie após outro estar "saudável" (passou no healthcheck)?',
+    badge: '🐙 Compose',
+    options: [
+      'depends_on: [db]',
+      'depends_on: { db: { condition: service_healthy } }',
+      'requires: [db]',
+      'wait_for: [db:healthy]',
+    ],
+    correct: 1,
+    explanation: 'depends_on com condition: service_healthy aguarda o healthcheck do serviço dependente passar antes de iniciar. "depends_on: [db]" simples aguarda apenas o container iniciar, não o serviço estar pronto — o banco de dados pode ainda estar inicializando.',
+    trail: 'firewall',
+  },
+
   // ========== SSH 2FA / TOTP ==========
   {
     text: 'O que significa TOTP e qual é a janela de validade de cada código?',
@@ -602,6 +761,20 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['/etc/pam.d/login', '/etc/pam.d/sshd', '/etc/ssh/pam.conf', '/etc/security/pam_google.conf'],
     correct: 1,
     explanation: '/etc/pam.d/sshd é o arquivo PAM específico do OpenSSH. Adicionar "auth required pam_google_authenticator.so" nele faz o SSH chamar o módulo TOTP durante a autenticação.',
+    trail: 'firewall',
+  },
+
+  {
+    text: 'Por que é obrigatório ter uma sessão SSH aberta SEPARADA ao testar o 2FA no sshd?',
+    badge: '📱 SSH 2FA',
+    options: [
+      'Para comparar os logs de autenticação em tempo real',
+      'Para evitar se trancar fora: se a configuração quebrar, a sessão existente continua funcionando',
+      'Porque o sshd exige duas sessões simultâneas para ativar o 2FA',
+      'Para que o Google Authenticator sincronize o código em ambas as sessões',
+    ],
+    correct: 1,
+    explanation: 'Ao reconfigurar /etc/pam.d/sshd e sshd_config, um erro de sintaxe pode impedir qualquer novo login. Manter uma sessão SSH aberta garante acesso para corrigir o problema — sem ela, a única opção seria acesso físico ou console de emergência.',
     trail: 'firewall',
   },
 
