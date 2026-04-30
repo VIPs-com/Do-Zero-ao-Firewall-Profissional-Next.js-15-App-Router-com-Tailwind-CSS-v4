@@ -109,7 +109,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
 | Texto na Home | `app/page.tsx` | "84 tópicos práticos" + stats: 84/48/55/7 |
 | Badges | `src/context/BadgeContext.tsx` | 55 (Sprint SSH-PROXY: +ssh-proxy-master) |
-| searchItems | `src/data/searchItems.ts` | 137 (Audit fix: 137 real; t-ssh-proxy + g-ssh-tunnel incluídos) |
+| searchItems | `src/data/searchItems.ts` | 143 (Sprint Search-Audit: +5 novos — WireGuard×2, Fail2ban×2, DevOps cheat; +2 descrições corrigidas) |
 
 ---
 

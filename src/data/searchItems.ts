@@ -49,7 +49,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'p-quiz',       title: 'Quiz',          description: 'Teste seus conhecimentos e desbloqueie badges',   category: 'Página', href: '/quiz',         icon: Award },
   { id: 'p-cert',       title: 'Certificado',   description: 'Gere seu certificado de conclusão do workshop',   category: 'Página', href: '/certificado', icon: Award },
   { id: 'p-evolucao',   title: 'Evolução',      description: 'Roadmap tecnológico e linha do tempo do projeto', category: 'Página', href: '/evolucao',    icon: TrendingUp },
-  { id: 't-roadmap-evolucao', title: 'Roadmap do Workshop v2.0/v3.0/v4.0', description: 'Fases futuras: Hardening, Docker, Kubernetes, eBPF, Observabilidade.', category: 'Tópico', href: '/evolucao#roadmap-evolucao', icon: TrendingUp },
+  { id: 't-roadmap-evolucao', title: 'Roadmap Completo — v1.0 ao v5.0', description: '5 trilhas completas: Firewall (v1.0), Fundamentos (v2.0), Servidores (v3.0), Infra Moderna (v4.0) e Cloud/Platform Engineering (v5.0).', category: 'Tópico', href: '/evolucao#roadmap-evolucao', icon: TrendingUp },
 
   // ─── Tópicos (módulos técnicos) ─────────────────────────────────────────────
   { id: 't-install',  title: 'Instalação & Fundação', description: 'Configuração inicial do lab, IP forward e roteamento', category: 'Tópico', href: '/instalacao',       icon: Server },
@@ -65,6 +65,10 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 't-pivot',    title: 'Pivoteamento',          description: 'Riscos de lateral movement na DMZ',                  category: 'Tópico', href: '/pivoteamento',     icon: Activity },
   { id: 't-audit',    title: 'Audit Logs',            description: 'Monitoramento de tráfego, syslog e auditd',           category: 'Tópico', href: '/audit-logs',       icon: Eye },
   { id: 't-nftables', title: 'nftables',              description: 'Substituto moderno do iptables — sintaxe e equivalência', category: 'Tópico', href: '/nftables',     icon: Shield },
+  { id: 't-wireguard',  title: 'WireGuard VPN',         description: 'VPN moderna com criptografia ChaCha20/Poly1305, wg0.conf, wg-quick e wg show — mais rápida que OpenVPN e IPSec', category: 'Tópico', href: '/wireguard', icon: Lock },
+  { id: 'g-wireguard',  title: 'WireGuard — Chave Pública/Privada de Peer', description: 'WireGuard usa criptografia de curva elíptica (Curve25519). Cada peer tem um par de chaves; a troca de public keys define quem pode se conectar', category: 'Glossário', href: '/wireguard', icon: Lock },
+  { id: 't-fail2ban',   title: 'Fail2ban — Proteção contra Força Bruta',    description: 'Jails, filtros regex, maxretry, bantime, iptables REJECT automático e whitelist — bloqueio dinâmico de IPs maliciosos', category: 'Tópico', href: '/fail2ban', icon: Shield },
+  { id: 'g-fail2ban',   title: 'Jail (Fail2ban)',                            description: 'Unidade de configuração do Fail2ban: define qual log monitorar, regex (failregex), número de falhas (maxretry) e tempo de bloqueio (bantime)', category: 'Glossário', href: '/fail2ban', icon: Shield },
   { id: 't-hardening', title: 'Hardening Linux',     description: 'SSH seguro, sysctl de defesa e AppArmor — 3 camadas de proteção do servidor', category: 'Tópico', href: '/hardening',    icon: Shield },
   { id: 't-compose',  title: 'Docker Compose',      description: 'Stacks multi-container com redes declarativas, volumes persistentes e secrets', category: 'Tópico', href: '/docker-compose', icon: Server },
   { id: 'g-compose-yml', title: 'docker-compose.yml', description: 'Arquivo declarativo YAML que define services, networks e volumes de uma stack', category: 'Glossário', href: '/docker-compose', icon: FileText },
@@ -166,7 +170,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
 
   // Sprint F1-F3 — Trilha Fundamentos Linux (v2.0)
   { id: 'p-fundamentos',   title: 'Fundamentos Linux — Trilha para Iniciantes',
-    description: '10 módulos do zero: FHS, comandos, editores, processos, permissões, discos e mais.',
+    description: '15 módulos do zero: FHS, comandos, editores, processos, permissões, discos, boot, rsyslog, SSH proxy e mais.',
     category: 'Página', href: '/fundamentos', icon: Terminal },
   { id: 't-fhs',           title: 'Estrutura do Sistema (FHS)',
     description: '/etc, /var, /usr, /home, /tmp — o mapa do Linux. Equivalências com C:\\Windows.',
@@ -294,4 +298,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // Sprint SSH-PROXY — SSH como Proxy SOCKS (/ssh-proxy)
   { id: 't-ssh-proxy',      category: 'Tópico',    title: 'SSH como Proxy SOCKS — Tunneling e Port Forwarding',    description: 'ssh -D SOCKS5 proxy, -L port forwarding local, -R remoto, -J Jump Host, autossh persistente, ~/.ssh/config para produção', href: '/ssh-proxy', icon: Zap },
   { id: 'g-ssh-tunnel',     category: 'Glossário', title: 'SSH Tunnel — Port Forwarding Local, Remoto e Dinâmico', description: 'SSH tunnel encapsula tráfego TCP dentro de uma sessão SSH cifrada. -L redireciona porta local para host remoto, -R cria listener no servidor, -D cria proxy SOCKS5 dinâmico para qualquer destino', href: '/ssh-proxy', icon: FileText },
+
+  // Sprint CHEAT-SHEET-v3 — DevOps workflows section
+  { id: 't-cheat-devops',   category: 'Tópico',    title: 'DevOps Workflows — Docker, Ansible, kubectl, Terraform', description: 'Cheat sheet com workflows completos: docker compose up/down/scale, ansible-playbook --check, kubectl apply/rollout, terraform plan/apply/destroy', href: '/cheat-sheet#devops', icon: Server },
 ];
