@@ -13,7 +13,7 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run test         # vitest run — 6 suítes · 51 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
+npm run test         # vitest run — 6 suítes · 57 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
 npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
@@ -387,6 +387,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Quiz Fundamentos F1-F10: +30 perguntas em `src/data/quizQuestions.ts` cobrindo os 10 módulos originais da trilha Fundamentos que tinham zero cobertura (FHS, Comandos Essenciais, Editores de Texto, Gerenciamento de Processos, Permissões e Usuários, Discos e Partições, Logs Básicos, Backup, Shell Script, Cron); 3 perguntas por módulo; total 122→152 perguntas.
 - ✅ Sprint Polish-Stale: corrige todas as referências "10 módulos" → "15 módulos" da trilha Fundamentos (app/page.tsx hero, app/cron/page.tsx checkpoint, src/data/courseOrder.ts comment, src/lib/seo.ts description).
 - ✅ Sprint Counter-Sync + Evolucao Fix: totalTopics 84→85 (TOPICS.length confirmado = 85 via node: s08 SSH Proxy + sub-entries 27b/47b); home stats '84'→'85' e "84 tópicos" → "85 tópicos"; /evolucao "Roadmap em 3 fases" → "4 fases (v2.0→v5.0)"; botão "Me avise sobre v3.0" → "Me avise sobre novos módulos" (v3.0 COMPLETO).
+- ✅ Sprint Advanced-Trail: `ADVANCED_ORDER` (19 módulos v3.0→v5.0) em `courseOrder.ts`; badge 🌐 advanced-master (56º — visitar todos os 19); seção "Módulos Avançados" no dashboard com barra de progresso + grid de módulos (links, ✓ visitado); MILESTONE_BADGES inclui advanced-master; home stats badges 55→56; 6 novos testes vitest para ADVANCED_ORDER (57 testes total); E2E 07-dashboard-counters 0/55→0/56.
+- ✅ Sprint Advanced-Nav: `ModuleNav` estendido para aceitar `SimpleModule[]` (prev/next derivados do índice quando não há campos explícitos); ModuleNav adicionado em todos os 19 módulos avançados substituindo navs hardcoded díspares; fix de import mislocado em monitoring/page.tsx (import Python no code block interferiu com lastIndexOf).
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
