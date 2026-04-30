@@ -95,6 +95,26 @@ const COMMANDS: Command[] = [
   { id: 'tf-plan', cmd: 'terraform plan -out=tfplan', desc: 'Calcula e salva as mudanças necessárias sem aplicá-las.', layer: 'Camada 7', layerClass: 'l7', category: 'Terraform' },
   { id: 'tf-apply', cmd: 'terraform apply tfplan', desc: 'Aplica exatamente o plano gerado pelo terraform plan.', layer: 'Camada 7', layerClass: 'l7', category: 'Terraform' },
   { id: 'tf-state', cmd: 'terraform state list', desc: 'Lista todos os recursos gerenciados no state file.', layer: 'Camada 7', layerClass: 'l7', category: 'Terraform' },
+
+  // Servidores e Serviços v3.0 (Sprint CHEAT-SERVERS)
+  // — DHCP
+  { id: 'dhcp-test', cmd: 'dhcpd -t -cf /etc/dhcp/dhcpd.conf', desc: 'Valida a sintaxe do dhcpd.conf sem reiniciar o serviço.', layer: 'Camada 3', layerClass: 'l3', category: 'DHCP' },
+  { id: 'dhcp-leases', cmd: 'cat /var/lib/dhcp/dhcpd.leases | grep -A5 "binding state active"', desc: 'Lista concessões DHCP ativas com IP, MAC e tempo de expiração.', layer: 'Camada 3', layerClass: 'l3', category: 'DHCP' },
+  // — Samba
+  { id: 'smb-status', cmd: 'smbstatus', desc: 'Mostra conexões SMB ativas, arquivos abertos e locks.', layer: 'Camada 7', layerClass: 'l7', category: 'Samba' },
+  { id: 'smb-client', cmd: 'smbclient -L //192.168.57.10 -U usuario', desc: 'Lista shares disponíveis no servidor Samba. Pede senha interativamente.', layer: 'Camada 7', layerClass: 'l7', category: 'Samba' },
+  // — Apache
+  { id: 'apache-test', cmd: 'apachectl configtest', desc: 'Valida a sintaxe de todos os arquivos de configuração do Apache.', layer: 'Camada 7', layerClass: 'l7', category: 'Apache' },
+  { id: 'apache-ensite', cmd: 'a2ensite meusite.conf && systemctl reload apache2', desc: 'Ativa um VirtualHost e recarrega o Apache — equivalente ao nginx -t + reload.', layer: 'Camada 7', layerClass: 'l7', category: 'Apache' },
+  // — LDAP
+  { id: 'ldap-search', cmd: 'ldapsearch -x -H ldap://localhost -b "dc=workshop,dc=local" "(uid=usuario)"', desc: 'Busca um usuário no diretório LDAP por uid (sem autenticação bind).', layer: 'Camada 7', layerClass: 'l7', category: 'LDAP' },
+  { id: 'ldap-add', cmd: 'ldapadd -x -D "cn=admin,dc=workshop,dc=local" -W -f usuarios.ldif', desc: 'Importa entradas de um arquivo LDIF no diretório. -W pede a senha do admin.', layer: 'Camada 7', layerClass: 'l7', category: 'LDAP' },
+  // — Suricata
+  { id: 'suricata-update', cmd: 'suricata-update && systemctl reload suricata', desc: 'Atualiza as regras Emerging Threats (~40k) e recarrega o motor de detecção.', layer: 'Camada 7', layerClass: 'l7', category: 'Suricata' },
+  { id: 'suricata-test', cmd: 'suricata -T -c /etc/suricata/suricata.yaml', desc: 'Testa a configuração e valida todas as regras sem iniciar a captura.', layer: 'Camada 7', layerClass: 'l7', category: 'Suricata' },
+  // — Pi-hole
+  { id: 'pihole-status', cmd: 'pihole status', desc: 'Mostra se o DNS sinkhole está ativo e quantas queries foram bloqueadas.', layer: 'Camada 3', layerClass: 'l3', category: 'Pi-hole' },
+  { id: 'pihole-update', cmd: 'pihole -g', desc: 'Atualiza as blocklists (gravity update) — baixa e compila as listas de domínios bloqueados.', layer: 'Camada 3', layerClass: 'l3', category: 'Pi-hole' },
 ];
 
 const SOS_STEPS: TroubleshootingStep[] = [
@@ -158,14 +178,17 @@ export default function CheatSheetPage() {
     trackPageVisit('cheat-sheet');
   }, [trackPageVisit]);
 
-  const DEVOPS_CATEGORIES = ['Docker', 'Ansible', 'Kubernetes', 'Terraform'];
+  const DEVOPS_CATEGORIES   = ['Docker', 'Ansible', 'Kubernetes', 'Terraform'];
+  const SERVERS_CATEGORIES  = ['DHCP', 'Samba', 'Apache', 'LDAP', 'Suricata', 'Pi-hole'];
 
   const filteredCommands = COMMANDS.filter(cmd => {
     const matchesSearch = cmd.cmd.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          cmd.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          cmd.category.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = activeFilter === 'all'
-      || (activeFilter === 'devops' ? DEVOPS_CATEGORIES.includes(cmd.category) : cmd.layerClass === activeFilter);
+      || (activeFilter === 'devops'   ? DEVOPS_CATEGORIES.includes(cmd.category)  :
+          activeFilter === 'servers'  ? SERVERS_CATEGORIES.includes(cmd.category) :
+          cmd.layerClass === activeFilter);
     return matchesSearch && matchesFilter;
   });
 
@@ -206,7 +229,8 @@ export default function CheatSheetPage() {
             { id: 'l6', label: '🔒 Camada 6' },
             { id: 'l4', label: '🔌 Camada 4' },
             { id: 'l3', label: '🌐 Camada 3' },
-            { id: 'devops', label: '🚀 DevOps' },
+            { id: 'devops',   label: '🚀 DevOps' },
+            { id: 'servers',  label: '🌐 Servidores' },
           ].map(filter => (
             <button
               key={filter.id}
