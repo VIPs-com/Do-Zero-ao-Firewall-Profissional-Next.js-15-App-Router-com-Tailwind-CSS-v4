@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Rocket, Zap, Shield, Globe, Terminal, Cpu, Layout, Server, Bell, CheckCircle2, Clock, ArrowRight } from 'lucide-react';
+import { useBadges } from '@/context/BadgeContext';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 
 // ── Fases do Roadmap ─────────────────────────────────────────────────────────
@@ -88,6 +89,9 @@ const PHASE_V5 = {
 export default function EvolutionPage() {
   const [interested, setInterested] = useState(false);
   const [justRegistered, setJustRegistered] = useState(false);
+  const { trackPageVisit } = useBadges();
+
+  useEffect(() => { trackPageVisit('/evolucao'); }, [trackPageVisit]);
 
   useEffect(() => {
     try {

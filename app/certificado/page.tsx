@@ -24,12 +24,14 @@ const COMPETENCIAS = [
 export default function CertificatePage() {
   const [name, setName] = useState('');
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
-  const { checklistPercentage, quizScore, unlockBadge } = useBadges();
+  const { checklistPercentage, quizScore, unlockBadge, trackPageVisit } = useBadges();
 
   useEffect(() => {
     const savedName = localStorage.getItem('workshop-student-name');
     if (savedName) setName(savedName);
   }, []);
+
+  useEffect(() => { trackPageVisit('/certificado'); }, [trackPageVisit]);
 
   const isReady = checklistPercentage >= 90 && quizScore >= 80;
 

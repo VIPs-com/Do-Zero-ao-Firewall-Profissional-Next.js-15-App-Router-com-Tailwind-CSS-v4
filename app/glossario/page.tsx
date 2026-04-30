@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Search, Book, Hash, Shield, Globe, Lock, Terminal, Zap, Activity, Server, Network } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useBadges } from '@/context/BadgeContext';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 
 interface Term {
@@ -137,6 +138,9 @@ const GLOSSARY: Term[] = [
 export default function GlossaryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
+  const { trackPageVisit } = useBadges();
+
+  useEffect(() => { trackPageVisit('/glossario'); }, [trackPageVisit]);
 
   const categories = useMemo(() => {
     const set = new Set(GLOSSARY.map(t => t.category));
