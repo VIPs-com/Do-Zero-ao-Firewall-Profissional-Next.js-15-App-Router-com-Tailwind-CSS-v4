@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
-import { COURSE_ORDER, FUNDAMENTOS_ORDER } from '@/data/courseOrder';
+import { COURSE_ORDER, FUNDAMENTOS_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function DashboardPage() {
   const {
@@ -76,6 +76,12 @@ export default function DashboardPage() {
 
   // Conta módulos da trilha Fundamentos visitados
   const visitedFundamentosCount = FUNDAMENTOS_ORDER.filter(m => {
+    const slug = m.path.replace('/', '');
+    return visitedPages.has(slug) || visitedPages.has(m.path);
+  }).length;
+
+  // Conta módulos avançados (v3.0-v5.0) visitados
+  const visitedAdvancedCount = ADVANCED_ORDER.filter(m => {
     const slug = m.path.replace('/', '');
     return visitedPages.has(slug) || visitedPages.has(m.path);
   }).length;
@@ -274,6 +280,55 @@ export default function DashboardPage() {
                       visited ? 'bg-[#6366f1]/20 text-[#6366f1]' : 'bg-bg-3 text-text-3'
                     )}>
                       {visited ? '✓' : `F${String(idx + 1).padStart(2, '0')}`}
+                    </span>
+                    <span className="text-xs leading-tight font-medium">{mod.title}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Módulos Avançados v3.0→v5.0 */}
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <span aria-hidden="true" className="text-info">🌐</span>
+                Módulos Avançados
+              </h2>
+              <Link href="/evolucao" className="text-xs font-mono text-info hover:underline">
+                {visitedAdvancedCount} de {ADVANCED_ORDER.length}
+              </Link>
+            </div>
+            {/* Barra de progresso */}
+            <div className="h-1.5 bg-bg-3 rounded-full overflow-hidden mb-4">
+              <div
+                className="h-full rounded-full transition-[width] duration-700"
+                style={{
+                  width: `${Math.round((visitedAdvancedCount / ADVANCED_ORDER.length) * 100)}%`,
+                  background: 'linear-gradient(90deg, var(--color-info), #60a5fa)',
+                }}
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {ADVANCED_ORDER.map((mod) => {
+                const slug = mod.path.replace('/', '');
+                const visited = visitedPages.has(slug) || visitedPages.has(mod.path);
+                return (
+                  <Link
+                    key={mod.path}
+                    href={mod.path}
+                    className={cn(
+                      'flex items-center gap-3 p-3 rounded-xl border text-sm transition-all',
+                      visited
+                        ? 'bg-bg-2 border-info/30 text-text'
+                        : 'bg-bg-2/40 border-border text-text-3 hover:border-border-2'
+                    )}
+                  >
+                    <span className={cn(
+                      'w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0',
+                      visited ? 'bg-info/20 text-info' : 'bg-bg-3 text-text-3'
+                    )}>
+                      {visited ? '✓' : '→'}
                     </span>
                     <span className="text-xs leading-tight font-medium">{mod.title}</span>
                   </Link>

@@ -40,6 +40,39 @@ export const COURSE_ORDER: CourseModule[] = [
   { path: '/certificado',       title: 'Certificado',                prev: '/quiz',              next: null },
 ];
 
+// ── Módulos Avançados (v3.0 → v5.0) — Servidores, Infraestrutura e Cloud ──────
+// 19 módulos não lineares — usados para rastreamento de progresso no dashboard.
+// Não integra ModuleNav (sem prev/next). Badge: advanced-master.
+export interface SimpleModule {
+  path: string;
+  title: string;
+}
+
+export const ADVANCED_ORDER: SimpleModule[] = [
+  // v3.0 — Servidores e Serviços (7 módulos; ssh-proxy está no FUNDAMENTOS_ORDER como F15)
+  { path: '/dhcp',          title: 'Servidor DHCP' },
+  { path: '/samba',         title: 'Samba — File Sharing' },
+  { path: '/apache',        title: 'Servidor Apache' },
+  { path: '/openvpn',       title: 'OpenVPN' },
+  { path: '/traefik',       title: 'Traefik Proxy Reverso' },
+  { path: '/ldap',          title: 'LDAP / OpenLDAP' },
+  { path: '/pihole',        title: 'Pi-hole' },
+  // v4.0 — Infraestrutura Moderna (8 módulos)
+  { path: '/ansible',       title: 'Ansible para SysAdmins' },
+  { path: '/monitoring',    title: 'Prometheus + Grafana' },
+  { path: '/kubernetes',    title: 'Kubernetes / K3s' },
+  { path: '/terraform',     title: 'Terraform IaC' },
+  { path: '/suricata',      title: 'Suricata IDS/IPS' },
+  { path: '/ebpf',          title: 'eBPF & XDP' },
+  { path: '/service-mesh',  title: 'Service Mesh (Istio)' },
+  { path: '/sre',           title: 'SRE & SLOs' },
+  // v5.0 — Cloud & Platform Engineering (4 módulos)
+  { path: '/cicd',          title: 'CI/CD com GitHub Actions' },
+  { path: '/opnsense',      title: 'OPNsense' },
+  { path: '/nextcloud',     title: 'Nextcloud' },
+  { path: '/ebpf-avancado', title: 'eBPF Avançado + Cilium' },
+];
+
 // ── Trilha Fundamentos Linux (v2.0) — iniciantes ──────────────────────────────
 // 15 módulos
 // Sequência paralela ao COURSE_ORDER. Passada como prop order={FUNDAMENTOS_ORDER}

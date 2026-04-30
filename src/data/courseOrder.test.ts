@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { COURSE_ORDER, FUNDAMENTOS_ORDER } from './courseOrder';
+import { COURSE_ORDER, FUNDAMENTOS_ORDER, ADVANCED_ORDER } from './courseOrder';
 
 describe('courseOrder — integridade da sequência de módulos', () => {
 
@@ -138,6 +138,51 @@ describe('FUNDAMENTOS_ORDER — integridade da trilha Fundamentos Linux', () => 
       expect(
         courseOrderPaths.has(m.path),
         `"${m.path}" existe em ambas as trilhas — elas devem ser independentes`,
+      ).toBe(false);
+    });
+  });
+});
+
+describe('ADVANCED_ORDER — módulos avançados v3.0→v5.0', () => {
+
+  it('tem exatamente 19 módulos', () => {
+    expect(ADVANCED_ORDER).toHaveLength(19);
+  });
+
+  it('não há paths duplicados', () => {
+    const paths = ADVANCED_ORDER.map(m => m.path);
+    const unique = new Set(paths);
+    expect(unique.size).toBe(paths.length);
+  });
+
+  it('todos os módulos têm path começando com /', () => {
+    ADVANCED_ORDER.forEach(m => {
+      expect(m.path.startsWith('/')).toBe(true);
+    });
+  });
+
+  it('todos os módulos têm title não-vazio', () => {
+    ADVANCED_ORDER.forEach(m => {
+      expect(m.title.trim().length).toBeGreaterThan(0);
+    });
+  });
+
+  it('nenhum path coincide com COURSE_ORDER (coleções independentes)', () => {
+    const courseOrderPaths = new Set(COURSE_ORDER.map(m => m.path));
+    ADVANCED_ORDER.forEach(m => {
+      expect(
+        courseOrderPaths.has(m.path),
+        `"${m.path}" existe em COURSE_ORDER e ADVANCED_ORDER — devem ser independentes`,
+      ).toBe(false);
+    });
+  });
+
+  it('nenhum path coincide com FUNDAMENTOS_ORDER (coleções independentes)', () => {
+    const fundamentosPaths = new Set(FUNDAMENTOS_ORDER.map(m => m.path));
+    ADVANCED_ORDER.forEach(m => {
+      expect(
+        fundamentosPaths.has(m.path),
+        `"${m.path}" existe em FUNDAMENTOS_ORDER e ADVANCED_ORDER — devem ser independentes`,
       ).toBe(false);
     });
   });

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo, lazy, Suspense } from 'react';
-import { COURSE_ORDER } from '@/data/courseOrder';
+import { COURSE_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
 
 // Lazy — o modal de celebração só entra no bundle quando necessário
 const MilestoneCelebration = lazy(() =>
@@ -47,7 +47,8 @@ export type BadgeId =
   | 'opnsense-master'
   | 'nextcloud-master'
   | 'ebpf-avancado-master'
-  | 'ssh-proxy-master';
+  | 'ssh-proxy-master'
+  | 'advanced-master';
 
 export interface BadgeDef {
   icon: string;
@@ -111,6 +112,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'nextcloud-master':       { icon: '☁️', title: 'Nextcloud Master',        desc: 'Nuvem pessoal self-hosted operacional — Docker Compose com MariaDB+Redis, HTTPS via Traefik, apps CalDAV/CardDAV e backup automatizado' },
   'ebpf-avancado-master':   { icon: '🧬', title: 'eBPF Avançado Master',    desc: 'Cilium CNI substituindo kube-proxy, Hubble para observabilidade de fluxos L7, CiliumNetworkPolicy DNS/HTTP e Tetragon detectando anomalias runtime' },
   'ssh-proxy-master':       { icon: '🚇', title: 'SSH Tunnel Master',       desc: 'Dominou SSH como proxy SOCKS5 (-D), port forwarding local/remoto (-L/-R) e Jump Hosts para acesso seguro a redes privadas' },
+  'advanced-master':        { icon: '🌐', title: 'Advanced Master',         desc: 'Explorou todos os 19 módulos avançados — Servidores (v3.0), Infraestrutura (v4.0) e Cloud & Platform Engineering (v5.0)' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -255,7 +257,7 @@ export const CONTENT_PAGES_COUNT = 48;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
-  'course-master', 'quiz-master', 'linux-ninja', 'sigma-master', 'certificado',
+  'course-master', 'advanced-master', 'quiz-master', 'linux-ninja', 'sigma-master', 'certificado',
 ]);
 
 interface BadgeContextType {
@@ -352,12 +354,18 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (visitedPages.size >= 5)                  unlockBadge('explorer');
     if (visitedPages.size >= CONTENT_PAGES_COUNT) unlockBadge('deep-diver');
     if (visitedPages.has('laboratorio') && visitedPages.has('proxmox')) unlockBadge('resgate-gold');
-    // Mestre do Curso: todos os 23 módulos de COURSE_ORDER visitados
+    // Mestre do Curso: todos os 25 módulos de COURSE_ORDER visitados
     const allVisited = COURSE_ORDER.every(m => {
       const slug = m.path.slice(1); // '/wan-nat' → 'wan-nat'
       return visitedPages.has(m.path) || visitedPages.has(slug);
     });
     if (allVisited) unlockBadge('course-master');
+    // Advanced Master: todos os 19 módulos avançados (v3.0→v5.0) visitados
+    const allAdvancedVisited = ADVANCED_ORDER.every(m => {
+      const slug = m.path.slice(1);
+      return visitedPages.has(m.path) || visitedPages.has(slug);
+    });
+    if (allAdvancedVisited) unlockBadge('advanced-master');
   }, [visitedPages]);
 
   useEffect(() => {

@@ -107,8 +107,8 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 48 (Sprint SSH-PROXY: +ssh-proxy) |
 | `totalTopics` | `app/dashboard/page.tsx` | 85 (Counter-Sync: 27b+47b sub-entries + s08 SSH Proxy = 85) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
-| Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/48/55/7 |
-| Badges | `src/context/BadgeContext.tsx` | 55 (Sprint SSH-PROXY: +ssh-proxy-master) |
+| Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/48/56/7 |
+| Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
 | searchItems | `src/data/searchItems.ts` | 143 (Sprint Search-Audit: +5 novos — WireGuard×2, Fail2ban×2, DevOps cheat; +2 descrições corrigidas) |
 
 ---
