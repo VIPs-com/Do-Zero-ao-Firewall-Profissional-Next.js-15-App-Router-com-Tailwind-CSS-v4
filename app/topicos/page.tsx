@@ -7,6 +7,8 @@ import { Search, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 
+type TopicTrail = 'firewall' | 'fundamentos' | 'avancados';
+
 interface Topic {
   id: string;
   num: string;
@@ -15,6 +17,17 @@ interface Topic {
   layerClass: string;
   href: string;
   group: string;
+}
+
+const TRAIL_BY_GROUP: Record<string, TopicTrail> = {
+  'Fundamentos Linux': 'fundamentos',
+  'Servidores e Serviços': 'avancados',
+  'Infraestrutura Moderna': 'avancados',
+  'Cloud & Platform Engineering': 'avancados',
+};
+
+function getTrail(group: string): TopicTrail {
+  return TRAIL_BY_GROUP[group] ?? 'firewall';
 }
 
 const TOPICS: Topic[] = [
@@ -169,16 +182,18 @@ const TOPICS: Topic[] = [
 export default function TopicsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
+  const [activeTrail, setActiveTrail] = useState<TopicTrail | 'all'>('all');
   const { visitedPages } = useBadges();
 
   const filteredTopics = useMemo(() => {
     return TOPICS.filter(topic => {
       const matchesSearch = topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            topic.group.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = activeFilter === 'all' || topic.layerClass === activeFilter;
-      return matchesSearch && matchesFilter;
+      const matchesLayer = activeFilter === 'all' || topic.layerClass === activeFilter;
+      const matchesTrail = activeTrail === 'all' || getTrail(topic.group) === activeTrail;
+      return matchesSearch && matchesLayer && matchesTrail;
     });
-  }, [searchQuery, activeFilter]);
+  }, [searchQuery, activeFilter, activeTrail]);
 
   const groups = useMemo(() => {
     const map = new Map<string, Topic[]>();
@@ -233,7 +248,7 @@ export default function TopicsPage() {
       </div>
 
       {/* Search and Filters */}
-      <div className="space-y-6 mb-12">
+      <div className="space-y-4 mb-12">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={18} />
           <input
@@ -245,9 +260,39 @@ export default function TopicsPage() {
           />
         </div>
 
+        {/* Trail filters */}
+        <div
+          className="flex flex-wrap gap-2"
+          role="radiogroup"
+          aria-label="Filtrar por trilha"
+        >
+          {([
+            { id: 'all' as const,         label: '🗂️ Todas as Trilhas', activeClass: 'bg-accent border-accent text-white' },
+            { id: 'firewall' as const,    label: '🔥 Firewall',          activeClass: 'bg-[#e05a2b] border-[#e05a2b] text-white' },
+            { id: 'fundamentos' as const, label: '🐧 Fundamentos',       activeClass: 'bg-[#6366f1] border-[#6366f1] text-white' },
+            { id: 'avancados' as const,   label: '🚀 Avançados',         activeClass: 'bg-info border-info text-white' },
+          ] satisfies Array<{ id: TopicTrail | 'all'; label: string; activeClass: string }>).map(trail => (
+            <button
+              key={trail.id}
+              role="radio"
+              aria-checked={activeTrail === trail.id}
+              onClick={() => setActiveTrail(trail.id)}
+              className={cn(
+                "px-4 py-2 rounded-full text-xs font-bold transition-all border",
+                activeTrail === trail.id
+                  ? trail.activeClass
+                  : "bg-bg-2 border-border text-text-2 hover:border-accent/50 hover:text-text"
+              )}
+            >
+              {trail.label}
+            </button>
+          ))}
+        </div>
+
+        {/* OSI Layer filters */}
         <div className="flex flex-wrap gap-2">
           {[
-            { id: 'all', label: '📚 Todos' },
+            { id: 'all', label: '📚 Todas as Camadas' },
             { id: 'l7',  label: '📡 Camada 7' },
             { id: 'l6',  label: '🔒 Camada 6' },
             { id: 'l5',  label: '🔄 Camada 5' },
