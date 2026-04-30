@@ -778,6 +778,119 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     trail: 'firewall',
   },
 
+  // ========== Pivoteamento ==========
+  {
+    text: 'Qual configuração de firewall impede que um servidor DMZ comprometido inicie conexões para a rede LAN interna?',
+    badge: '🎭 Pivoteamento',
+    options: [
+      'Adicionar regra ACCEPT no FORWARD para tráfego ESTABLISHED entre DMZ e LAN',
+      'Política padrão DROP no FORWARD sem nenhuma regra permitindo DMZ → LAN',
+      'Bloquear o tráfego de entrada na DMZ via regra INPUT com -j DROP',
+      'Aplicar MASQUERADE na chain POSTROUTING para ocultar os IPs da LAN',
+    ],
+    correct: 1,
+    explanation: 'O princípio é: a DMZ nunca inicia conexões. A política padrão iptables -P FORWARD DROP, sem nenhuma regra Allow da DMZ para a LAN, garante que um servidor comprometido não consiga alcançar a rede interna.',
+    trail: 'firewall',
+  },
+  {
+    text: 'O que é um "reverse shell" e por que ele contorna firewalls de entrada?',
+    badge: '🎭 Pivoteamento',
+    options: [
+      'O atacante abre uma porta no servidor comprometido e aguarda conexões de entrada',
+      'O servidor comprometido inicia uma conexão de SAÍDA para o atacante — contorna regras que bloqueiam entrada',
+      'Um ataque que inverte as ACLs do iptables temporariamente',
+      'Técnica que usa SSH -R para expor uma porta interna ao atacante',
+    ],
+    correct: 1,
+    explanation: 'Em um reverse shell, o servidor comprometido é quem inicia a conexão para o IP do atacante. Firewalls geralmente permitem tráfego de saída livremente, então essa técnica contorna regras de entrada. A defesa é o egress filtering.',
+    trail: 'firewall',
+  },
+  {
+    text: 'O que é "egress filtering" e por que é fundamental contra pivoteamento?',
+    badge: '🎭 Pivoteamento',
+    options: [
+      'Filtrar tráfego que entra na DMZ vindo da WAN',
+      'Registrar logs de saída para auditoria forense posterior',
+      'Filtrar apenas pacotes com flags TCP inválidas (SYN+FIN, etc.)',
+      'Limitar quais portas e destinos o servidor DMZ pode usar para sair — bloqueia reverse shells e exfiltração',
+    ],
+    correct: 3,
+    explanation: 'Egress filtering restringe o tráfego de SAÍDA da DMZ: por exemplo, apenas HTTP/HTTPS para a internet e nada para a LAN interna. Isso impede que um servidor comprometido abra um reverse shell para o atacante ou exfiltre dados.',
+    trail: 'firewall',
+  },
+
+  // ========== Laboratório Virtual ==========
+  {
+    text: 'Qual comando verifica se a CPU suporta virtualização por hardware (Intel VT-x ou AMD-V), necessária para KVM?',
+    badge: '🧪 Laboratório',
+    options: [
+      'lscpu | grep Hypervisor',
+      'systemctl status kvm',
+      'egrep -c \'(vmx|svm)\' /proc/cpuinfo',
+      'dmesg | grep virt',
+    ],
+    correct: 2,
+    explanation: 'vmx = Intel VT-x, svm = AMD-V. Se o resultado for > 0, a CPU suporta virtualização hardware e KVM pode ser instalado. Resultado 0 significa que é necessário habilitar a opção na BIOS/UEFI.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Qual a principal diferença entre VirtualBox (tipo 2) e KVM (tipo 1) para laboratórios Linux?',
+    badge: '🧪 Laboratório',
+    options: [
+      'VirtualBox não suporta redes em modo bridge; KVM suporta',
+      'KVM é hypervisor nativo do kernel Linux com menor overhead; VirtualBox roda como aplicativo sobre o OS',
+      'KVM requer mínimo 32 GB de RAM; VirtualBox funciona com 4 GB',
+      'VirtualBox não permite snapshots; KVM suporta via virsh snapshot-create',
+    ],
+    correct: 1,
+    explanation: 'VirtualBox é um hypervisor tipo 2 (hosted) — roda como processo sobre Windows/macOS/Linux. KVM é tipo 1 (bare-metal) integrado ao kernel Linux: usa diretamente a CPU e tem overhead muito menor, sendo o mesmo hipervisor usado pelo Proxmox em produção.',
+    trail: 'firewall',
+  },
+  {
+    text: 'O que é o virsh e qual é sua relação com o libvirt no gerenciamento de VMs KVM?',
+    badge: '🧪 Laboratório',
+    options: [
+      'Interface gráfica para criar VMs no Proxmox, equivalente ao Portainer para Docker',
+      'Daemon que gerencia o ciclo de vida das VMs, equivalente ao dockerd',
+      'CLI para gerenciar VMs via libvirt (start/stop/snapshot/list) — equivalente ao "docker" CLI para containers',
+      'Script de provisioning automático de VMs via Kickstart/Preseed',
+    ],
+    correct: 2,
+    explanation: 'virsh é o cliente CLI do libvirt, assim como "docker" é o CLI do dockerd. Exemplos: virsh list --all (listar VMs), virsh start nome, virsh snapshot-create-as nome "backup". O libvirtd é o daemon que realmente gerencia as VMs via KVM/QEMU.',
+    trail: 'firewall',
+  },
+
+  // ========== Proxmox VE ==========
+  {
+    text: 'Em qual porta HTTPS o Proxmox VE expõe sua Web UI de gerenciamento por padrão?',
+    badge: '🖥️ Proxmox',
+    options: ['443', '8080', '8006', '8443'],
+    correct: 2,
+    explanation: 'O Proxmox VE usa a porta 8006/HTTPS para a Web UI. Acesso: https://IP-DO-SERVIDOR:8006. O certificado padrão é autoassinado — você verá um aviso no browser na primeira vez.',
+    trail: 'firewall',
+  },
+  {
+    text: 'O que são as interfaces vmbr (Virtual Machine Bridge) no Proxmox VE?',
+    badge: '🖥️ Proxmox',
+    options: [
+      'Aliases de IP para separar tráfego de gerenciamento do tráfego de VMs',
+      'Módulos do kernel para aceleração de rede nas VMs (offloading)',
+      'Bridges Linux que conectam VMs e containers às redes físicas ou entre si',
+      'Regras de firewall aplicadas entre zones isoladas do Proxmox',
+    ],
+    correct: 2,
+    explanation: 'vmbr são bridges Linux padrão (como brctl). No Proxmox, cria-se uma bridge por rede: vmbr0 = WAN (uplink físico), vmbr1 = DMZ, vmbr2 = LAN. As VMs conectam suas interfaces virtuais (vnet) nas bridges, como cabos de switch.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Qual comando exibe a versão do Proxmox VE e do kernel em execução?',
+    badge: '🖥️ Proxmox',
+    options: ['proxmox --version', 'pvecm status', 'pveversion', 'pvesh get /version'],
+    correct: 2,
+    explanation: 'pveversion exibe algo como "pve-manager/8.x.x (running kernel: 6.x.x-pve)". pvecm status mostra status do cluster. pvesh é a API REST do Proxmox.',
+    trail: 'firewall',
+  },
+
   // ========== Estrutura do Sistema — FHS (F01) ==========
   {
     text: 'No FHS (Filesystem Hierarchy Standard), qual diretório armazena os binários essenciais do sistema disponíveis antes de qualquer sistema de arquivos adicional ser montado?',
