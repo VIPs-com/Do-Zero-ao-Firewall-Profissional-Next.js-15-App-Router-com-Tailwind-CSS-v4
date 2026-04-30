@@ -112,6 +112,26 @@ const GLOSSARY: Term[] = [
   { term: "Error Budget", definition: "Percentual de falha permitida dentro da janela do SLO. Budget sobrando → acelerar deploys. Budget esgotado → congelar features e focar em confiabilidade. Pertence ao produto, não à infra.", category: "Observabilidade", icon: <Activity size={14} /> },
   { term: "PromQL", definition: "Prometheus Query Language — linguagem de consulta de séries temporais. Funções: rate() (taxa/s), increase() (total no período), sum by() (agregar). Ex: rate(http_requests_total[5m]).", category: "Observabilidade", icon: <Activity size={14} /> },
   { term: "Exporter", definition: "Agente que coleta métricas de um sistema e as expõe no formato Prometheus via endpoint /metrics. Ex: node_exporter (sistema), mysqld_exporter (banco), nginx-exporter (web).", category: "Observabilidade", icon: <Activity size={14} /> },
+  { term: "Burn Rate", definition: "Taxa na qual o error budget está sendo consumido. Burn rate 1 = consumo exatamente na taxa prevista. Burn rate 14,4 = budget esgota em 5 dias — aciona alerta crítico de page.", category: "Observabilidade", icon: <Activity size={14} /> },
+  { term: "Trace / Tracing", definition: "Rastreamento distribuído que acompanha uma requisição por todos os microsserviços que ela atravessa. Ferramentas: Jaeger, Tempo. Cada span tem duração e metadados de contexto.", category: "Observabilidade", icon: <Activity size={14} /> },
+
+  // Service Mesh
+  { term: "mTLS", definition: "Mutual TLS — autenticação bidirecional onde cliente E servidor apresentam certificados. Em Service Mesh (Istio/Linkerd), aplicado automaticamente entre todos os serviços via sidecars.", category: "Service Mesh", icon: <Lock size={14} /> },
+  { term: "Sidecar Proxy", definition: "Container auxiliar injetado automaticamente no mesmo Pod pelo Service Mesh. Intercepta todo o tráfego de rede do serviço principal sem mudanças no código. Envoy é o sidecar padrão do Istio.", category: "Service Mesh", icon: <Network size={14} /> },
+  { term: "VirtualService", definition: "Recurso Istio que define regras de roteamento de tráfego: canary (90/10), A/B por header, retry, timeout e injeção de falhas. Trabalha em conjunto com DestinationRule.", category: "Service Mesh", icon: <Network size={14} /> },
+  { term: "Circuit Breaker", definition: "Padrão de resiliência que 'abre o circuito' após N falhas consecutivas, impedindo chamadas a um serviço degradado. No Istio: outlierDetection com consecutiveErrors e ejectionTime.", category: "Service Mesh", icon: <Zap size={14} /> },
+
+  // Kubernetes (complemento)
+  { term: "CNI", definition: "Container Network Interface — plugin de rede do Kubernetes que configura interfaces e rotas dos pods. Opções: Flannel (simples), Calico (NetworkPolicy), Cilium (eBPF, L7 policy).", category: "Kubernetes", icon: <Network size={14} /> },
+  { term: "NetworkPolicy", definition: "Recurso K8s que restringe tráfego entre pods com base em labels, namespaces e portas. Requer CNI compatível (Calico, Cilium) — Flannel ignora as políticas.", category: "Kubernetes", icon: <Network size={14} /> },
+
+  // DevOps & IaC (complemento)
+  { term: "Pipeline (CI/CD)", definition: "Sequência automatizada de etapas: lint → test → build → deploy. No GitHub Actions: push dispara workflow, jobs rodam em paralelo (needs: para dependências), artifacts passam entre jobs.", category: "DevOps & IaC", icon: <Zap size={14} /> },
+  { term: "GitOps", definition: "Prática de usar o repositório Git como fonte única de verdade para infraestrutura. Mudanças são feitas via PR; um agente (ArgoCD, Flux) sincroniza o cluster com o estado declarado no repo.", category: "DevOps & IaC", icon: <Zap size={14} /> },
+
+  // Segurança (complemento)
+  { term: "IDS / IPS", definition: "Intrusion Detection System detecta ataques passivamente (alerta, não bloqueia). IPS (Intrusion Prevention System) bloqueia o tráfego malicioso inline. Suricata opera em modo IDS (af-packet) ou IPS (NFQUEUE).", category: "Segurança", icon: <Shield size={14} /> },
+  { term: "CARP", definition: "Common Address Redundancy Protocol — protocolo de alta disponibilidade do OPNsense/pfSense. Dois firewalls compartilham um VIP; o MASTER responde pelo IP, o BACKUP assume em segundos se o MASTER falhar.", category: "Redes", icon: <Globe size={14} /> },
 ];
 
 export default function GlossaryPage() {
