@@ -225,6 +225,12 @@ export const ROUTE_SEO = {
       'Comece do zero no Linux: 15 módulos que ensinam FHS, comandos, editores, processos, permissões, discos, logs, backup, shell script, cron, pacotes, boot, comandos avançados, rsyslog e SSH proxy.',
     keywords: ['Linux iniciante', 'fundamentos Linux', 'aprender Linux', 'terminal Linux', 'Ubuntu básico'],
   },
+  '/avancados': {
+    title: 'Trilha Avançada — Servidores, Infraestrutura e Cloud',
+    description:
+      'Trilha avançada do Workshop Linux: 19 módulos cobrindo DHCP, Samba, Apache, OpenVPN, Traefik, LDAP, Pi-hole, Ansible, Prometheus, Kubernetes, Terraform, Suricata, eBPF, Service Mesh, SRE, CI/CD e Nextcloud.',
+    keywords: ['Kubernetes', 'Ansible', 'Terraform', 'Prometheus', 'Grafana', 'eBPF', 'Istio', 'SRE', 'CI/CD', 'infraestrutura Linux'],
+  },
   '/fhs': {
     title: 'Estrutura do Sistema Linux (FHS)',
     description:

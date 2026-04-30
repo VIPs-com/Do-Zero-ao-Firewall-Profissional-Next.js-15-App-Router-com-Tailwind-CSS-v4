@@ -56,7 +56,7 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz — 152 perguntas (Sprint Quiz Fundamentos F1-F10: +30 perguntas, cobertura completa da trilha Fundamentos)
-    searchItems.ts          # 142 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 145 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -104,12 +104,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 48 (Sprint SSH-PROXY: +ssh-proxy) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 49 (Sprint AVANCADOS-INDEX: +/avancados) |
 | `totalTopics` | `app/dashboard/page.tsx` | 85 (Counter-Sync: 27b+47b sub-entries + s08 SSH Proxy = 85) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
 | Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/59/56/7 |
 | Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
-| searchItems | `src/data/searchItems.ts` | 142 (auditado 2026-04-30: conta real via grep) |
+| searchItems | `src/data/searchItems.ts` | 145 (Sprint AVANCADOS-INDEX: +2 avancados) |
 
 ---
 
@@ -392,6 +392,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint PROGRESS-DROPDOWN: `ProgressDropdown` reescrito com 3 abas — Firewall (25), Fundamentos (15), Avançados (19); botão exibe total X/59; barra de progresso e lista de módulos por aba; cores distintas por trilha (accent/indigo/info); a11y preservada (role=tablist, aria-selected, focus trap).
 - ✅ fix(home): stats módulos 48→59 (25+15+19 trilhas); deep-diver desc atualizado "48+ de 59".
 - ✅ Sprint QUIZ-TRAIL: campo `trail: QuizTrail` adicionado a todas as 152 questões via script (firewall=50, fundamentos=45, avancados=57); seletor de trilha (4 opções: Todas/Firewall/Fundamentos/Avançados) na tela de início do quiz com radio semantico + contagem por trilha.
+- ✅ Sprint TOPICOS-TRAIL: filtro de trilha (🗂️ Todas / 🔥 Firewall / 🐧 Fundamentos / 🚀 Avançados) adicionado à página `/topicos` acima dos filtros de camada OSI existentes; mapeamento group→trail via `TRAIL_BY_GROUP` sem modificar os 85 objetos Topic; filtros de trilha e camada são independentes (AND); radio semantico (role=radiogroup/radio, aria-checked).
+- ✅ Sprint AVANCADOS-INDEX: página `/avancados` — índice da trilha avançada espelhando /fundamentos; 19 módulos em 3 seções (v3.0 Servidores/v4.0 Infraestrutura/v5.0 Cloud); progress bar com checkpoint do primeiro módulo de cada; hero com CTA inteligente (Começar/Continuar/Revisar); nav link 🚀 Avançados adicionado em ClientLayout.tsx; CONTENT_PAGES_COUNT 48→49; deep-diver desc "49+ páginas (61 disponíveis)"; SEO /avancados em seo.ts; +2 searchItems (145 total); layout.tsx com buildMetadata.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
