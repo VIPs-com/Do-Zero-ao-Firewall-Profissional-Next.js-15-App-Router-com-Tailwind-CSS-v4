@@ -61,7 +61,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'quiz-expert':        { icon: '🥇', title: 'Expert',             desc: 'Score ≥ 80% no Quiz' },
   'quiz-master':        { icon: '🏆', title: 'Mestre',             desc: 'Score 100% no Quiz' },
   'explorer':           { icon: '🗺️', title: 'Explorador',         desc: 'Visitou 5+ páginas diferentes' },
-  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Visitou todas as 48 páginas de conteúdo' },
+  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Explorou 48+ páginas de conteúdo do workshop (59 disponíveis)' },
   'night-owl':          { icon: '🦉', title: 'Coruja Noturna',     desc: 'Ativou o Dark Mode' },
   'searcher':           { icon: '🔍', title: 'Investigador',       desc: 'Usou a busca global' },
   'topology-pro':       { icon: '🖧', title: 'Topólogo',           desc: 'Clicou em 5+ elementos da topologia' },

@@ -67,7 +67,7 @@ const FEATURES = [
 
 const STATS = [
   { icon: <Layers size={20} className="text-accent" />, value: '85', label: 'Tópicos práticos' },
-  { icon: <BookOpen size={20} className="text-info" />, value: '48', label: 'Módulos de conteúdo' },
+  { icon: <BookOpen size={20} className="text-info" />, value: '59', label: 'Módulos de conteúdo' },
   { icon: <Award size={20} className="text-ok" />, value: '56', label: 'Badges desbloqueáveis' },
   { icon: <Star size={20} className="text-warn" />, value: '7', label: 'Camadas OSI na prática' },
 ];
