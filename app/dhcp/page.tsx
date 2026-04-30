@@ -7,6 +7,8 @@ import { InfoBox, WarnBox } from '@/components/ui/Boxes';
 import { WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { Server, Network, BookOpen, Cpu, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const CHECKLIST_ITEMS = [
   { id: 'dhcp-instalado', label: 'Instalei isc-dhcp-server e configurei a interface LAN corretamente em /etc/default/isc-dhcp-server' },
@@ -388,16 +390,7 @@ sudo journalctl -u isc-dhcp-server -b`} />
           )}
         </section>
 
-        {/* Nav de volta */}
-        <div className="pt-8 border-t border-border flex items-center justify-between">
-          <Link href="/evolucao" className="text-sm text-text-3 hover:text-accent transition-colors flex items-center gap-1">
-            ← Roadmap de Evolução
-          </Link>
-          <Link href="/fundamentos" className="text-sm text-text-3 hover:text-accent transition-colors flex items-center gap-1">
-            Trilha Fundamentos →
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/dhcp" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

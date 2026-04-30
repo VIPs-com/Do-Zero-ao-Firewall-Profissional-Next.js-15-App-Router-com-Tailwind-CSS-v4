@@ -7,6 +7,8 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function KubernetesPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
@@ -1012,24 +1014,7 @@ kubectl rollout undo deployment/webapp --to-revision=1 -n lab`} />
           )}
         </section>
 
-        {/* Navegação */}
-        <nav className="flex justify-between items-center pt-4 border-t border-border">
-          <Link
-            href="/monitoring"
-            className="flex items-center gap-2 text-sm text-text-2 hover:text-text transition-colors group"
-          >
-            <span className="group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Prometheus + Grafana</span>
-          </Link>
-          <Link
-            href="/terraform"
-            className="flex items-center gap-2 text-sm text-text-2 hover:text-text transition-colors group"
-          >
-            <span>Terraform</span>
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
-        </nav>
-
+        <ModuleNav currentPath="/kubernetes" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

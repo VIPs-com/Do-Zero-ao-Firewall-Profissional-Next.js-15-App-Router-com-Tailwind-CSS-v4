@@ -12,6 +12,8 @@ import {
   ChevronLeft, ChevronRight, Terminal, Lock, Activity,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const checklistItems = [
   {
@@ -771,24 +773,7 @@ jobs:
           </div>
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between items-center pt-8 border-t border-border">
-          <Link
-            href="/sre"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <ChevronLeft size={16} />
-            <span>Anterior: SRE &amp; SLOs</span>
-          </Link>
-          <Link
-            href="/opnsense"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <span>Próximo: OPNsense</span>
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/cicd" order={ADVANCED_ORDER} />
       </div>
     </div>
   );

@@ -12,6 +12,8 @@ import {
   Server, Network, AlertTriangle, CheckCircle,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const checklistItems = [
   {
@@ -524,24 +526,7 @@ curl -s -k \
           </div>
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between items-center pt-8 border-t border-border">
-          <Link
-            href="/cicd"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <ChevronLeft size={16} />
-            <span>Anterior: CI/CD GitHub Actions</span>
-          </Link>
-          <Link
-            href="/nextcloud"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <span>Próximo: Nextcloud</span>
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/opnsense" order={ADVANCED_ORDER} />
       </div>
     </div>
   );

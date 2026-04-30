@@ -7,6 +7,8 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function PiholePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
@@ -436,12 +438,7 @@ pihole -w "cdn.site-legitimo.com"
           )}
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between pt-8 border-t border-border">
-          <Link href="/ldap"    className="btn-outline text-sm">← LDAP</Link>
-          <Link href="/evolucao" className="btn-primary text-sm">Ver Roadmap v4.0 →</Link>
-        </div>
-
+        <ModuleNav currentPath="/pihole" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

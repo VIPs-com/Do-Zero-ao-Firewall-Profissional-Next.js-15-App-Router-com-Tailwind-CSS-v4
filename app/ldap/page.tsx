@@ -7,6 +7,8 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function LDAPPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
@@ -510,12 +512,7 @@ ldapsearch -Y EXTERNAL -H ldapi:/// \\
           )}
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between pt-8 border-t border-border">
-          <Link href="/traefik" className="btn-outline text-sm">← Traefik</Link>
-          <Link href="/pihole"  className="btn-primary text-sm">Pi-hole →</Link>
-        </div>
-
+        <ModuleNav currentPath="/ldap" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

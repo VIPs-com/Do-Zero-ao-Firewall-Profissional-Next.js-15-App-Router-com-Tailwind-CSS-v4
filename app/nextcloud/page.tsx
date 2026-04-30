@@ -12,6 +12,8 @@ import {
   Server, Zap, AlertTriangle, HardDrive,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const checklistItems = [
   {
@@ -520,24 +522,7 @@ find /backups/nextcloud/ -maxdepth 1 -type d -mtime +7 -exec rm -rf {} \\;`} />
           </div>
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between items-center pt-8 border-t border-border">
-          <Link
-            href="/opnsense"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <ChevronLeft size={16} />
-            <span>Anterior: OPNsense</span>
-          </Link>
-          <Link
-            href="/ebpf-avancado"
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-bg-2 transition-colors text-text-2 hover:text-text text-sm"
-          >
-            <span>Próximo: eBPF Avançado</span>
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/nextcloud" order={ADVANCED_ORDER} />
       </div>
     </div>
   );

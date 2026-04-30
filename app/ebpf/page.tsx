@@ -12,6 +12,8 @@ import {
   ChevronLeft, ChevronRight, Terminal, Server, Search,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const checklistItems = [
   {
@@ -589,24 +591,7 @@ hubble observe --type drop --follow
           </div>
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between items-center pt-8 border-t border-border">
-          <Link
-            href="/suricata"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <ChevronLeft size={16} />
-            <span>Anterior: Suricata IDS/IPS</span>
-          </Link>
-          <Link
-            href="/service-mesh"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <span>Próximo: Service Mesh (Istio)</span>
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/ebpf" order={ADVANCED_ORDER} />
       </div>
     </div>
   );

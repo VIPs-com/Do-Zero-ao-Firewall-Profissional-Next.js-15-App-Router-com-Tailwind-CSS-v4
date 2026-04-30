@@ -7,6 +7,8 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function TraefikPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
@@ -561,12 +563,7 @@ iptables -L INPUT -n -v | grep -E "80|443"`} />
           )}
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between pt-8 border-t border-border">
-          <Link href="/openvpn" className="btn-outline text-sm">← OpenVPN</Link>
-          <Link href="/evolucao" className="btn-primary text-sm">Ver Roadmap →</Link>
-        </div>
-
+        <ModuleNav currentPath="/traefik" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

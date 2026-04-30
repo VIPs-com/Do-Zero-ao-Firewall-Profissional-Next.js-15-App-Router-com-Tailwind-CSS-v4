@@ -7,6 +7,8 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function TerraformPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
@@ -1027,24 +1029,7 @@ terraform apply -auto-approve
           )}
         </section>
 
-        {/* Navegação */}
-        <nav className="flex justify-between items-center pt-4 border-t border-border">
-          <Link
-            href="/kubernetes"
-            className="flex items-center gap-2 text-sm text-text-2 hover:text-text transition-colors group"
-          >
-            <span className="group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Kubernetes / K3s</span>
-          </Link>
-          <Link
-            href="/evolucao"
-            className="flex items-center gap-2 text-sm text-text-2 hover:text-text transition-colors group"
-          >
-            <span>Ver Evolução Natural →</span>
-            <span className="group-hover:translate-x-1 transition-transform">🚀</span>
-          </Link>
-        </nav>
-
+        <ModuleNav currentPath="/terraform" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

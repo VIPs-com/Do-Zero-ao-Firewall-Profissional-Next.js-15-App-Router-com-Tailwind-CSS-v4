@@ -12,6 +12,8 @@ import {
   ChevronLeft, ChevronRight, Terminal, Lock, GitMerge,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const checklistItems = [
   {
@@ -680,24 +682,7 @@ istioctl dashboard kiali`}
           </div>
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between items-center pt-8 border-t border-border">
-          <Link
-            href="/ebpf"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <ChevronLeft size={16} />
-            <span>Anterior: eBPF &amp; XDP</span>
-          </Link>
-          <Link
-            href="/sre"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <span>Próximo: SRE &amp; SLOs</span>
-            <ChevronRight size={16} />
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/service-mesh" order={ADVANCED_ORDER} />
       </div>
     </div>
   );

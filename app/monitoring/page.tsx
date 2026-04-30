@@ -7,6 +7,8 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function MonitoringPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
@@ -910,24 +912,7 @@ curl -s http://localhost:9093/api/v2/alerts | python3 -m json.tool`} />
           )}
         </section>
 
-        {/* Navegação */}
-        <nav className="flex justify-between items-center pt-4 border-t border-border">
-          <Link
-            href="/ansible"
-            className="flex items-center gap-2 text-sm text-text-2 hover:text-text transition-colors group"
-          >
-            <span className="group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Ansible</span>
-          </Link>
-          <Link
-            href="/kubernetes"
-            className="flex items-center gap-2 text-sm text-text-2 hover:text-text transition-colors group"
-          >
-            <span>Kubernetes / K3s</span>
-            <span className="group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
-        </nav>
-
+        <ModuleNav currentPath="/monitoring" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

@@ -7,6 +7,8 @@ import { InfoBox, WarnBox } from '@/components/ui/Boxes';
 import { WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { FolderOpen, Users, Shield, Network, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const CHECKLIST_ITEMS = [
   { id: 'samba-instalado', label: 'Instalei samba, configurei workgroup e testei com testparm sem erros' },
@@ -426,16 +428,7 @@ ls -la /srv/samba/privado
           )}
         </section>
 
-        {/* Nav */}
-        <div className="pt-8 border-t border-border flex items-center justify-between">
-          <Link href="/dhcp" className="text-sm text-text-3 hover:text-accent transition-colors">
-            ← Servidor DHCP
-          </Link>
-          <Link href="/evolucao" className="text-sm text-text-3 hover:text-accent transition-colors">
-            Roadmap de Evolução →
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/samba" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

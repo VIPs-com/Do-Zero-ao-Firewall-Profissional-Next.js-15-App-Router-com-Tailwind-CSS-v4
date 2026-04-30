@@ -12,6 +12,8 @@ import {
   AlertTriangle, Server, GitBranch,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const checklistItems = [
   {
@@ -756,23 +758,7 @@ interval:s:3 { print(@bytes); clear(@bytes); }
         </div>
       </section>
 
-      {/* ── Navegação ───────────────────────────────────────────────────────── */}
-      <nav className="flex items-center justify-between pt-8 border-t border-border">
-        <Link
-          href="/nextcloud"
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-bg-2 transition-colors text-text-2 hover:text-text"
-        >
-          <ChevronLeft size={16} />
-          <span className="text-sm">Anterior: Nextcloud</span>
-        </Link>
-        <Link
-          href="/certificado"
-          className="flex items-center gap-2 px-5 py-2 rounded-lg bg-[var(--mod)] text-white font-semibold hover:opacity-90 transition-opacity text-sm"
-        >
-          <span>🎓 Ver Certificado</span>
-          <ChevronRight size={16} />
-        </Link>
-      </nav>
+        <ModuleNav currentPath="/ebpf-avancado" order={ADVANCED_ORDER} />
     </div>
   );
 }

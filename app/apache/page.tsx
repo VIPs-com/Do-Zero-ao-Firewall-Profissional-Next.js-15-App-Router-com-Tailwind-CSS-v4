@@ -7,6 +7,8 @@ import { InfoBox, WarnBox } from '@/components/ui/Boxes';
 import { WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { Globe, Shield, Layers, Zap, AlertTriangle, CheckCircle } from 'lucide-react';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const CHECKLIST_ITEMS = [
   { id: 'apache-instalado', label: 'Instalei apache2, criei um VirtualHost e testei com apache2ctl configtest sem erros' },
@@ -466,16 +468,7 @@ sudo a2enmod proxy_wstunnel
           )}
         </section>
 
-        {/* Nav */}
-        <div className="pt-8 border-t border-border flex items-center justify-between">
-          <Link href="/samba" className="text-sm text-text-3 hover:text-accent transition-colors">
-            ← Samba
-          </Link>
-          <Link href="/nginx-ssl" className="text-sm text-text-3 hover:text-accent transition-colors">
-            Ver também: Nginx & SSL →
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/apache" order={ADVANCED_ORDER} />
       </div>
     </main>
   );

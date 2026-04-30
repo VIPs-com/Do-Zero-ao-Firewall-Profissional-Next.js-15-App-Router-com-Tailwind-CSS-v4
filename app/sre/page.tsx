@@ -12,6 +12,8 @@ import {
   ChevronLeft, Shield, Clock, TrendingUp, FileText,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 const checklistItems = [
   {
@@ -703,24 +705,7 @@ promtool query instant 'job:sli_http_availability:rate5m'
           </div>
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between items-center pt-8 border-t border-border">
-          <Link
-            href="/service-mesh"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <ChevronLeft size={16} />
-            <span>Anterior: Service Mesh (Istio)</span>
-          </Link>
-          <Link
-            href="/evolucao"
-            className="flex items-center gap-2 text-text-2 hover:text-text transition-colors text-sm"
-          >
-            <span>Ver Roadmap Completo</span>
-            <TrendingUp size={16} />
-          </Link>
-        </div>
-
+        <ModuleNav currentPath="/sre" order={ADVANCED_ORDER} />
       </div>
     </div>
   );

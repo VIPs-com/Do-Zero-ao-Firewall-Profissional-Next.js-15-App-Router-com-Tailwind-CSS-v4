@@ -7,6 +7,8 @@ import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
+import { ModuleNav } from '@/components/ui/ModuleNav';
+import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function OpenVPNPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
@@ -513,12 +515,7 @@ ip route | grep tun0`} />
           )}
         </section>
 
-        {/* Navegação */}
-        <div className="flex justify-between pt-8 border-t border-border">
-          <Link href="/apache"  className="btn-outline text-sm">← Apache</Link>
-          <Link href="/traefik" className="btn-primary text-sm">Traefik →</Link>
-        </div>
-
+        <ModuleNav currentPath="/openvpn" order={ADVANCED_ORDER} />
       </div>
     </main>
   );
