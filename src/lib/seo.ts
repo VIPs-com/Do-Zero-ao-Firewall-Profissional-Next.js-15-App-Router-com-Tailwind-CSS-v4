@@ -222,7 +222,7 @@ export const ROUTE_SEO = {
   '/fundamentos': {
     title: 'Fundamentos Linux — Trilha para Iniciantes',
     description:
-      'Comece do zero no Linux: 10 módulos que ensinam FHS, comandos, editores, processos, permissões, discos, logs, backup, shell script e cron.',
+      'Comece do zero no Linux: 15 módulos que ensinam FHS, comandos, editores, processos, permissões, discos, logs, backup, shell script, cron, pacotes, boot, comandos avançados, rsyslog e SSH proxy.',
     keywords: ['Linux iniciante', 'fundamentos Linux', 'aprender Linux', 'terminal Linux', 'Ubuntu básico'],
   },
   '/fhs': {

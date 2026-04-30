@@ -242,10 +242,10 @@ crontab -e  # apagar a linha e salvar`} lang="bash" />
             </div>
             {allDone && (
               <div className="mt-4 p-4 rounded-lg bg-[rgba(99,102,241,0.1)] border border-[rgba(99,102,241,0.3)] text-center">
-                <p className="text-lg font-bold mb-2">🐧 Trilha Fundamentos concluída!</p>
-                <p className="text-sm text-text-2 mb-4">Você completou os 10 módulos. Badge <strong>Fundamentos Master</strong> desbloqueado!</p>
-                <Link href="/instalacao" className="btn-primary px-6 py-2.5">
-                  🛡️ Próximo: Montar o Firewall Linux
+                <p className="text-lg font-bold mb-2">✅ Módulo 10/15 concluído!</p>
+                <p className="text-sm text-text-2 mb-4">Ótimo progresso! Continue a trilha — próximo módulo: <strong>Instalação de Programas</strong>.</p>
+                <Link href="/pacotes" className="btn-primary px-6 py-2.5">
+                  📦 Próximo: Instalação de Programas
                 </Link>
               </div>
             )}

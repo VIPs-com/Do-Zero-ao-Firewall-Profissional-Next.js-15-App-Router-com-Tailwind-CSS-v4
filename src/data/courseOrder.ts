@@ -2,7 +2,7 @@
 // Sequência linear dos 25 módulos do curso — usada pelo ModuleNav para navegação Anterior/Próximo.
 // Nota: /web-server NÃO entra aqui — é página de referência, não módulo do curso.
 //
-// TRILHA FUNDAMENTOS (v2.0): 10 módulos para iniciantes em Linux.
+// TRILHA FUNDAMENTOS (v2.0): 15 módulos para iniciantes em Linux.
 // Trilha separada — não integrada ao COURSE_ORDER principal.
 
 export interface CourseModule {

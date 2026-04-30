@@ -164,7 +164,7 @@ export default function Home() {
             <span className="text-2xl" aria-hidden="true">🐧</span>
             <div>
               <p className="font-bold text-sm text-[#6366f1]">Novo no Linux?</p>
-              <p className="text-xs text-text-2">Comece pela Trilha Fundamentos — 10 módulos do zero antes do firewall.</p>
+              <p className="text-xs text-text-2">Comece pela Trilha Fundamentos — 15 módulos do zero antes do firewall.</p>
             </div>
           </div>
           <Link
