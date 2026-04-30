@@ -55,7 +55,7 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 151 perguntas (firewall=49, fundamentos=45, avancados=57; SSH-PROXY trail fix)
+    quizQuestions.ts        # perguntas do quiz — 164 perguntas (firewall=62, fundamentos=45, avancados=57; Sprint QUIZ-COVER: +13 para módulos com <3 questões)
     searchItems.ts          # 148 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
@@ -394,6 +394,9 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint QUIZ-TRAIL: campo `trail: QuizTrail` adicionado a todas as 152 questões via script (firewall=50, fundamentos=45, avancados=57); seletor de trilha (4 opções: Todas/Firewall/Fundamentos/Avançados) na tela de início do quiz com radio semantico + contagem por trilha.
 - ✅ Sprint TOPICOS-TRAIL: filtro de trilha (🗂️ Todas / 🔥 Firewall / 🐧 Fundamentos / 🚀 Avançados) adicionado à página `/topicos` acima dos filtros de camada OSI existentes; mapeamento group→trail via `TRAIL_BY_GROUP` sem modificar os 85 objetos Topic; filtros de trilha e camada são independentes (AND); radio semantico (role=radiogroup/radio, aria-checked).
 - ✅ Sprint AVANCADOS-INDEX: página `/avancados` — índice da trilha avançada espelhando /fundamentos; 19 módulos em 3 seções (v3.0 Servidores/v4.0 Infraestrutura/v5.0 Cloud); progress bar com checkpoint do primeiro módulo de cada; hero com CTA inteligente (Começar/Continuar/Revisar); nav link 🚀 Avançados adicionado em ClientLayout.tsx; CONTENT_PAGES_COUNT 48→49; deep-diver desc "49+ páginas (61 disponíveis)"; SEO /avancados em seo.ts; +2 searchItems (145 total); layout.tsx com buildMetadata.
+- ✅ Sprint GLOSSARIO-ADVANCED: +12 termos ao glossário (mTLS, Sidecar Proxy, VirtualService, Circuit Breaker, CNI, NetworkPolicy, Pipeline CI/CD, GitOps, IDS/IPS, CARP, Burn Rate, Trace/Tracing); total 73→85 termos; trackPageVisit adicionado em /glossario, /certificado, /evolucao (3 páginas COURSE_ORDER que não contavam para deep-diver); deep-diver "(61 disponíveis)"→"(62 disponíveis)"; +4 searchItems glossário (148 total); /cheat-sheet +11 comandos (SSH Proxy, CI/CD, Monitoring, K8s rollout) e DEVOPS/SERVERS_CATEGORIES atualizadas.
+- ✅ Sprint QUIZ-FIX: SSH-PROXY 3 questões corrigidas trail 'avancados'→'fundamentos' (fundamentos 42→45, avancados 60→57; total 151).
+- ✅ Sprint QUIZ-COVER: +13 questões para módulos com <3 cobertura — DNAT(+2), Port Knocking(+2), Diagnóstico SSL(+2), Camada 3(+1), Análise de Pacotes(+1), systemd(+1), Hardening(+1), Docker(+1), Compose(+1), SSH 2FA(+1); total 151→164 (firewall=62, fundamentos=45, avancados=57).
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
