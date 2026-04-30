@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
-import { COURSE_ORDER } from '@/data/courseOrder';
+import { COURSE_ORDER, FUNDAMENTOS_ORDER } from '@/data/courseOrder';
 
 export default function DashboardPage() {
   const {
@@ -74,6 +74,12 @@ export default function DashboardPage() {
     return visitedPages.has(slug) || visitedPages.has(m.path);
   }).length;
 
+  // Conta módulos da trilha Fundamentos visitados
+  const visitedFundamentosCount = FUNDAMENTOS_ORDER.filter(m => {
+    const slug = m.path.replace('/', '');
+    return visitedPages.has(slug) || visitedPages.has(m.path);
+  }).length;
+
   // Primeiro módulo ainda não visitado (CTA para course-master)
   const firstUnvisitedModule = COURSE_ORDER.find(m => {
     const slug = m.path.replace('/', '');
@@ -96,9 +102,10 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 111) {
-    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (111/148 checkpoints)',
-      current: checklistCompleted, total: 111, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  // linux-ninja threshold = floor(154 * 0.75) = 115
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 115) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (115/154 checkpoints)',
+      current: checklistCompleted, total: 115, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
   } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 25) {
     nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 25 módulos do curso',
       current: visitedModulesCount, total: 25,
@@ -218,6 +225,55 @@ export default function DashboardPage() {
                       visited ? 'bg-ok/20 text-ok' : 'bg-bg-3 text-text-3'
                     )}>
                       {visited ? '✓' : idx + 1}
+                    </span>
+                    <span className="text-xs leading-tight font-medium">{mod.title}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Trilha Fundamentos Linux */}
+          <section>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold flex items-center gap-2">
+                <span aria-hidden="true" className="text-[#6366f1]">🐧</span>
+                Trilha Fundamentos Linux
+              </h2>
+              <Link href="/fundamentos" className="text-xs font-mono text-[#6366f1] hover:underline">
+                {visitedFundamentosCount} de {FUNDAMENTOS_ORDER.length}
+              </Link>
+            </div>
+            {/* Barra de progresso da trilha */}
+            <div className="h-1.5 bg-bg-3 rounded-full overflow-hidden mb-4">
+              <div
+                className="h-full rounded-full transition-[width] duration-700"
+                style={{
+                  width: `${Math.round((visitedFundamentosCount / FUNDAMENTOS_ORDER.length) * 100)}%`,
+                  background: 'linear-gradient(90deg, #6366f1, #818cf8)',
+                }}
+              />
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {FUNDAMENTOS_ORDER.map((mod, idx) => {
+                const slug = mod.path.replace('/', '');
+                const visited = visitedPages.has(slug) || visitedPages.has(mod.path);
+                return (
+                  <Link
+                    key={mod.path}
+                    href={mod.path}
+                    className={cn(
+                      'flex items-center gap-3 p-3 rounded-xl border text-sm transition-all',
+                      visited
+                        ? 'bg-bg-2 border-[#6366f1]/30 text-text'
+                        : 'bg-bg-2/40 border-border text-text-3 hover:border-border-2'
+                    )}
+                  >
+                    <span className={cn(
+                      'w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0',
+                      visited ? 'bg-[#6366f1]/20 text-[#6366f1]' : 'bg-bg-3 text-text-3'
+                    )}>
+                      {visited ? '✓' : `F${String(idx + 1).padStart(2, '0')}`}
                     </span>
                     <span className="text-xs leading-tight font-medium">{mod.title}</span>
                   </Link>
