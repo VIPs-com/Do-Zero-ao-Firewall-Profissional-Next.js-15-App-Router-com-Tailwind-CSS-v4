@@ -3,47 +3,61 @@
 /*
  * ProgressDropdown — dropdown "Seu Progresso" do header.
  *
- * Mostra X/21 módulos visitados e expande uma lista completa dos 21 módulos do
- * curso (COURSE_ORDER) com estados:
- *   ✅ visitado       🟡 atual (primeiro não-visitado)       ⬜ pendente
+ * Sprint PROGRESS-DROPDOWN: 3 abas — Firewall (25), Fundamentos (15), Avançados (19).
+ * Botão exibe total visitado / total (59 módulos somados das 3 trilhas).
+ * Cada aba tem barra de progresso individual + lista de módulos.
  *
  * A11y: role=dialog, aria-modal=false, focus trap quando aberto, ESC fecha,
  * clique fora fecha, hover/focus-visible respeitando tokens de tema.
- *
- * Sprint UI-H — parte 1/2 (par com ContinueFloatingButton).
  */
 
 import React, { useMemo, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ListChecks, Check } from 'lucide-react';
-import { COURSE_ORDER } from '@/data/courseOrder';
+import { COURSE_ORDER, FUNDAMENTOS_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
 import { useBadges } from '@/context/BadgeContext';
 import { useFocusTrap } from '@/lib/useFocusTrap';
 import { cn } from '@/lib/utils';
 
+type Tab = 'firewall' | 'fundamentos' | 'avancados';
+
+interface TrackItem {
+  path: string;
+  title: string;
+  visited: boolean;
+  idx: number;
+}
+
+function buildTrack(
+  order: Array<{ path: string; title: string }>,
+  visitedPages: Set<string>,
+): { items: TrackItem[]; completed: number } {
+  const items = order.map((m, idx) => {
+    const slug = m.path.slice(1);
+    const visited = visitedPages.has(m.path) || visitedPages.has(slug);
+    return { path: m.path, title: m.title, visited, idx };
+  });
+  return { items, completed: items.filter(m => m.visited).length };
+}
+
 export const ProgressDropdown: React.FC = () => {
   const { visitedPages } = useBadges();
   const [isOpen, setIsOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('firewall');
   const prefersReducedMotion = useReducedMotion();
 
   const panelRef = useFocusTrap<HTMLDivElement>(isOpen, () => setIsOpen(false));
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
-  /* Derivação memoizada dos 21 módulos com status. */
-  const { modules, completed, currentIdx } = useMemo(() => {
-    const list = COURSE_ORDER.map((m, idx) => {
-      const slug = m.path.slice(1);
-      const visited = visitedPages.has(m.path) || visitedPages.has(slug);
-      return { ...m, idx, visited };
-    });
-    const done = list.filter(m => m.visited).length;
-    const curr = list.findIndex(m => !m.visited);
-    return { modules: list, completed: done, currentIdx: curr };
+  const tracks = useMemo(() => {
+    const firewall     = buildTrack(COURSE_ORDER,      visitedPages);
+    const fundamentos  = buildTrack(FUNDAMENTOS_ORDER, visitedPages);
+    const avancados    = buildTrack(ADVANCED_ORDER,    visitedPages);
+    const totalAll     = firewall.items.length + fundamentos.items.length + avancados.items.length;
+    const completedAll = firewall.completed + fundamentos.completed + avancados.completed;
+    return { firewall, fundamentos, avancados, totalAll, completedAll };
   }, [visitedPages]);
-
-  const total = COURSE_ORDER.length;
-  const percent = Math.round((completed / total) * 100);
 
   /* Clique fora fecha. ESC é tratado pelo useFocusTrap. */
   useEffect(() => {
@@ -60,11 +74,28 @@ export const ProgressDropdown: React.FC = () => {
   const panelMotion = prefersReducedMotion
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: 0 } }
     : {
-        initial: { opacity: 0, y: -8, scale: 0.98 },
-        animate: { opacity: 1, y: 0, scale: 1 },
-        exit:    { opacity: 0, y: -8, scale: 0.98 },
+        initial:    { opacity: 0, y: -8, scale: 0.98 },
+        animate:    { opacity: 1, y: 0, scale: 1 },
+        exit:       { opacity: 0, y: -8, scale: 0.98 },
         transition: { duration: 0.16, ease: 'easeOut' as const },
       };
+
+  const activeTrack = tracks[activeTab];
+  const currentIdx  = activeTrack.items.findIndex(m => !m.visited);
+  const total       = activeTrack.items.length;
+  const percent     = Math.round((activeTrack.completed / total) * 100);
+
+  const TAB_LABELS: Record<Tab, string> = {
+    firewall:    `Firewall ${tracks.firewall.completed}/${COURSE_ORDER.length}`,
+    fundamentos: `Fundamentos ${tracks.fundamentos.completed}/${FUNDAMENTOS_ORDER.length}`,
+    avancados:   `Avançados ${tracks.avancados.completed}/${ADVANCED_ORDER.length}`,
+  };
+
+  const TAB_COLORS: Record<Tab, string> = {
+    firewall:    'bg-accent',
+    fundamentos: 'bg-[#6366f1]',
+    avancados:   'bg-info',
+  };
 
   return (
     <div ref={wrapperRef} className="relative">
@@ -74,13 +105,13 @@ export const ProgressDropdown: React.FC = () => {
         aria-expanded={isOpen}
         aria-controls="progress-panel"
         aria-haspopup="menu"
-        aria-label={`Seu progresso: ${completed} de ${total} módulos concluídos`}
+        aria-label={`Seu progresso: ${tracks.completedAll} de ${tracks.totalAll} módulos visitados`}
         className="p-2 rounded-md bg-bg-3 border border-border text-text-2 hover:border-accent hover:text-text transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent flex items-center gap-2"
-        title="Seu progresso no curso"
+        title="Seu progresso no workshop"
       >
         <ListChecks size={18} aria-hidden="true" />
         <span className="hidden sm:inline text-xs font-mono tabular-nums">
-          {completed}/{total}
+          {tracks.completedAll}/{tracks.totalAll}
         </span>
       </button>
 
@@ -98,33 +129,64 @@ export const ProgressDropdown: React.FC = () => {
             )}
             {...panelMotion}
           >
-            {/* Header com barra de progresso */}
-            <div className="p-4 border-b border-border">
-              <div className="flex items-center justify-between mb-2">
-                <h2 id="progress-title" className="text-sm font-bold text-text">
-                  Seu Progresso
-                </h2>
-                <span className="text-xs font-mono text-text-2 tabular-nums">
-                  {completed}/{total} · {percent}%
-                </span>
+            {/* Header */}
+            <div className="p-4 pb-3 border-b border-border">
+              <h2 id="progress-title" className="text-sm font-bold text-text mb-3">
+                Seu Progresso
+              </h2>
+
+              {/* Tabs */}
+              <div className="flex gap-1 text-[11px] font-medium flex-wrap" role="tablist">
+                {(Object.keys(TAB_LABELS) as Tab[]).map(tab => (
+                  <button
+                    key={tab}
+                    role="tab"
+                    aria-selected={activeTab === tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={cn(
+                      'px-2.5 py-1 rounded-md transition-colors whitespace-nowrap',
+                      activeTab === tab
+                        ? 'bg-bg-3 text-text font-bold border border-border'
+                        : 'text-text-3 hover:text-text-2',
+                    )}
+                  >
+                    {TAB_LABELS[tab]}
+                  </button>
+                ))}
               </div>
-              <div className="h-2 bg-bg-3 rounded-full overflow-hidden" role="progressbar" aria-valuenow={completed} aria-valuemin={0} aria-valuemax={total}>
+            </div>
+
+            {/* Barra de progresso da aba ativa */}
+            <div className="px-4 py-3 border-b border-border">
+              <div className="flex items-center justify-between mb-1.5 text-xs text-text-2">
+                <span>
+                  {activeTab === 'firewall'    && 'Trilha Firewall'}
+                  {activeTab === 'fundamentos' && 'Trilha Fundamentos'}
+                  {activeTab === 'avancados'   && 'Módulos Avançados'}
+                </span>
+                <span className="font-mono tabular-nums">{activeTrack.completed}/{total} · {percent}%</span>
+              </div>
+              <div
+                className="h-2 bg-bg-3 rounded-full overflow-hidden"
+                role="progressbar"
+                aria-valuenow={activeTrack.completed}
+                aria-valuemin={0}
+                aria-valuemax={total}
+              >
                 <div
-                  className="h-full bg-accent transition-all duration-300"
+                  className={cn('h-full transition-all duration-300', TAB_COLORS[activeTab])}
                   style={{ width: `${percent}%` }}
                 />
               </div>
             </div>
 
-            {/* Lista de módulos */}
-            <ul className="max-h-[60vh] overflow-y-auto p-2">
-              {modules.map(m => {
+            {/* Lista de módulos da aba ativa */}
+            <ul className="max-h-[52vh] overflow-y-auto p-2" role="tabpanel">
+              {activeTrack.items.map(m => {
                 const isCurrent = m.idx === currentIdx;
                 const stateLabel = m.visited
                   ? 'Concluído'
-                  : isCurrent
-                    ? 'Módulo atual'
-                    : 'Pendente';
+                  : isCurrent ? 'Módulo atual' : 'Pendente';
                 return (
                   <li key={m.path}>
                     <Link
