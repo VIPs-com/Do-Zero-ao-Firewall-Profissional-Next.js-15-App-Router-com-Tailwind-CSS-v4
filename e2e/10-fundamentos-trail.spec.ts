@@ -11,13 +11,13 @@ import { test, expect } from './fixtures';
  *   5. ModuleNav em /fhs: sem Anterior, Próximo aponta para /comandos
  *   6. ModuleNav em /comandos: Anterior (FHS) + Próximo (Editores)
  *   7. ModuleNav em /ssh-proxy: tem Anterior (Rsyslog), sem Próximo (F15 = último)
- *   8. Badge fundamentos-master desbloqueado ao completar os 14 checkpoints exigidos
+ *   8. Badge fundamentos-master desbloqueado ao completar os 15 checkpoints exigidos
  *
- * Os checkpoints exigidos para o badge fundamentos-master (14 IDs — 1 por módulo):
+ * Os checkpoints exigidos para o badge fundamentos-master (15 IDs — 1 por módulo):
  *   fhs-explorado | comandos-praticados | editores-usados | processos-controlados |
  *   permissoes-configuradas | discos-mapeados | logs-lidos | backup-criado |
  *   script-escrito | tarefa-agendada | apt-atualizado | bios-uefi-entendido |
- *   sed-dominado | rsyslog-configurado
+ *   sed-dominado | rsyslog-configurado | ssh-dinamico
  */
 
 const ALL_FUNDAMENTOS_CHECKPOINTS: Record<string, boolean> = {
@@ -37,6 +37,8 @@ const ALL_FUNDAMENTOS_CHECKPOINTS: Record<string, boolean> = {
   'bios-uefi-entendido': true,
   'sed-dominado': true,
   'rsyslog-configurado': true,
+  // F15 — SSH como Proxy SOCKS (Sprint SSH-PROXY + Fundamentos-Index fix)
+  'ssh-dinamico': true,
 };
 
 // ── 1. Índice /fundamentos ─────────────────────────────────────────────────
@@ -104,7 +106,7 @@ test('badge fundamentos-master seeded aparece no dashboard', async ({ page }) =>
         'processos-controlados': true, 'permissoes-configuradas': true, 'discos-mapeados': true,
         'logs-lidos': true, 'backup-criado': true, 'script-escrito': true, 'tarefa-agendada': true,
         'apt-atualizado': true, 'bios-uefi-entendido': true,
-        'sed-dominado': true, 'rsyslog-configurado': true,
+        'sed-dominado': true, 'rsyslog-configurado': true, 'ssh-dinamico': true,
       })
     );
   });
@@ -161,7 +163,7 @@ test('ModuleNav em /ssh-proxy: tem Anterior (Rsyslog), sem Próximo (F15 = últi
 
 // ── 8. Desbloqueio real do badge via checkpoints ───────────────────────────
 
-test('fundamentos-master é desbloqueado ao completar os 14 checkpoints exigidos', async ({ page }) => {
+test('fundamentos-master é desbloqueado ao completar os 15 checkpoints exigidos', async ({ page }) => {
   // Seed checklist completo SEM pré-seedar o badge
   await page.evaluate(
     (checkpoints) => {
