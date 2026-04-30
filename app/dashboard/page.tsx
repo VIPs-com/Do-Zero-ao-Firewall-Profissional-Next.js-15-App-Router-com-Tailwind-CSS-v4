@@ -56,8 +56,8 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  // Audit fix: TOPICS.length=84 (27b=OpenSSL sub-entry + 47b=Docker port-mapping sub-entry contam como entradas reais)
-  const totalTopics = 84;
+  // Counter-Sync: TOPICS.length=85 (27b, 47b = sub-entries; s08=SSH Proxy adicionado após Sprint SSH-PROXY)
+  const totalTopics = 85;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.

@@ -105,9 +105,9 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 48 (Sprint SSH-PROXY: +ssh-proxy) |
-| `totalTopics` | `app/dashboard/page.tsx` | 84 (Audit fix: TOPICS.length=84 — sub-entries 27b/47b contam) |
+| `totalTopics` | `app/dashboard/page.tsx` | 85 (Counter-Sync: 27b+47b sub-entries + s08 SSH Proxy = 85) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
-| Texto na Home | `app/page.tsx` | "84 tópicos práticos" + stats: 84/48/55/7 |
+| Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/48/55/7 |
 | Badges | `src/context/BadgeContext.tsx` | 55 (Sprint SSH-PROXY: +ssh-proxy-master) |
 | searchItems | `src/data/searchItems.ts` | 143 (Sprint Search-Audit: +5 novos — WireGuard×2, Fail2ban×2, DevOps cheat; +2 descrições corrigidas) |
 
@@ -385,6 +385,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint SSH-PROXY (SSH como Proxy SOCKS): `/ssh-proxy` — SOCKS5 dinâmico (-D), port forwarding local (-L) e remoto (-R), Jump Host (-J/ProxyJump), autossh com systemd para túneis persistentes, ~/.ssh/config completo com ControlMaster, WindowsComparisonBox PuTTY/plink ↔ OpenSSH, 4 erros comuns; badge 🚇 ssh-proxy-master (55º badge); 3 checkpoints (ssh-dinamico, ssh-local, ssh-jump); module-accent-ssh-proxy #0ea5e9; CONTENT_PAGES_COUNT 47→48, checklistItemsCount 151→154, totalTopics 82→83, linux-ninja threshold 113→115; tópico S08 em /topicos; /evolucao v3.0 10 disponíveis ✅; +2 searchItems (139 total); E2E 3/154 + 0/55; +3 quiz questions (total 111).
 - ✅ Sprint Quiz Completo: +17 perguntas em `src/data/quizQuestions.ts` — 1 pergunta adicional por módulo que só tinha 2 (F5, F7, I.7-I.13, I.15, I.17-I.24); todos os módulos agora têm ≥3 questões; total 105→122 perguntas.
 - ✅ Sprint Quiz Fundamentos F1-F10: +30 perguntas em `src/data/quizQuestions.ts` cobrindo os 10 módulos originais da trilha Fundamentos que tinham zero cobertura (FHS, Comandos Essenciais, Editores de Texto, Gerenciamento de Processos, Permissões e Usuários, Discos e Partições, Logs Básicos, Backup, Shell Script, Cron); 3 perguntas por módulo; total 122→152 perguntas.
+- ✅ Sprint Polish-Stale: corrige todas as referências "10 módulos" → "15 módulos" da trilha Fundamentos (app/page.tsx hero, app/cron/page.tsx checkpoint, src/data/courseOrder.ts comment, src/lib/seo.ts description).
+- ✅ Sprint Counter-Sync + Evolucao Fix: totalTopics 84→85 (TOPICS.length confirmado = 85 via node: s08 SSH Proxy + sub-entries 27b/47b); home stats '84'→'85' e "84 tópicos" → "85 tópicos"; /evolucao "Roadmap em 3 fases" → "4 fases (v2.0→v5.0)"; botão "Me avise sobre v3.0" → "Me avise sobre novos módulos" (v3.0 COMPLETO).
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

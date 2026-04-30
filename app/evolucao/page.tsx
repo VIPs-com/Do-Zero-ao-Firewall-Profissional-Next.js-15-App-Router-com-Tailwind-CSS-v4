@@ -162,7 +162,7 @@ export default function EvolutionPage() {
           <div>
             <h2 className="text-3xl font-bold">🗺️ O Futuro do Workshop</h2>
             <p className="text-text-2 mt-2">
-              Roadmap oficial em 3 fases — do hardening até infraestrutura cloud-native.
+              Roadmap em 4 fases (v2.0 → v5.0) — tudo disponível agora. Do Linux básico até Cloud Native.
             </p>
           </div>
           <div className="sm:ml-auto shrink-0">
@@ -184,7 +184,7 @@ export default function EvolutionPage() {
               ) : (
                 <>
                   <Bell size={16} />
-                  Me avise sobre v3.0
+                  Me avise sobre novos módulos
                 </>
               )}
             </button>
