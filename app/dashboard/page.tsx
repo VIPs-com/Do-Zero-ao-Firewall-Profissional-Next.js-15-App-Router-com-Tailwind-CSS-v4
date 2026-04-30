@@ -295,7 +295,7 @@ export default function DashboardPage() {
                 <span aria-hidden="true" className="text-info">🌐</span>
                 Módulos Avançados
               </h2>
-              <Link href="/evolucao" className="text-xs font-mono text-info hover:underline">
+              <Link href="/avancados" className="text-xs font-mono text-info hover:underline">
                 {visitedAdvancedCount} de {ADVANCED_ORDER.length}
               </Link>
             </div>
