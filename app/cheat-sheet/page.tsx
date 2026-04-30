@@ -115,6 +115,24 @@ const COMMANDS: Command[] = [
   // — Pi-hole
   { id: 'pihole-status', cmd: 'pihole status', desc: 'Mostra se o DNS sinkhole está ativo e quantas queries foram bloqueadas.', layer: 'Camada 3', layerClass: 'l3', category: 'Pi-hole' },
   { id: 'pihole-update', cmd: 'pihole -g', desc: 'Atualiza as blocklists (gravity update) — baixa e compila as listas de domínios bloqueados.', layer: 'Camada 3', layerClass: 'l3', category: 'Pi-hole' },
+
+  // SSH Proxy & Tunnels (Sprint SSH-PROXY)
+  { id: 'ssh-socks', cmd: 'ssh -D 1080 -N usuario@servidor', desc: 'Cria proxy SOCKS5 dinâmico na porta 1080. Configure o browser para usar localhost:1080.', layer: 'Camada 7', layerClass: 'l7', category: 'SSH' },
+  { id: 'ssh-local-fwd', cmd: 'ssh -L 8080:localhost:80 usuario@servidor', desc: 'Redireciona porta local 8080 para porta 80 do servidor remoto (port forward local).', layer: 'Camada 7', layerClass: 'l7', category: 'SSH' },
+  { id: 'ssh-jump', cmd: 'ssh -J bastion usuario@servidor-interno', desc: 'Conecta ao servidor interno via bastião/jump host. Equivale a duas sessões SSH encadeadas.', layer: 'Camada 7', layerClass: 'l7', category: 'SSH' },
+
+  // CI/CD — GitHub Actions (Sprint I.22)
+  { id: 'gh-workflow-run', cmd: 'gh workflow run "CI Pipeline" --ref main', desc: 'Dispara um workflow do GitHub Actions manualmente via CLI.', layer: 'Camada 7', layerClass: 'l7', category: 'CI/CD' },
+  { id: 'gh-run-list', cmd: 'gh run list --workflow=ci.yml --limit 10', desc: 'Lista as últimas 10 execuções de um workflow com status (success/failure/in_progress).', layer: 'Camada 7', layerClass: 'l7', category: 'CI/CD' },
+  { id: 'gh-run-watch', cmd: 'gh run watch', desc: 'Monitora em tempo real uma execução de workflow em andamento. Mostra logs de cada step.', layer: 'Camada 7', layerClass: 'l7', category: 'CI/CD' },
+
+  // Monitoring — Prometheus + Grafana (Sprint I.15)
+  { id: 'promtool-check', cmd: 'promtool check config /etc/prometheus/prometheus.yml', desc: 'Valida o arquivo de configuração do Prometheus e verifica sintaxe das alert rules.', layer: 'Camada 7', layerClass: 'l7', category: 'Monitoring' },
+  { id: 'prom-query', cmd: "curl -sG 'http://localhost:9090/api/v1/query' --data-urlencode 'query=up' | jq .data.result", desc: 'Consulta instantânea via API do Prometheus — verifica se todos os targets estão UP.', layer: 'Camada 7', layerClass: 'l7', category: 'Monitoring' },
+
+  // Kubernetes avançado
+  { id: 'kubectl-rollout', cmd: 'kubectl rollout status deployment/nome -n namespace', desc: 'Aguarda e exibe o progresso de um rolling update até conclusão ou timeout.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
+  { id: 'kubectl-undo', cmd: 'kubectl rollout undo deployment/nome -n namespace', desc: 'Reverte o deployment para a revisão anterior. Usar após falha em rolling update.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
 ];
 
 const SOS_STEPS: TroubleshootingStep[] = [
@@ -178,8 +196,8 @@ export default function CheatSheetPage() {
     trackPageVisit('cheat-sheet');
   }, [trackPageVisit]);
 
-  const DEVOPS_CATEGORIES   = ['Docker', 'Ansible', 'Kubernetes', 'Terraform'];
-  const SERVERS_CATEGORIES  = ['DHCP', 'Samba', 'Apache', 'LDAP', 'Suricata', 'Pi-hole'];
+  const DEVOPS_CATEGORIES   = ['Docker', 'Ansible', 'Kubernetes', 'Terraform', 'CI/CD', 'Monitoring'];
+  const SERVERS_CATEGORIES  = ['DHCP', 'Samba', 'Apache', 'LDAP', 'Suricata', 'Pi-hole', 'SSH'];
 
   const filteredCommands = COMMANDS.filter(cmd => {
     const matchesSearch = cmd.cmd.toLowerCase().includes(searchQuery.toLowerCase()) ||
