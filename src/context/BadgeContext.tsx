@@ -209,7 +209,9 @@ export const ALL_CHECKLIST_IDS = [
   'ssh-dinamico', 'ssh-local', 'ssh-jump',
   // Sprint CONTENT-ATAQUES — Ataques Avançados (/ataques-avancados)
   'ataques-recon', 'ataques-syn', 'ataques-arp',
-]; // 157 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint CONTENT-PIVOTING — Pivoteamento DMZ→LAN (/pivoteamento)
+  'pivote-forward-drop', 'pivote-egress', 'pivote-honeypot',
+]; // 160 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (49 rotas técnicas — threshold). Base do badge 'deep-diver'.
@@ -452,8 +454,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['sed-dominado'] && checklist['rsyslog-configurado'] && checklist['ssh-dinamico']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (117 de 157 → floor(157*0.75) = 117).
-    if (Object.values(checklist).filter(v => v).length >= 117) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (120 de 160 → floor(160*0.75) = 120).
+    if (Object.values(checklist).filter(v => v).length >= 120) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {
