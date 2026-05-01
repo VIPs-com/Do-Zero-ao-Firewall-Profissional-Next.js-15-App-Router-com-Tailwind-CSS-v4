@@ -56,7 +56,7 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz — 173 perguntas (firewall=71, fundamentos=45, avancados=57; Sprint QUIZ-LATE: +9 para Pivoteamento/Laboratorio/Proxmox)
-    searchItems.ts          # 148 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 163 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -109,7 +109,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
 | Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/59/56/7 |
 | Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
-| searchItems | `src/data/searchItems.ts` | 148 (Sprint SEARCH-GLOSSARY: +4 glossário avançado) |
+| searchItems | `src/data/searchItems.ts` | 163 (Sprint SEARCH-EXPAND: +15 para módulos com cobertura única) |
 
 ---
 
@@ -399,6 +399,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint QUIZ-COVER: +13 questões para módulos com <3 cobertura — DNAT(+2), Port Knocking(+2), Diagnóstico SSL(+2), Camada 3(+1), Análise de Pacotes(+1), systemd(+1), Hardening(+1), Docker(+1), Compose(+1), SSH 2FA(+1); total 151→164 (firewall=62, fundamentos=45, avancados=57).
 - ✅ Sprint QUIZ-LATE-MODULES: +9 questões para módulos sem cobertura — Pivoteamento (🎭 +3: FORWARD DROP, reverse shell, egress filtering), Laboratório (🧪 +3: vmx/svm check, KVM tipo 1 vs VirtualBox tipo 2, virsh/libvirt), Proxmox (🖥️ +3: porta 8006, bridges vmbr, pveversion); total 164→173 (firewall=71, fundamentos=45, avancados=57).
 - ✅ Sprint QUIZ-UX: Fisher-Yates shuffle em cada sessão (questões embaralhadas aleatoriamente); seletor de tamanho de sessão — Rápido (20 questões ~5min) / Normal (40) / Completo (todas); aria-label="Começar Quiz" estabiliza E2E; E2E test atualizado para novo aria-label.
+- ✅ Sprint SEARCH-EXPAND: +15 itens de busca para 15 módulos com cobertura única — ataques-avancados, pivoteamento, hardening, docker, fundamentos, fhs, comandos, editores, processos, permissoes, discos, logs-basicos, backup, shell-script, cron; searchItems 148→163.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
