@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { Smartphone, Key, Lock, ShieldCheck, Terminal, AlertTriangle, CheckCircle2, Circle, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -499,6 +499,64 @@ sudo fail2ban-client status sshd-2fa`}
             Você terá protegido seu servidor com autenticação de dois fatores — uma das práticas mais eficazes contra acesso não autorizado.
           </p>
         </HighlightBox>
+
+        <WindowsComparisonBox
+          windowsLabel="Windows — Windows Hello / Microsoft Authenticator"
+          linuxLabel="Linux — PAM + Google Authenticator (TOTP)"
+          windowsCode={`# Windows — MFA para login e RDP
+
+# 1. Windows Hello for Business (biometria + PIN)
+#    Configurar via Intune ou GPO:
+#    Computer Config → Admin Templates →
+#      Windows Components → Windows Hello for Business →
+#      "Use Windows Hello for Business" → Enabled
+
+# 2. Microsoft Authenticator para Azure AD / RDP:
+#    Azure AD → Security → MFA → Conditional Access →
+#    Exigir MFA para: RDP / VPN / SSH via Azure Bastion
+
+# 3. Duo Security — MFA para RDP (on-premise):
+#    Instalar Duo Authentication for Windows Logon
+#    Configurar: duo.com → Applications → Microsoft RDP
+#    O usuário recebe push no app após inserir a senha
+
+# 4. Windows SSH com MFA via OpenSSH + TOTP:
+#    (OpenSSH nativo no Windows 10+)
+Add-WindowsCapability -Online -Name OpenSSH.Server
+Set-Service -Name sshd -StartupType Automatic
+Start-Service sshd
+
+# Configurar MFA: instalar win-totp e editar sshd_config
+# Localização: C:\\ProgramData\\ssh\\sshd_config
+# KbdInteractiveAuthentication yes`}
+          linuxCode={`# Linux — SSH com 2FA via PAM + Google Authenticator
+
+# 1. Instalar a biblioteca PAM do Google Authenticator:
+apt install libpam-google-authenticator -y
+
+# 2. Configurar para cada usuário:
+google-authenticator
+# Escolhas recomendadas:
+# - Time-based tokens: y (TOTP — RFC 6238)
+# - Atualizar .google_authenticator: y
+# - Limitar a 3 códigos simultâneos: y
+# - Rate limiting (3 tentativas a cada 30s): y
+# Escanear QR code com o Microsoft/Google Authenticator
+
+# 3. Configurar PAM para SSH usar o autenticador:
+# Adicionar em /etc/pam.d/sshd (no INÍCIO):
+# auth required pam_google_authenticator.so
+
+# 4. Configurar sshd para pedir o código TOTP:
+# /etc/ssh/sshd_config:
+# KbdInteractiveAuthentication yes
+# AuthenticationMethods publickey,keyboard-interactive
+systemctl restart sshd
+
+# 5. Testar login (pede senha + código TOTP):
+# ssh usuario@servidor
+# Verification code: [6 dígitos do app]`}
+        />
 
         <ModuleNav currentPath="/ssh-2fa" />
       </div>

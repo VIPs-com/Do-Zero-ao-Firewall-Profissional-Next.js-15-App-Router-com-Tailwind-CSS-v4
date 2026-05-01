@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -413,6 +413,70 @@ grep "Failed password" /var/log/auth.log | wc -l
         dive={activeDeepDive}
         onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — Firewall com regras dinâmicas"
+          linuxLabel="Linux — knockd + iptables recente"
+          windowsCode={`# Windows não tem Port Knocking nativo.
+# Alternativas para o mesmo objetivo (ocultar SSH/RDP):
+
+# 1. Azure Just-in-Time VM Access (equivalente cloud):
+#    Azure Portal → VM → Configuration → Just-in-time access
+#    Solicita acesso temporário por N horas → libera IP específico
+#    É o "Port Knocking na nuvem" — IP temporário + aprovação
+
+# 2. Windows Firewall com regras por endereço IP:
+#    Criar regra que só permite sua origem específica:
+New-NetFirewallRule -DisplayName "SSH Lab" \\
+  -Direction Inbound -Action Allow \\
+  -Protocol TCP -LocalPort 22 \\
+  -RemoteAddress "200.100.50.25"  # Seu IP apenas
+
+# 3. VPN antes de RDP (abordagem corporativa):
+#    Abrir RDP 3389 APENAS de dentro da VPN
+#    (combina com módulo /wireguard ou /vpn-ipsec)
+
+# 4. SSH Key + Firewall com IP fixo:
+#    Desabilitar autenticação por senha +
+#    Restringir por IP de origem no Windows Firewall
+#    PowerShell para bloquear tudo exceto IP específico:
+Set-NetFirewallRule -DisplayName "Block All RDP" \\
+  -RemoteAddress "Any" -Action Block`}
+          linuxCode={`# Linux Port Knocking com knockd + iptables
+
+# 1. Instalar knockd:
+apt install knockd -y
+
+# 2. /etc/knockd.conf — sequência secreta:
+# [openSSH]
+# sequence    = 7000,8000,9000
+# seq_timeout = 10
+# command     = /sbin/iptables -A INPUT -s %IP%
+#               -p tcp --dport 22 -j ACCEPT
+# tcpflags    = syn
+# [closeSSH]
+# sequence    = 9000,8000,7000
+# command     = /sbin/iptables -D INPUT -s %IP%
+#               -p tcp --dport 22 -j ACCEPT
+
+# 3. Habilitar e iniciar:
+sed -i 's/START_KNOCKD=0/START_KNOCKD=1/' /etc/default/knockd
+systemctl enable --now knockd
+
+# 4. Manter SSH fechado por padrão:
+iptables -A INPUT -p tcp --dport 22 -j DROP
+
+# 5. Cliente: sequência de knock para abrir:
+knock -v servidor 7000 8000 9000  # abre SSH
+ssh usuario@servidor              # conectar
+knock -v servidor 9000 8000 7000  # fecha SSH
+
+# Ver logs:
+tail -f /var/log/syslog | grep knockd`}
+        />
+      </div>
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/port-knocking" />
