@@ -6,7 +6,8 @@ import { Server, Cpu, Layers, CheckCircle, ArrowRight, Terminal, Package, Zap } 
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { StepItem } from '@/components/ui/Steps';
-import { InfoBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function LaboratorioPage() {
@@ -29,6 +30,23 @@ export default function LaboratorioPage() {
       <p className="section-sub">
         Três plataformas de virtualização para cada estágio da sua carreira — do aprendizado inicial ao ambiente de produção profissional.
       </p>
+
+      <FluxoCard
+        title="Evolução do Laboratório — Da Bancada ao Data Center"
+        steps={[
+          { label: 'VirtualBox',  sub: 'Windows/macOS host, GUI', icon: <Layers size={14} />, color: 'border-blue-500/40' },
+          { label: 'KVM / libvirt', sub: 'Linux host, virsh CLI', icon: <Cpu size={14} />, color: 'border-purple-500/40' },
+          { label: 'Proxmox VE', sub: 'bare-metal, Web UI 8006', icon: <Server size={14} />, color: 'border-accent/40' },
+          { label: 'Cluster HA', sub: 'corosync + pacemaker', icon: <Zap size={14} />, color: 'border-ok/40' },
+        ]}
+      />
+
+      <WarnBox title="Requisitos mínimos de hardware para o laboratório completo">
+        Para rodar as 4 VMs do workshop (Firewall + DNS + Web Server + Cliente) ao mesmo tempo:
+        CPU com <strong>VT-x / AMD-V</strong> habilitado na BIOS (verificar com <code>egrep -c &#39;(vmx|svm)&#39; /proc/cpuinfo</code>),
+        mínimo <strong>8 GB RAM</strong> (4 GB para as VMs + 4 GB para o host) e
+        <strong>80 GB de disco</strong> livre. KVM e Proxmox exigem host Linux; VirtualBox roda em qualquer OS.
+      </WarnBox>
 
       {/* ── Tabela Comparativa ────────────────────────────────────────────────── */}
       <section className="mb-16">
@@ -248,6 +266,52 @@ virsh net-list --all`}
         <InfoBox title="virt-manager como alternativa gráfica">
           Se preferir interface gráfica, <code>virt-manager</code> oferece uma GUI completa para gerenciar VMs KVM — similar ao VirtualBox, mas integrado ao libvirt. Instale com <code>apt install virt-manager -y</code>.
         </InfoBox>
+
+        <WindowsComparisonBox
+          windowsLabel="Windows — Hyper-V"
+          linuxLabel="Linux — KVM / libvirt"
+          windowsCode={`# Hyper-V — requer Windows Pro/Enterprise
+# Habilitar via PowerShell (requer reboot):
+Enable-WindowsOptionalFeature -Online \\
+  -FeatureName Microsoft-Hyper-V -All
+
+# Criar VM via PowerShell:
+New-VM -Name "Firewall" -MemoryStartupBytes 2GB \\
+  -Generation 2 -Switch "Default Switch"
+
+# Listar VMs:
+Get-VM
+
+# Iniciar / parar:
+Start-VM -Name "Firewall"
+Stop-VM  -Name "Firewall" -Force
+
+# Snapshot (Checkpoint no Hyper-V):
+Checkpoint-VM -Name "Firewall" -SnapshotName "Base"
+Restore-VMCheckpoint -Name "Firewall" -SnapshotName "Base"`}
+          linuxCode={`# KVM / libvirt — nativo no Linux (qualquer distro)
+# Instalar:
+apt install qemu-kvm libvirt-daemon-system \\
+  virtinst virt-manager -y
+systemctl enable --now libvirtd
+usermod -aG libvirt $USER
+
+# Criar VM via CLI:
+virt-install --name Firewall --ram 2048 \\
+  --vcpus 2 --disk size=20 \\
+  --cdrom ubuntu.iso --os-variant ubuntu22.04
+
+# Listar VMs:
+virsh list --all
+
+# Iniciar / parar:
+virsh start Firewall
+virsh shutdown Firewall
+
+# Snapshot — equivalente ao Checkpoint:
+virsh snapshot-create-as Firewall snap-base "Base"
+virsh snapshot-revert Firewall snap-base`}
+        />
 
         <div className="flex flex-wrap gap-3 mt-6">
           <button
