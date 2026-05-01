@@ -5,7 +5,7 @@ import { test, expect } from './fixtures';
  *
  * Constantes em app/dashboard/page.tsx:
  *   totalTopics = 85          (Counter-Sync: TOPICS.length=85, s08 incluído)
- *   checklistItemsCount = 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy)
+ *   checklistItemsCount = 157 (Sprint CONTENT-ATAQUES: +3 checkpoints ataques)
  *   BADGE_DEFS tem 56 chaves  (Sprint Advanced-Trail: +advanced-master)
  *
  * ATENÇÃO — visitedPages tracking é inconsistente no código:
@@ -35,8 +35,8 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos: 3/154 (seed exato — não muda com o load)
-  await expect(page.getByText('3/154')).toBeVisible();
+  // Labs Concluídos: 3/157 (seed exato — não muda com o load)
+  await expect(page.getByText('3/157')).toBeVisible();
 
   // Melhor Quiz: 75%
   await expect(page.getByText('75%')).toBeVisible();
