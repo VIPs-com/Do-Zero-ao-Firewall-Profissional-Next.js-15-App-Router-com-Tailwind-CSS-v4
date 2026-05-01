@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CheckCircle2, Circle, FolderOpen, HardDrive } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -228,6 +228,44 @@ export default function FHSPage() {
         </section>
 
       </div>
+
+      <WindowsComparisonBox
+        windowsLabel="Windows — Estrutura de Diretórios"
+        linuxLabel="Linux — FHS (Filesystem Hierarchy Standard)"
+        windowsCode={`# Windows — estrutura de pastas típica
+C:\\Windows\\          → Sistema operacional (kernel, DLLs)
+C:\\Windows\\System32\\ → Binários e DLLs do SO
+C:\\Program Files\\    → Programas instalados (64-bit)
+C:\\Program Files (x86)\\ → Programas 32-bit
+C:\\Users\\            → Perfis de usuários (equiv. /home)
+C:\\Users\\joao\\AppData\\ → Dados de aplicativos (equiv. ~/.config)
+C:\\ProgramData\\      → Dados compartilhados de apps
+C:\\Windows\\Temp\\    → Arquivos temporários (equiv. /tmp)
+# Sem conceito de "devices como arquivos"
+# Discos são C:\\, D:\\ (letras de unidade)
+# Configurações ficam no Registro (regedit)
+# não em arquivos texto em /etc
+
+# Registro do Windows:
+# HKLM\\SOFTWARE\\ → configurações globais (equiv. /etc)
+# HKCU\\           → configurações do usuário (equiv. ~)`}
+        linuxCode={`# Linux FHS — tudo em um único árore
+/                 → raiz do sistema (único ponto de montagem)
+/bin, /usr/bin    → binários essenciais (ls, cp, bash)
+/sbin, /usr/sbin  → binários administrativos (fdisk, iptables)
+/etc/             → configurações em texto puro (editáveis!)
+/home/joao/       → arquivos do usuário (equiv. C:\\Users\\joao)
+/root/            → home do superusuário (equiv. C:\\Users\\Admin)
+/var/log/         → logs do sistema e aplicações
+/var/www/         → arquivos de sites web
+/tmp/             → temporários (apagados no boot)
+/proc/            → sistema de arquivos virtual (info do kernel)
+/dev/             → dispositivos como arquivos (disco = /dev/sda)
+/mnt/, /media/    → pontos de montagem de discos externos
+# Discos não têm letras — são montados em /mnt/disco
+# Configurações são arquivos texto em /etc (editáveis com vim)
+# Sem registro binário — tudo é transparente`}
+      />
 
       <ModuleNav currentPath="/fhs" order={FUNDAMENTOS_ORDER} />
     </div>

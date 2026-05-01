@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CheckCircle2, Circle, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -283,6 +283,64 @@ export default function EditoresPage() {
         </section>
 
       </div>
+
+      <WindowsComparisonBox
+        windowsLabel="Windows — Notepad / VSCode"
+        linuxLabel="Linux — nano / vim / micro"
+        windowsCode={`# Windows — editar arquivos no terminal
+
+# Notepad via cmd (abre janela gráfica):
+notepad C:\\Windows\\System32\\drivers\\etc\\hosts
+
+# PowerShell — editar texto inline (sem GUI):
+# Get-Content mostra o arquivo:
+Get-Content C:\\ProgramData\\arquivo.conf
+
+# Set-Content substitui todo o conteúdo:
+Set-Content arquivo.txt "nova linha"
+
+# Add-Content adiciona ao final:
+Add-Content log.txt "$(Get-Date): evento"
+
+# Substituição de texto (equivalente ao sed -i):
+(Get-Content arquivo.conf) -replace "old","new" |
+  Set-Content arquivo.conf
+
+# VSCode no terminal:
+code arquivo.conf        # abre com interface gráfica
+code --wait arquivo.conf # aguarda fechar antes de continuar
+
+# Equivalente ao vim no Windows:
+# winget install Git.Git → instala vim junto
+# vim arquivo.conf → funciona no Git Bash`}
+        linuxCode={`# Linux — editores de texto no terminal
+
+# nano — fácil, mostra atalhos na tela:
+nano /etc/hosts
+# Ctrl+O = salvar, Ctrl+X = sair
+# Ctrl+K = cortar linha, Ctrl+U = colar
+# Ctrl+W = buscar texto
+
+# micro — moderno, atalhos estilo Windows:
+apt install micro -y
+micro /etc/nginx/nginx.conf
+# Ctrl+S = salvar, Ctrl+Q = sair
+# Ctrl+F = buscar, Ctrl+Z = desfazer
+
+# vim — o editor universal (disponível em todo Linux):
+vim /etc/ssh/sshd_config
+# i = entrar no modo INSERT (editar)
+# Esc = voltar ao modo NORMAL
+# :w = salvar
+# :q = sair (só funciona no modo NORMAL)
+# :wq = salvar e sair
+# :q! = sair sem salvar
+# /texto = buscar; n = próximo
+
+# Edição one-liner (sem abrir editor):
+sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' \\
+  /etc/ssh/sshd_config`}
+      />
 
       <ModuleNav currentPath="/editores" order={FUNDAMENTOS_ORDER} />
     </div>

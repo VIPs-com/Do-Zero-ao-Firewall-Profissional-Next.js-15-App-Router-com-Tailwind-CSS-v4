@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CheckCircle2, Circle, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -231,6 +231,52 @@ export default function ComandosPage() {
         </section>
 
       </div>
+
+      <WindowsComparisonBox
+        windowsLabel="Windows CMD / PowerShell"
+        linuxLabel="Linux Bash / Shell"
+        windowsCode={`# Equivalências de comandos essenciais
+dir                   → ls -la
+cd C:\\Users\\joao      → cd /home/joao
+type arquivo.txt       → cat arquivo.txt
+copy origem destino    → cp origem destino
+move origem destino    → mv origem destino
+del arquivo.txt        → rm arquivo.txt
+mkdir pasta            → mkdir pasta
+rmdir /s pasta         → rm -rf pasta
+cls                    → clear
+echo %VARIAVEL%        → echo $VARIAVEL
+set VARIAVEL=valor     → export VARIAVEL=valor
+where python           → which python
+ipconfig               → ip a   (ou ifconfig)
+ping host              → ping host
+netstat -an            → ss -tuln
+tasklist               → ps aux
+taskkill /PID 1234     → kill 1234
+findstr "texto" arq    → grep "texto" arq
+find . /name *.txt     → find . -name "*.txt"
+# PowerShell pipeline:
+Get-Process | Where CPU -gt 10  → ps aux | awk '$3>10'`}
+        linuxCode={`# Comandos Linux essenciais com exemplos
+ls -la /etc            # listar diretório detalhado
+cd /var/log            # navegar para diretório
+cat /etc/hosts         # ler arquivo inteiro
+cp -r origem/ destino/ # copiar diretório recursivo
+mv config.conf config.bak  # renomear/mover
+rm -rf /tmp/cache      # remover recursivo (CUIDADO!)
+mkdir -p /opt/app/logs # criar hierarquia de dirs
+clear                  # limpar terminal
+echo $HOME             # valor de variável
+export PATH="$PATH:/opt/bin"  # adicionar ao PATH
+which nginx            # onde está o binário
+ip a                   # interfaces de rede
+ping -c 4 8.8.8.8      # testar conectividade (4 pings)
+ss -tuln               # portas abertas e serviços
+ps aux | grep nginx    # processos em execução
+kill -9 PID            # matar processo forçado
+grep "ERROR" /var/log/nginx/error.log  # filtrar logs
+find /etc -name "*.conf" -type f   # buscar arquivos`}
+      />
 
       <ModuleNav currentPath="/comandos" order={FUNDAMENTOS_ORDER} />
     </div>
