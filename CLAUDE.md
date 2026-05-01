@@ -106,7 +106,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 49 (Sprint AVANCADOS-INDEX: +/avancados) |
 | `totalTopics` | `app/dashboard/page.tsx` | 85 (Counter-Sync: 27b+47b sub-entries + s08 SSH Proxy = 85) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 154 (Sprint SSH-PROXY: +3 checkpoints ssh-proxy) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 160 (Sprint CONTENT-PIVOTING: +3 ataques + 3 pivoteamento) |
 | Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/59/56/7 |
 | Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
 | searchItems | `src/data/searchItems.ts` | 163 (Sprint SEARCH-EXPAND: +15 para módulos com cobertura única) |
@@ -400,6 +400,8 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint QUIZ-LATE-MODULES: +9 questões para módulos sem cobertura — Pivoteamento (🎭 +3: FORWARD DROP, reverse shell, egress filtering), Laboratório (🧪 +3: vmx/svm check, KVM tipo 1 vs VirtualBox tipo 2, virsh/libvirt), Proxmox (🖥️ +3: porta 8006, bridges vmbr, pveversion); total 164→173 (firewall=71, fundamentos=45, avancados=57).
 - ✅ Sprint QUIZ-UX: Fisher-Yates shuffle em cada sessão (questões embaralhadas aleatoriamente); seletor de tamanho de sessão — Rápido (20 questões ~5min) / Normal (40) / Completo (todas); aria-label="Começar Quiz" estabiliza E2E; E2E test atualizado para novo aria-label.
 - ✅ Sprint SEARCH-EXPAND: +15 itens de busca para 15 módulos com cobertura única — ataques-avancados, pivoteamento, hardening, docker, fundamentos, fhs, comandos, editores, processos, permissoes, discos, logs-basicos, backup, shell-script, cron; searchItems 148→163.
+- ✅ Sprint CONTENT-ATAQUES: `/ataques-avancados` enriquecida — 6 tipos de ataque (recon nmap, fragmentação, SYN flood+connlimit, ARP spoofing+arptables, timing attack/SPA, DNS rebinding), FluxoCard Cyber Kill Chain, WindowsComparisonBox, tcpdump analysis, WarnBox ético; 3 checkpoints (ataques-recon, ataques-syn, ataques-arp); checklistItemsCount 154→157, linux-ninja 115→117.
+- ✅ Sprint CONTENT-PIVOTING: `/pivoteamento` enriquecida — FluxoCard cadeia 6 etapas, FORWARD DROP com logging, egress filtering completo, anti-DNS-tunneling DNAT, tabela técnicas evasão×defesa, script completo anti-pivoteamento, WindowsComparisonBox (Azure NSG ↔ iptables), detecção de IoC, exercícios guiados; 3 checkpoints (pivote-forward-drop, pivote-egress, pivote-honeypot); checklistItemsCount 157→160, linux-ninja 117→120.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
