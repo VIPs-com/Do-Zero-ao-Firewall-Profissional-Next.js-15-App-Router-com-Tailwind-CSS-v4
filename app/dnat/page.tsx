@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
 import { ModuleNav } from '@/components/ui/ModuleNav';
@@ -417,6 +417,61 @@ curl -k https://192.168.20.200`} />
         dive={activeDeepDive}
         onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — Port Forwarding (RRAS / netsh)"
+          linuxLabel="Linux — iptables DNAT"
+          windowsCode={`# Windows Port Forwarding via netsh (sem RRAS)
+# Encaminhar porta 80 do host para servidor interno
+netsh interface portproxy add v4tov4 \\
+  listenport=80 listenaddress=0.0.0.0 \\
+  connectport=80 connectaddress=192.168.56.10
+
+# Verificar regras ativas:
+netsh interface portproxy show all
+
+# Remover uma regra:
+netsh interface portproxy delete v4tov4 \\
+  listenport=80 listenaddress=0.0.0.0
+
+# RRAS — Port Forwarding em ambiente corporativo:
+# Server Manager → RRAS → NAT →
+#   Interface WAN → Serviços e Portas →
+#   Adicionar → Tipo: Web Server (HTTP) →
+#   Endereço interno: 192.168.56.10
+#   Porta privada: 80
+
+# Windows Firewall — abrir porta de entrada:
+netsh advfirewall firewall add rule \\
+  name="HTTP Inbound" dir=in action=allow protocol=TCP localport=80`}
+          linuxCode={`# Linux iptables DNAT — redirecionamento de porta
+
+# Encaminhar porta 80 (WAN) → servidor DMZ 192.168.56.10:80
+iptables -t nat -A PREROUTING \\
+  -i eth0 -p tcp --dport 80 \\
+  -j DNAT --to-destination 192.168.56.10:80
+
+# Permitir o FORWARD desta conexão:
+iptables -A FORWARD \\
+  -d 192.168.56.10 -p tcp --dport 80 \\
+  -m state --state NEW,ESTABLISHED \\
+  -j ACCEPT
+
+# Verificar regras DNAT ativas:
+iptables -t nat -L PREROUTING -n -v
+
+# Múltiplas portas (80 e 443):
+iptables -t nat -A PREROUTING \\
+  -i eth0 -p tcp \\
+  -m multiport --dports 80,443 \\
+  -j DNAT --to-destination 192.168.56.10
+
+# Persistir:
+iptables-save > /etc/iptables/rules.v4`}
+        />
+      </div>
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/dnat" />

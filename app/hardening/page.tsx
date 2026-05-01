@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Shield, Lock, Terminal, AlertTriangle, CheckCircle2, Circle, Eye, Server } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { TroubleshootingCard } from '@/components/ui/TroubleshootingCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
@@ -431,6 +431,64 @@ export default function HardeningPage() {
             </div>
           </div>
         </aside>
+      </div>
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — Group Policy / CIS Baseline"
+          linuxLabel="Linux — SSH + sysctl + AppArmor"
+          windowsCode={`# Windows Security Hardening — via Group Policy (GPO)
+# Equivalente ao sshd_config + sysctl + AppArmor
+
+# 1. Desabilitar autenticação NTLM (equivalente: PasswordAuth no)
+#    GPO: Computer Config → Windows Settings → Security Settings
+#         → Network Security → LAN Manager Auth Level
+#         → Definir como "Send NTLMv2 response only. Refuse LM & NTLM"
+
+# 2. ASLR — habilitado por padrão no Windows Vista+
+#    Verificar via registro:
+Get-ItemProperty -Path "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Memory Management" \\
+  -Name "MoveImages"
+
+# 3. Windows Defender Credential Guard (= AppArmor para credenciais)
+#    GPO: Computer Config → Administrative Templates →
+#         System → Device Guard → Turn on Virtualization Based Security
+
+# 4. CIS Benchmark (equivalente ao nosso checklist sysctl):
+# https://www.cisecurity.org/cis-benchmarks
+# PowerShell: instalar módulo CIS Compliance Check
+Install-Module -Name CISBenchmark -Force
+Invoke-CISCheck -Level 1 -OutputPath C:\\audit.html
+
+# 5. Windows Firewall (equivalente ao iptables -A INPUT):
+netsh advfirewall set allprofiles firewallpolicy blockinbound,allowoutbound`}
+          linuxCode={`# Linux Hardening — SSH + sysctl + AppArmor
+
+# 1. SSH: desabilitar autenticação por senha
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' \\
+  /etc/ssh/sshd_config
+echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+systemctl restart sshd
+
+# 2. sysctl — kernnel hardening (ASLR, SYN cookies, rp_filter)
+cat >> /etc/sysctl.d/99-hardening.conf << 'EOF'
+kernel.randomize_va_space = 2          # ASLR completo
+net.ipv4.tcp_syncookies = 1            # SYN flood protection
+net.ipv4.conf.all.rp_filter = 1        # Anti-spoofing
+net.ipv4.conf.all.accept_redirects = 0 # Sem ICMP redirects
+kernel.dmesg_restrict = 1              # Ocultar dmesg de não-root
+EOF
+sysctl --system
+
+# 3. AppArmor — MAC (Mandatory Access Control)
+apt install apparmor apparmor-utils -y
+aa-enforce /etc/apparmor.d/usr.sbin.nginx  # Forçar perfil Nginx
+aa-status | grep enforce
+
+# Verificar postura de segurança:
+lynis audit system  # lynis = CIS Benchmark para Linux`}
+        />
       </div>
 
       <ModuleNav currentPath="/hardening" />

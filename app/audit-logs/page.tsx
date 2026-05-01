@@ -6,7 +6,7 @@ import { Terminal, Search, Shield, AlertTriangle, Eye, FileText, Filter, CheckCi
 import { StepItem } from '@/components/ui/Steps';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, HighlightBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -549,6 +549,54 @@ tail -f /var/log/auditoria/knock.log`} />
             </div>
           </div>
         </aside>
+      </div>
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — Event Viewer / Sysmon"
+          linuxLabel="Linux — auditd / iptables LOG"
+          windowsCode={`# Windows Event Log — visualizar eventos de segurança
+# Event Viewer: eventvwr.msc → Windows Logs → Security
+
+# PowerShell: listar eventos de logon falho (ID 4625)
+Get-WinEvent -FilterHashtable @{
+    LogName='Security'; Id=4625
+} | Select-Object TimeCreated, Message
+
+# Sysmon: telemetria avançada de processo/rede
+# Instalar: Sysmon.exe -accepteula -i sysmon-config.xml
+# Eventos no log: Microsoft-Windows-Sysmon/Operational
+Get-WinEvent -LogName "Microsoft-Windows-Sysmon/Operational" |
+    Where-Object Id -eq 3 |  # NetworkConnect
+    Select-Object -First 20
+
+# auditpol: política de auditoria nativa
+auditpol /get /category:*
+auditpol /set /subcategory:"Logon" /success:enable /failure:enable`}
+          linuxCode={`# Linux auditd — auditoria de chamadas de sistema
+# Instalar: apt install auditd audispd-plugins -y
+systemctl enable --now auditd
+
+# Regra: logar todo acesso a /etc/passwd
+auditctl -w /etc/passwd -p rwxa -k passwd-access
+
+# Regra: logar execução de binários em /usr/bin
+auditctl -a always,exit -F arch=b64 \\
+  -S execve -F dir=/usr/bin -k exec-monitor
+
+# Buscar eventos por chave:
+ausearch -k passwd-access --start today
+ausearch -k exec-monitor -ts recent
+
+# iptables LOG — rastrear tráfego de rede:
+iptables -A INPUT -p tcp --dport 22 \\
+  -m limit --limit 5/min \\
+  -j LOG --log-prefix "[SSH-ACCESS] "
+
+# Ver logs em tempo real:
+journalctl -k -f | grep "SSH-ACCESS"`}
+        />
       </div>
 
       {/* Navegação sequencial */}

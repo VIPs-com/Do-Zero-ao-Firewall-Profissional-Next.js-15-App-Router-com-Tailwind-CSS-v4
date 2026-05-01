@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -632,6 +632,59 @@ cat /proc/net/xt_recent/abre-ssh     # Função 5: IPs autorizados ao SSH`} />
         dive={activeDeepDive}
         onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — RRAS / ICS"
+          linuxLabel="Linux — iptables MASQUERADE"
+          windowsCode={`# Windows RRAS (Routing and Remote Access Service)
+# 1. Habilitar RRAS no Server Manager:
+#    Add Roles → Network Policy and Access Services → RRAS
+
+# 2. Configurar via PowerShell:
+Install-WindowsFeature Routing
+Install-WindowsFeature RSAT-RemoteAccess
+
+# 3. Habilitar IP Forwarding no Windows:
+# HKLM\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters
+Set-ItemProperty -Path "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters" \\
+  -Name "IPEnableRouter" -Value 1
+
+# 4. ICS (Internet Connection Sharing) — solução simples:
+# Painel de Controle → Adaptadores de Rede →
+#   WAN → Propriedades → Compartilhamento →
+#   "Permitir que outros computadores se conectem"
+
+# 5. Verificar tabela de roteamento:
+route print
+netstat -rn`}
+          linuxCode={`# Linux iptables NAT — MASQUERADE para acesso à internet
+
+# 1. Habilitar IP forwarding (não persiste após reboot):
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# 2. Persistir o forwarding via sysctl:
+echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+sysctl -p
+
+# 3. Regra NAT MASQUERADE (eth0 = interface WAN):
+iptables -t nat -A POSTROUTING \\
+  -o eth0 -j MASQUERADE
+
+# 4. Permitir FORWARD das redes internas:
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+iptables -A FORWARD -m state \\
+  --state ESTABLISHED,RELATED -j ACCEPT
+
+# 5. Verificar regras NAT ativas:
+iptables -t nat -L -n -v
+
+# 6. Persistir com iptables-persistent:
+apt install iptables-persistent -y
+iptables-save > /etc/iptables/rules.v4`}
+        />
+      </div>
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/wan-nat" />
