@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -303,6 +303,69 @@ export default function VpnIpsecPage() {
         dive={activeDeepDive}
         onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — RRAS VPN IKEv2"
+          linuxLabel="Linux — StrongSwan IKEv2"
+          windowsCode={`# Windows RRAS — VPN IKEv2 Site-to-Site
+
+# 1. Habilitar RRAS no Windows Server:
+Install-WindowsFeature Routing -IncludeManagementTools
+Install-RemoteAccess -VpnType Vpn
+
+# 2. Configurar via PowerShell:
+Add-VpnS2SInterface \\
+  -Name "Filial-VPN" \\
+  -Destination "200.200.200.2" \\
+  -Protocol IKEv2 \\
+  -AuthenticationMethod PSKOnly \\
+  -SharedSecret "ChaveSuperSecreta123!" \\
+  -IPv4Subnet "192.168.2.0/24:100"
+
+# 3. Iniciar o túnel:
+Connect-VpnS2SInterface -Name "Filial-VPN"
+Get-VpnS2SInterface -Name "Filial-VPN" | Select-Object ConnectionState
+
+# 4. Verificar status:
+Get-RemoteAccessConnectionStatistics
+netsh ras diagnostics show all
+
+# 5. Rota estática para rede da filial:
+route add 192.168.2.0 mask 255.255.255.0 \\
+  192.168.1.1 metric 10 -p`}
+          linuxCode={`# Linux StrongSwan — VPN IKEv2 Site-to-Site
+
+# 1. Instalar StrongSwan:
+apt install strongswan strongswan-pki -y
+
+# 2. /etc/ipsec.conf — configuração do túnel:
+# config setup
+#   charondebug="all"
+#   uniqueids=yes
+#
+# conn matriz-filial
+#   type=tunnel
+#   keyexchange=ikev2
+#   authby=secret
+#   left=200.200.200.1
+#   leftsubnet=192.168.1.0/24
+#   right=200.200.200.2
+#   rightsubnet=192.168.2.0/24
+#   ike=aes256-sha256-modp2048
+#   esp=aes256-sha256
+#   auto=start
+
+# 3. /etc/ipsec.secrets:
+# 200.200.200.1 200.200.200.2 : PSK "ChaveSuperSecreta123!"
+
+# 4. Iniciar e verificar:
+ipsec start
+ipsec statusall
+# Procurar: ESTABLISHED e INSTALLED TUNNEL`}
+        />
+      </div>
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/vpn-ipsec" />
