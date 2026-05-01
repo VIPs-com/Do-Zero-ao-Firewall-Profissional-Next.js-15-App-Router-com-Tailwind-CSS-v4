@@ -6,7 +6,7 @@ import { Server, Shield, Database, Zap, CheckCircle, ExternalLink, GitFork } fro
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { StepItem } from '@/components/ui/Steps';
-import { InfoBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 
@@ -443,6 +443,65 @@ qm migrate 100 node2 --online`}
             </ul>
           </div>
         </div>
+      </div>
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — Hyper-V / VMware vSphere"
+          linuxLabel="Linux — Proxmox VE (KVM + LXC)"
+          windowsCode={`# Windows Hyper-V — virtualização nativa no Windows Server
+
+# 1. Instalar Hyper-V no Windows Server:
+Install-WindowsFeature -Name Hyper-V -IncludeManagementTools -Restart
+
+# 2. Criar VM via PowerShell (equivalente ao virt-install):
+New-VM -Name "Firewall-VM" -MemoryStartupBytes 2GB \\
+  -Generation 2 -NewVHDPath "C:\\VMs\\Firewall.vhdx" \\
+  -NewVHDSizeBytes 20GB -SwitchName "Default Switch"
+
+Set-VMProcessor "Firewall-VM" -Count 2
+Add-VMDvdDrive "Firewall-VM"
+Set-VMDvdDrive "Firewall-VM" -Path "C:\\ISOs\\ubuntu.iso"
+Start-VM "Firewall-VM"
+
+# 3. Snapshot (Checkpoint no Hyper-V):
+Checkpoint-VM -Name "Firewall-VM" -SnapshotName "Base"
+Get-VMSnapshot -VMName "Firewall-VM"
+Restore-VMCheckpoint -Name "Firewall-VM" \\
+  -VMCheckpoint (Get-VMSnapshot -VMName "Firewall-VM" -Name "Base")
+
+# 4. Cluster HA no Windows (Failover Clustering):
+Install-WindowsFeature Failover-Clustering -IncludeManagementTools
+New-Cluster -Name "HVCluster" -Node Server1,Server2 \\
+  -StaticAddress 10.0.0.10`}
+          linuxCode={`# Proxmox VE — plataforma profissional de virtualização
+
+# 1. Instalar Proxmox (ISO bare-metal — sem apt install):
+#    Baixar ISO: proxmox.com/downloads → Proxmox VE 8.x ISO
+#    Gravar em USB e bootar. Instala Debian + Proxmox automaticamente.
+
+# 2. Acessar Web UI após instalação:
+#    https://IP-DO-SERVIDOR:8006
+#    Login: root / senha definida no instalador
+
+# 3. Criar VM via CLI (equivalente ao New-VM do PowerShell):
+qm create 100 --name "Firewall" --memory 2048 \\
+  --cores 2 --net0 virtio,bridge=vmbr0
+qm importdisk 100 ubuntu-22.04.iso local-lvm
+qm set 100 --ide2 local-lvm:iso/ubuntu.iso,media=cdrom
+qm start 100
+
+# 4. Snapshot via CLI (equivalente ao Checkpoint-VM):
+qm snapshot 100 snap-base "Estado inicial"
+qm listsnapshot 100
+qm rollback 100 snap-base
+
+# 5. Cluster HA (nativo, via Web UI ou pvecm):
+pvecm create "meu-cluster"   # Nó inicial
+pvecm add IP-NO-2            # Adicionar segundo nó
+pvecm status                  # Status do cluster`}
+        />
       </div>
 
       {/* Navegação sequencial */}

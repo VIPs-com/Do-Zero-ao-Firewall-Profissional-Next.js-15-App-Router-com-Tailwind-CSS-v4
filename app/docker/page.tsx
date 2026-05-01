@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Network, Shield, Terminal, AlertTriangle, CheckCircle2, Circle, Layers, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -489,6 +489,63 @@ export default function DockerPage() {
             </div>
           </div>
         </aside>
+      </div>
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — Docker Desktop / Hyper-V"
+          linuxLabel="Linux — Docker Engine nativo"
+          windowsCode={`# Docker Desktop no Windows
+# Requer: WSL2 + Windows 10 v2004+ ou Hyper-V
+
+# Instalar via winget:
+winget install Docker.DockerDesktop
+
+# Docker Desktop usa HyperV ou WSL2 como backend
+# Verificar backend ativo:
+docker info | findstr "Operating System"
+
+# Redes no Windows — diferença importante:
+# bridge network NÃO é acessível do host no Windows
+# (limitação do HyperV networking)
+# Use "host" mode no WSL2 ou exponha via -p
+
+# iptables NÃO existe no Windows — Docker Desktop
+# usa regras do Windows Firewall internamente
+
+# Ver regras de firewall que o Docker criou:
+netsh advfirewall firewall show rule name=all |
+  findstr -i docker
+
+# Equivalente ao docker network inspect:
+docker network ls
+docker network inspect bridge`}
+          linuxCode={`# Docker Engine no Linux — sem virtualization overhead
+# O daemon roda direto no kernel host
+
+# Instalar o Docker Engine oficial:
+apt install ca-certificates curl gnupg -y
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
+  gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+apt install docker-ce docker-ce-cli containerd.io -y
+usermod -aG docker $USER
+
+# Docker cria chains no iptables automaticamente:
+# DOCKER, DOCKER-USER, DOCKER-ISOLATION-STAGE-1/2
+iptables -L -n | grep -E "DOCKER|Chain"
+
+# Regra para bloquear acesso externo ao container:
+# (adicionar na chain DOCKER-USER, não FORWARD!)
+iptables -I DOCKER-USER -i eth0 \\
+  -d 172.17.0.2 -p tcp --dport 6379 -j DROP
+
+# Ver redes Docker:
+docker network ls
+docker network inspect bridge`}
+        />
       </div>
 
       <ModuleNav currentPath="/docker" />

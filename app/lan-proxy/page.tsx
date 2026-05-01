@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 
 import { useBadges } from '@/context/BadgeContext';
 import { ModuleNav } from '@/components/ui/ModuleNav';
@@ -423,6 +423,63 @@ acl negados dstdomain "/etc/squid/negados.txt"
         dive={activeDeepDive}
         onClose={() => setActiveDeepDive(null)}
       />
+
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — ISA Server / Forefront TMG / WPAD"
+          linuxLabel="Linux — Squid Proxy Transparente"
+          windowsCode={`# Windows — Proxy corporativo (ISA Server / Forefront TMG)
+# Alternativa moderna: Microsoft Entra ID + Azure Web Filter
+
+# 1. Configurar proxy manualmente no Windows:
+# Configurações → Rede → Proxy →
+#   "Usar servidor proxy": IP=192.168.57.250, Porta=3128
+
+# 2. Via GPO (para toda a empresa):
+# Computer Config → Windows Settings → Internet Settings →
+#   Connections → LAN Settings → Proxy Server
+
+# 3. WPAD (Web Proxy Auto-Discovery) — automático:
+#    DNS: wpad.empresa.com → IP do proxy
+#    HTTP GET http://wpad/wpad.dat retorna configuração
+#    Browsers modernos descobrem o proxy automaticamente
+
+# 4. Proxy transparente no Windows (sem WPAD):
+# Não há equivalente direto ao Squid transparente no Windows.
+# Soluções: Forefront TMG (descontinuado) ou
+#            Zscaler / Netskope (cloud proxy)
+
+# 5. Verificar configurações de proxy no Windows:
+netsh winhttp show proxy
+reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings"`}
+          linuxCode={`# Linux Squid — Proxy Transparente na LAN
+
+# Instalação e configuração básica:
+apt install squid -y
+
+# /etc/squid/squid.conf — configuração essencial:
+# http_port 3128          # proxy explícito
+# http_port 3129 intercept # proxy transparente
+
+# ACLs de acesso:
+# acl lan src 192.168.57.0/24
+# http_access allow lan
+# http_access deny all
+
+# iptables — forçar tráfego HTTP pela porta do Squid:
+iptables -t nat -A PREROUTING \\
+  -i eth2 -p tcp --dport 80 \\
+  -j REDIRECT --to-port 3129
+
+# Verificar cache e acessos:
+tail -f /var/log/squid/access.log
+
+# Configurar clientes explicitamente:
+export http_proxy=http://192.168.57.250:3128
+export https_proxy=http://192.168.57.250:3128`}
+        />
+      </div>
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/lan-proxy" />

@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Shield, Terminal, Lock, ArrowRight, Server, Globe, AlertTriangle } from 'lucide-react';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -364,6 +364,71 @@ certbot renew --force-renewal`}
       </div>
 
       {/* Navegação sequencial */}
+      {/* Windows Comparison */}
+      <div className="mt-12">
+        <WindowsComparisonBox
+          windowsLabel="Windows — IIS com SSL"
+          linuxLabel="Linux — Nginx + Let's Encrypt"
+          windowsCode={`# IIS (Internet Information Services) — SSL/TLS no Windows
+
+# 1. Instalar IIS com suporte SSL:
+Install-WindowsFeature Web-Server, Web-Asp-Net45, Web-Mgmt-Console
+
+# 2. Criar site no IIS Manager (GUI):
+#    IIS Manager → Sites → Add Website →
+#    Nome: meusite.com, Porta: 80, Caminho físico: C:\\inetpub\\meusite
+
+# 3. Obter certificado SSL (Let's Encrypt via win-acme):
+#    Baixar: win-acme.net
+#    Executar: wacs.exe → Simple → meusite.com → Nginx/IIS Binding
+# Certificado é instalado no Windows Certificate Store automaticamente
+
+# 4. Alternativa: certificado autoassinado para lab:
+New-SelfSignedCertificate \\
+  -DnsName "meusite.com" \\
+  -CertStoreLocation "cert:\\LocalMachine\\My"
+
+# 5. Configurar binding HTTPS no IIS:
+#    IIS Manager → Sites → meusite.com → Bindings →
+#    Add → HTTPS, Porta 443, Selecionar certificado
+
+# 6. Forçar HTTPS via web.config:
+# <rewrite><rules><rule name="Force HTTPS">
+#   <action type="Redirect" url="https://{HTTP_HOST}{REQUEST_URI}"/>`}
+          linuxCode={`# Nginx + Let's Encrypt — SSL grátis e automático
+
+# 1. Instalar Nginx e Certbot:
+apt install nginx certbot python3-certbot-nginx -y
+systemctl enable --now nginx
+
+# 2. Criar configuração do virtual host:
+cat > /etc/nginx/sites-available/meusite.com << 'EOF'
+server {
+    listen 80;
+    server_name meusite.com www.meusite.com;
+    root /var/www/meusite;
+    index index.html;
+}
+EOF
+ln -s /etc/nginx/sites-available/meusite.com \\
+      /etc/nginx/sites-enabled/
+
+# 3. Obter certificado Let's Encrypt:
+certbot --nginx -d meusite.com -d www.meusite.com \\
+  --non-interactive --agree-tos -m admin@meusite.com
+
+# Certbot adiciona automaticamente ao nginx.conf:
+# listen 443 ssl; + ssl_certificate + redirect 80→443
+
+# 4. Renovação automática (cron já configurado pelo certbot):
+certbot renew --dry-run
+
+# 5. Verificar SSL:
+curl -I https://meusite.com
+openssl s_client -connect meusite.com:443`}
+        />
+      </div>
+
       <ModuleNav currentPath="/nginx-ssl" />
     </div>
   );
