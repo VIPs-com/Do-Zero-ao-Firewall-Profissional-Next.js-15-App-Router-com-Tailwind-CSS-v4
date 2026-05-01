@@ -398,6 +398,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint QUIZ-FIX: SSH-PROXY 3 questões corrigidas trail 'avancados'→'fundamentos' (fundamentos 42→45, avancados 60→57; total 151).
 - ✅ Sprint QUIZ-COVER: +13 questões para módulos com <3 cobertura — DNAT(+2), Port Knocking(+2), Diagnóstico SSL(+2), Camada 3(+1), Análise de Pacotes(+1), systemd(+1), Hardening(+1), Docker(+1), Compose(+1), SSH 2FA(+1); total 151→164 (firewall=62, fundamentos=45, avancados=57).
 - ✅ Sprint QUIZ-LATE-MODULES: +9 questões para módulos sem cobertura — Pivoteamento (🎭 +3: FORWARD DROP, reverse shell, egress filtering), Laboratório (🧪 +3: vmx/svm check, KVM tipo 1 vs VirtualBox tipo 2, virsh/libvirt), Proxmox (🖥️ +3: porta 8006, bridges vmbr, pveversion); total 164→173 (firewall=71, fundamentos=45, avancados=57).
+- ✅ Sprint QUIZ-UX: Fisher-Yates shuffle em cada sessão (questões embaralhadas aleatoriamente); seletor de tamanho de sessão — Rápido (20 questões ~5min) / Normal (40) / Completo (todas); aria-label="Começar Quiz" estabiliza E2E; E2E test atualizado para novo aria-label.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
