@@ -19,22 +19,58 @@ const TRAIL_OPTIONS: Array<{ value: QuizTrail | 'all'; label: string; count: num
   { value: 'avancados',   label: '🚀 Avançados',      count: QUIZ_QUESTIONS.filter(q => q.trail === 'avancados').length,   color: 'border-info text-info' },
 ];
 
+type SessionSize = 20 | 40 | 'all';
+
+const SESSION_OPTIONS: Array<{ value: SessionSize; label: string; desc: string }> = [
+  { value: 20,    label: 'Rápido',   desc: '20 questões · ~5 min' },
+  { value: 40,    label: 'Normal',   desc: '40 questões · ~10 min' },
+  { value: 'all', label: 'Completo', desc: 'Todas · sem limite' },
+];
+
+/** Fisher-Yates shuffle (in-place, returns same array) */
+function shuffleArray<T>(arr: T[]): T[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 export default function QuizPage() {
   const [started, setStarted] = useState(false);
   const [selectedTrail, setSelectedTrail] = useState<QuizTrail | 'all'>('all');
+  const [sessionSize, setSessionSize] = useState<SessionSize>(20);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResult, setShowResult] = useState(false);
+  // QUESTIONS é definido no handleStart — embaralhado + fatiado por sessão
+  const [QUESTIONS, setQUESTIONS] = useState<QuizQuestion[]>([]);
   const { updateQuizScore, trackPageVisit } = useBadges();
 
-  const QUESTIONS: QuizQuestion[] = useMemo(
-    () => selectedTrail === 'all' ? QUIZ_QUESTIONS : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail),
-    [selectedTrail],
-  );
+  // Contagem de preview para a tela de início (não embaralhado)
+  const previewCount = useMemo(() => {
+    const pool = selectedTrail === 'all'
+      ? QUIZ_QUESTIONS
+      : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail);
+    return sessionSize === 'all' ? pool.length : Math.min(sessionSize, pool.length);
+  }, [selectedTrail, sessionSize]);
 
   useEffect(() => {
     trackPageVisit('quiz');
   }, [trackPageVisit]);
+
+  const handleStart = () => {
+    const pool = selectedTrail === 'all'
+      ? [...QUIZ_QUESTIONS]
+      : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail);
+    const shuffled = shuffleArray([...pool]);
+    const limit = sessionSize === 'all' ? shuffled.length : Math.min(sessionSize, shuffled.length);
+    setQUESTIONS(shuffled.slice(0, limit));
+    setCurrentIdx(0);
+    setAnswers({});
+    setShowResult(false);
+    setStarted(true);
+  };
 
   const handleAnswer = (optIdx: number) => {
     if (showResult) return;
@@ -66,7 +102,8 @@ export default function QuizPage() {
     setCurrentIdx(0);
     setShowResult(false);
     setStarted(false);
-    // não reseta selectedTrail — o usuário pode querer repetir a mesma trilha
+    setQUESTIONS([]);
+    // não reseta selectedTrail nem sessionSize — o usuário pode querer repetir a mesma configuração
   };
 
   if (!started) {
@@ -87,7 +124,7 @@ export default function QuizPage() {
           </p>
 
           {/* Seletor de trilha */}
-          <div className="grid grid-cols-2 gap-3 mb-8 text-left" role="radiogroup" aria-label="Selecionar trilha do quiz">
+          <div className="grid grid-cols-2 gap-3 mb-6 text-left" role="radiogroup" aria-label="Selecionar trilha do quiz">
             {TRAIL_OPTIONS.map(opt => (
               <button
                 key={opt.value}
@@ -108,11 +145,36 @@ export default function QuizPage() {
             ))}
           </div>
 
+          {/* Seletor de tamanho da sessão */}
+          <div className="mb-8">
+            <div className="text-xs font-bold uppercase tracking-widest text-text-3 mb-3 text-left">Tamanho da sessão</div>
+            <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Tamanho da sessão">
+              {SESSION_OPTIONS.map(opt => (
+                <button
+                  key={String(opt.value)}
+                  role="radio"
+                  aria-checked={sessionSize === opt.value}
+                  onClick={() => setSessionSize(opt.value)}
+                  className={cn(
+                    'p-3 rounded-xl border-2 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
+                    sessionSize === opt.value
+                      ? 'bg-bg-3 border-accent text-accent'
+                      : 'border-border text-text-2 hover:border-accent/50',
+                  )}
+                >
+                  <div className="text-sm font-bold">{opt.label}</div>
+                  <div className="text-xs text-text-3 mt-0.5">{opt.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <button
-            onClick={() => setStarted(true)}
+            onClick={handleStart}
+            aria-label="Começar Quiz"
             className="btn-primary w-full py-4 text-lg"
           >
-            Começar — {QUESTIONS.length} questões
+            Começar — {previewCount} questões embaralhadas
             <ChevronRight size={20} />
           </button>
         </motion.div>

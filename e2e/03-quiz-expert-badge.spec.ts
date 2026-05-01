@@ -9,11 +9,11 @@ import { test, expect } from './fixtures';
  * Os botões de opção têm: aria-pressed={answers[currentIdx] === i}
  */
 test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é desbloqueado', async ({ page }) => {
-  test.setTimeout(60_000); // 32 perguntas × ~350ms animação + cliques = precisa de mais tempo
+  test.setTimeout(60_000); // default 20 perguntas × ~350ms animação + cliques (totalQuestions lido dinamicamente)
   await page.goto('/quiz');
 
-  // Tela inicial
-  await page.getByRole('button', { name: 'Começar Agora' }).click();
+  // Tela inicial — aria-label estável independente do texto dinâmico
+  await page.getByRole('button', { name: 'Começar Quiz' }).click();
 
   // Aguarda o primeiro botão de opção aparecer
   await page.locator('button[aria-pressed]').first().waitFor({ state: 'visible', timeout: 5_000 });
