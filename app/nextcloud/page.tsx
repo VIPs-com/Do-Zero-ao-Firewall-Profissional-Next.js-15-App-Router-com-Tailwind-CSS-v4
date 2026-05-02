@@ -522,6 +522,75 @@ find /backups/nextcloud/ -maxdepth 1 -type d -mtime +7 -exec rm -rf {} \\;`} />
           </div>
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Administrar via occ (linha de comando)</p>
+              <CodeBlock lang="bash" code={`# occ é o equivalente ao wp-cli do WordPress para o Nextcloud
+# Sempre rodar como usuário www-data:
+
+# Ver status geral:
+docker compose exec --user www-data app php occ status
+
+# Listar usuários:
+docker compose exec --user www-data app php occ user:list
+
+# Criar usuário via CLI:
+docker compose exec --user www-data app php occ user:add \\
+  --display-name "João Silva" joaosilva
+# (vai pedir senha)
+
+# Ver apps instalados:
+docker compose exec --user www-data app php occ app:list | grep enabled
+
+# Verificar integridade dos arquivos:
+docker compose exec --user www-data app php occ integrity:check-core`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Configurar cache Redis para performance</p>
+              <CodeBlock lang="bash" code={`# Redis já está no docker-compose — confirmar que está conectado:
+docker compose exec --user www-data app php occ config:system:get memcache.local
+# Deve retornar: \\OC\\Memcache\\APCu
+
+# Configurar Redis para memcache distribuído:
+docker compose exec --user www-data app php occ config:system:set \\
+  memcache.distributed --value "\\\\OC\\\\Memcache\\\\Redis"
+
+docker compose exec --user www-data app php occ config:system:set \\
+  redis host --value "redis"
+
+docker compose exec --user www-data app php occ config:system:set \\
+  redis port --value 6379
+
+# Verificar latência do Redis:
+docker compose exec redis redis-cli --latency -c 100`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Backup e verificar integridade</p>
+              <CodeBlock lang="bash" code={`# Ativar modo manutenção antes do backup (impede alterações)
+docker compose exec --user www-data app php occ maintenance:mode --on
+
+# Backup do banco de dados:
+docker compose exec db mysqldump -u nextcloud \\
+  --password=senha nextcloud | gzip > backup-db-$(date +%Y%m%d).sql.gz
+
+# Backup dos dados (arquivos dos usuários):
+tar -czf backup-data-$(date +%Y%m%d).tar.gz ./nextcloud_data/
+
+# Desativar modo manutenção:
+docker compose exec --user www-data app php occ maintenance:mode --off
+
+# Verificar tamanhos dos backups:
+ls -lh backup-*.gz backup-*.tar.gz
+
+# Escanear novos arquivos (após restauração ou upload manual):
+docker compose exec --user www-data app php occ files:scan --all`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/nextcloud" order={ADVANCED_ORDER} />
       </div>
     </div>

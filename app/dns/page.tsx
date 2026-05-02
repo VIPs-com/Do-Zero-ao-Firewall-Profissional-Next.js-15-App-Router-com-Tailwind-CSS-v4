@@ -309,6 +309,88 @@ systemctl reload named`}
         onClose={() => setActiveDeepDive(null)}
       />
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Diagnóstico DNS com dig</p>
+            <CodeBlock lang="bash" code={`# dig é a ferramenta principal de diagnóstico DNS
+
+# Resolução simples:
+dig google.com
+
+# Especificar servidor DNS (testar o seu BIND9):
+dig @192.168.57.254 firewall.lab
+
+# Ver apenas o IP (resposta limpa):
+dig +short google.com A
+
+# Ver registro MX (email):
+dig +short google.com MX
+
+# Ver TTL e flags:
+dig google.com | grep -E "ANSWER|Query time|SERVER"
+
+# Trace completo (mostrar toda a cadeia de resolução):
+dig +trace google.com`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Criar zona DNS interna no BIND9</p>
+            <CodeBlock lang="bash" code={`# Adicionar zona em /etc/bind/named.conf.local
+sudo tee -a /etc/bind/named.conf.local << 'EOF'
+zone "lab.interno" {
+    type master;
+    file "/var/cache/bind/db.lab.interno";
+};
+EOF
+
+# Criar o arquivo de zona
+sudo tee /var/cache/bind/db.lab.interno << 'EOF'
+\$TTL 300
+@  IN SOA ns1.lab.interno. admin.lab.interno. (
+       2026050101 ; serial
+       3600       ; refresh
+       900        ; retry
+       604800     ; expire
+       300 )      ; min TTL
+@  IN NS  ns1.lab.interno.
+ns1       IN A   192.168.57.254
+firewall  IN A   192.168.57.254
+webserver IN A   192.168.56.10
+EOF
+
+sudo named-checkzone lab.interno /var/cache/bind/db.lab.interno
+sudo systemctl reload named
+
+# Testar:
+dig @192.168.57.254 webserver.lab.interno`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Capturar consultas DNS com tcpdump</p>
+            <CodeBlock lang="bash" code={`# DNS usa UDP porta 53 (TCP para grandes respostas)
+
+# Capturar todas as consultas DNS em tempo real:
+sudo tcpdump -i eth0 -n udp port 53
+
+# Em outro terminal, gerar consultas:
+dig google.com
+dig @8.8.8.8 github.com
+
+# Filtrar só queries (não respostas):
+sudo tcpdump -i eth0 -n udp port 53 and 'udp[10] & 0x80 = 0'
+
+# Ver consultas para um domínio específico:
+sudo tcpdump -i eth0 -n udp port 53 and 'dns[12:2] & 0xf = 1'
+
+# Verificar quantas consultas por segundo (carga):
+sudo tcpdump -i eth0 -n udp port 53 2>/dev/null | \\
+  awk '{count++} END {print count/10 " queries/s"}' &
+sleep 10 && kill %1`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/dns" />
     </div>

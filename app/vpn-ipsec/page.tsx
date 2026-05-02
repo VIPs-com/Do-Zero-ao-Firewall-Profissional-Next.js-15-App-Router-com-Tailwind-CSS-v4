@@ -367,6 +367,68 @@ ipsec statusall
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Verificar status do túnel IPSec</p>
+            <CodeBlock lang="bash" code={`# Ver status completo (procurar ESTABLISHED e INSTALLED)
+sudo ipsec statusall
+
+# Ver apenas conexões ativas:
+sudo ipsec status | grep -E "ESTABLISHED|INSTALLED"
+
+# Ver SAs (Security Associations) instaladas no kernel:
+sudo ip xfrm state list    # políticas de criptografia
+sudo ip xfrm policy list   # seletores de tráfego
+
+# Contar bytes trafegados pelo túnel:
+sudo ip xfrm state list | grep -E "lifetime|bytes"
+
+# Reiniciar uma conexão específica:
+sudo ipsec restart
+sudo ipsec up matriz-filial  # nome definido no ipsec.conf`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Capturar tráfego ESP/IKE com tcpdump</p>
+            <CodeBlock lang="bash" code={`# ESP = protocolo 50 (dados criptografados do túnel)
+# IKE = UDP porta 500 + 4500 (negociação das chaves)
+
+# Capturar tráfego ESP (você verá pacotes mas não o conteúdo):
+sudo tcpdump -i eth0 -n esp
+
+# Capturar negociação IKE:
+sudo tcpdump -i eth0 -n udp port 500 or udp port 4500
+
+# Ver fase de estabelecimento em detalhe:
+sudo ipsec stop
+sudo tcpdump -i eth0 -n udp port 500 &
+sudo ipsec start
+
+# Procurar no output: IKE_SA_INIT e IKE_AUTH`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Testar conectividade através do túnel</p>
+            <CodeBlock lang="bash" code={`# Com o túnel ativo, tráfego entre as redes vai criptografado
+
+# Testar ping através do túnel (deve funcionar):
+# Matriz: 192.168.57.0/24, Filial: 10.0.0.0/24
+ping -c 3 10.0.0.1   # de 192.168.57.x para a filial
+
+# Verificar rota: tráfego para 10.0.0.0/24 vai via túnel
+ip route get 10.0.0.1
+
+# Capturar na interface de saída — deve mostrar ESP (encriptado):
+sudo tcpdump -i eth0 -n esp &
+ping -c 3 10.0.0.1  # o ping gera tráfego ESP no tcpdump
+
+# Confirmar: pacotes ICMP viram ESP ao sair
+# O destino real (10.0.0.1) é invisível para observadores externos`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/vpn-ipsec" />
     </div>

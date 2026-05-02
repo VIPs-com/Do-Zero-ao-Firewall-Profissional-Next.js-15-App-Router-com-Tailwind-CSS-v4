@@ -534,6 +534,84 @@ pvecm status                  # Status do cluster`}
         ))}
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Criar VM via linha de comando (qm)</p>
+            <CodeBlock lang="bash" code={`# Criar VM Debian mínima via CLI (VMID=200)
+qm create 200 \\
+  --name "vm-debian-lab" \\
+  --memory 2048 \\
+  --cores 2 \\
+  --net0 virtio,bridge=vmbr0 \\
+  --ostype l26
+
+# Adicionar disco de 20GB no storage local:
+qm set 200 --scsi0 local-lvm:20
+
+# Adicionar drive de ISO (montar para instalação):
+qm set 200 --cdrom local:iso/debian-12.iso
+
+# Iniciar a VM:
+qm start 200
+
+# Ver status:
+qm status 200
+
+# Acessar console via noVNC (abrir no browser):
+# https://IP-PROXMOX:8006 → VM → Console
+
+# Parar a VM:
+qm stop 200`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Snapshot e rollback de VM</p>
+            <CodeBlock lang="bash" code={`# Tirar snapshot ANTES de mudanças de risco
+qm snapshot 200 snap-pre-update \\
+  --description "Antes do apt upgrade $(date +%Y-%m-%d)"
+
+# Listar snapshots da VM:
+qm listsnapshot 200
+
+# Fazer a mudança arriscada (simular apt upgrade):
+# ... qualquer mudança na VM ...
+
+# Se algo deu errado — reverter para o snapshot:
+qm stop 200
+qm rollback 200 snap-pre-update
+qm start 200
+
+# Ver diff entre snapshots (tamanho):
+pvesh get /nodes/$(hostname)/qemu/200/snapshots
+
+# Apagar snapshot após confirmar que tudo OK:
+qm delsnapshot 200 snap-pre-update`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Monitorar recursos do cluster</p>
+            <CodeBlock lang="bash" code={`# Ver uso de CPU, memória e disco de todas as VMs:
+qm list   # listar VMs e status
+pvesh get /nodes/$(hostname)/status  # recursos do nó
+
+# Ver consumo em tempo real:
+watch -n 2 "qm list && echo && pvesm status"
+
+# Ver VMs por consumo de CPU:
+pvesh get /nodes/$(hostname)/qemu --output-format yaml | \\
+  grep -E "name:|cpu:|mem:" | paste - - -
+
+# Ver espaço dos storages:
+pvesm status
+
+# Ver logs do sistema Proxmox:
+journalctl -u pvedaemon --since today | tail -20
+cat /var/log/pve/tasks/active`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/proxmox" />
     </div>
