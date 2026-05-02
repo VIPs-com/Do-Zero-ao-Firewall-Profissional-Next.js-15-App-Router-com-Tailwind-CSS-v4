@@ -542,6 +542,115 @@ ldapsearch -Y EXTERNAL -H ldapi:/// \\
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar OpenLDAP e Criar Estrutura</p>
+              <CodeBlock lang="bash" code={`# Instalar slapd e ferramentas
+DEBIAN_FRONTEND=noninteractive apt install slapd ldap-utils -y
+
+# Reconfigurar slapd (definir senha admin e domínio)
+dpkg-reconfigure slapd
+# Omit OpenLDAP server configuration? No
+# DNS domain name: lab.local
+# Organization name: Lab
+# Administrator password: (defina uma senha)
+
+# Verificar que o servidor está rodando
+systemctl status slapd
+ldapsearch -x -H ldap://localhost -b dc=lab,dc=local
+
+# Criar estrutura básica (OUs)
+cat > /tmp/estrutura.ldif << 'EOF'
+dn: ou=usuarios,dc=lab,dc=local
+objectClass: organizationalUnit
+ou: usuarios
+
+dn: ou=grupos,dc=lab,dc=local
+objectClass: organizationalUnit
+ou: grupos
+EOF
+
+ldapadd -x -D "cn=admin,dc=lab,dc=local" -W -f /tmp/estrutura.ldif
+
+# Verificar estrutura
+ldapsearch -x -b dc=lab,dc=local "(objectClass=organizationalUnit)"`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Criar Usuários e Grupos LDAP</p>
+              <CodeBlock lang="bash" code={`# Gerar hash de senha
+SENHA_HASH=$(slappasswd -s "minhasenha123")
+echo "Hash gerado: $SENHA_HASH"
+
+# Criar usuário LDAP
+cat > /tmp/usuario.ldif << EOF
+dn: uid=joao,ou=usuarios,dc=lab,dc=local
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: joao
+cn: João Silva
+sn: Silva
+givenName: João
+mail: joao@lab.local
+uidNumber: 10001
+gidNumber: 10001
+homeDirectory: /home/joao
+loginShell: /bin/bash
+userPassword: $SENHA_HASH
+EOF
+
+ldapadd -x -D "cn=admin,dc=lab,dc=local" -W -f /tmp/usuario.ldif
+
+# Criar grupo
+cat > /tmp/grupo.ldif << 'EOF'
+dn: cn=devteam,ou=grupos,dc=lab,dc=local
+objectClass: groupOfNames
+cn: devteam
+member: uid=joao,ou=usuarios,dc=lab,dc=local
+EOF
+
+ldapadd -x -D "cn=admin,dc=lab,dc=local" -W -f /tmp/grupo.ldif
+
+# Verificar usuário criado
+ldapsearch -x -b ou=usuarios,dc=lab,dc=local "(uid=joao)"`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Autenticação SSH via LDAP com PAM</p>
+              <CodeBlock lang="bash" code={`# Instalar módulos PAM/NSS para LDAP
+apt install libpam-ldapd nslcd -y
+
+# Configurar /etc/nslcd.conf
+cat > /etc/nslcd.conf << 'EOF'
+uid nslcd
+gid nslcd
+uri ldap://127.0.0.1/
+base dc=lab,dc=local
+base passwd ou=usuarios,dc=lab,dc=local
+base group  ou=grupos,dc=lab,dc=local
+EOF
+
+# Configurar nsswitch.conf para usar LDAP
+sed -i 's/^passwd:.*/passwd: files ldap/' /etc/nsswitch.conf
+sed -i 's/^group:.*/group:  files ldap/' /etc/nsswitch.conf
+
+systemctl restart nslcd
+
+# Verificar resolução de usuário LDAP
+getent passwd joao   # deve aparecer o usuário LDAP
+
+# Verificar login via SSH
+# ssh joao@localhost  (deve usar senha LDAP)
+
+# Busca autenticada no LDAP
+ldapsearch -x -D "uid=joao,ou=usuarios,dc=lab,dc=local" \
+  -W -b dc=lab,dc=local "(uid=joao)" cn mail`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/ldap" order={ADVANCED_ORDER} />
       </div>
     </main>

@@ -1029,6 +1029,128 @@ terraform apply -auto-approve
           )}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Primeiro Projeto Terraform com Docker Provider</p>
+              <CodeBlock lang="bash" code={`# Instalar Terraform (ou OpenTofu como alternativa open-source)
+wget -O /tmp/terraform.zip https://releases.hashicorp.com/terraform/1.7.0/terraform_1.7.0_linux_amd64.zip 2>/dev/null || \
+  apt install opentofu -y 2>/dev/null || \
+  snap install opentofu --classic
+
+mkdir -p ~/terraform-lab && cd ~/terraform-lab
+
+# Criar arquivo principal
+cat > main.tf << 'EOF'
+terraform {
+  required_providers {
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "~> 3.0"
+    }
+  }
+}
+
+provider "docker" {}
+
+resource "docker_image" "nginx" {
+  name = "nginx:alpine"
+}
+
+resource "docker_container" "web" {
+  image = docker_image.nginx.image_id
+  name  = "terraform-nginx"
+  ports {
+    internal = 80
+    external = 8088
+  }
+}
+EOF
+
+terraform init
+terraform plan
+terraform apply -auto-approve
+docker ps | grep terraform-nginx`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Variáveis, Outputs e .tfvars</p>
+              <CodeBlock lang="bash" code={`cd ~/terraform-lab
+
+# Criar arquivo de variáveis
+cat > variables.tf << 'EOF'
+variable "porta_externa" {
+  description = "Porta para expor o Nginx"
+  type        = number
+  default     = 8088
+}
+
+variable "nome_container" {
+  description = "Nome do container"
+  type        = string
+  default     = "meu-nginx"
+}
+EOF
+
+# Criar arquivo de outputs
+cat > outputs.tf << 'EOF'
+output "container_id" {
+  value = docker_container.web.id
+}
+
+output "url_acesso" {
+  value = "http://localhost:\${var.porta_externa}"
+}
+EOF
+
+# Criar arquivo de valores para ambiente de produção
+cat > prod.tfvars << 'EOF'
+porta_externa  = 80
+nome_container = "nginx-producao"
+EOF
+
+# Aplicar com valores de produção
+terraform plan -var-file=prod.tfvars
+terraform apply -var-file=prod.tfvars -auto-approve
+
+# Ver outputs
+terraform output`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Workflow Completo: Plan, Apply, Destroy</p>
+              <CodeBlock lang="bash" code={`cd ~/terraform-lab
+
+# Ver estado atual dos recursos
+terraform state list
+terraform state show docker_container.web
+
+# Modificar recurso (adicionar label ao container)
+cat >> main.tf << 'EOF'
+
+# Adicionar ao resource docker_container.web:
+# labels {
+#   label = "managed-by"
+#   value = "terraform"
+# }
+EOF
+
+# Ver o que vai mudar ANTES de aplicar (dry-run)
+terraform plan -out=plano.tfplan
+
+# Aplicar apenas o plano gerado (idempotente)
+terraform apply plano.tfplan
+
+# Ver diff do estado
+terraform show
+
+# Destruir todos os recursos criados
+terraform destroy -auto-approve
+docker ps | grep terraform || echo "Containers destruídos com sucesso"`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/terraform" order={ADVANCED_ORDER} />
       </div>
     </main>

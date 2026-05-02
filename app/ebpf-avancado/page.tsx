@@ -758,6 +758,115 @@ interval:s:3 { print(@bytes); clear(@bytes); }
         </div>
       </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar Cilium em K3s e Ver Hubble</p>
+              <CodeBlock lang="bash" code={`# Instalar K3s sem CNI (deixar para o Cilium)
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--flannel-backend=none --disable-network-policy" sh -
+
+# Instalar Cilium via Helm
+helm repo add cilium https://helm.cilium.io/
+helm install cilium cilium/cilium --version 1.15.0 \
+  --namespace kube-system \
+  --set kubeProxyReplacement=true \
+  --set k8sServiceHost=127.0.0.1 \
+  --set k8sServicePort=6443 \
+  --set hubble.relay.enabled=true \
+  --set hubble.ui.enabled=true
+
+# Aguardar Cilium ficar pronto
+kubectl -n kube-system wait pods \
+  -l k8s-app=cilium --for condition=Ready --timeout=2m
+
+# Instalar CLI do Hubble
+HUBBLE_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt)
+curl -L --fail --remote-name-all \
+  "https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz"
+tar xzvf hubble-linux-amd64.tar.gz && mv hubble /usr/local/bin/`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Observabilidade com Hubble e CiliumNetworkPolicy</p>
+              <CodeBlock lang="bash" code={`# Habilitar port-forward para Hubble Relay
+kubectl port-forward -n kube-system svc/hubble-relay 4245:80 &
+
+# Ver fluxos de tráfego em tempo real
+hubble observe --server localhost:4245 -f
+
+# Em outro terminal, gerar tráfego
+kubectl run test-pod --image=nginx:alpine --restart=Never
+kubectl exec test-pod -- curl -s http://kubernetes/
+
+# Filtrar apenas tráfego dropado
+hubble observe --server localhost:4245 --verdict DROPPED
+
+# Aplicar CiliumNetworkPolicy (L7 HTTP)
+kubectl apply -f - << 'EOF'
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-get-only
+spec:
+  endpointSelector:
+    matchLabels:
+      app: web
+  ingress:
+  - toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP
+      rules:
+        http:
+        - method: "GET"
+          path: "/api/.*"
+EOF
+
+kubectl get cnp`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Tetragon: Segurança em Runtime</p>
+              <CodeBlock lang="bash" code={`# Instalar Tetragon via Helm
+helm repo add cilium https://helm.cilium.io/ 2>/dev/null || true
+helm install tetragon cilium/tetragon -n kube-system
+
+# Instalar CLI tetra
+TETRAGON_VERSION=$(curl -s https://api.github.com/repos/cilium/tetragon/releases/latest | jq -r '.tag_name' 2>/dev/null || echo "v1.0.0")
+curl -L "https://github.com/cilium/tetragon/releases/download/$TETRAGON_VERSION/tetra-linux-amd64.tar.gz" | tar -xz
+mv tetra /usr/local/bin/
+
+# Criar TracingPolicy para detectar execução de nc/ncat
+kubectl apply -f - << 'EOF'
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: block-network-tools
+spec:
+  kprobes:
+  - call: "security_file_open"
+    syscall: false
+    args:
+    - index: 0
+      type: "file"
+    selectors:
+    - matchArgs:
+      - index: 0
+        operator: "Prefix"
+        values:
+        - "/usr/bin/nc"
+        - "/usr/bin/ncat"
+      matchActions:
+      - action: Sigkill
+EOF
+
+# Ver eventos de segurança
+kubectl exec -n kube-system ds/tetragon -c tetragon -- \
+  tetra getevents --output=compact`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/ebpf-avancado" order={ADVANCED_ORDER} />
     </div>
   );

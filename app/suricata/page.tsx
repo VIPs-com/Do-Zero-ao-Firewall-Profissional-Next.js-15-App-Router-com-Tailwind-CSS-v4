@@ -617,6 +617,103 @@ sudo kill -USR2 \$(cat /var/run/suricata.pid)`}
           </div>
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar Suricata e Testar Detecção</p>
+              <CodeBlock lang="bash" code={`# Instalar Suricata via PPA OISF
+add-apt-repository ppa:oisf/suricata-stable -y
+apt update && apt install suricata -y
+
+# Verificar versão
+suricata --version
+
+# Configurar interface no suricata.yaml
+IFACE=$(ip route show default | awk '/default/{print $5}')
+sed -i "s/interface: eth0/interface: $IFACE/" /etc/suricata/suricata.yaml
+
+# Atualizar regras Emerging Threats
+suricata-update
+
+# Testar modo IDS em background
+suricata -c /etc/suricata/suricata.yaml -i $IFACE -D
+
+# Verificar que está rodando
+sleep 3 && suricatasc -c /var/run/suricata/suricata-command.socket version`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Criar Regra Customizada e Testar Alerta</p>
+              <CodeBlock lang="bash" code={`# Criar regra personalizada para detectar acesso a /test-suricata
+cat > /etc/suricata/rules/local.rules << 'EOF'
+# Detectar requisições HTTP para /test-suricata
+alert http any any -> any any (
+  msg:"TESTE Acesso a URL suspeita";
+  content:"/test-suricata";
+  http_uri;
+  sid:9000001;
+  rev:1;
+)
+
+# Detectar scan de portas (SYN a muitas portas)
+alert tcp any any -> $HOME_NET any (
+  msg:"SCAN Port scan detectado";
+  flags:S;
+  threshold: type both, track by_src, count 20, seconds 10;
+  sid:9000002;
+  rev:1;
+)
+EOF
+
+# Adicionar arquivo de regras ao suricata.yaml
+echo "  - /etc/suricata/rules/local.rules" >> /etc/suricata/suricata.yaml
+
+# Testar regras sem iniciar (verificar sintaxe)
+suricata -T -c /etc/suricata/suricata.yaml
+
+# Gerar tráfego de teste
+curl http://localhost/test-suricata 2>/dev/null || true
+
+# Ver alertas no EVE JSON
+tail -f /var/log/suricata/eve.json | python3 -c "
+import sys, json
+for line in sys.stdin:
+    e = json.loads(line.strip())
+    if e.get('event_type') == 'alert':
+        print(f'ALERTA: {e[\"alert\"][\"signature\"]} ({e[\"src_ip\"]})')
+" &`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Analisar EVE JSON com jq</p>
+              <CodeBlock lang="bash" code={`# Instalar jq para análise de JSON
+apt install jq -y
+
+# Ver alertas recentes
+cat /var/log/suricata/eve.json | \
+  jq 'select(.event_type == "alert") | {ts: .timestamp, sig: .alert.signature, src: .src_ip}' | \
+  head -40
+
+# Top 10 IPs gerando alertas
+cat /var/log/suricata/eve.json | \
+  jq -r 'select(.event_type == "alert") | .src_ip' | \
+  sort | uniq -c | sort -rn | head -10
+
+# Ver detalhes de alerta por SID
+cat /var/log/suricata/eve.json | \
+  jq 'select(.event_type == "alert" and .alert.signature_id == 9000001)'
+
+# Estatísticas de tráfego
+cat /var/log/suricata/eve.json | \
+  jq -r '.event_type' | sort | uniq -c | sort -rn
+
+# Monitorar em tempo real (equivalente a tail -f filtrado)
+tail -f /var/log/suricata/eve.json | \
+  jq --unbuffered 'select(.event_type == "alert") | "\(.timestamp) ALERTA: \(.alert.signature)"'`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/suricata" order={ADVANCED_ORDER} />
       </div>
     </div>

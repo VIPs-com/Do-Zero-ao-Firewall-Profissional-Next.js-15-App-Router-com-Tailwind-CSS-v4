@@ -593,6 +593,99 @@ iptables -L INPUT -n -v | grep -E "80|443"`} />
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Stack Básica com Traefik e HTTPS Automático</p>
+              <CodeBlock lang="bash" code={`mkdir -p /opt/traefik && cd /opt/traefik
+touch acme.json && chmod 600 acme.json
+
+cat > docker-compose.yml << 'EOF'
+services:
+  traefik:
+    image: traefik:v3
+    command:
+      - "--api.dashboard=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=admin@meudominio.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./acme.json:/acme.json
+
+  app:
+    image: traefik/whoami
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(\`app.meudominio.com\`)"
+      - "traefik.http.routers.app.entrypoints=websecure"
+      - "traefik.http.routers.app.tls.certresolver=letsencrypt"
+EOF
+
+docker compose up -d
+docker compose logs traefik | tail -20`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Middlewares: Redirect HTTP e BasicAuth</p>
+              <CodeBlock lang="bash" code={`# Middleware: redirect HTTP → HTTPS global
+cat >> docker-compose.yml << 'EOF'
+    labels:
+      - "traefik.http.routers.http-catchall.rule=hostregexp(\`.+\`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-https"
+      - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-https.redirectscheme.permanent=true"
+EOF
+
+# Gerar hash de senha para BasicAuth (usuário: admin)
+apt install apache2-utils -y
+htpasswd -nb admin minhasenha | sed -e 's/\\$/\\$\\$/g'
+# Copiar o hash e usar como valor do middleware
+
+# Adicionar BasicAuth ao container app
+# labels:
+#   - "traefik.http.routers.app.middlewares=auth"
+#   - "traefik.http.middlewares.auth.basicauth.users=admin:$$apr1$$..."
+
+# Verificar middlewares ativos no dashboard
+docker compose logs traefik | grep middleware`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Dashboard Seguro e Monitoramento</p>
+              <CodeBlock lang="bash" code={`# Habilitar dashboard do Traefik com proteção BasicAuth
+cat >> docker-compose.yml << 'EOF'
+  # Adicionar ao serviço traefik:
+  # labels:
+  #   - "traefik.enable=true"
+  #   - "traefik.http.routers.dashboard.rule=Host(\`traefik.meudominio.com\`)"
+  #   - "traefik.http.routers.dashboard.service=api@internal"
+  #   - "traefik.http.routers.dashboard.middlewares=auth"
+  #   - "traefik.http.middlewares.auth.basicauth.users=admin:HASH"
+EOF
+
+# Ver rotas configuradas via API
+curl -s http://localhost:8080/api/http/routers | python3 -m json.tool | head -40
+
+# Ver certificados ACME gerenciados
+curl -s http://localhost:8080/api/http/routers | \
+  python3 -c "import sys,json; data=json.load(sys.stdin); [print(r.get('tls',{}).get('certResolver','')) for r in data if isinstance(r,dict)]"
+
+# Verificar health dos backends
+curl -s http://localhost:8080/api/http/services | python3 -m json.tool | grep -A3 '"status"'`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/traefik" order={ADVANCED_ORDER} />
       </div>
     </main>

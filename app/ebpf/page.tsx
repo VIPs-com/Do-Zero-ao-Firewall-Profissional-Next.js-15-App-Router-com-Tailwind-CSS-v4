@@ -591,6 +591,97 @@ hubble observe --type drop --follow
           </div>
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar BCC Tools e Monitorar Processos</p>
+              <CodeBlock lang="bash" code={`# Verificar versão do kernel (eBPF precisa de 4.4+)
+uname -r
+
+# Instalar BCC (BPF Compiler Collection)
+apt install bpfcc-tools linux-headers-$(uname -r) -y
+
+# Monitorar execuções de processos em tempo real
+execsnoop-bpfcc &
+# Executar comandos em outro terminal para ver no rastreamento
+sleep 1
+ls /tmp
+kill %1
+
+# Monitorar abertura de arquivos
+opensnoop-bpfcc -d 5   # capturar por 5 segundos
+
+# Rastrear conexões TCP
+tcpconnect-bpfcc &
+curl -s https://google.com > /dev/null
+kill %1
+
+# Latência de I/O em disco (histograma)
+biolatency-bpfcc -D 5 2>/dev/null | head -20`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — bpftrace: Scripts de Rastreamento</p>
+              <CodeBlock lang="bash" code={`# Instalar bpftrace
+apt install bpftrace -y
+
+# Script 1: contar chamadas de sistema execve por processo
+bpftrace -e 'tracepoint:syscalls:sys_enter_execve { @[comm] = count(); }' &
+sleep 5
+kill %1
+
+# Script 2: latência de read() em microsegundos
+bpftrace -e '
+kprobe:vfs_read { @start[tid] = nsecs; }
+kretprobe:vfs_read /@start[tid]/
+{
+  @latencia_us = hist((nsecs - @start[tid]) / 1000);
+  delete(@start[tid]);
+}
+interval:s:5 { print(@latencia_us); exit(); }
+'
+
+# Script 3: Top 5 processos por I/O
+bpftrace -e '
+tracepoint:block:block_rq_issue { @io[comm] = count(); }
+interval:s:3 { print(@io, 5); clear(@io); }
+' &
+sleep 6
+kill %1`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — XDP: Filtro de Pacotes em Alta Velocidade</p>
+              <CodeBlock lang="bash" code={`# Instalar ferramentas XDP
+apt install xdp-tools linux-headers-$(uname -r) -y 2>/dev/null || \
+  apt install xdp-tools -y
+
+# Ver interfaces suportando XDP
+ip link show | grep -E "^[0-9]|xdp"
+
+# Usar xdp-filter para bloquear tráfego por IP
+# (substitui iptables para casos de alta performance)
+IFACE=$(ip route show default | awk '/default/{print $5}')
+
+# Carregar xdp-filter na interface
+xdp-filter load --mode skb $IFACE
+
+# Adicionar IP à lista de bloqueio
+xdp-filter ip add 10.0.0.5
+xdp-filter ip add 192.168.100.200
+
+# Ver IPs bloqueados
+xdp-filter status
+
+# Ver estatísticas de pacotes processados pelo XDP
+xdp-filter status | grep -i "packets\|blocked"
+
+# Descarregar o programa XDP
+xdp-filter unload $IFACE`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/ebpf" order={ADVANCED_ORDER} />
       </div>
     </div>
