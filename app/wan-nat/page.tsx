@@ -686,6 +686,75 @@ iptables-save > /etc/iptables/rules.v4`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — NAT básico: compartilhar internet com a LAN</p>
+            <CodeBlock lang="bash" code={`# Verificar interfaces (substitua eth0=WAN, eth2=LAN)
+ip a | grep -E "^[0-9]|inet "
+
+# 1. Ativar roteamento no kernel
+echo 'net.ipv4.ip_forward=1' | sudo tee -a /etc/sysctl.d/99-forward.conf
+sudo sysctl -p /etc/sysctl.d/99-forward.conf
+
+# 2. Regra NAT MASQUERADE (IP WAN dinâmico)
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+# 3. Permitir tráfego estabelecido (respostas voltarem)
+sudo iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+sudo iptables -A FORWARD -i eth2 -o eth0 -j ACCEPT
+
+# 4. Testar de um cliente na LAN:
+# ping 8.8.8.8   → deve funcionar (IP roteado)
+# curl google.com → deve funcionar (DNS + HTTP)
+
+# 5. Verificar regra NAT criada:
+sudo iptables -t nat -L POSTROUTING -n -v`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Verificar MASQUERADE com conntrack</p>
+            <CodeBlock lang="bash" code={`# Instalar conntrack (gerenciador de conexões)
+sudo apt install conntrack -y
+
+# Gerar tráfego de um cliente (192.168.57.10):
+# ping -c 5 8.8.8.8
+
+# No firewall, ver conexões NAT ativas:
+sudo conntrack -L --proto icmp 2>/dev/null | head -5
+
+# Ver conexões TCP (mais detalhado):
+sudo conntrack -L --proto tcp 2>/dev/null | grep ESTABLISHED | head -5
+
+# Estatísticas de conntrack:
+sudo conntrack -S
+
+# Limite de conexões simultâneas (importante para firewall):
+cat /proc/sys/net/netfilter/nf_conntrack_max`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Persistir regras com iptables-persistent</p>
+            <CodeBlock lang="bash" code={`# Instalar persistência automática
+sudo apt install iptables-persistent -y
+
+# Salvar regras atuais (responder "Yes" quando perguntar)
+sudo iptables-save | sudo tee /etc/iptables/rules.v4
+
+# Verificar que o arquivo foi criado:
+cat /etc/iptables/rules.v4
+
+# Simular reboot: recarregar regras manualmente
+sudo iptables -F          # Limpar tudo
+sudo iptables -t nat -F   # Limpar NAT
+sudo iptables-restore < /etc/iptables/rules.v4  # Restaurar
+
+# Confirmar que MASQUERADE voltou:
+sudo iptables -t nat -L POSTROUTING -n -v`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/wan-nat" />
     </div>

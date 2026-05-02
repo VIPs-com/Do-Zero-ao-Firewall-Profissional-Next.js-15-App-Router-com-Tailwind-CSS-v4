@@ -526,6 +526,75 @@ curl -s -k \
           </div>
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Criar regras de firewall via Web UI</p>
+              <CodeBlock lang="bash" code={`# Cenário: permitir HTTPS da LAN para a internet
+
+# Via Web UI (Firewall > Rules > LAN):
+# 1. Action: Pass
+# 2. Interface: LAN
+# 3. Protocol: TCP
+# 4. Source: LAN net
+# 5. Destination: any
+# 6. Destination Port: HTTPS (443)
+# 7. Description: "Permitir HTTPS da LAN"
+# 8. Save & Apply
+
+# Via SSH (acesso avançado):
+ssh -p 22 root@192.168.1.1  # IP padrão OPNsense
+
+# Verificar regras carregadas via pfctl:
+pfctl -sr | grep "pass"     # regras de passagem
+pfctl -sr | grep "block"    # regras de bloqueio
+pfctl -si                   # estatísticas`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Port Forward (DNAT) via Interface Web</p>
+              <CodeBlock lang="bash" code={`# Equivalente ao iptables PREROUTING DNAT
+
+# Via Web UI (Firewall > NAT > Port Forward):
+# 1. Interface: WAN
+# 2. Protocol: TCP
+# 3. Destination: WAN address
+# 4. Destination Port Range: HTTP (80) to HTTP (80)
+# 5. Redirect Target IP: 192.168.1.100 (servidor web DMZ)
+# 6. Redirect Target Port: HTTP
+# 7. Description: "Web Server DMZ"
+# 8. Add associated rule: Yes (cria regra FORWARD automática)
+
+# Verificar NAT no pf:
+pfctl -sn          # regras NAT
+pfctl -ss | grep "192.168.1.100"  # conexões ativas para o servidor`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Backup e Restore via API REST</p>
+              <CodeBlock lang="bash" code={`# OPNsense tem API REST completa (autenticação por API key)
+# Criar API Key: System > Access > Users > seu usuário > Add API Key
+
+API_KEY="sua-api-key"
+API_SECRET="seu-api-secret"
+BASE="https://192.168.1.1/api"
+
+# Fazer backup da configuração:
+curl -k -u "$API_KEY:$API_SECRET" \\
+  "$BASE/core/backup/download/this" \\
+  -o opnsense-backup-$(date +%Y%m%d).xml
+
+# Listar backups disponíveis:
+curl -k -u "$API_KEY:$API_SECRET" \\
+  "$BASE/core/backup/list" | python3 -m json.tool
+
+# Ver versão atual:
+curl -k -u "$API_KEY:$API_SECRET" \\
+  "$BASE/core/firmware/status" | python3 -m json.tool`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/opnsense" order={ADVANCED_ORDER} />
       </div>
     </div>
