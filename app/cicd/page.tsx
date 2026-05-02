@@ -773,6 +773,36 @@ jobs:
           </div>
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'Error: Process completed with exit code 1 — workflow falha sem mensagem clara',
+              fix: 'Adicionar set -e e set -x no script bash para ver qual comando falhou. Habilitar debug mode no workflow: secrets.ACTIONS_RUNNER_DEBUG = true. Verificar a aba "Annotations" no run — GitHub Actions muitas vezes oculta o erro real no log.',
+            },
+            {
+              err: 'docker/build-push-action: denied: permission_denied — push para ghcr.io falha',
+              fix: 'Token GITHUB_TOKEN não tem permissão de escrita em packages. Adicionar ao job: permissions: packages: write. Confirmar que o Dockerfile não referencia imagem privada sem autenticação.',
+            },
+            {
+              err: 'Self-hosted runner: Job is pending — runner não pega o job',
+              fix: 'Verificar status do runner: Settings → Actions → Runners. Runner offline = processo morreu. Reiniciar: sudo ./svc.sh start. Verificar grupos: o runner precisa estar no grupo docker para builds com containers.',
+            },
+            {
+              err: 'Deployment falha: SSH: Permission denied (publickey)',
+              fix: 'A chave privada no secret DEPLOY_KEY não corresponde à chave pública em authorized_keys no servidor. Gerar novo par: ssh-keygen -t ed25519 -f deploy_key. Adicionar deploy_key.pub ao servidor e deploy_key (privada) como secret no GitHub.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/cicd" order={ADVANCED_ORDER} />
       </div>
     </div>

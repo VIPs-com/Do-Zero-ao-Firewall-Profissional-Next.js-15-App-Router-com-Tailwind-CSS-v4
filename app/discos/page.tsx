@@ -221,6 +221,36 @@ du -sh /home/*
 
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'mount: /dev/sdb1: can\'t read superblock — disco não monta',
+            fix: 'Filesystem corrompido ou partição sem formatação. Verificar: file -s /dev/sdb1 (deve mostrar o tipo de FS). Se novo: mkfs.ext4 /dev/sdb1. Se corrompido: fsck -y /dev/sdb1 (nunca em partição montada).',
+          },
+          {
+            err: '/etc/fstab errado — sistema não inicia após edição (emergency shell)',
+            fix: 'UUID incorreto ou opções inválidas. No emergency shell: montar root em modo leitura/escrita: mount -o remount,rw /. Editar: nano /etc/fstab. Verificar UUIDs: blkid. Remontar: mount -a para testar antes de reiniciar.',
+          },
+          {
+            err: 'df -h mostra disco cheio mas du -sh não encontra arquivos grandes',
+            fix: 'Arquivo deletado mas ainda aberto por processo. O kernel mantém o inode até o processo fechar. Encontrar: lsof | grep deleted. Reiniciar o processo que segura o arquivo (ex: systemctl restart nginx). O espaço será liberado imediatamente.',
+          },
+          {
+            err: 'LVM: device not found — lvm2 não reconhece volumes após reinstalação',
+            fix: 'Metadados do LVM intactos mas não ativos. Escanear e ativar: pvscan, vgscan, vgchange -ay. Se os volumes apareceram: lvdisplay. Montar normalmente após ativação. Em live USB, pode precisar de vgscan --mknodes.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/discos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

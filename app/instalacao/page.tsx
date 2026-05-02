@@ -499,6 +499,36 @@ export default function InstallationPage() {
         </aside>
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <div className="max-w-5xl mx-auto px-4 mb-8 space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns na Instalação
+        </h2>
+        {[
+          {
+            err: 'VirtualBox: Kernel driver not installed (rc=-1908) — virtualização não inicia',
+            fix: 'Módulos do kernel VirtualBox não compilados. Instalar headers e recompilar: apt install linux-headers-$(uname -r) dkms && dpkg-reconfigure virtualbox-dkms. Se persistir, verificar se Secure Boot está ativo (bloqueia módulos não assinados).',
+          },
+          {
+            err: 'ISO não inicia no boot — "No bootable device found"',
+            fix: 'A ordem de boot não prioriza o drive virtual ou a ISO não foi anexada corretamente. No VirtualBox: Settings → Storage → adicionar ISO no drive óptico. Settings → System → Boot Order → mover "Optical" para cima. Verificar se a ISO foi baixada completa (md5sum).',
+          },
+          {
+            err: 'Rede NAT funciona mas host não acessa a VM (ping falha)',
+            fix: 'Com NAT, o host não acessa a VM diretamente — tráfego é unidirecional. Usar "Host-only" ou "Bridge" para acesso bidirecional. Para SSH da máquina real para a VM com NAT, configurar Port Forwarding: Settings → Network → Advanced → Port Forwarding.',
+          },
+          {
+            err: 'Instalação do Debian trava em "Configuring network" — timeout longo',
+            fix: 'Interface de rede não detectada ou DHCP falhou. Pressionar Esc para ver logs. Verificar se o adaptador de rede virtual está configurado. No installer, selecionar "Configure network manually" e definir IP fixo temporariamente.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/instalacao" />
     </div>

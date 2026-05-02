@@ -267,6 +267,36 @@ C:\\Windows\\Temp\\    → Arquivos temporários (equiv. /tmp)
 # Sem registro binário — tudo é transparente`}
       />
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'Arquivo de configuração editado mas sistema usa versão antiga',
+            fix: 'Muitos serviços em /etc/ têm diretórios .d/ (ex: /etc/nginx/conf.d/). Arquivos nesses diretórios sobrescrevem o arquivo principal. Verificar: ls /etc/nginx/conf.d/ — pode haver um arquivo sobreescrevendo suas mudanças.',
+          },
+          {
+            err: 'Instalei um programa mas o binário não está em /usr/bin — comando não encontrado',
+            fix: 'Verificar onde foi instalado: which programa ou find /usr -name "programa". Programas de terceiros vão para /usr/local/bin ou /opt/. Adicionar ao PATH: export PATH="$PATH:/usr/local/bin" e colocar no ~/.bashrc para persistir.',
+          },
+          {
+            err: '/tmp cheio — aplicação falha ao criar arquivos temporários',
+            fix: '/tmp é limpo no reboot mas pode encher antes. Verificar: df -h /tmp. Em Ubuntu/Debian, /tmp pode ser tmpfs (memória RAM). Limpar: rm -rf /tmp/* (cuidado com processos usando /tmp). Aumentar o tamanho: mount -o remount,size=2G /tmp.',
+          },
+          {
+            err: 'df -h mostra /dev/sda1 100% cheio mas não vejo arquivos grandes',
+            fix: '/var/log pode estar enorme. Verificar: du -sh /var/log/*. Logs rotativos podem ter acumulado. Limpar logs antigos: journalctl --vacuum-size=100M ou truncar: truncate -s 0 /var/log/syslog. Configurar logrotate para evitar recorrência.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/fhs" order={FUNDAMENTOS_ORDER} />
     </div>
   );

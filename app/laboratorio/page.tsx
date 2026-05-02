@@ -457,6 +457,36 @@ virsh snapshot-revert Firewall snap-base`}
         </p>
       </section>
 
+      {/* ── Erros Comuns ── */}
+      <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns no Lab
+        </h2>
+        {[
+          {
+            err: 'KVM: erro "CPU doesn\'t support KVM extensions" — virtualização aninhada falha',
+            fix: 'Verificar se a CPU suporta virtualização: egrep -c "(vmx|svm)" /proc/cpuinfo (> 0 = ok). Se 0, habilitar VT-x/AMD-V na BIOS. Em VM dentro de VM (nested): habilitar nested virtualization no hypervisor host: modprobe kvm_intel nested=1.',
+          },
+          {
+            err: 'virsh domstart vm-firewall falha: Cannot access storage file — permission denied',
+            fix: 'O arquivo de disco qcow2 não está acessível pelo usuário libvirt-qemu. Corrigir: chown libvirt-qemu:libvirt-qemu /caminho/disco.qcow2 ou chmod o+r /caminho/. Alternativa: mover o disco para /var/lib/libvirt/images/ (pasta padrão com permissões corretas).',
+          },
+          {
+            err: 'VirtualBox: NS_ERROR_FAILURE ao iniciar VM — interface de rede não carrega',
+            fix: 'Módulo vboxnetflt do kernel não carregado. Reiniciar o serviço: sudo /sbin/rcvboxdrv restart. Se falhar: sudo apt install --reinstall virtualbox-dkms && sudo modprobe vboxdrv. Verificar dkms status: dkms status | grep vbox.',
+          },
+          {
+            err: 'VM de firewall inicia mas rede entre VMs não funciona',
+            fix: 'Verificar que as VMs estão na mesma rede interna (Internal Network) ou Host-Only com o mesmo nome de rede no VirtualBox. No KVM, as VMs devem estar na mesma bridge. Testar conectividade básica: arping -I eth1 192.168.57.1 antes de testar ping.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/laboratorio" />
     </div>

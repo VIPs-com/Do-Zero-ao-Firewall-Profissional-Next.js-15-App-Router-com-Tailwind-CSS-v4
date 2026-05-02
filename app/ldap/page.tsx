@@ -512,6 +512,36 @@ ldapsearch -Y EXTERNAL -H ldapi:/// \\
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'ldap_bind: Invalid credentials (49) — autenticação falha',
+              fix: 'DN do bind incorreto ou senha errada. Verificar o cn= exato do usuário: ldapsearch -x -H ldap://localhost -b "dc=empresa,dc=local" "(uid=usuario)". O DN completo é obrigatório: cn=admin,dc=empresa,dc=local — não apenas admin.',
+            },
+            {
+              err: 'ldapadd: Insufficient access (50) — permissão negada ao adicionar entrada',
+              fix: 'O usuário de bind não tem ACL para escrita. Usar o DN do admin (rootDN) para operações administrativas. Verificar ACLs no slapd.conf ou via olcAccess no back-end LDAP. O rootDN sempre tem acesso total independente das ACLs.',
+            },
+            {
+              err: 'Login SSH via LDAP falha — getent passwd usuario não retorna nada',
+              fix: 'nsswitch.conf ou nslcd não está configurado. Verificar: systemctl status nslcd. Testar: getent passwd. Confirmar /etc/nslcd.conf com uri, base e binddn corretos. Reiniciar: systemctl restart nslcd nscd.',
+            },
+            {
+              err: 'LDAPS falha: certificate verify failed',
+              fix: 'Certificado autoassinado não confiável pelo cliente. Adicionar à configuração do cliente: TLS_REQCERT never (para testes) ou TLS_CACERT /caminho/ca.crt (produção). No /etc/nslcd.conf: tls_reqcert never durante testes iniciais.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/ldap" order={ADVANCED_ORDER} />
       </div>
     </main>

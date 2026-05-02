@@ -342,6 +342,36 @@ sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' \\
   /etc/ssh/sshd_config`}
       />
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'vim: arquivo travado — ".arquivo.swp" already exists',
+            fix: 'Uma sessão anterior do vim abriu o arquivo e não fechou corretamente (crash, conexão SSH perdida). Opções: (O)pen Read-Only para ver, (R)ecover para recuperar, (D)elete para remover o swap. Se não há alterações a recuperar, apagar: rm .arquivo.swp.',
+          },
+          {
+            err: 'nano: Permission denied ao salvar — não consegue gravar arquivo',
+            fix: 'Arquivo pertence ao root. Abrir com sudo: sudo nano /etc/ssh/sshd_config. Alternativa: editar uma cópia local, ajustar o conteúdo e mover: sudo cp arquivo.bak /etc/destino.',
+          },
+          {
+            err: 'Saí do vim sem salvar — como recuperar?',
+            fix: 'Se existir arquivo de swap (.arquivo.swp), abrir o arquivo e pressionar R (recover). Sem swap: a alteração foi perdida. Hábito preventivo: :w frequentemente. Configurar salvamento automático: set updatetime=300 no ~/.vimrc.',
+          },
+          {
+            err: 'Editei o arquivo de configuração mas o serviço não mudou o comportamento',
+            fix: 'Serviços leem configuração na inicialização — editar o arquivo não basta. Recarregar: systemctl reload nome-servico (hot reload sem reiniciar conexões) ou systemctl restart nome-servico (reinício completo). Verificar se não há erro de sintaxe: nginx -t ou apache2ctl configtest.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/editores" order={FUNDAMENTOS_ORDER} />
     </div>
   );

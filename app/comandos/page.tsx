@@ -278,6 +278,36 @@ grep "ERROR" /var/log/nginx/error.log  # filtrar logs
 find /etc -name "*.conf" -type f   # buscar arquivos`}
       />
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'bash: cd: /etc/ssh: Permission denied',
+            fix: 'O diretório /etc/ssh é acessível apenas por root. Usar sudo: sudo ls /etc/ssh. Para navegar e ler arquivos: sudo -i (abrir shell root) ou sudo cat /etc/ssh/sshd_config.',
+          },
+          {
+            err: 'rm: cannot remove: Is a directory',
+            fix: 'rm simples não remove diretórios. Usar rm -r pasta/ para remover recursivamente. Se houver arquivos protegidos de escrita: rm -rf pasta/ (forçado). Cuidado com rm -rf em caminhos errados — não há desfazer no terminal Linux.',
+          },
+          {
+            err: 'grep: /var/log/syslog: Permission denied',
+            fix: 'Logs do sistema requerem root. Usar sudo: sudo grep "error" /var/log/syslog. Alternativa: adicionar o usuário ao grupo adm (grupo com leitura de logs): sudo usermod -aG adm $USER — requer novo login.',
+          },
+          {
+            err: 'find: /proc: Permission denied (muitas linhas de erro)',
+            fix: 'find em / inclui /proc e /sys que têm entradas protegidas. Suprimir erros com: find / -name "arquivo" 2>/dev/null. Usar caminhos específicos: find /etc -name "*.conf" em vez de varrer o sistema inteiro.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/comandos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

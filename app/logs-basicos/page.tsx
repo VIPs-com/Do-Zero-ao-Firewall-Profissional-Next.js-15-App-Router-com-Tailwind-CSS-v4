@@ -228,6 +228,36 @@ ssh localhost
 
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'journalctl: No journal files were found',
+            fix: 'Diretório do journal não existe ou sem permissão. Verificar: ls -la /var/log/journal. Criar: mkdir -p /var/log/journal && systemd-tmpfiles --create --prefix /var/log/journal. Reiniciar: systemctl restart systemd-journald.',
+          },
+          {
+            err: 'tail -f /var/log/syslog — arquivo não existe no sistema',
+            fix: 'Ubuntu/Debian modernos usam rsyslog + systemd-journald. Em sistemas só com journald, syslog pode não existir. Instalar rsyslog: apt install rsyslog. Alternativa nativa: journalctl -f (equivalente a tail -f para todos os serviços).',
+          },
+          {
+            err: 'grep no log não encontra erros mesmo que o serviço esteja com problema',
+            fix: 'Serviços modernos logam via journald, não em /var/log. Verificar: journalctl -u nome-servico --since "1 hour ago". Para buscar: journalctl | grep -i error. Alguns serviços têm log próprio: Nginx em /var/log/nginx/, Apache em /var/log/apache2/.',
+          },
+          {
+            err: 'Log de autenticação vazio — /var/log/auth.log não tem entradas SSH',
+            fix: 'rsyslog pode estar desabilitado ou o serviço SSH está logando via journald. Verificar: journalctl -u ssh --since today. Se auth.log existe mas vazio: systemctl status rsyslog. Reiniciar: systemctl restart rsyslog.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/logs-basicos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

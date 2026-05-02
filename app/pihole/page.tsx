@@ -438,6 +438,36 @@ pihole -w "cdn.site-legitimo.com"
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'Pi-hole container não inicia: address already in use — porta 53',
+              fix: 'systemd-resolved está ocupando a porta 53. Desabilitar: systemctl disable --now systemd-resolved. Editar /etc/systemd/resolved.conf: DNSStubListener=no. Criar link: ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf e reiniciar o container.',
+            },
+            {
+              err: 'Sites não estão sendo bloqueados — Pi-hole ativo mas sem efeito',
+              fix: 'Clientes não estão usando o Pi-hole como DNS. Verificar: nslookup google.com IP-DO-PIHOLE. Se funcionar, o problema é no DHCP. Confirmar que o DHCP distribui o IP do Pi-hole como DNS primário. Testar manualmente: configurar DNS estático no cliente.',
+            },
+            {
+              err: 'pihole -g falha: Gravity update failed — download de listas bloqueado',
+              fix: 'O próprio Pi-hole está bloqueando as URLs das listas de bloqueio (whitelist circular). Desabilitar temporariamente: pihole disable. Rodar pihole -g. Reativar: pihole enable. Adicionar às listas de whitelist os domínios de download das listas.',
+            },
+            {
+              err: 'Dashboard inacessível — Pi-hole responde DNS mas HTTP 404',
+              fix: 'O lighttpd não está rodando ou a porta 80 está ocupada. No container: docker compose logs pihole | grep lighttpd. Verificar variável de ambiente WEBPASSWORD no compose. Recriar o container com docker compose up -d --force-recreate.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/pihole" order={ADVANCED_ORDER} />
       </div>
     </main>

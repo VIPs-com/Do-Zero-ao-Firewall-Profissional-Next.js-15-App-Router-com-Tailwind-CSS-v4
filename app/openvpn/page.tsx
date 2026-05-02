@@ -515,6 +515,36 @@ ip route | grep tun0`} />
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'TLS handshake failed — conexão OpenVPN não estabelece',
+              fix: 'Verificar se ta.key (TLS Auth) está presente em ambos os lados e com a mesma direção (0 no servidor, 1 no cliente). Confirmar que os certificados foram gerados pela mesma CA. Testar com verb 4 no server.conf para logs detalhados.',
+            },
+            {
+              err: 'Clientes conectam mas não acessam a internet (só LAN)',
+              fix: 'Roteamento ausente. Verificar: (1) push "redirect-gateway def1" no server.conf; (2) NAT no servidor: iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE; (3) ip_forward habilitado: cat /proc/sys/net/ipv4/ip_forward deve retornar 1.',
+            },
+            {
+              err: 'VERIFY ERROR: depth=0, error=CRL has expired',
+              fix: 'A Certificate Revocation List (CRL) expirou. Renovar: cd easy-rsa && ./easyrsa gen-crl. Copiar a nova crl.pem para /etc/openvpn/server/ e reiniciar o serviço. Adicionar cron para renovar mensalmente.',
+            },
+            {
+              err: 'Cliente Windows: TAP driver não encontrado',
+              fix: 'O driver TAP não está instalado. No Windows: reinstalar OpenVPN com a opção "TAP Virtual Ethernet Adapter" marcada. Verificar no Device Manager se o adaptador "TAP-Windows Adapter V9" está presente e ativo.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/openvpn" order={ADVANCED_ORDER} />
       </div>
     </main>

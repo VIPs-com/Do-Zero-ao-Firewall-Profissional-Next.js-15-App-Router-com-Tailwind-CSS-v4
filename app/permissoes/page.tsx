@@ -251,6 +251,36 @@ sudo grep "sudo" /var/log/auth.log | tail -5
 
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'chmod 777 aplicado em tudo — "funciona mas é inseguro"',
+            fix: '777 (rwxrwxrwx) dá acesso total a qualquer usuário do sistema. Em servidores web: arquivos de conteúdo = 644, diretórios = 755, scripts PHP = 644 (nunca 777). Para diagnóstico temporário, 755 é quase sempre suficiente e muito mais seguro.',
+          },
+          {
+            err: 'Permission denied ao executar script .sh mesmo sendo o dono',
+            fix: 'Script sem bit de execução. Adicionar: chmod +x script.sh. Verificar: ls -la script.sh deve mostrar -rwxr-xr-x. Alternativa sem chmod: bash script.sh (o bash interpreta, não precisa do +x).',
+          },
+          {
+            err: 'Servidor web não acessa arquivos — 403 Forbidden mesmo com arquivos existindo',
+            fix: 'Verificar permissões em cadeia: cada diretório no caminho precisa ter x (execute) para o usuário do servidor web (www-data). Ex: chmod o+x /home/usuario para que www-data possa atravessar. Melhor prática: mover o site para /var/www/ onde o servidor já tem acesso.',
+          },
+          {
+            err: 'sudo: user não está no grupo sudo — acesso sudo negado',
+            fix: 'Adicionar ao grupo sudo: usermod -aG sudo usuario (como root). O usuário precisa fazer logout/login para o grupo ser aplicado. Verificar grupos atuais: id usuario. Em Debian, o grupo pode ser "sudo"; em alguns sistemas, "wheel".',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/permissoes" order={FUNDAMENTOS_ORDER} />
     </div>
   );

@@ -467,6 +467,36 @@ rm -rf /tmp/teste-restore`} />
           </div>
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'sed: 1: "arquivo.conf": undefined label — sed -i no macOS difere do Linux',
+              fix: 'BSD sed (macOS) exige sufixo para -i: sed -i "" "s/old/new/g" arquivo. GNU sed (Linux): sed -i "s/old/new/g" arquivo. Para scripts portáveis, usar perl -pi -e "s/old/new/g" arquivo ou instalar gnu-sed no macOS via Homebrew.',
+            },
+            {
+              err: 'dd: error writing — no space left on device (mesmo com espaço disponível)',
+              fix: 'A partição de destino está cheia, não o disco inteiro. Verificar: df -h. O dd escreve byte a byte — se of= for uma partição menor que if=, vai encher. Usar bs=4M e verificar se o destino tem espaço suficiente antes de iniciar.',
+            },
+            {
+              err: 'nc: connection refused — netcat não conecta na porta',
+              fix: 'Nenhum serviço escutando na porta, ou firewall bloqueando. Verificar se o serviço está ativo: ss -tuln | grep PORTA. Testar de dentro do servidor (localhost) primeiro. Se funcionar local mas não remoto, é firewall: verificar iptables -L -n.',
+            },
+            {
+              err: 'ln: failed to create symbolic link: File exists',
+              fix: 'Link já existe. Para sobrescrever: ln -sf alvo link (flag -f força). Para verificar links existentes: ls -la | grep "->". Links quebrados (apontam para alvo inexistente) aparecem em vermelho no ls.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         {/* ModuleNav */}
         <ModuleNav currentPath="/comandos-avancados" order={FUNDAMENTOS_ORDER} />
 

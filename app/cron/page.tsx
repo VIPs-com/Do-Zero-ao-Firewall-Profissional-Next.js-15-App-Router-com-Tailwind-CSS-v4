@@ -254,6 +254,36 @@ crontab -e  # apagar a linha e salvar`} lang="bash" />
 
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'Cron job não executa — script funciona manualmente mas falha no cron',
+            fix: 'Cron usa PATH mínimo (/usr/bin:/bin). Usar caminhos absolutos no script: /usr/bin/python3 em vez de python3. Verificar logs: grep CRON /var/log/syslog. Redirecionar saída para debug: * * * * * /path/script.sh >> /tmp/cron.log 2>&1.',
+          },
+          {
+            err: 'crontab -e não salva — editor fecha mas tarefa não aparece em crontab -l',
+            fix: 'Linha sem newline final — cron exige nova linha após o último job. Adicionar uma linha em branco ao final do arquivo no editor. Verificar: crontab -l deve mostrar todas as tarefas.',
+          },
+          {
+            err: 'Script com variáveis de ambiente falha no cron (env vars não definidas)',
+            fix: 'Cron não carrega .bashrc ou .profile. Definir variáveis no início do crontab: VARIAVEL=valor. Ou carregar manualmente no script: source /home/usuario/.bashrc 2>/dev/null. Para aplicações que precisam do ambiente completo, usar systemd timer em vez de cron.',
+          },
+          {
+            err: 'Cron executa mas com permissão negada em arquivos/pastas',
+            fix: 'Cron roda como o usuário que editou o crontab. Verificar se o usuário tem acesso ao arquivo/diretório. Para tarefas root, editar com sudo crontab -e. Verificar: ls -la /path/arquivo para confirmar owner e permissões.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/cron" order={FUNDAMENTOS_ORDER} />
     </div>
   );
