@@ -2120,4 +2120,393 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'ProxyJump (-J) encadeia conexões SSH sem abrir shell no intermediário. O cliente SSH negocia uma sessão ao bastion e pede para o bastion fazer TCP forward até 192.168.10.50:22. Para o destino final, a conexão parece vir do bastion. Pode encadear múltiplos saltos com vírgula: -J hop1,hop2,hop3.',
     trail: 'fundamentos',
   },
+
+  // ========== Sprint QUIZ-200 — Perguntas adicionais de profundidade ==========
+
+  // --- Firewall / iptables ---
+  {
+    text: 'O que faz a opção `-m conntrack --ctstate ESTABLISHED,RELATED` em uma regra iptables?',
+    badge: '🛡️ Firewall',
+    options: [
+      'Bloqueia conexões estabelecidas e relacionadas',
+      'Aceita pacotes de conexões já estabelecidas ou relacionadas a conexões permitidas',
+      'Cria novas entradas de conexão na tabela conntrack',
+      'Limita o número de conexões simultâneas por IP',
+    ],
+    correct: 1,
+    explanation: 'ESTABLISHED,RELATED permite que respostas de tráfego já permitido voltem. RELATED cobre conexões auxiliares como o canal de dados do FTP — essencial para o firewall stateful funcionar corretamente.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Qual é a diferença entre as chains INPUT e FORWARD no iptables?',
+    badge: '🛡️ Firewall',
+    options: [
+      'INPUT para IPv4, FORWARD para IPv6',
+      'INPUT processa pacotes destinados ao próprio firewall; FORWARD processa pacotes que passam pelo firewall (roteamento)',
+      'INPUT é mais rápida que FORWARD',
+      'INPUT para TCP, FORWARD para UDP',
+    ],
+    correct: 1,
+    explanation: 'INPUT trata pacotes cujo destino é o próprio sistema (ex: SSH no firewall). FORWARD trata pacotes que o sistema encaminha de uma interface para outra — onde vivem as regras de filtro entre LAN/DMZ/WAN.',
+    trail: 'firewall',
+  },
+  {
+    text: 'O que acontece com pacotes que não correspondem a nenhuma regra quando a policy padrão de uma chain é DROP?',
+    badge: '🛡️ Firewall',
+    options: [
+      'São enviados para a chain REJECT automaticamente',
+      'São descartados silenciosamente sem notificar o remetente',
+      'São aceitos como exceção',
+      'São logados e depois aceitos',
+    ],
+    correct: 1,
+    explanation: 'Com policy DROP, pacotes sem correspondência são descartados sem resposta. Isso é chamado de "fail-closed" — mais seguro pois não revela informação ao atacante. REJECT, em contraste, envia uma mensagem ICMP de volta.',
+    trail: 'firewall',
+  },
+
+  // --- WAN/NAT e DNAT ---
+  {
+    text: 'Qual módulo iptables permite limitar conexões por IP para mitigar DDoS na chain FORWARD?',
+    badge: '🌐 Camada 3',
+    options: [
+      '-m state',
+      '-m limit',
+      '-m connlimit',
+      '-m multiport',
+    ],
+    correct: 2,
+    explanation: 'connlimit com --connlimit-above N --connlimit-mask 32 limita o número de conexões simultâneas por IP de origem. Útil para bloquear SYN flood e port scan agressivo na entrada da DMZ.',
+    trail: 'firewall',
+  },
+  {
+    text: 'No DNAT com iptables, em qual tabela e chain a regra deve ser inserida?',
+    badge: '🎯 DNAT',
+    options: [
+      'filter, FORWARD',
+      'nat, PREROUTING',
+      'mangle, INPUT',
+      'nat, OUTPUT',
+    ],
+    correct: 1,
+    explanation: 'DNAT traduz o IP/porta de destino ANTES do roteamento — por isso fica em nat, PREROUTING. A regra correspondente de FORWARD (filter) deve existir para permitir o tráfego roteado ao destino final.',
+    trail: 'firewall',
+  },
+
+  // --- DNS ---
+  {
+    text: 'O que é uma zona reversa no DNS e para que serve?',
+    badge: '📖 DNS',
+    options: [
+      'Uma zona que resolve nomes de domínio para IPv6',
+      'Uma zona que resolve endereços IP para nomes de host (PTR records)',
+      'Uma zona secundária que recebe transferência de zona',
+      'Uma zona de cache para consultas recursivas',
+    ],
+    correct: 1,
+    explanation: 'Zonas reversas ficam sob in-addr.arpa e mapeiam IP → nome usando registros PTR. Essenciais para rDNS — servidores de email verificam se o IP do remetente resolve para o domínio declarado, prevenindo spam.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Qual a diferença entre um resolver recursivo e um servidor autoritativo de DNS?',
+    badge: '📖 DNS',
+    options: [
+      'Recursivo só aceita consultas internas; autoritativo aceita externas',
+      'Recursivo consulta outros servidores para resolver nomes; autoritativo responde com dados da própria zona',
+      'Recursivo usa UDP; autoritativo usa TCP',
+      'Recursivo armazena zona em banco de dados; autoritativo usa arquivos',
+    ],
+    correct: 1,
+    explanation: 'O resolver recursivo (ex: 8.8.8.8) pergunta root → TLD → autoritativo para resolver um nome. O servidor autoritativo tem a resposta final para sua própria zona (.com.br). Misturar os dois papéis em produção é perigoso (open resolver).',
+    trail: 'firewall',
+  },
+
+  // --- SSL / Nginx ---
+  {
+    text: 'O que é HSTS (HTTP Strict Transport Security) e quando deve ser ativado?',
+    badge: '🔒 SSL',
+    options: [
+      'Um certificado SSL obrigatório emitido por autoridades governamentais',
+      'Um header HTTP que força o navegador a usar HTTPS por um período definido — ativar apenas com HTTPS estável e sem downtime',
+      'Um protocolo de autenticação mútua com certificados de cliente',
+      'Uma lista de revogação de certificados (CRL) servida pelo servidor',
+    ],
+    correct: 1,
+    explanation: 'HSTS instrui o navegador a recusar conexões HTTP para o domínio pelo tempo definido em max-age. Se HTTPS cair, o site fica inacessível. Ativar preload + includeSubDomains requer certeza de que todos os subdomínios têm HTTPS válido.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Para que serve o `ssl_session_cache shared:SSL:10m` no Nginx?',
+    badge: '🔒 SSL',
+    options: [
+      'Limitar o número de conexões SSL simultâneas a 10 por minuto',
+      'Compartilhar parâmetros de sessão TLS entre workers para evitar renegociação completa em conexões repetidas',
+      'Armazenar certificados em cache para renovação automática',
+      'Definir timeout de 10 minutos para handshakes TLS lentos',
+    ],
+    correct: 1,
+    explanation: 'Session cache evita o TLS full handshake em reconexões dentro do prazo. 10m = 10 megabytes compartilhados entre todos os workers Nginx — suporta ~40.000 sessões. Melhora latência e reduz CPU do servidor.',
+    trail: 'firewall',
+  },
+
+  // --- VPN / IPSec ---
+  {
+    text: 'O que é Perfect Forward Secrecy (PFS) em uma VPN IPSec?',
+    badge: '🔒 VPN & IPSec',
+    options: [
+      'Um algoritmo de criptografia mais forte que AES-256',
+      'A garantia de que a chave de sessão não pode ser derivada da chave de longo prazo — cada sessão usa um par de chaves Diffie-Hellman efêmero',
+      'Um protocolo de autenticação de dois fatores para VPN',
+      'Uma funcionalidade que faz reconexão automática após queda de link',
+    ],
+    correct: 1,
+    explanation: 'PFS garante que se a chave privada do servidor for comprometida no futuro, sessões passadas permanecem seguras pois cada uma usou chaves efêmeras DH que já foram descartadas. Configurado com `pfs=yes` ou grupo DH no StrongSwan.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Qual a diferença entre IKEv1 e IKEv2 no IPSec?',
+    badge: '🔒 VPN & IPSec',
+    options: [
+      'IKEv1 usa UDP 500, IKEv2 usa TCP 443',
+      'IKEv2 é mais simples (menos troca de mensagens), tem MOBIKE para roaming de IP, EAP nativo e é mais resistente a ataques DoS',
+      'IKEv1 suporta mais algoritmos de criptografia que IKEv2',
+      'IKEv2 só funciona com certificados, não com PSK',
+    ],
+    correct: 1,
+    explanation: 'IKEv2 reduz o handshake de 6-9 para 4 mensagens, suporta EAP para autenticação de usuários, tem MOBIKE para clientes móveis que trocam de IP e inclui mecanismo anti-DoS com cookies. Preferido para novas implantações.',
+    trail: 'firewall',
+  },
+
+  // --- WireGuard ---
+  {
+    text: 'O que significa `AllowedIPs = 0.0.0.0/0` na configuração de um peer WireGuard?',
+    badge: '🔐 WireGuard',
+    options: [
+      'Permite apenas tráfego de IPs privados (RFC 1918)',
+      'Roteia TODO o tráfego do cliente pelo tunnel — full tunnel (similar ao "Split tunneling desativado")',
+      'Define o IP virtual do peer dentro do tunnel',
+      'Bloqueia todos os IPs não autorizados',
+    ],
+    correct: 1,
+    explanation: 'AllowedIPs define que endereços são roteados PELO tunnel. 0.0.0.0/0 (full tunnel) envia todo tráfego pela VPN. Para split tunnel, liste apenas as subredes internas: 10.0.0.0/8, 192.168.0.0/16. Afeta tanto roteamento quanto criptografia.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Por que o WireGuard não tem um processo de handshake explícito visível como o IPSec?',
+    badge: '🔐 WireGuard',
+    options: [
+      'Porque WireGuard não usa criptografia de chave pública',
+      'Porque usa o protocolo Noise Framework que faz o handshake no primeiro pacote de dados — silencioso e sem estado pré-conexão',
+      'Porque funciona apenas em redes locais sem handshake',
+      'Porque o handshake é feito fora de banda via API REST',
+    ],
+    correct: 1,
+    explanation: 'WireGuard usa Noise Protocol Framework — o handshake é transparente e ocorre no primeiro pacote. Sem estado de "conexão estabelecida" visível: ou o pacote é válido (decripta com chave do peer) ou é descartado silenciosamente. Isso o torna menos detectável e mais difícil de fingerprinting.',
+    trail: 'firewall',
+  },
+
+  // --- Fail2ban ---
+  {
+    text: 'O que é uma `failregex` no Fail2ban e onde ela é definida?',
+    badge: '🚫 Fail2ban',
+    options: [
+      'Um script que reinicia serviços após falha — definido em /etc/fail2ban/action.d/',
+      'Uma expressão regular que identifica tentativas de ataque nos logs — definida em /etc/fail2ban/filter.d/<nome>.conf',
+      'Uma regra iptables que Fail2ban cria automaticamente',
+      'Um tempo mínimo entre falhas para contar como ataque',
+    ],
+    correct: 1,
+    explanation: 'failregex é a regex que captura IPs maliciosos nos logs. O grupo especial `<HOST>` captura o IP. Em filter.d/sshd.conf você encontra regex para detectar falhas de autenticação SSH. Para logs personalizados, crie seu próprio arquivo filter.d/.',
+    trail: 'firewall',
+  },
+  {
+    text: 'Qual o propósito do parâmetro `bantime = -1` em um jail do Fail2ban?',
+    badge: '🚫 Fail2ban',
+    options: [
+      'Desabilita o ban (ban infinito negativo)',
+      'Ban permanente — o IP fica banido indefinidamente até desbloqueio manual com fail2ban-client unban',
+      'Ban de 1 segundo (mínimo possível)',
+      'Ban automático renovado a cada hora',
+    ],
+    correct: 1,
+    explanation: 'bantime = -1 significa ban permanente. Útil para IPs de botnets conhecidos. Para desfazer: fail2ban-client set <jail> unbanip <IP>. Use com cautela em jails com alta taxa de falsos positivos.',
+    trail: 'firewall',
+  },
+
+  // --- nftables ---
+  {
+    text: 'Qual a vantagem do `nft list ruleset` em comparação ao equivalente iptables?',
+    badge: '🔥 nftables',
+    options: [
+      'Lista apenas regras IPv4 (nftables não suporta IPv6)',
+      'Exibe todas as tables, chains e regras de IPv4, IPv6 e ARP em um único comando em formato legível e re-importável',
+      'É mais rápido que iptables-save',
+      'Mostra estatísticas de pacotes por regra',
+    ],
+    correct: 1,
+    explanation: 'nft list ruleset mostra TODO o conjunto de regras em formato que pode ser re-importado com `nft -f`. O iptables exige comandos separados para iptables-save, ip6tables-save e arptables-save. nftables unifica IPv4/IPv6/bridge em um único framework.',
+    trail: 'firewall',
+  },
+
+  // --- Hardening ---
+  {
+    text: 'O que faz `sysctl net.ipv4.tcp_syncookies=1` no contexto de segurança?',
+    badge: '🔐 Hardening',
+    options: [
+      'Habilita criptografia de cookies de sessão web',
+      'Protege contra SYN flood: o kernel gera cookies criptográficos sem alocar memória para conexões half-open',
+      'Limita o número de pacotes SYN por segundo',
+      'Ativa o firewall no nível do kernel',
+    ],
+    correct: 1,
+    explanation: 'SYN cookies permitem que o servidor responda SYN-ACK sem armazenar estado de conexão half-open. O cookie contém informações de sequência que o cliente legítimo retorna no ACK. Isso evita que SYN flood esgote a tabela de conexões do kernel.',
+    trail: 'firewall',
+  },
+  {
+    text: 'O que significa `PasswordAuthentication no` no /etc/ssh/sshd_config?',
+    badge: '🔐 Hardening',
+    options: [
+      'Desabilita o SSH completamente para usuários sem senha',
+      'Proíbe autenticação por senha — apenas chaves criptográficas (ou outros métodos como TOTP) são aceitas',
+      'Exige que a senha tenha mais de 12 caracteres',
+      'Bloqueia acesso root via SSH com senha',
+    ],
+    correct: 1,
+    explanation: 'PasswordAuthentication no elimina o vetor de ataque de brute force de senhas via SSH. Combinado com PubkeyAuthentication yes, exige que o cliente apresente uma chave privada correspondente à chave pública em authorized_keys. É a configuração recomendada para servidores de produção.',
+    trail: 'firewall',
+  },
+
+  // --- Port Knocking ---
+  {
+    text: 'Qual a vantagem do Single Packet Authorization (SPA) sobre o port knocking tradicional?',
+    badge: '🔑 Port Knocking',
+    options: [
+      'SPA é mais rápido porque usa apenas 1 pacote em vez de 3',
+      'SPA usa um único pacote UDP com HMAC criptográfico — não pode ser replayed, detectado por DPI, ou inferido por observação da sequência de portas',
+      'SPA funciona sem firewall, apenas com TCP wrappers',
+      'SPA usa TLS para proteger a sequência de knock',
+    ],
+    correct: 1,
+    explanation: 'Port knocking clássico pode ser capturado e replayed. SPA (implementado pelo fwknopd) envia um único pacote UDP com timestamp + HMAC ou GPG. O timestamp previne replay. Nenhuma porta fica aberta — o firewall acessa stealthily apenas após validação criptográfica.',
+    trail: 'firewall',
+  },
+
+  // --- Squid / Proxy ---
+  {
+    text: 'O que é um proxy transparente e como ele difere de um proxy explícito?',
+    badge: '🚪 Squid',
+    options: [
+      'Proxy transparente usa HTTPS; proxy explícito usa HTTP',
+      'No proxy transparente, o cliente não configura nada — o tráfego é interceptado via DNAT no firewall; no proxy explícito, o cliente configura o endereço do proxy nas configurações de rede',
+      'Proxy transparente não filtra conteúdo; proxy explícito filtra',
+      'Proxy transparente só funciona para HTTP/2; proxy explícito para HTTP/1.1',
+    ],
+    correct: 1,
+    explanation: 'No proxy transparente, o firewall redireciona tráfego na porta 80 para o Squid via DNAT (iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 3128). O cliente não sabe que existe proxy. Para HTTPS, é necessário SSL bump (com riscos de man-in-the-middle intencional).',
+    trail: 'firewall',
+  },
+
+  // --- Docker Networking ---
+  {
+    text: 'O que é a rede `host` no Docker e quando deve ser usada?',
+    badge: '🐳 Docker',
+    options: [
+      'A rede que conecta containers ao host via bridge virtual',
+      'O container usa diretamente a pilha de rede do host — sem NAT, sem isolamento de porte, máxima performance de rede. Usar quando latência de rede é crítica',
+      'Uma rede estática sem DHCP',
+      'A rede padrão criada quando Docker é instalado',
+    ],
+    correct: 1,
+    explanation: 'Com --network host, o container compartilha a interface de rede do host (eth0, lo etc.). Elimina NAT e overhead de bridge — útil para monitoramento de rede (tcpdump), serviços que precisam descoberta multicast, ou alta performance. Desvantagem: sem isolamento de porta entre containers.',
+    trail: 'firewall',
+  },
+
+  // --- Avançados: Ansible ---
+  {
+    text: 'O que faz o parâmetro `gather_facts: false` em um playbook Ansible?',
+    badge: '⚙️ Ansible',
+    options: [
+      'Desabilita logs de erros durante a execução',
+      'Pula a coleta de informações do sistema (ansible_facts) — acelera playbooks que não precisam de variáveis como ansible_os_family ou ansible_memory_mb',
+      'Impede que variáveis de hosts sobrescrevam as de grupos',
+      'Desabilita o módulo setup nos hosts remotos',
+    ],
+    correct: 1,
+    explanation: 'Por padrão, Ansible executa o módulo setup em cada host coletando ~200 variáveis (OS, CPU, memória, rede). gather_facts: false pula esse passo, reduzindo tempo de execução em 2-5 segundos por host. Útil em playbooks de tarefas simples em grandes inventários.',
+    trail: 'avancados',
+  },
+
+  // --- Avançados: Monitoring ---
+  {
+    text: 'O que significa `rate(http_requests_total[5m])` em PromQL?',
+    badge: '📊 Monitoring',
+    options: [
+      'Conta o total de requisições HTTP nos últimos 5 minutos',
+      'Calcula a taxa por segundo de requisições HTTP como média deslizante dos últimos 5 minutos — ideal para gráficos de throughput',
+      'Retorna o valor máximo da métrica em 5 minutos',
+      'Agrupa requisições HTTP por intervalos de 5 minutos',
+    ],
+    correct: 1,
+    explanation: 'rate() pega dois pontos dentro do range [5m] e calcula a variação por segundo. É preferível a irate() para gráficos contínuos pois é menos ruidosa. Para alertas de pico, irate() é mais sensível. Sempre use counter (sufixo _total) com rate(), nunca gauge.',
+    trail: 'avancados',
+  },
+
+  // --- Avançados: Kubernetes ---
+  {
+    text: 'O que é um `readinessProbe` em um Pod Kubernetes e por que é diferente de `livenessProbe`?',
+    badge: '☸️ Kubernetes',
+    options: [
+      'readinessProbe verifica se o container está vivo; livenessProbe verifica se está pronto para tráfego',
+      'readinessProbe determina se o Pod deve receber tráfego (remove do Service Endpoints se falhar); livenessProbe determina se o container deve ser reiniciado',
+      'São idênticos, apenas com nomes diferentes por compatibilidade',
+      'readinessProbe é executado a cada 10s; livenessProbe a cada 30s',
+    ],
+    correct: 1,
+    explanation: 'readinessProbe: se falhar, o Pod é removido dos Endpoints do Service (não recebe tráfego) mas NÃO é reiniciado. Ideal para warmup de aplicação. livenessProbe: se falhar, o kubelet reinicia o container. Usar os dois juntos garante que tráfego só vai para Pods saudáveis E containers travados são reiniciados.',
+    trail: 'avancados',
+  },
+
+  // --- Avançados: Suricata ---
+  {
+    text: 'O que é o modo `af-packet` no Suricata e qual sua vantagem sobre o modo pcap?',
+    badge: '🛡️ Suricata',
+    options: [
+      'af-packet captura apenas pacotes fragmentados; pcap captura todos',
+      'af-packet usa a interface AF_PACKET do Linux para captura de alta performance sem copiar pacotes para userspace — menor latência e CPU do que libpcap',
+      'af-packet é o modo IPS; pcap é o modo IDS',
+      'af-packet funciona apenas em interfaces virtuais; pcap em físicas',
+    ],
+    correct: 1,
+    explanation: 'AF_PACKET permite que o Suricata acesse frames de rede diretamente do kernel com mmap, evitando cópias. Com `cluster_type: cluster_flow`, múltiplos threads processam fluxos distintos em paralelo sem reordenação. Para inspeção inline (IPS), use NFQUEUE em vez de af-packet.',
+    trail: 'avancados',
+  },
+
+  // --- Avançados: SRE ---
+  {
+    text: 'O que é "toil" no contexto de SRE e por que deve ser reduzido?',
+    badge: '🎯 SRE',
+    options: [
+      'Qualquer trabalho manual que os engenheiros realizam',
+      'Trabalho operacional manual, repetitivo, automável, sem valor duradouro, que escala linearmente com o tráfego — consome tempo que deveria ir para engenharia de confiabilidade',
+      'Bugs introduzidos por deployments manuais',
+      'Reuniões operacionais sem agenda definida',
+    ],
+    correct: 1,
+    explanation: 'Google SRE define toil como trabalho que não melhora o sistema a longo prazo: reiniciar serviço manualmente, fazer deploy por SSH, processar tickets repetitivos. O objetivo é manter toil abaixo de 50% do tempo. O restante vai para projetos que eliminam o toil — automação, self-healing, chaos engineering.',
+    trail: 'avancados',
+  },
+
+  // --- Avançados: CI/CD ---
+  {
+    text: 'O que é uma `matrix strategy` em GitHub Actions e quando usar?',
+    badge: '🚀 CI/CD',
+    options: [
+      'Uma estratégia de deployment em múltiplos ambientes em sequência',
+      'Executa o mesmo job com múltiplas combinações de parâmetros em paralelo — ex: testar em Node 18/20/22 × ubuntu/windows simultaneamente',
+      'Uma forma de compartilhar secrets entre workflows de repositórios diferentes',
+      'Um padrão de merge que evita conflitos em branches paralelas',
+    ],
+    correct: 1,
+    explanation: 'strategy.matrix define variáveis que o runner expande em jobs paralelos. Ideal para testes de compatibilidade. fail-fast: false garante que uma falha não cancela as outras combinações — você vê todos os resultados. Adicione exclude para remover combinações específicas sem valor.',
+    trail: 'avancados',
+  },
 ];
