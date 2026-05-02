@@ -912,6 +912,113 @@ curl -s http://localhost:9093/api/v2/alerts | python3 -m json.tool`} />
           )}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Stack Prometheus + Grafana com Docker Compose</p>
+              <CodeBlock lang="bash" code={`mkdir -p /opt/monitoring/{prometheus,grafana} && cd /opt/monitoring
+
+# Criar configuração do Prometheus
+cat > prometheus/prometheus.yml << 'EOF'
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+EOF
+
+# Stack Docker Compose
+cat > docker-compose.yml << 'EOF'
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports: ["9090:9090"]
+    volumes:
+      - ./prometheus:/etc/prometheus
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    ports: ["9100:9100"]
+
+  grafana:
+    image: grafana/grafana:latest
+    ports: ["3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+EOF
+
+docker compose up -d
+echo "Prometheus: http://localhost:9090"
+echo "Grafana:    http://localhost:3000 (admin/admin)"`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Queries PromQL Essenciais</p>
+              <CodeBlock lang="bash" code={`# Abrir o Prometheus UI: http://localhost:9090
+
+# Queries básicas para testar no Prometheus:
+
+# 1. Ver targets configurados:
+#    Status > Targets
+
+# 2. Uso de CPU (% dos últimos 5 minutos)
+# 100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+
+# 3. Memória disponível em MB
+# node_memory_MemAvailable_bytes / 1024 / 1024
+
+# 4. Disco usado em %
+# (node_filesystem_size_bytes - node_filesystem_avail_bytes)
+# / node_filesystem_size_bytes * 100
+
+# Verificar métricas via curl
+curl -s http://localhost:9090/api/v1/query \
+  --data-urlencode 'query=up' | python3 -m json.tool | head -30
+
+# Ver todas as métricas disponíveis
+curl -s http://localhost:9090/api/v1/label/__name__/values | \
+  python3 -m json.tool | grep -c '"'`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Importar Dashboard Node Exporter no Grafana</p>
+              <CodeBlock lang="bash" code={`# Grafana: http://localhost:3000  (admin/admin)
+
+# Via API do Grafana — adicionar datasource Prometheus
+curl -s -u admin:admin \
+  -H "Content-Type: application/json" \
+  http://localhost:3000/api/datasources \
+  -d '{
+    "name": "Prometheus",
+    "type": "prometheus",
+    "url": "http://prometheus:9090",
+    "access": "proxy",
+    "isDefault": true
+  }'
+
+# Importar dashboard Node Exporter Full (ID: 1860)
+curl -s -u admin:admin \
+  -H "Content-Type: application/json" \
+  http://localhost:3000/api/dashboards/import \
+  -d '{
+    "dashboard": {"id": null},
+    "folderId": 0,
+    "overwrite": true,
+    "inputs": [{"name":"DS_PROMETHEUS","type":"datasource","pluginId":"prometheus","value":"Prometheus"}],
+    "path": "https://grafana.com/api/dashboards/1860/revisions/latest/download"
+  }' | python3 -m json.tool
+
+echo "Dashboard importado! Acesse http://localhost:3000"`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/monitoring" order={ADVANCED_ORDER} />
       </div>
     </main>

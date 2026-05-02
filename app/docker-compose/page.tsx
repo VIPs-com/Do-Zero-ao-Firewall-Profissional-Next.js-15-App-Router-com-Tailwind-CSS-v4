@@ -886,6 +886,116 @@ docker compose down -v`}
           </p>
         </HighlightBox>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Stack Nginx + App com Redes Isoladas</p>
+              <CodeBlock lang="bash" code={`mkdir -p /opt/lab-compose && cd /opt/lab-compose
+
+# Criar aplicação simples de teste
+mkdir app
+cat > app/index.html << 'EOF'
+<h1>Olá do Container!</h1>
+EOF
+
+cat > docker-compose.yml << 'EOF'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/usr/share/nginx/html:ro
+    networks:
+      - frontend
+
+  whoami:
+    image: traefik/whoami
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: segredo
+    networks:
+      - backend    # isolada — nginx não consegue acessar!
+
+networks:
+  frontend:
+  backend:
+    internal: true   # sem acesso à internet
+EOF
+
+docker compose up -d
+docker compose ps`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Volumes e Persistência de Dados</p>
+              <CodeBlock lang="bash" code={`cd /opt/lab-compose
+
+# Adicionar volume nomeado para o PostgreSQL
+cat >> docker-compose.yml << 'EOF'
+
+volumes:
+  pgdata:
+EOF
+
+# Recriar com volume (adicionar ao serviço db)
+# volumes:
+#   - pgdata:/var/lib/postgresql/data
+
+docker compose down
+docker compose up -d
+
+# Verificar volume criado
+docker volume ls
+docker volume inspect lab-compose_pgdata
+
+# Criar dados no banco
+docker compose exec db psql -U postgres -c "CREATE TABLE teste (id SERIAL, nome TEXT);"
+docker compose exec db psql -U postgres -c "INSERT INTO teste VALUES (default, 'persistente');"
+
+# Recriar containers — dados persistem!
+docker compose down
+docker compose up -d
+docker compose exec db psql -U postgres -c "SELECT * FROM teste;"`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Healthcheck e Comandos de Operação</p>
+              <CodeBlock lang="bash" code={`cd /opt/lab-compose
+
+# Ver logs em tempo real
+docker compose logs -f nginx &
+
+# Ver uso de recursos de todos os containers
+docker compose top
+docker stats --no-stream
+
+# Escalar serviço (múltiplas réplicas)
+docker compose up -d --scale whoami=3
+docker compose ps   # 3 instâncias do whoami
+
+# Executar comando em container
+docker compose exec nginx sh -c "nginx -t"
+
+# Atualizar imagem sem derrubar tudo
+docker compose pull nginx
+docker compose up -d --no-deps nginx  # só recria nginx
+
+# Ver diferença entre estado atual e arquivo
+docker compose diff 2>/dev/null || docker compose config
+
+# Cleanup: remover containers, redes e volumes
+docker compose down -v   # -v remove os volumes também
+ls /opt/lab-compose`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/docker-compose" />
       </div>
     </main>

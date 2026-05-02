@@ -1001,6 +1001,138 @@ ansible-playbook -i inventory.ini site.yml`} />
           )}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Inventário e Comandos Ad-Hoc</p>
+              <CodeBlock lang="bash" code={`# Instalar Ansible
+apt install ansible -y
+ansible --version
+
+# Criar inventário
+mkdir -p ~/ansible-lab && cd ~/ansible-lab
+
+cat > inventory.ini << 'EOF'
+[webservers]
+web1 ansible_host=192.168.57.10
+
+[dbservers]
+db1  ansible_host=192.168.57.20
+
+[all:vars]
+ansible_user=admin
+ansible_ssh_private_key_file=~/.ssh/id_ed25519
+EOF
+
+# Testar conectividade com todos os hosts
+ansible -i inventory.ini all -m ping
+
+# Comandos ad-hoc úteis
+ansible -i inventory.ini webservers -m command -a "uptime"
+ansible -i inventory.ini all -m setup -a "filter=ansible_distribution"
+ansible -i inventory.ini webservers -m apt -a "name=nginx state=present" --become`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Playbook para Hardening SSH</p>
+              <CodeBlock lang="bash" code={`cd ~/ansible-lab
+
+cat > hardening-ssh.yml << 'EOF'
+---
+- name: Hardening SSH nos servidores
+  hosts: all
+  become: yes
+  vars:
+    ssh_port: 22
+    max_auth_tries: 3
+
+  tasks:
+    - name: Garantir que SSH está instalado
+      apt:
+        name: openssh-server
+        state: present
+        update_cache: yes
+
+    - name: Desabilitar autenticação por senha
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        backup: yes
+      notify: Restart SSH
+
+    - name: Definir MaxAuthTries
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?MaxAuthTries'
+        line: "MaxAuthTries {{ max_auth_tries }}"
+      notify: Restart SSH
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
+EOF
+
+# Dry-run (checar mudanças sem aplicar)
+ansible-playbook -i inventory.ini hardening-ssh.yml --check --diff`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Role Reutilizável para Firewall</p>
+              <CodeBlock lang="bash" code={`cd ~/ansible-lab
+
+# Criar estrutura de role
+ansible-galaxy init roles/firewall
+
+# Preencher tasks da role
+cat > roles/firewall/tasks/main.yml << 'EOF'
+---
+- name: Instalar iptables-persistent
+  apt:
+    name: iptables-persistent
+    state: present
+
+- name: Habilitar IP forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    reload: yes
+
+- name: Política padrão INPUT DROP
+  iptables:
+    chain: INPUT
+    policy: DROP
+
+- name: Permitir loopback
+  iptables:
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
+
+- name: Permitir ESTABLISHED/RELATED
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+EOF
+
+# Playbook que usa a role
+cat > site.yml << 'EOF'
+---
+- hosts: webservers
+  become: yes
+  roles:
+    - firewall
+EOF
+
+ansible-playbook -i inventory.ini site.yml --check`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/ansible" order={ADVANCED_ORDER} />
       </div>
     </main>

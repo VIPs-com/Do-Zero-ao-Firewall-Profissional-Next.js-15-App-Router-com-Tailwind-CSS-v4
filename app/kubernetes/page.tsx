@@ -1014,6 +1014,132 @@ kubectl rollout undo deployment/webapp --to-revision=1 -n lab`} />
           )}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar K3s e Primeiro Deployment</p>
+              <CodeBlock lang="bash" code={`# Instalar K3s (1 comando)
+curl -sfL https://get.k3s.io | sh -
+
+# Verificar instalação
+systemctl status k3s
+kubectl get nodes
+kubectl get pods -A
+
+# Criar primeiro Deployment
+kubectl create deployment nginx --image=nginx:alpine --replicas=2
+
+# Verificar pods criados
+kubectl get pods -w   # -w = watch, aguarda criação
+
+# Expor como Service NodePort
+kubectl expose deployment nginx --type=NodePort --port=80
+
+# Ver o port atribuído
+kubectl get service nginx
+
+# Testar (NODE_PORT exibido acima, ex: 32000)
+curl http://localhost:NODE_PORT/`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Deployment via YAML com Health Checks</p>
+              <CodeBlock lang="bash" code={`cat > deployment.yaml << 'EOF'
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  labels:
+    app: web-app
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: web-app
+  template:
+    metadata:
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+EOF
+
+kubectl apply -f deployment.yaml
+kubectl rollout status deployment/web-app
+kubectl get pods -l app=web-app`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — NetworkPolicy: Isolamento de Pods</p>
+              <CodeBlock lang="bash" code={`# Criar namespace para teste
+kubectl create namespace producao
+
+# Aplicar política: negar todo o tráfego por padrão
+cat > netpol-default-deny.yaml << 'EOF'
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: producao
+spec:
+  podSelector: {}   # aplica a TODOS os pods do namespace
+  policyTypes:
+  - Ingress
+  - Egress
+EOF
+
+kubectl apply -f netpol-default-deny.yaml
+
+# Permitir apenas acesso do frontend ao backend
+cat > netpol-frontend-backend.yaml << 'EOF'
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: producao
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - port: 8080
+EOF
+
+kubectl apply -f netpol-frontend-backend.yaml
+kubectl get networkpolicies -n producao`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/kubernetes" order={ADVANCED_ORDER} />
       </div>
     </main>
