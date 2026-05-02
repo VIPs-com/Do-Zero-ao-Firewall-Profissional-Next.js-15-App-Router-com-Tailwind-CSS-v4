@@ -468,6 +468,36 @@ sudo a2enmod proxy_wstunnel
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'AH00558: apache2: Could not reliably determine the server fully qualified domain name',
+              fix: 'Aviso inofensivo — Apache não consegue resolver o hostname. Corrigir: echo "ServerName localhost" >> /etc/apache2/apache2.conf && systemctl reload apache2. Não afeta o funcionamento.',
+            },
+            {
+              err: 'VirtualHost conflict — Default VirtualHost overlap on port 80',
+              fix: 'Dois VirtualHosts sem ServerName conflitam. Garantir que cada VirtualHost tenha ServerName único. Verificar com apache2ctl -S. Desativar o default: a2dissite 000-default.conf.',
+            },
+            {
+              err: 'mod_rewrite rules não funcionam — .htaccess ignorado',
+              fix: 'AllowOverride está como None (padrão). Mudar para AllowOverride All no bloco <Directory> do VirtualHost e habilitar o módulo: a2enmod rewrite && systemctl reload apache2.',
+            },
+            {
+              err: 'Certbot falha: Problem binding to port 80 — Could not bind to IPv4 or IPv6',
+              fix: 'Apache já está usando a porta 80. Usar o plugin apache: certbot --apache -d dominio.com (Certbot manipula o Apache diretamente). Alternativa: parar o Apache temporariamente para o modo standalone.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/apache" order={ADVANCED_ORDER} />
       </div>
     </main>

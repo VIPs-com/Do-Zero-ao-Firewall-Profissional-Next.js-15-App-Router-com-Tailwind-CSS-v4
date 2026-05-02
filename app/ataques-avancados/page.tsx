@@ -372,6 +372,36 @@ tcpdump -i eth0 arp
         </div>
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="max-w-5xl mx-auto px-4 mb-8 space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <AlertTriangle size={22} className="text-warn" /> Erros de Diagnóstico e Soluções
+        </h2>
+        {[
+          {
+            err: 'tcpdump: listen EACCES — permission denied on interface',
+            fix: 'tcpdump requer privilégios de root ou CAP_NET_RAW. Executar com sudo: sudo tcpdump -i eth0. Alternativa sem root: instalar wireshark-common e adicionar o usuário ao grupo wireshark (setuid).',
+          },
+          {
+            err: 'nmap mostra todas as portas como "filtered" — host parece inacessível',
+            fix: 'Firewall descarta pacotes silenciosamente (DROP em vez de REJECT). Confirmar que o host está ativo: ping -c 3 IP. Usar -Pn para pular o host discovery: nmap -Pn -sV IP. Verificar se o próprio nmap não está sendo bloqueado por fail2ban no servidor.',
+          },
+          {
+            err: 'hping3: unable to bind to source address',
+            fix: 'Interface ou endereço IP incorreto. Especificar a interface com -I eth0. Verificar o IP da interface: ip a. Em alguns sistemas, hping3 precisa de sudo mesmo com CAP_NET_RAW.',
+          },
+          {
+            err: 'arpwatch/arping não detecta ataques ARP na rede',
+            fix: 'Ferramenta pode estar monitorando a interface errada. Verificar: arpwatch -i eth1 (interface da LAN, não WAN). Em redes com switches gerenciados, habilitar Dynamic ARP Inspection (DAI) no switch — mais eficaz que monitoramento passivo.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/ataques-avancados" />
     </div>

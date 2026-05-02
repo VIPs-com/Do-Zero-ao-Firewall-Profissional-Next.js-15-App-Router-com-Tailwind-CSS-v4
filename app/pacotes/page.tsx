@@ -348,6 +348,36 @@ apt-cache show nginx | grep Version`} />
           </Link>
         </div>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'E: Unable to locate package nome-do-pacote',
+              fix: 'Índice desatualizado ou pacote em repositório não-padrão. Executar apt update primeiro. Se persistir: verificar se o pacote existe (apt-cache search nome), adicionar o repositório correto e rodar apt update novamente.',
+            },
+            {
+              err: 'dpkg: error processing package — dependency problems',
+              fix: 'Dependências quebradas. Corrigir automaticamente: apt --fix-broken install. Se persistir: apt install -f ou dpkg --configure -a. Nunca usar dpkg -i em pacotes com dependências complexas sem apt install ./pacote.deb.',
+            },
+            {
+              err: 'apt-get upgrade travar em "waiting for cache lock: Could not get lock /var/lib/dpkg/lock"',
+              fix: 'Outro processo apt está rodando (atualizações automáticas, snap). Aguardar finalizar. Ver processo: ps aux | grep apt. Se o processo travou: rm /var/lib/apt/lists/lock /var/lib/dpkg/lock* e rodar dpkg --configure -a.',
+            },
+            {
+              err: 'pip install falha com "externally-managed-environment"',
+              fix: 'Python 3.11+ no Debian/Ubuntu bloqueia pip global por padrão. Soluções em ordem de segurança: (1) usar apt install python3-pacote; (2) criar venv: python3 -m venv .venv && source .venv/bin/activate; (3) último recurso: pip install --break-system-packages (não recomendado em produção).',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/pacotes" order={FUNDAMENTOS_ORDER} />
       </div>
     </main>

@@ -558,6 +558,36 @@ systemctl restart sshd
 # Verification code: [6 dígitos do app]`}
         />
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'SSH recusa conexão após configurar PAM — Permission denied (keyboard-interactive)',
+              fix: 'Verificar /etc/pam.d/sshd — a linha auth required pam_google_authenticator.so deve estar ANTES das demais linhas auth. Confirmar que KbdInteractiveAuthentication yes está no sshd_config. Testar sem fechar a sessão atual.',
+            },
+            {
+              err: 'Código TOTP sempre inválido — "Incorrect verification code"',
+              fix: 'Dessincronismo de relógio entre cliente e servidor. O TOTP usa timestamp Unix — diferença de mais de 30s invalida o código. Sincronizar: timedatectl set-ntp true e systemctl start systemd-timesyncd.',
+            },
+            {
+              err: 'google-authenticator: command not found',
+              fix: 'Pacote não instalado. Instalar: apt install libpam-google-authenticator qrencode -y. O binário google-authenticator vem no pacote libpam-google-authenticator.',
+            },
+            {
+              err: 'Usuário consegue logar sem o código TOTP (2FA não está ativo)',
+              fix: 'O .google_authenticator não foi criado para o usuário. Rodar google-authenticator como o usuário que faz login (não como root, a menos que seja o usuário root que vai logar). Cada usuário precisa de seu próprio arquivo ~/\\.google_authenticator.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/ssh-2fa" />
       </div>
     </main>

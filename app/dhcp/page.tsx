@@ -390,6 +390,36 @@ sudo journalctl -u isc-dhcp-server -b`} />
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'isc-dhcp-server fails to start: No subnet declaration for eth0',
+              fix: 'O arquivo /etc/default/isc-dhcp-server define a interface, mas dhcpd.conf não tem subnet para ela. Adicionar o bloco subnet correspondente ao IP da interface LAN (ex: 192.168.1.0/24). Verificar: ip a para confirmar o IP da interface.',
+            },
+            {
+              err: 'Clientes recebem IP mas não conseguem acessar a internet',
+              fix: 'DNS ou gateway incorreto no dhcpd.conf. Verificar option routers (IP do firewall/gateway) e option domain-name-servers. Testar: ping 8.8.8.8 no cliente (rede), depois ping google.com (DNS). Um falha → problema diferente.',
+            },
+            {
+              err: 'Reserva de MAC não funciona — cliente recebe IP do pool dinâmico',
+              fix: 'Endereço MAC no dhcpd.conf deve estar em minúsculas com ":" (aa:bb:cc:dd:ee:ff). Verificar o MAC real do cliente: ip link show | grep ether. Após corrigir, reiniciar o serviço e o cliente.',
+            },
+            {
+              err: 'Cliente fica com IP antigo após reconfigurar o servidor DHCP',
+              fix: 'O lease ainda é válido. No cliente: dhclient -r (release) && dhclient (renew). No servidor, verificar /var/lib/dhcp/dhcpd.leases para ver leases ativos. Reduzir default-lease-time durante testes (ex: 120 segundos).',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/dhcp" order={ADVANCED_ORDER} />
       </div>
     </main>

@@ -428,6 +428,36 @@ ls -la /srv/samba/privado
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: "Windows não encontra o compartilhamento: \\\\192.168.1.10\\pasta não acessível",
+              fix: 'Verificar 3 camadas: (1) firewall Linux — portas 137/138 UDP + 139/445 TCP abertas; (2) smb.conf — share definido corretamente com valid users; (3) smbpasswd — usuário criado com smbpasswd -a usuario. Testar do Linux: smbclient -L localhost -U usuario.',
+            },
+            {
+              err: 'smbclient retorna NT_STATUS_LOGON_FAILURE',
+              fix: 'Usuário Samba não existe ou senha incorreta. O Samba mantém senha separada do sistema Linux. Criar/redefinir: smbpasswd -a usuario. Verificar se o usuário Linux existe: id usuario.',
+            },
+            {
+              err: 'Arquivos criados no share têm permissões erradas (root:root)',
+              fix: 'Configurar force user e force group no smb.conf para o share: force user = usuario e force group = grupo. Aplicar também ao diretório: chown -R usuario:grupo /srv/samba/pasta.',
+            },
+            {
+              err: 'Samba funciona na rede local mas não de fora (VPN)',
+              fix: 'SMB não atravessa NAT bem. Preferir VPN (WireGuard/OpenVPN) e conectar ao compartilhamento pelo IP interno. Nunca expor as portas Samba (139/445) diretamente na WAN — é um vetor de ataque clássico (EternalBlue/WannaCry).',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/samba" order={ADVANCED_ORDER} />
       </div>
     </main>

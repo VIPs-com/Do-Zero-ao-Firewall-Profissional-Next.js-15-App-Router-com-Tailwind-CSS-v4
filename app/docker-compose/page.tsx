@@ -847,6 +847,36 @@ docker compose down -v`}
           </div>
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: "Service 'app' failed to build: Cannot connect to the Docker daemon",
+              fix: 'Daemon não está rodando. Iniciar: sudo systemctl start docker. Verificar status: systemctl status docker. Adicionar o usuário ao grupo docker.',
+            },
+            {
+              err: 'Error: bind: address already in use (port 80/443)',
+              fix: 'Uma instância anterior ainda está rodando. Parar com docker compose down. Verificar processos: docker ps -a. Forçar remoção: docker compose rm -f.',
+            },
+            {
+              err: "Service 'db' depends_on 'app' which is not defined",
+              fix: 'Nome do serviço em depends_on deve ser idêntico ao nome no bloco services. O YAML diferencia maiúsculas/minúsculas. Verificar indentação — um espaço a mais quebra o schema.',
+            },
+            {
+              err: 'Volume changes not reflected — container usando dados antigos',
+              fix: 'Volume nomeado persiste entre restarts. Para forçar recriação: docker compose down -v (remove volumes) seguido de docker compose up -d. Cuidado: apaga dados de banco de dados.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         {/* ── Badge ─────────────────────────────────────────────────────────── */}
         <HighlightBox title="🐙 Badge: Compose Master">
           <p className="text-sm text-text-2">

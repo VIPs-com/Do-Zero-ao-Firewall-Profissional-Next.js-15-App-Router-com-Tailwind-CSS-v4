@@ -548,6 +548,36 @@ docker network inspect bridge`}
         />
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'docker: permission denied while trying to connect to the Docker daemon socket',
+            fix: 'Adicionar o usuário ao grupo docker: sudo usermod -aG docker $USER — sair e entrar novamente na sessão (newgrp docker ou logout/login). Nunca rodar docker com sudo em produção.',
+          },
+          {
+            err: 'Error response from daemon: network not found',
+            fix: 'Rede foi removida ou o nome está errado. Listar redes: docker network ls. Recriar: docker network create --driver bridge minha-rede. Confirmar que o compose usa o mesmo nome.',
+          },
+          {
+            err: 'Container não consegue acessar outro container pelo nome',
+            fix: 'Containers na rede bridge padrão (docker0) não têm DNS interno. Criar uma rede bridge customizada: docker network create app-net e conectar ambos os containers. Na rede customizada, o nome do container vira hostname.',
+          },
+          {
+            err: 'Port is already allocated — bind: address already in use',
+            fix: 'Outra aplicação está usando a porta. Verificar: ss -tuln | grep :80. Parar o serviço conflitante (systemctl stop nginx) ou alterar o mapeamento de porta no docker run (-p 8080:80).',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/docker" />
     </div>
   );

@@ -239,6 +239,36 @@ cat /tmp/etc/hosts  # confirmar restauração`} lang="bash" />
 
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'tar: /dev/sda: Cannot stat: No such file or directory',
+            fix: 'Confirmar o caminho correto do dispositivo: lsblk ou ls /dev/sd*. Caminhos de disco variam por sistema (sda, sdb, nvme0n1). Sempre fazer dd com status=progress para acompanhar o progresso.',
+          },
+          {
+            err: 'rsync: [Errno 13] Permission denied — não copia arquivos do sistema',
+            fix: 'Executar com sudo para arquivos de sistema: sudo rsync -aHAX src/ dest/. As flags -A (ACLs) e -X (xattrs) garantem que permissões especiais sejam preservadas. Sem sudo, fazer backup apenas do home do usuário.',
+          },
+          {
+            err: 'Backup via cron não roda — script funciona manualmente mas falha automaticamente',
+            fix: 'O cron usa PATH mínimo (/usr/bin:/bin). Usar caminhos absolutos no script: /usr/bin/rsync em vez de rsync. Verificar logs: grep CRON /var/log/syslog. Redirecionar erros do script: * * * * * /path/script.sh >> /tmp/backup.log 2>&1.',
+          },
+          {
+            err: 'Restauração do tar extrai arquivos no diretório errado',
+            fix: 'Verificar antes de extrair: tar -tvf backup.tar.gz (lista conteúdo sem extrair). Extrair em diretório específico com -C: tar -xzf backup.tar.gz -C /tmp/restore/. Caminhos absolutos no tar podem sobrescrever arquivos do sistema — usar --strip-components=N se necessário.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/backup" order={FUNDAMENTOS_ORDER} />
     </div>
   );

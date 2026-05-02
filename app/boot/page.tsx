@@ -383,6 +383,36 @@ systemctl list-unit-files --type=service | grep enabled | wc -l`} />
           </div>
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'GRUB: error: unknown filesystem — sistema não inicia',
+              fix: 'Tabela de partições ou filesystem corrompido. Inicializar com live USB, montar as partições e executar grub-install /dev/sda && update-grub. Se o problema for o MBR: dd if=/dev/zero of=/dev/sda bs=446 count=1 (cuidado!) e reinstalar o GRUB.',
+            },
+            {
+              err: 'systemd-analyze blame mostra serviço demorando 30+ segundos',
+              fix: 'Serviço provavelmente aguardando rede ou timeout de conexão. Verificar: journalctl -u nome-servico -b. Causas comuns: NFS timeout, DNS lento, banco de dados demorando a responder. Ajustar TimeoutStartSec= no unit file.',
+            },
+            {
+              err: 'Sistema inicia em emergency mode ou (initramfs)',
+              fix: 'Sistema de arquivos com erros ou /etc/fstab com UUID inválido. No prompt initramfs: fsck -y /dev/sda1 para verificar e corrigir. No emergency mode: montar / como leitura/escrita (mount -o remount,rw /) e corrigir o /etc/fstab.',
+            },
+            {
+              err: 'update-grub não encontra outros sistemas operacionais (dual boot)',
+              fix: 'Instalar os-prober: apt install os-prober. Habilitar no GRUB: echo "GRUB_DISABLE_OS_PROBER=false" >> /etc/default/grub. Executar update-grub novamente. Em alguns sistemas, os-prober precisa montar a partição do outro OS.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         {/* ModuleNav */}
         <ModuleNav currentPath="/boot" order={FUNDAMENTOS_ORDER} />
 

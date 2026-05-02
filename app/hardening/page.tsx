@@ -491,6 +491,36 @@ lynis audit system  # lynis = CIS Benchmark para Linux`}
         />
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'SSH recusa conexão após desabilitar PasswordAuthentication',
+            fix: 'A chave pública não foi copiada antes de desabilitar senha. Solução: acessar o servidor via console/VNC, verificar ~/.ssh/authorized_keys do usuário, copiar a chave pública com ssh-copy-id e reativar a conexão. Sempre testar em sessão separada antes de fechar a atual.',
+          },
+          {
+            err: 'sysctl: setting key net.ipv4.conf.all.rp_filter: Read-only file system',
+            fix: 'O sysctl está sendo aplicado antes do sistema de arquivos /proc estar montado (raro em boot). Aguardar o boot completo e rodar sysctl --system. Em containers Docker, alguns parâmetros de kernel são somente leitura (namespace não permite).',
+          },
+          {
+            err: "AppArmor: DENIED — nginx não inicia após aa-enforce",
+            fix: 'O perfil AppArmor está bloqueando algum acesso legítimo. Verificar os logs: grep "DENIED" /var/log/syslog | grep nginx. Usar aa-complain para modo reclamação enquanto ajusta: aa-complain /etc/apparmor.d/usr.sbin.nginx. Adicionar a permissão faltante ao perfil e retornar com aa-enforce.',
+          },
+          {
+            err: 'lynis score baixo mesmo após hardening aplicado',
+            fix: 'Lynis verifica dezenas de controles — é normal ter pontos a melhorar. Focar nos itens de risco ALTO primeiro. Cada sugestão inclui o comando exato. Score 65+ já é considerado bom para servidor de produção. Score 80+ é excelente.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/hardening" />
     </div>
   );
