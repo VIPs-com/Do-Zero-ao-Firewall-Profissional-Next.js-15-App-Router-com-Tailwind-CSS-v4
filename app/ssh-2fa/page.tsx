@@ -588,6 +588,81 @@ systemctl restart sshd
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar Google Authenticator e Gerar QR Code</p>
+              <CodeBlock lang="bash" code={`# Instalar libpam-google-authenticator e qrencode
+apt install libpam-google-authenticator qrencode -y
+
+# IMPORTANTE: Executar como o usuário que vai usar 2FA (não root)
+su - admin  # ou o usuário desejado
+
+# Gerar segredo TOTP com configurações recomendadas
+google-authenticator -t -d -f -r 3 -R 30 -W
+# -t  = TOTP (baseado em tempo, não contador)
+# -d  = não permitir reutilização do mesmo token
+# -f  = salvar em ~/.google_authenticator sem perguntar
+# -r 3 -R 30 = 3 tentativas por 30 segundos
+# -W  = sem confirmação interativa
+
+# O QR code é exibido — escanear com Google Authenticator / Authy
+# Guardar os scratch codes de emergência!
+
+# Verificar arquivo gerado
+cat ~/.google_authenticator | head -2`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Configurar PAM e sshd_config</p>
+              <CodeBlock lang="bash" code={`# Fazer backup das configurações antes
+cp /etc/pam.d/sshd /etc/pam.d/sshd.bak
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+
+# Adicionar PAM do Google Authenticator
+echo "auth required pam_google_authenticator.so" >> /etc/pam.d/sshd
+
+# Configurar SSH para usar autenticação por teclado (necessário para 2FA)
+sed -i 's/^#KbdInteractiveAuthentication.*/KbdInteractiveAuthentication yes/' /etc/ssh/sshd_config
+sed -i 's/^KbdInteractiveAuthentication no/KbdInteractiveAuthentication yes/' /etc/ssh/sshd_config
+
+# Testar configuração do SSH antes de reiniciar
+sshd -t && echo "Config OK" || echo "ERRO na configuração!"
+
+# SEMPRE abrir uma segunda sessão SSH antes de reiniciar!
+# Em outro terminal: ssh admin@localhost (deve funcionar sem 2FA ainda)
+
+# Reiniciar SSH (somente se a config passou no teste)
+systemctl restart ssh
+systemctl status ssh`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Testar 2FA e Configurar Fail2ban para TOTP</p>
+              <CodeBlock lang="bash" code={`# Abrir NOVA sessão SSH para testar (manter a atual aberta como segurança!)
+# Na nova sessão, será solicitado: Verification code:
+# Abrir o app autenticador e digitar o token de 6 dígitos
+
+# Verificar no log se a autenticação 2FA está funcionando
+grep "google_authenticator" /var/log/auth.log | tail -5
+
+# Configurar Fail2ban para bloquear falhas de TOTP
+cat > /etc/fail2ban/jail.d/google-auth.local << 'EOF'
+[google-auth-sshd]
+enabled  = true
+filter   = sshd
+logpath  = /var/log/auth.log
+maxretry = 3
+bantime  = 1800
+findtime = 300
+EOF
+
+systemctl reload fail2ban
+fail2ban-client status google-auth-sshd`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/ssh-2fa" />
       </div>
     </main>

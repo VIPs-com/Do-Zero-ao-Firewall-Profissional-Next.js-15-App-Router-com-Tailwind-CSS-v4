@@ -585,6 +585,91 @@ curl --socks5 localhost:1080 https://ifconfig.me`} />
         </div>
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — SOCKS5 Dinâmico para Navegação Segura</p>
+            <CodeBlock lang="bash" code={`# Criar túnel SOCKS5 dinâmico (port 1080)
+# Execute no terminal local:
+ssh -D 1080 -N -f usuario@servidor-remoto
+
+# Verificar que o túnel está ativo
+ss -tlnp | grep 1080
+
+# Usar com curl (todo tráfego passa pelo servidor remoto)
+curl --socks5-hostname localhost:1080 https://ifconfig.me
+# O IP exibido deve ser o do servidor remoto, não o local
+
+# Para usar com Firefox:
+# Preferences → Network Settings → Manual Proxy
+# SOCKS Host: 127.0.0.1  Port: 1080  SOCKS v5
+# Marcar: Proxy DNS when using SOCKS v5
+
+# Matar o túnel em background
+kill $(pgrep -f "ssh -D 1080") 2>/dev/null || true`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Local Port Forwarding para Serviço Interno</p>
+            <CodeBlock lang="bash" code={`# Cenário: acessar PostgreSQL interno (5432) via jump host
+# Local:3333 → jump-host → db-interno:5432
+
+ssh -L 3333:db-interno:5432 usuario@jump-host -N -f
+
+# Verificar que a porta local está aberta
+ss -tlnp | grep 3333
+
+# Conectar ao PostgreSQL via túnel local
+psql -h localhost -p 3333 -U postgres
+# ou com qualquer cliente de banco de dados apontando para localhost:3333
+
+# Outra aplicação: Grafana em rede interna
+ssh -L 3000:grafana-interno:3000 usuario@bastion -N -f
+# Abrir no navegador: http://localhost:3000
+
+# Ver todos os túneis ativos desta sessão
+ps aux | grep "ssh -L"`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Jump Host com ProxyJump e ~/.ssh/config</p>
+            <CodeBlock lang="bash" code={`# Criar configuração ~/.ssh/config para acessar rede interna
+cat >> ~/.ssh/config << 'EOF'
+
+# Bastion / Jump host público
+Host bastion
+  HostName IP-PUBLICO-DO-BASTION
+  User admin
+  IdentityFile ~/.ssh/id_ed25519
+  ServerAliveInterval 60
+
+# Servidor interno (acessado via bastion)
+Host interno-*
+  ProxyJump bastion
+  User admin
+  IdentityFile ~/.ssh/id_ed25519
+
+Host interno-web
+  HostName 192.168.57.10
+
+Host interno-db
+  HostName 192.168.57.20
+EOF
+
+chmod 600 ~/.ssh/config
+
+# Conectar ao servidor interno em 1 comando (vai via bastion automaticamente)
+ssh interno-web
+
+# Copiar arquivo via SCP através do bastion
+scp /tmp/arquivo.txt interno-web:/tmp/
+
+# Teste de conectividade sem abrir shell
+ssh -J bastion interno-db 'uptime'`} />
+          </div>
+        </div>
+      </section>
+
       {/* Navegação Rodapé */}
       <ModuleNav currentPath="/ssh-proxy" order={FUNDAMENTOS_ORDER} />
     </div>

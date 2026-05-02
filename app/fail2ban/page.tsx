@@ -532,6 +532,86 @@ fail2ban-client status | grep "Jail list" | \\
         </aside>
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4 mb-8">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Instalar e Configurar Jail SSH</p>
+            <CodeBlock lang="bash" code={`# Instalar fail2ban
+apt install fail2ban -y
+
+# Criar configuração local (nunca editar .conf diretamente)
+cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+# Configurar jail SSH
+cat > /etc/fail2ban/jail.d/sshd.local << 'EOF'
+[sshd]
+enabled  = true
+maxretry = 3
+findtime = 600
+bantime  = 3600
+port     = ssh
+logpath  = /var/log/auth.log
+EOF
+
+# Iniciar/reiniciar serviço
+systemctl restart fail2ban
+
+# Verificar status
+fail2ban-client status
+fail2ban-client status sshd`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Testar e Monitorar Banimentos</p>
+            <CodeBlock lang="bash" code={`# Ver logs de atividade do fail2ban
+tail -f /var/log/fail2ban.log &
+
+# Simular falhas de autenticação SSH (em outro terminal)
+# ssh usuario-inexistente@localhost  (3x para disparar ban)
+
+# Ver IPs banidos
+fail2ban-client status sshd | grep "Banned IP"
+
+# Ver regras iptables criadas pelo fail2ban
+iptables -L f2b-sshd -n -v
+
+# Desbanir um IP manualmente
+# fail2ban-client set sshd unbanip 192.168.57.100
+
+# Ver log de eventos
+grep "Ban\|Unban" /var/log/fail2ban.log | tail -10`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Criar Filtro Personalizado para Nginx</p>
+            <CodeBlock lang="bash" code={`# Criar filtro para detectar scans de vulnerabilidades
+cat > /etc/fail2ban/filter.d/nginx-scan.conf << 'EOF'
+[Definition]
+failregex = ^<HOST> .* "(GET|POST) /(\.git|wp-admin|wp-login|phpmyadmin|admin|xmlrpc\.php|shell\.php)
+ignoreregex =
+EOF
+
+# Criar jail para o filtro
+cat >> /etc/fail2ban/jail.d/nginx.local << 'EOF'
+[nginx-scan]
+enabled  = true
+filter   = nginx-scan
+logpath  = /var/log/nginx/access.log
+maxretry = 2
+bantime  = 86400
+findtime = 600
+EOF
+
+# Testar filtro contra log existente
+fail2ban-regex /var/log/nginx/access.log /etc/fail2ban/filter.d/nginx-scan.conf
+
+# Aplicar
+systemctl reload fail2ban
+fail2ban-client status`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/fail2ban" />
     </div>

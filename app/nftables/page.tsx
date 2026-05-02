@@ -523,6 +523,86 @@ nft -f /etc/nftables.conf`} />
         </aside>
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4 mb-8">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Criar Ruleset Básico com nftables</p>
+            <CodeBlock lang="bash" code={`# Instalar nftables e verificar versão
+apt install nftables -y
+nft --version
+
+# Ver regras atuais (provavelmente vazio)
+nft list ruleset
+
+# Criar tabela e chains básicos
+nft add table inet filter
+nft add chain inet filter input   '{ type filter hook input priority 0; policy drop; }'
+nft add chain inet filter forward '{ type filter hook forward priority 0; policy drop; }'
+nft add chain inet filter output  '{ type filter hook output priority 0; policy accept; }'
+
+# Permitir loopback e conexões estabelecidas
+nft add rule inet filter input iif lo accept
+nft add rule inet filter input ct state established,related accept
+
+# Permitir SSH
+nft add rule inet filter input tcp dport 22 accept
+
+# Verificar as regras criadas
+nft list ruleset`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Usar Sets para Blocklist de IPs</p>
+            <CodeBlock lang="bash" code={`# Criar set de IPs bloqueados
+nft add set inet filter blocklist '{ type ipv4_addr; flags dynamic; }'
+
+# Adicionar IPs ao set
+nft add element inet filter blocklist '{ 192.168.100.10, 10.0.0.5 }'
+
+# Criar regra que bloqueia IPs do set
+nft insert rule inet filter input ip saddr @blocklist drop
+
+# Ver o set e seus elementos
+nft list set inet filter blocklist
+
+# Adicionar IP dinamicamente (sem recarregar regras)
+nft add element inet filter blocklist '{ 172.16.0.1 }'
+
+# Ver contador de drops por IP
+nft list ruleset -a   # -a mostra handles para edição
+
+# Remover IP do blocklist
+nft delete element inet filter blocklist '{ 192.168.100.10 }'`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Persistir Regras e Migrar de iptables</p>
+            <CodeBlock lang="bash" code={`# Salvar ruleset atual em arquivo
+nft list ruleset > /etc/nftables.conf
+
+# Verificar conteúdo salvo
+cat /etc/nftables.conf
+
+# Habilitar persistência via systemd
+systemctl enable nftables
+systemctl start nftables
+
+# Limpar regras e restaurar do arquivo
+nft flush ruleset
+nft -f /etc/nftables.conf
+nft list ruleset   # deve estar de volta
+
+# Migrar regras iptables existentes para nftables
+# (apenas como referência — requer iptables-translate instalado)
+iptables-save 2>/dev/null | head -20 || true
+# iptables-restore-translate -f /tmp/iptables.rules > /tmp/nftables-migrado.rules
+
+echo "nftables configurado e persistindo!"
+systemctl status nftables`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/nftables" />
     </div>

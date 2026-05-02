@@ -545,6 +545,94 @@ wg show wg0 public-key   # deve bater com PublicKey do [Peer] no servidor`} />
         </aside>
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4 mb-8">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Gerar Chaves e Configurar Servidor WireGuard</p>
+            <CodeBlock lang="bash" code={`# Instalar WireGuard
+apt install wireguard -y
+
+# Gerar par de chaves do servidor
+cd /etc/wireguard
+wg genkey | tee server_private.key | wg pubkey > server_public.key
+chmod 600 server_private.key
+cat server_private.key
+cat server_public.key
+
+# Criar configuração do servidor
+cat > /etc/wireguard/wg0.conf << EOF
+[Interface]
+PrivateKey = $(cat server_private.key)
+Address    = 10.100.0.1/24
+ListenPort = 51820
+PostUp     = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown   = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+EOF
+
+# Iniciar interface
+wg-quick up wg0
+wg show`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Adicionar Peer Cliente</p>
+            <CodeBlock lang="bash" code={`# Gerar chaves do cliente
+wg genkey | tee /tmp/client_private.key | wg pubkey > /tmp/client_public.key
+
+# Adicionar peer ao servidor (wg addconf ou editar wg0.conf)
+wg set wg0 peer "$(cat /tmp/client_public.key)" \
+  allowed-ips 10.100.0.2/32
+
+# Salvar configuração atual
+wg showconf wg0 > /etc/wireguard/wg0.conf
+
+# Verificar peers conectados
+wg show wg0 peers
+wg show wg0
+
+# Criar arquivo .conf do cliente
+cat > /tmp/cliente.conf << EOF
+[Interface]
+PrivateKey = $(cat /tmp/client_private.key)
+Address    = 10.100.0.2/24
+DNS        = 1.1.1.1
+
+[Peer]
+PublicKey  = $(cat /etc/wireguard/server_public.key)
+Endpoint   = SEU_IP_PUBLICO:51820
+AllowedIPs = 0.0.0.0/0
+EOF
+
+cat /tmp/cliente.conf`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Diagnóstico e Monitoramento WireGuard</p>
+            <CodeBlock lang="bash" code={`# Ver status detalhado da interface
+wg show
+
+# Ver handshake — quando foi a última comunicação
+wg show wg0 latest-handshakes
+
+# Ver estatísticas de transferência de dados
+wg show wg0 transfer
+
+# Verificar rotas criadas pelo WireGuard
+ip route show table all | grep wg0
+
+# Ver logs de conexão
+journalctl -k | grep wireguard | tail -10
+
+# Parar e reiniciar interface
+wg-quick down wg0
+wg-quick up wg0
+
+# Habilitar na inicialização do sistema
+systemctl enable wg-quick@wg0`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/wireguard" />
     </div>

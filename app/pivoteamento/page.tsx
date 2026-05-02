@@ -573,6 +573,86 @@ iptables -L FORWARD -n -v --line-numbers`}
         ))}
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4 mb-8">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Bloquear FORWARD DMZ → LAN</p>
+            <CodeBlock lang="bash" code={`# Verificar política padrão do FORWARD
+iptables -L FORWARD -n -v
+
+# Definir política padrão DROP para FORWARD
+iptables -P FORWARD DROP
+
+# Verificar que DMZ não consegue mais atingir LAN
+# (testar de VM na DMZ: ping 192.168.57.2)
+
+# Permitir apenas tráfego específico de volta (ESTABLISHED/RELATED)
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Logar tentativas de pivoteamento
+iptables -A FORWARD -s 192.168.100.0/24 -d 192.168.57.0/24 \
+  -j LOG --log-prefix "PIVOTE-TENTATIVA: " --log-level 4
+
+# Verificar regras
+iptables -L FORWARD -n -v
+
+# Monitorar logs de tentativas de pivoteamento
+journalctl -k | grep "PIVOTE-TENTATIVA" -f &`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Egress Filtering — Controlar Saída da DMZ</p>
+            <CodeBlock lang="bash" code={`# Ver tráfego de saída atual da DMZ
+iptables -L OUTPUT -n -v
+
+# Permitir apenas DNS (53 UDP/TCP) e HTTP/HTTPS da DMZ
+iptables -A FORWARD -s 192.168.100.0/24 -p udp --dport 53 -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -p tcp --dport 53 -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -s 192.168.100.0/24 -p tcp --dport 443 -j ACCEPT
+
+# Bloquear DNS tuneling — forçar uso do DNS interno
+iptables -t nat -A PREROUTING -i eth2 -p udp --dport 53 \
+  ! -d 192.168.57.1 -j DNAT --to-destination 192.168.57.1:53
+
+# Listar regras de forwarding
+iptables -L FORWARD -n -v
+
+# Testar da DMZ (deve funcionar só DNS e HTTP/HTTPS)
+# ping 8.8.8.8 → deve falhar (ICMP bloqueado)
+# curl http://google.com → deve funcionar`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Detectar e Responder a Pivoteamento</p>
+            <CodeBlock lang="bash" code={`# Instalar ferramentas de detecção
+apt install rkhunter aide -y 2>/dev/null || true
+
+# Script de detecção de conexões suspeitas na DMZ
+cat > /usr/local/bin/detecta-pivote.sh << 'SCRIPT'
+#!/bin/bash
+LOG="/var/log/pivote-detect.log"
+echo "=== Verificação $(date) ===" >> "$LOG"
+
+# Conexões ativas na DMZ (suspeito se houver para rede LAN)
+ss -tunaph | grep "192.168.57" >> "$LOG" && \
+  echo "⚠️  ALERTA: Conexões da DMZ para LAN detectadas!" >> "$LOG"
+
+# Processos com conexões de rede suspeitas
+ss -tupn | grep -v "127.0.0.1\|::1" >> "$LOG"
+
+# Verificar usuários logados
+who >> "$LOG"
+last | head -5 >> "$LOG"
+SCRIPT
+
+chmod +x /usr/local/bin/detecta-pivote.sh
+/usr/local/bin/detecta-pivote.sh
+cat /var/log/pivote-detect.log`} />
+          </div>
+        </div>
+      </div>
+
       <ModuleNav currentPath="/pivoteamento" />
     </div>
   );
