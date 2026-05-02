@@ -35,7 +35,9 @@ const COMMANDS: Command[] = [
   
   // Camada 7 - Aplicação
   { id: 'dig-dns', cmd: 'dig @192.168.56.100 www.workshop.local', desc: 'Consulta DNS específica para um servidor.', layer: 'Camada 7', layerClass: 'l7', category: 'DNS' },
+  { id: 'dig-mx', cmd: 'dig +short MX workshop.local && dig +short PTR 100.56.168.192.in-addr.arpa', desc: 'Consulta registro MX e reverso PTR — essencial para diagnóstico de e-mail e rDNS.', layer: 'Camada 7', layerClass: 'l7', category: 'DNS' },
   { id: 'curl-proxy', cmd: 'curl -x http://192.168.57.250:3128 http://google.com', desc: 'Testa navegação via Proxy Squid.', layer: 'Camada 7', layerClass: 'l7', category: 'Proxy' },
+  { id: 'squid-check', cmd: 'squid -k check && squid -k reconfigure', desc: 'Valida a configuração do Squid e recarrega sem reiniciar — equivalente ao nginx -t && reload.', layer: 'Camada 7', layerClass: 'l7', category: 'Proxy' },
   { id: 'nginx-test', cmd: 'nginx -t', desc: 'Valida a sintaxe dos arquivos de configuração do Nginx.', layer: 'Camada 7', layerClass: 'l7', category: 'Web' },
   { id: 'tail-squid', cmd: 'tail -f /var/log/squid/access.log', desc: 'Monitora logs de acesso do Proxy em tempo real.', layer: 'Camada 7', layerClass: 'l7', category: 'Logs' },
   
@@ -49,6 +51,7 @@ const COMMANDS: Command[] = [
   { id: 'ipt-restore', cmd: 'iptables-restore < /etc/firewall/regras.ipt', desc: 'Restaura regras iptables atomicamente a partir de um arquivo.', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
   { id: 'systemctl-enable-fw', cmd: 'systemctl enable firewall.service', desc: 'Habilita o serviço de firewall para iniciar no boot.', layer: 'Camada 7', layerClass: 'l7', category: 'systemd' },
   { id: 'systemctl-status-fw', cmd: 'systemctl status firewall', desc: 'Verifica o estado atual do serviço de firewall.', layer: 'Camada 7', layerClass: 'l7', category: 'systemd' },
+  { id: 'systemd-analyze', cmd: 'systemd-analyze blame | head -20', desc: 'Lista os 20 serviços que mais atrasaram o boot, em ordem decrescente de tempo.', layer: 'Camada 7', layerClass: 'l7', category: 'systemd' },
   { id: 'conntrack-list', cmd: 'conntrack -L', desc: 'Lista todas as conexões rastreadas pelo kernel (conntrack table).', layer: 'Camada 4', layerClass: 'l4', category: 'Diagnóstico' },
 
   // WireGuard (Sprint R)
@@ -62,6 +65,7 @@ const COMMANDS: Command[] = [
   // Diagnóstico avançado (Sprint R)
   { id: 'tcpdump-443', cmd: 'tcpdump -i any -nn port 443 -w captura.pcap', desc: 'Captura tráfego HTTPS em formato PCAP para análise no Wireshark.', layer: 'Camada 4', layerClass: 'l4', category: 'Diagnóstico' },
   { id: 'journalctl-f2b', cmd: 'journalctl -u fail2ban --no-pager -n 50', desc: 'Últimas 50 linhas de log do Fail2ban via journald.', layer: 'Camada 7', layerClass: 'l7', category: 'Logs' },
+  { id: 'logrotate-force', cmd: 'logrotate -f /etc/logrotate.conf', desc: 'Força rotação imediata de todos os logs — útil para liberar espaço ou testar a configuração do logrotate.', layer: 'Camada 7', layerClass: 'l7', category: 'Logs' },
 
   // SSL workflow completo (Sprint R)
   { id: 'openssl-genrsa', cmd: 'openssl genrsa -out key.pem 2048', desc: 'Gera uma chave privada RSA de 2048 bits.', layer: 'Camada 6', layerClass: 'l6', category: 'SSL/TLS' },
@@ -100,21 +104,27 @@ const COMMANDS: Command[] = [
   // — DHCP
   { id: 'dhcp-test', cmd: 'dhcpd -t -cf /etc/dhcp/dhcpd.conf', desc: 'Valida a sintaxe do dhcpd.conf sem reiniciar o serviço.', layer: 'Camada 3', layerClass: 'l3', category: 'DHCP' },
   { id: 'dhcp-leases', cmd: 'cat /var/lib/dhcp/dhcpd.leases | grep -A5 "binding state active"', desc: 'Lista concessões DHCP ativas com IP, MAC e tempo de expiração.', layer: 'Camada 3', layerClass: 'l3', category: 'DHCP' },
+  { id: 'dhcp-journal', cmd: 'journalctl -u isc-dhcp-server -f', desc: 'Segue os logs do servidor DHCP em tempo real — mostra DISCOVER, OFFER, REQUEST, ACK.', layer: 'Camada 3', layerClass: 'l3', category: 'DHCP' },
   // — Samba
   { id: 'smb-status', cmd: 'smbstatus', desc: 'Mostra conexões SMB ativas, arquivos abertos e locks.', layer: 'Camada 7', layerClass: 'l7', category: 'Samba' },
   { id: 'smb-client', cmd: 'smbclient -L //192.168.57.10 -U usuario', desc: 'Lista shares disponíveis no servidor Samba. Pede senha interativamente.', layer: 'Camada 7', layerClass: 'l7', category: 'Samba' },
+  { id: 'smb-testparm', cmd: 'testparm -s 2>/dev/null | grep -A3 "\\[public\\]"', desc: 'Mostra a configuração efetiva do share [public] após parsing completo do smb.conf.', layer: 'Camada 7', layerClass: 'l7', category: 'Samba' },
   // — Apache
   { id: 'apache-test', cmd: 'apachectl configtest', desc: 'Valida a sintaxe de todos os arquivos de configuração do Apache.', layer: 'Camada 7', layerClass: 'l7', category: 'Apache' },
   { id: 'apache-ensite', cmd: 'a2ensite meusite.conf && systemctl reload apache2', desc: 'Ativa um VirtualHost e recarrega o Apache — equivalente ao nginx -t + reload.', layer: 'Camada 7', layerClass: 'l7', category: 'Apache' },
+  { id: 'apache-vhosts', cmd: 'apachectl -S 2>&1 | head -30', desc: 'Lista todos os VirtualHosts ativos com porta, ServerName e caminho do arquivo de configuração.', layer: 'Camada 7', layerClass: 'l7', category: 'Apache' },
   // — LDAP
   { id: 'ldap-search', cmd: 'ldapsearch -x -H ldap://localhost -b "dc=workshop,dc=local" "(uid=usuario)"', desc: 'Busca um usuário no diretório LDAP por uid (sem autenticação bind).', layer: 'Camada 7', layerClass: 'l7', category: 'LDAP' },
   { id: 'ldap-add', cmd: 'ldapadd -x -D "cn=admin,dc=workshop,dc=local" -W -f usuarios.ldif', desc: 'Importa entradas de um arquivo LDIF no diretório. -W pede a senha do admin.', layer: 'Camada 7', layerClass: 'l7', category: 'LDAP' },
+  { id: 'slapcat', cmd: 'slapcat -n 1 -l /tmp/backup-ldap.ldif', desc: 'Exporta toda a árvore de diretório LDAP para arquivo LDIF — backup completo sem necessitar credenciais.', layer: 'Camada 7', layerClass: 'l7', category: 'LDAP' },
   // — Suricata
   { id: 'suricata-update', cmd: 'suricata-update && systemctl reload suricata', desc: 'Atualiza as regras Emerging Threats (~40k) e recarrega o motor de detecção.', layer: 'Camada 7', layerClass: 'l7', category: 'Suricata' },
   { id: 'suricata-test', cmd: 'suricata -T -c /etc/suricata/suricata.yaml', desc: 'Testa a configuração e valida todas as regras sem iniciar a captura.', layer: 'Camada 7', layerClass: 'l7', category: 'Suricata' },
+  { id: 'suricata-eve', cmd: 'tail -f /var/log/suricata/eve.json | jq -r "select(.event_type==\"alert\") | [.timestamp,.src_ip,.alert.signature] | @tsv"', desc: 'Exibe alertas Suricata em tempo real com timestamp, IP origem e assinatura disparada.', layer: 'Camada 7', layerClass: 'l7', category: 'Suricata' },
   // — Pi-hole
   { id: 'pihole-status', cmd: 'pihole status', desc: 'Mostra se o DNS sinkhole está ativo e quantas queries foram bloqueadas.', layer: 'Camada 3', layerClass: 'l3', category: 'Pi-hole' },
   { id: 'pihole-update', cmd: 'pihole -g', desc: 'Atualiza as blocklists (gravity update) — baixa e compila as listas de domínios bloqueados.', layer: 'Camada 3', layerClass: 'l3', category: 'Pi-hole' },
+  { id: 'pihole-monitor', cmd: 'pihole -c', desc: 'Dashboard terminal em tempo real com queries por segundo, % bloqueadas e top domínios.', layer: 'Camada 3', layerClass: 'l3', category: 'Pi-hole' },
 
   // SSH Proxy & Tunnels (Sprint SSH-PROXY)
   { id: 'ssh-socks', cmd: 'ssh -D 1080 -N usuario@servidor', desc: 'Cria proxy SOCKS5 dinâmico na porta 1080. Configure o browser para usar localhost:1080.', layer: 'Camada 7', layerClass: 'l7', category: 'SSH' },
@@ -129,6 +139,7 @@ const COMMANDS: Command[] = [
   // Monitoring — Prometheus + Grafana (Sprint I.15)
   { id: 'promtool-check', cmd: 'promtool check config /etc/prometheus/prometheus.yml', desc: 'Valida o arquivo de configuração do Prometheus e verifica sintaxe das alert rules.', layer: 'Camada 7', layerClass: 'l7', category: 'Monitoring' },
   { id: 'prom-query', cmd: "curl -sG 'http://localhost:9090/api/v1/query' --data-urlencode 'query=up' | jq .data.result", desc: 'Consulta instantânea via API do Prometheus — verifica se todos os targets estão UP.', layer: 'Camada 7', layerClass: 'l7', category: 'Monitoring' },
+  { id: 'prom-targets', cmd: "curl -s http://localhost:9090/api/v1/targets | jq '.data.activeTargets[] | {job: .labels.job, state: .health, err: .lastError}'", desc: 'Lista todos os targets do Prometheus com estado (up/down) e último erro de scraping.', layer: 'Camada 7', layerClass: 'l7', category: 'Monitoring' },
 
   // Kubernetes avançado
   { id: 'kubectl-rollout', cmd: 'kubectl rollout status deployment/nome -n namespace', desc: 'Aguarda e exibe o progresso de um rolling update até conclusão ou timeout.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
