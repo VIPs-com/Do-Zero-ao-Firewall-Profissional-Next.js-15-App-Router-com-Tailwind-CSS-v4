@@ -563,6 +563,36 @@ iptables -L INPUT -n -v | grep -E "80|443"`} />
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'HTTPS com Let\'s Encrypt falha — certificate resolver error: acme: error 403',
+              fix: 'Verificar que o domínio aponta para o IP público correto: dig A dominio.com. A porta 80 deve estar acessível para o HTTP-01 challenge. Confirmar que acme.json tem permissão 600: chmod 600 acme.json. Testar com o servidor de staging primeiro: caServer: "https://acme-staging-v02.api.letsencrypt.org/directory".',
+            },
+            {
+              err: 'Container não é roteado — Traefik não detecta o serviço',
+              fix: 'Verificar que o container tem a label traefik.enable=true e está na mesma rede Docker que o Traefik. Se exposedByDefault=false (recomendado), a label é obrigatória. Ver no dashboard (porta 8080) se o router aparece. Logs do Traefik: docker logs traefik | grep ERROR.',
+            },
+            {
+              err: 'Redirect HTTP→HTTPS não funciona — loop de redirect ou 404',
+              fix: 'O entrypoint de redirecionamento deve apontar para websecure, não para si mesmo. Configurar: traefik.http.routers.app-http.middlewares=redirect-https e o middleware: traefik.http.middlewares.redirect-https.redirectscheme.scheme=https. Verificar que o router HTTPS tem tls: true.',
+            },
+            {
+              err: 'Middleware basicAuth bloqueia todos — senha não funciona',
+              fix: 'Formato do hash htpasswd precisa de escape no YAML: $ vira $$. Gerar: echo $(htpasswd -nb user senha) | sed -e s/\\$/\\$\\$/g. Verificar o valor no label: traefik.http.middlewares.auth.basicauth.users. Testar com curl -u user:senha https://dominio.com.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/traefik" order={ADVANCED_ORDER} />
       </div>
     </main>

@@ -227,6 +227,36 @@ systemctl is-active nginx          # confirmar`} lang="bash" />
 
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'kill PID não encerra o processo — processo ignora o sinal',
+            fix: 'O processo está capturando o sinal SIGTERM (15). Usar SIGKILL (9) que não pode ser ignorado: kill -9 PID ou kill -SIGKILL PID. Cuidado: SIGKILL não dá chance ao processo de salvar estado. Tentar sempre SIGTERM primeiro, esperar 5s e usar SIGKILL se necessário.',
+          },
+          {
+            err: 'ps aux | grep nome retorna o próprio grep como resultado',
+            fix: 'O grep encontra a si mesmo na listagem. Filtrar com classe de caracteres: ps aux | grep "[n]ginx" (o "n" entre colchetes não casa com a string "[n]ginx" do grep). Alternativa mais limpa: pgrep nginx ou pidof nginx.',
+          },
+          {
+            err: 'systemctl start servico falha sem mensagem de erro clara',
+            fix: 'Ver logs detalhados: journalctl -u nome-servico -n 50 --no-pager. A mensagem "see journalctl -xe" do systemctl é o ponto de partida, não o destino. Status code do processo está em "Main PID: X (code=exited, status=1/FAILURE)".',
+          },
+          {
+            err: 'Processo zumbi (zombie/defunct) acumulando na listagem ps',
+            fix: 'Processo filho finalizou mas o pai não leu o exit status (wait()). Identificar o pai: ps -o ppid= PID_ZUMBI. Enviar SIGCHLD ao pai: kill -SIGCHLD PID_PAI. Se o pai ignora: matar o pai faz o processo zumbi ser adotado pelo init (PID 1) que o recolhe automaticamente.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/processos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

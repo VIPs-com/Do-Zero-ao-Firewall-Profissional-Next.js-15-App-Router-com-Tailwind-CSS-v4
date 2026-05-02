@@ -682,6 +682,36 @@ istioctl dashboard kiali`}
           </div>
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'Sidecar Envoy não é injetado no Pod — containers sem proxy',
+              fix: 'O namespace não tem a label de injeção automática. Adicionar: kubectl label namespace default istio-injection=enabled. Para um pod específico: adicionar anotação sidecar.istio.io/inject: "true". Reiniciar o deployment para os pods existentes receberem o sidecar.',
+            },
+            {
+              err: 'mTLS STRICT quebra comunicação com serviços legados (sem sidecar)',
+              fix: 'Serviços sem sidecar não falam mTLS. Usar modo PERMISSIVE enquanto migra: PeerAuthentication mode: PERMISSIVE no namespace. Migrar serviços gradualmente para ter sidecar, então trocar para STRICT. Verificar tráfego no Kiali: arestas vermelhas indicam falhas de mTLS.',
+            },
+            {
+              err: 'VirtualService canary não distribui tráfego corretamente — 100% vai para um subset',
+              fix: 'Os subsets do DestinationRule devem ter labels correspondentes nos pods. Verificar: kubectl get pods -l version=v2. Se nenhum pod tem a label, todo tráfego vai para o default. Confirmar que weight soma 100: weight: 90 + weight: 10 = 100.',
+            },
+            {
+              err: 'istiod não inicia: x509: certificate has expired or is not yet valid',
+              fix: 'Certificado root da CA do Istio expirou. Verificar validade: kubectl get secret istio-ca-secret -n istio-system -o jsonpath="{.data.ca-cert\\.pem}" | base64 -d | openssl x509 -noout -dates. Renovar: reinstalar o Istio ou rotacionar a CA via istioctl.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/service-mesh" order={ADVANCED_ORDER} />
       </div>
     </div>

@@ -705,6 +705,36 @@ promtool query instant 'job:sli_http_availability:rate5m'
           </div>
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Armadilhas Comuns em SRE
+          </h2>
+          {[
+            {
+              err: 'SLO definido como "uptime 99.9%" sem especificar o que conta como "up"',
+              fix: 'O SLI precisa ser mensurável e específico: "porcentagem de requests com status HTTP 2xx/3xx com latência < 500ms". Definir claramente: o que é medido (SLI), o target (SLO) e a janela de tempo (rolling 30 dias). Ambiguidade gera conflito entre equipes.',
+            },
+            {
+              err: 'Error budget zerou — time de produto quer continuar deployando features',
+              fix: 'Error budget é uma política, não uma sugestão. Quando o budget zera: pausar deployments não-urgentes até o próximo período. Exceções exigem aprovação explícita com postmortem do que causou o esgotamento. Documentar a decisão independente do resultado.',
+            },
+            {
+              err: 'Alert storms — centenas de alertas iguais durante um incidente',
+              fix: 'Alertas sem group_by e group_wait adequados no Alertmanager. Configurar: group_by: [alertname, cluster] e group_wait: 30s. Um único alerta por grupo, não um por instância. Symptoms-based alerting: alertar no que o usuário sente (latência alta), não na causa (CPU alta).',
+            },
+            {
+              err: 'Postmortem virou sessão de culpa — equipe evita ser honesta',
+              fix: 'Postmortem blameless requer cultura explícita. Usar linguagem sistêmica: "o deploy às 14h causou..." em vez de "João fez o deploy errado". Focar em: o que o sistema deveria ter impedido? Quais salvaguardas faltam? Ações corretivas são técnicas, não disciplinares.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/sre" order={ADVANCED_ORDER} />
       </div>
     </div>

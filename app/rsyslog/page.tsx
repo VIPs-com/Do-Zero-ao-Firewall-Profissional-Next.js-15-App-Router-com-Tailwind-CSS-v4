@@ -481,6 +481,36 @@ module(load="omfwd")
           )}
         </section>
 
+        {/* ── Erros Comuns ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+          </h2>
+          {[
+            {
+              err: 'rsyslog não recebe logs remotos na porta 514 — imtcp/imudp ativo mas sem dados',
+              fix: 'Verificar firewall no servidor de logs: iptables -L INPUT | grep 514. Abrir: iptables -A INPUT -p tcp --dport 514 -s 192.168.0.0/24 -j ACCEPT. Testar envio manual: logger --server IP -P 514 "teste". Confirmar com: tcpdump -i eth0 port 514.',
+            },
+            {
+              err: 'Logs remotos chegam mas sem hostname — aparecem como IP',
+              fix: 'O template de log não usa $HOSTNAME. Verificar o template em rsyslog.conf: deve ter %HOSTNAME% no padrão. Alternativa: configurar DNS reverso para os IPs dos clientes. Garantir que os clientes enviam hostname no cabeçalho syslog.',
+            },
+            {
+              err: 'logrotate não rotaciona os logs — arquivo cresce indefinidamente',
+              fix: 'Verificar configuração: logrotate -d /etc/logrotate.d/syslog (modo dry-run). O usuário que roda logrotate deve ter permissão de escrita. Executar manualmente: logrotate -f /etc/logrotate.conf. Verificar lastrun: cat /var/lib/logrotate/status.',
+            },
+            {
+              err: 'rsyslog para de receber após alguns dias — buffer cheio ou conexão perdida',
+              fix: 'Em modo TCP ($ActionQueueType LinkedList), o buffer pode encher se o servidor ficar offline. Configurar reenvio: $ActionResumeRetryCount -1 (infinito) e $ActionQueueSaveOnShutdown on. Para UDP: adicionar fallback local com & ~/. no final da regra de encaminhamento.',
+            },
+          ].map(({ err, fix }) => (
+            <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+              <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+              <p className="text-sm text-text-2">✅ {fix}</p>
+            </div>
+          ))}
+        </section>
+
         <ModuleNav currentPath="/rsyslog" order={FUNDAMENTOS_ORDER} />
       </div>
     </main>

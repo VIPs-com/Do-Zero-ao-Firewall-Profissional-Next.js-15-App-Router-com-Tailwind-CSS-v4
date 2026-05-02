@@ -504,6 +504,36 @@ pvecm status                  # Status do cluster`}
         />
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: 'Proxmox Web UI inacessível na porta 8006 após instalação',
+            fix: 'Verificar se o serviço está rodando: systemctl status pveproxy. Confirmar o IP: ip a. Acessar: https://IP:8006 (HTTPS, não HTTP). O certificado é autoassinado — aceitar a exceção no browser. Verificar firewall: iptables -L | grep 8006.',
+          },
+          {
+            err: 'VM não inicia: TASK ERROR: KVM virtualization configured, but not available',
+            fix: 'CPU não tem virtualização habilitada ou módulo kvm não carregado. Verificar: egrep -c "(vmx|svm)" /proc/cpuinfo. Habilitar VT-x/AMD-V na BIOS do host físico. Em VM aninhada: habilitar nested virtualization no hypervisor pai. Alternativa: mudar tipo de CPU para QEMU64 (emulação, mais lenta).',
+          },
+          {
+            err: 'qm snapshot falha: you need to use the \'full clone\' feature',
+            fix: 'Storage ZFS não suporta snapshots de VMs com discos em formato raw. Converter disco para qcow2: qm importdisk 100 disco.raw local-lvm --format qcow2. Ou usar storage local (não LVM) que suporta snapshots qcow2 nativamente.',
+          },
+          {
+            err: 'Cluster quorum perdido após falha de nó — VMs não iniciam em nenhum nó',
+            fix: 'Com 2 nós, a perda de 1 quebra o quorum (necessário: N/2+1 nós). Forçar quorum para recuperação: pvecm expected 1 (temporário — perigoso se ambos os nós estiverem vivos!). Melhor prática: usar 3+ nós ou adicionar um quorum device.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/proxmox" />
     </div>

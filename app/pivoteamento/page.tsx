@@ -543,6 +543,36 @@ iptables -L FORWARD -n -v --line-numbers`}
         </aside>
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros de Defesa e Soluções
+        </h2>
+        {[
+          {
+            err: 'iptables FORWARD DROP bloqueia tráfego legítimo LAN→DMZ',
+            fix: 'A política DROP precisa de regras ACCEPT explícitas. Adicionar antes do DROP: iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT. E regras específicas: iptables -A FORWARD -s 192.168.57.0/24 -d 192.168.56.10 -p tcp --dport 80 -j ACCEPT.',
+          },
+          {
+            err: 'Túnel SSH reverso abre mesmo com AllowTcpForwarding no no sshd_config',
+            fix: 'AllowTcpForwarding no bloqueia port forwarding padrão, mas GatewayPorts pode ainda estar habilitado. Adicionar também: GatewayPorts no e PermitTunnel no. Usar fail2ban para bloquear IPs que tentam múltiplas conexões SSH.',
+          },
+          {
+            err: 'Regras anti-DNS-tunneling bloqueiam resolução DNS legítima',
+            fix: 'O DNAT força todo DNS para o resolver interno (192.168.57.254), mas o resolver interno pode não estar respondendo. Verificar: dig @192.168.57.254 google.com. Se falhar, o problema é no servidor DNS interno, não nas regras iptables.',
+          },
+          {
+            err: 'iptables LOG não aparece no syslog após adicionar a regra',
+            fix: 'rsyslog pode estar filtrando kern.* para arquivo diferente. Verificar: grep kern /etc/rsyslog.conf. O kernel loga via kern.warning — verificar: dmesg | grep IPTABLES. Garantir que a regra LOG está ANTES da regra DROP/ACCEPT correspondente.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </div>
+
       <ModuleNav currentPath="/pivoteamento" />
     </div>
   );

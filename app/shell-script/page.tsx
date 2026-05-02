@@ -301,6 +301,36 @@ chmod +x /tmp/disco.sh && /tmp/disco.sh`} lang="bash" />
 
       </div>
 
+      {/* ── Erros Comuns ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <span className="text-warn">⚠️</span> Erros Comuns e Soluções
+        </h2>
+        {[
+          {
+            err: '-bash: ./script.sh: /bin/bash^M: bad interpreter',
+            fix: 'Script criado no Windows tem line endings CRLF (\\r\\n) em vez de LF (\\n). Converter: dos2unix script.sh. Sem dos2unix: sed -i "s/\\r//" script.sh. Configurar o editor para salvar com LF: no VS Code, clicar "CRLF" na barra inferior e mudar para "LF".',
+          },
+          {
+            err: '[: ==: unexpected operator — if com == falha no sh',
+            fix: '== é sintaxe bash, não sh. Se o shebang for #!/bin/sh, usar = para comparação de strings. Ou mudar para #!/bin/bash que suporta ==. Verificar: ls -la /bin/sh (pode ser dash no Debian/Ubuntu, não bash).',
+          },
+          {
+            err: 'Variável com espaço quebra o script — word splitting inesperado',
+            fix: 'Sempre colocar variáveis entre aspas: "$VARIAVEL" em vez de $VARIAVEL. Especialmente para caminhos: cp "$ARQUIVO" "$DESTINO/". Usar shellcheck para detectar esses problemas: shellcheck script.sh (disponível via apt install shellcheck).',
+          },
+          {
+            err: 'Script funciona manualmente mas falha com permissão negada no cron',
+            fix: 'Caminhos relativos e variáveis de ambiente não funcionam no cron. Adicionar no início do script: cd "$(dirname "$0")" para garantir o diretório correto. Usar caminhos absolutos para todos os comandos e arquivos. Ver logs: grep CRON /var/log/syslog.',
+          },
+        ].map(({ err, fix }) => (
+          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+            <p className="text-sm text-text-2">✅ {fix}</p>
+          </div>
+        ))}
+      </section>
+
       <ModuleNav currentPath="/shell-script" order={FUNDAMENTOS_ORDER} />
     </div>
   );
