@@ -258,6 +258,76 @@ ssh localhost
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Navegar Logs com journalctl</p>
+            <CodeBlock lang="bash" code={`# Ver logs do boot atual
+journalctl -b
+
+# Ver apenas erros e alertas
+journalctl -p err -b
+
+# Ver logs de um serviço específico
+journalctl -u ssh -n 20
+
+# Seguir logs em tempo real (como tail -f)
+journalctl -f &
+# Em outro terminal: ssh localhost (vai gerar entrada)
+kill %1
+
+# Filtrar por tempo
+journalctl --since "1 hour ago"
+journalctl --since "2024-01-15 08:00" --until "2024-01-15 10:00"
+
+# Ver logs do kernel
+journalctl -k | tail -20`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Analisar Arquivos de Log do Sistema</p>
+            <CodeBlock lang="bash" code={`# Ver tentativas de login com falha
+grep "Failed password" /var/log/auth.log | tail -10
+
+# Contar falhas por IP
+grep "Failed password" /var/log/auth.log | \
+  grep -oP "from \K[0-9.]+" | sort | uniq -c | sort -rn | head -10
+
+# Ver logins bem-sucedidos
+grep "Accepted" /var/log/auth.log | tail -10
+
+# Monitorar syslog por erros
+tail -f /var/log/syslog | grep -i "error\|critical\|fail"
+
+# Ver logs do Nginx (se instalado)
+tail -50 /var/log/nginx/access.log 2>/dev/null | \
+  awk '{print $7}' | sort | uniq -c | sort -rn | head -10`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Configurar logwatch para Relatório Diário</p>
+            <CodeBlock lang="bash" code={`# Instalar logwatch
+apt install logwatch -y
+
+# Ver relatório imediato dos últimos logs
+logwatch --detail High --range today --format text --output stdout 2>/dev/null | head -50
+
+# Configurar relatório por email (se postfix configurado)
+cat > /etc/logwatch/conf/logwatch.conf << 'EOF'
+MailTo = root
+MailFrom = logwatch@localhost
+Detail = Med
+Range = yesterday
+EOF
+
+# Executar manualmente
+logwatch --output file --filename /tmp/relatorio-logs.txt
+wc -l /tmp/relatorio-logs.txt
+head -30 /tmp/relatorio-logs.txt`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/logs-basicos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

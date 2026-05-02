@@ -284,6 +284,81 @@ crontab -e  # apagar a linha e salvar`} lang="bash" />
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Criar e Testar Crontab do Usuário</p>
+            <CodeBlock lang="bash" code={`# Ver crontab atual (provavelmente vazio)
+crontab -l 2>/dev/null || echo "Nenhum cron configurado"
+
+# Editar crontab
+crontab -e
+# Adicionar as linhas abaixo:
+# Executar script a cada minuto (para testar)
+# * * * * * echo "cron funcionando: \$(date)" >> /tmp/cron-teste.log
+
+# Aguardar 2-3 minutos e verificar
+tail -f /tmp/cron-teste.log
+
+# Remover depois do teste
+crontab -l | grep -v "cron-teste" | crontab -
+
+# Ver crontab do root
+sudo crontab -l -u root 2>/dev/null`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Usar /etc/cron.d para Crons de Sistema</p>
+            <CodeBlock lang="bash" code={`# Ver crons de sistema existentes
+ls /etc/cron.d/
+ls /etc/cron.daily/
+ls /etc/cron.weekly/
+
+# Criar cron de sistema para limpeza de /tmp
+cat > /etc/cron.d/limpa-tmp << 'EOF'
+# Limpar /tmp todo dia às 03h30 como root
+30 3 * * * root find /tmp -type f -mtime +3 -delete 2>/dev/null
+# Verificação de backups toda segunda às 08h
+0 8 * * 1 root /usr/local/bin/backup-diario.sh >> /var/log/backup.log 2>&1
+EOF
+
+# Verificar sintaxe
+cat /etc/cron.d/limpa-tmp
+
+# Forçar recarregamento do cron
+systemctl reload cron 2>/dev/null || systemctl reload crond 2>/dev/null
+
+# Ver se foi carregado
+journalctl -u cron -n 5`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Testar Sintaxe e Depurar Cron</p>
+            <CodeBlock lang="bash" code={`# Verificar sintaxe de expressão cron (usar crontab.guru online)
+# Exemplos de expressões:
+# "0 */4 * * *"   → a cada 4 horas (0h, 4h, 8h...)
+# "30 8 * * 1-5"  → 08h30 de segunda a sexta
+# "0 0 1 * *"     → meia-noite do dia 1 de cada mês
+# "*/15 * * * *"  → a cada 15 minutos
+
+# Criar script que registra sua própria execução
+cat > /usr/local/bin/teste-cron.sh << 'SCRIPT'
+#!/bin/bash
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Executado por: $USER | PWD: $PWD | PATH: $PATH" \
+  >> /tmp/debug-cron.log
+SCRIPT
+chmod +x /usr/local/bin/teste-cron.sh
+
+# Adicionar ao cron do root para executar em 1 minuto
+echo "$(date -d '+1 minute' +'%M %H') * * * root /usr/local/bin/teste-cron.sh" \
+  > /etc/cron.d/debug-cron
+
+# Aguardar e verificar
+sleep 65 && cat /tmp/debug-cron.log || echo "Aguarde 1 minuto e verifique /tmp/debug-cron.log"`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/cron" order={FUNDAMENTOS_ORDER} />
     </div>
   );

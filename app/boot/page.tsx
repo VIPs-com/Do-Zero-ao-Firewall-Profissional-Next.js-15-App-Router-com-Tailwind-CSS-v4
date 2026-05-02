@@ -413,6 +413,87 @@ systemctl list-unit-files --type=service | grep enabled | wc -l`} />
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Inspecionar Boot e Targets</p>
+              <CodeBlock lang="bash" code={`# Ver target padrão do sistema
+systemctl get-default
+
+# Listar todos os targets disponíveis
+systemctl list-units --type=target
+
+# Ver serviços ativos no target atual
+systemctl list-units --state=active --type=service | head -20
+
+# Analisar tempo de boot (qual serviço demorou mais)
+systemd-analyze blame | head -15
+
+# Ver cadeia de dependências do target
+systemd-analyze critical-chain multi-user.target
+
+# Ver logs do boot atual
+journalctl -b | grep -E "Started|Failed" | tail -20`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Gerenciar GRUB e Parâmetros de Kernel</p>
+              <CodeBlock lang="bash" code={`# Ver configuração atual do GRUB
+cat /etc/default/grub
+
+# Ver parâmetros do kernel carregado
+cat /proc/cmdline
+
+# Ver versão do kernel em uso
+uname -r
+uname -a
+
+# Listar kernels instalados
+dpkg -l linux-image-* | grep "^ii"
+
+# Ver entradas de boot disponíveis
+grep "menuentry" /boot/grub/grub.cfg | head -10
+
+# Adicionar parâmetro de kernel temporário (via GRUB na inicialização):
+# 1. Reiniciar e pressionar Esc/Shift para o menu GRUB
+# 2. Pressionar 'e' na entrada Linux
+# 3. Navegar até a linha 'linux' e adicionar: quiet splash
+# 4. Pressionar Ctrl+X para inicializar
+
+# Ver dmesg (mensagens do kernel no boot)
+dmesg | head -30`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Serviços e Modo Rescue</p>
+              <CodeBlock lang="bash" code={`# Verificar serviços que falharam no boot
+systemctl --failed
+
+# Ver status detalhado de um serviço com falha
+systemctl status ssh
+
+# Recarregar daemon e reiniciar serviço
+systemctl daemon-reload
+systemctl restart ssh
+
+# Habilitar/desabilitar serviço na inicialização
+systemctl enable cron
+systemctl disable bluetooth 2>/dev/null || true
+
+# Mudar para modo multi-user (sem GUI) temporariamente
+# systemctl isolate multi-user.target
+
+# Simular modo rescue para recuperação de senha:
+# 1. Na reinicialização, no GRUB pressionar 'e'
+# 2. Na linha 'linux', adicionar: systemd.unit=rescue.target
+# 3. Ctrl+X — boot entra em modo rescue como root sem senha
+# 4. Após correção: systemctl default
+
+echo "Exercício completo! Serviços gerenciados com sucesso."`} />
+            </div>
+          </div>
+        </section>
+
         {/* ModuleNav */}
         <ModuleNav currentPath="/boot" order={FUNDAMENTOS_ORDER} />
 

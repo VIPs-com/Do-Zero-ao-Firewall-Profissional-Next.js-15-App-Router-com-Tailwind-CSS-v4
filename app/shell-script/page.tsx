@@ -331,6 +331,104 @@ chmod +x /tmp/disco.sh && /tmp/disco.sh`} lang="bash" />
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Script de Monitoramento de Disco</p>
+            <CodeBlock lang="bash" code={`cat > /usr/local/bin/monitora-disco.sh << 'EOF'
+#!/bin/bash
+LIMITE=80   # alerta quando uso >= 80%
+EMAIL="admin@empresa.com"
+
+while IFS= read -r linha; do
+  USO=$(echo "$linha" | awk '{print $5}' | tr -d '%')
+  MONTAGEM=$(echo "$linha" | awk '{print $6}')
+
+  if [ "$USO" -ge "$LIMITE" ] 2>/dev/null; then
+    MENSAGEM="ALERTA: $MONTAGEM está com $USO% de uso!"
+    echo "[$(date)] $MENSAGEM"
+    # mail -s "Disco cheio" "$EMAIL" <<< "$MENSAGEM"
+  fi
+done < <(df -h | tail -n +2)
+
+echo "Verificação concluída: $(date)"
+EOF
+
+chmod +x /usr/local/bin/monitora-disco.sh
+/usr/local/bin/monitora-disco.sh`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Script de Verificação de Serviços</p>
+            <CodeBlock lang="bash" code={`cat > /usr/local/bin/verifica-servicos.sh << 'EOF'
+#!/bin/bash
+SERVICOS=("ssh" "cron" "rsyslog")
+ERROS=0
+
+echo "=== Verificação de Serviços: $(date) ==="
+
+for servico in "\${SERVICOS[@]}"; do
+  if systemctl is-active --quiet "$servico"; then
+    echo "✅ $servico: RODANDO"
+  else
+    echo "❌ $servico: PARADO"
+    ERROS=$((ERROS + 1))
+
+    # Tentar reiniciar automaticamente
+    echo "   Tentando reiniciar $servico..."
+    systemctl start "$servico" 2>&1 && echo "   ✅ Reiniciado com sucesso" \
+                                     || echo "   ❌ Falha ao reiniciar"
+  fi
+done
+
+echo "=== Total de problemas: $ERROS ==="
+exit $ERROS
+EOF
+
+chmod +x /usr/local/bin/verifica-servicos.sh
+/usr/local/bin/verifica-servicos.sh`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Funções, Arrays e Tratamento de Erros</p>
+            <CodeBlock lang="bash" code={`cat > /tmp/script-avancado.sh << 'EOF'
+#!/bin/bash
+set -euo pipefail  # Sair em erro, variável não definida, pipe fail
+
+# Função com retorno
+verifica_porta() {
+  local HOST="$1"
+  local PORTA="$2"
+  if nc -z -w3 "$HOST" "$PORTA" 2>/dev/null; then
+    echo "✅ $HOST:$PORTA aberta"
+    return 0
+  else
+    echo "❌ $HOST:$PORTA fechada ou inacessível"
+    return 1
+  fi
+}
+
+# Array de hosts para verificar
+declare -A SERVICOS=(
+  ["localhost:22"]="SSH"
+  ["8.8.8.8:53"]="DNS Google"
+  ["1.1.1.1:443"]="HTTPS Cloudflare"
+)
+
+echo "=== Verificação de Conectividade ==="
+for endpoint in "\${!SERVICOS[@]}"; do
+  HOST=$(echo "$endpoint" | cut -d: -f1)
+  PORTA=$(echo "$endpoint" | cut -d: -f2)
+  verifica_porta "$HOST" "$PORTA" || true
+done
+EOF
+
+chmod +x /tmp/script-avancado.sh
+bash /tmp/script-avancado.sh`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/shell-script" order={FUNDAMENTOS_ORDER} />
     </div>
   );

@@ -308,6 +308,80 @@ find /etc -name "*.conf" -type f   # buscar arquivos`}
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Navegação e Manipulação de Arquivos</p>
+            <CodeBlock lang="bash" code={`# Criar estrutura de diretórios de prática
+mkdir -p ~/lab-comandos/{docs,scripts,logs}
+cd ~/lab-comandos
+
+# Criar arquivos de teste
+echo "conteúdo do arquivo 1" > docs/arquivo1.txt
+echo "conteúdo do arquivo 2" > docs/arquivo2.txt
+
+# Listar com detalhes
+ls -lah docs/
+
+# Copiar, mover e renomear
+cp docs/arquivo1.txt docs/copia.txt
+mv docs/copia.txt docs/movido.txt
+
+# Buscar dentro de arquivos
+grep "arquivo" docs/*.txt
+
+# Limpar
+rm -rf ~/lab-comandos`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Visualização e Filtragem de Conteúdo</p>
+            <CodeBlock lang="bash" code={`# Criar arquivo com múltiplas linhas
+seq 1 50 > /tmp/numeros.txt
+
+# Visualizar primeiras e últimas linhas
+head -5 /tmp/numeros.txt
+tail -5 /tmp/numeros.txt
+
+# Paginar conteúdo
+less /var/log/syslog
+
+# Buscar padrão com grep
+grep "error" /var/log/syslog | tail -5
+
+# Contar linhas, palavras e bytes
+wc -l /etc/passwd
+wc -w /etc/hosts
+
+# Ordenar e remover duplicatas
+cat /etc/passwd | cut -d: -f7 | sort | uniq`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Redirecionamento e Pipes</p>
+            <CodeBlock lang="bash" code={`# Redirecionar saída para arquivo
+ls /etc > /tmp/lista-etc.txt
+wc -l /tmp/lista-etc.txt
+
+# Redirecionar erros para /dev/null
+ls /diretorio-inexistente 2>/dev/null
+
+# Redirecionar stdout e stderr juntos
+ls /etc /diretorio-inexistente > /tmp/saida.txt 2>&1
+cat /tmp/saida.txt
+
+# Encadear comandos com pipes
+cat /etc/passwd | grep "/bin/bash" | cut -d: -f1
+
+# Salvar saída e ainda ver na tela
+df -h | tee /tmp/disco-status.txt
+
+# Usar xargs para processar lista
+find /etc -name "*.conf" | xargs wc -l | sort -n | tail -10`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/comandos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

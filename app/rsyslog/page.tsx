@@ -511,6 +511,102 @@ module(load="omfwd")
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Configurar rsyslog Local por Facility</p>
+              <CodeBlock lang="bash" code={`# Ver configuração atual
+cat /etc/rsyslog.conf | grep -v "^#\|^$" | head -30
+
+# Criar regra para separar logs de auth
+cat > /etc/rsyslog.d/10-auth-separado.conf << 'EOF'
+# Enviar auth para arquivo dedicado
+auth,authpriv.*  /var/log/auth-separado.log
+
+# Logs de kernel para arquivo próprio
+kern.*           /var/log/kernel.log
+
+# Ignorar mensagens de info do cron
+cron.info        ~
+EOF
+
+# Reiniciar rsyslog
+systemctl restart rsyslog
+
+# Gerar entrada de teste
+logger -p auth.info "Teste rsyslog auth - usuário fez login"
+logger -p kern.warning "Teste rsyslog kernel warning"
+
+# Verificar se chegou nos arquivos corretos
+cat /var/log/auth-separado.log | tail -3
+cat /var/log/kernel.log | tail -3`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Servidor Central de Logs</p>
+              <CodeBlock lang="bash" code={`# Habilitar rsyslog para receber logs na porta 514 TCP
+cat > /etc/rsyslog.d/01-servidor-central.conf << 'EOF'
+# Carregar módulo TCP
+module(load="imtcp")
+input(type="imtcp" port="514")
+
+# Salvar logs remotos separados por hostname
+template(name="RemoteLogs" type="string"
+  string="/var/log/hosts/%HOSTNAME%/%PROGRAMNAME%.log")
+
+# Aplicar template para logs remotos
+if $FROMHOST != "localhost" then {
+  action(type="omfile" DynaFile="RemoteLogs")
+  stop
+}
+EOF
+
+systemctl restart rsyslog
+
+# Criar diretório para logs remotos
+mkdir -p /var/log/hosts
+
+# Testar enviando log para si mesmo
+logger --server 127.0.0.1 --port 514 --tcp "Teste de log remoto"
+
+# Ver se chegou
+find /var/log/hosts -type f | head -5`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Configurar logrotate para Gestão de Logs</p>
+              <CodeBlock lang="bash" code={`# Ver configuração padrão do logrotate
+cat /etc/logrotate.conf
+
+# Criar configuração de rotação para logs customizados
+cat > /etc/logrotate.d/meus-logs << 'EOF'
+/var/log/auth-separado.log
+/var/log/kernel.log
+/var/log/hosts/*/*.log
+{
+    rotate 14           # manter 14 arquivos
+    daily               # rotacionar diariamente
+    compress            # comprimir com gzip
+    delaycompress       # comprimir rotação anterior (não a atual)
+    missingok           # não falhar se o arquivo não existir
+    notifempty          # não rotacionar arquivo vazio
+    create 640 syslog adm  # permissões do novo arquivo
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+    endscript
+}
+EOF
+
+# Testar sem executar
+logrotate -d /etc/logrotate.d/meus-logs
+
+# Forçar rotação para testar
+logrotate -f /etc/logrotate.d/meus-logs
+ls -la /var/log/auth-separado.log* 2>/dev/null`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/rsyslog" order={FUNDAMENTOS_ORDER} />
       </div>
     </main>

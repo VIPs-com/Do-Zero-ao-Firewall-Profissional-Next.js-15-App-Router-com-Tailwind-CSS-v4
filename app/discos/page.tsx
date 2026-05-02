@@ -251,6 +251,80 @@ du -sh /home/*
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Inspecionar Discos e Partições</p>
+            <CodeBlock lang="bash" code={`# Ver todos os discos e partições
+lsblk -f
+
+# Ver detalhes de cada partição
+fdisk -l 2>/dev/null | grep -E "^Disk|^/dev"
+
+# Ver espaço em disco por partição
+df -hT
+
+# Ver uso de inodes (importante para muitos arquivos pequenos)
+df -i
+
+# Identificar os 10 maiores diretórios
+du -sh /* 2>/dev/null | sort -h | tail -10
+
+# Ver informações do disco (SMART, modelo, etc.)
+hdparm -I /dev/sda 2>/dev/null | head -20 || lsblk -d -o NAME,SIZE,MODEL`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Criar e Montar Partição de Prática</p>
+            <CodeBlock lang="bash" code={`# AVISO: Usar apenas disco secundário /dev/sdb em lab!
+# Nunca executar no disco do sistema (/dev/sda)!
+
+# Verificar se existe disco secundário
+lsblk | grep disk
+
+# Criar sistema de arquivos em arquivo (loop device) para prática segura
+dd if=/dev/zero of=/tmp/disco-lab.img bs=1M count=100
+mkfs.ext4 /tmp/disco-lab.img
+
+# Montar como loop device
+mkdir /mnt/lab-disco
+mount -o loop /tmp/disco-lab.img /mnt/lab-disco
+
+# Usar o disco
+df -h /mnt/lab-disco
+echo "teste" > /mnt/lab-disco/arquivo.txt
+ls /mnt/lab-disco/
+
+# Desmontar
+umount /mnt/lab-disco
+rm /tmp/disco-lab.img`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Monitorar I/O e Saúde do Disco</p>
+            <CodeBlock lang="bash" code={`# Monitorar I/O em tempo real
+iostat -xz 2 3
+
+# Ver qual processo está usando mais I/O
+iotop -b -n 3 -o 2>/dev/null || echo "instalar: apt install iotop"
+
+# Verificar erros no sistema de arquivos (somente offline)
+# dmesg | grep -i "error\|failed\|bad sector"
+dmesg | grep -iE "(error|i/o error|failed)" | tail -10
+
+# Ver log de montagens e erros de disco
+journalctl -k | grep -iE "(disk|sd[a-z]|nvme|ext4|xfs)" | tail -15
+
+# Verificar arquivo de swap
+swapon --show
+free -h | grep -i swap
+
+# Ver fragmentação de ext4
+e2fsck -n /dev/sda1 2>&1 | tail -5 || echo "Use em partição desmontada"`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/discos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

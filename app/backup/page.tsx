@@ -269,6 +269,80 @@ cat /tmp/etc/hosts  # confirmar restauração`} lang="bash" />
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Backup com tar e compressão</p>
+            <CodeBlock lang="bash" code={`# Criar estrutura de dados para backup
+mkdir -p ~/dados-importantes/{docs,configs,scripts}
+echo "documento crítico" > ~/dados-importantes/docs/contrato.txt
+cp /etc/hosts ~/dados-importantes/configs/
+
+# Backup completo com gzip
+tar -czf /tmp/backup-dados-$(date +%Y%m%d).tar.gz ~/dados-importantes/
+
+# Verificar o conteúdo do backup sem extrair
+tar -tzf /tmp/backup-dados-$(date +%Y%m%d).tar.gz
+
+# Extrair em local alternativo para verificação
+mkdir /tmp/verifica-backup
+tar -xzf /tmp/backup-dados-$(date +%Y%m%d).tar.gz -C /tmp/verifica-backup/
+diff -r ~/dados-importantes/ /tmp/verifica-backup/root/dados-importantes/ 2>/dev/null || diff -r ~/dados-importantes/ /tmp/verifica-backup/home/*/dados-importantes/`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — rsync para Backup Incremental</p>
+            <CodeBlock lang="bash" code={`# Criar destino do backup
+mkdir /tmp/backup-destino
+
+# Primeiro rsync (backup completo)
+rsync -av ~/dados-importantes/ /tmp/backup-destino/
+echo "---Arquivos transferidos na primeira execução---"
+
+# Adicionar novo arquivo
+echo "novo arquivo" > ~/dados-importantes/docs/novo.txt
+
+# Segundo rsync (só o que mudou!)
+rsync -av ~/dados-importantes/ /tmp/backup-destino/
+echo "---Apenas o arquivo novo foi transferido---"
+
+# Rsync com deleção de arquivos removidos da origem
+rsync -av --delete ~/dados-importantes/ /tmp/backup-destino/
+
+# Ver log de transferência
+rsync -av --log-file=/tmp/rsync-log.txt ~/dados-importantes/ /tmp/backup-destino/
+cat /tmp/rsync-log.txt`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Script de Backup Automatizado com Rotação</p>
+            <CodeBlock lang="bash" code={`# Criar script de backup com rotação de 7 dias
+cat > /usr/local/bin/backup-diario.sh << 'SCRIPT'
+#!/bin/bash
+ORIGEM="/etc /home"
+DESTINO="/backup"
+DATA=$(date +%Y%m%d-%H%M)
+ARQUIVO="backup-$DATA.tar.gz"
+DIAS_RETENCAO=7
+
+mkdir -p $DESTINO
+
+# Criar backup
+tar -czf $DESTINO/$ARQUIVO $ORIGEM 2>/dev/null
+echo "[$(date)] Backup criado: $ARQUIVO ($(du -sh $DESTINO/$ARQUIVO | cut -f1))"
+
+# Remover backups mais antigos que N dias
+find $DESTINO -name "backup-*.tar.gz" -mtime +$DIAS_RETENCAO -delete
+echo "[$(date)] Backups antigos removidos. Total atual:"
+ls -lh $DESTINO/backup-*.tar.gz 2>/dev/null | wc -l
+SCRIPT
+
+chmod +x /usr/local/bin/backup-diario.sh
+/usr/local/bin/backup-diario.sh`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/backup" order={FUNDAMENTOS_ORDER} />
     </div>
   );

@@ -372,6 +372,73 @@ sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' \\
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Nano: Editar Arquivo de Configuração</p>
+            <CodeBlock lang="bash" code={`# Criar arquivo de prática com nano
+nano /tmp/meu-arquivo.conf
+# Dentro do nano:
+# - Ctrl+W  → buscar texto
+# - Ctrl+K  → cortar linha
+# - Ctrl+U  → colar linha
+# - Ctrl+O  → salvar
+# - Ctrl+X  → sair
+
+# Verificar o que foi salvo
+cat /tmp/meu-arquivo.conf
+
+# Editar /etc/hosts com nano para testes locais
+sudo cp /etc/hosts /etc/hosts.bak
+sudo nano /etc/hosts
+# Adicione: 127.0.0.1  meulab.local
+ping -c1 meulab.local`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Vim: Modos e Comandos Essenciais</p>
+            <CodeBlock lang="bash" code={`# Abrir arquivo com vim
+vim /tmp/pratica-vim.txt
+
+# Exercícios dentro do vim:
+# i       → modo INSERT, digite 3 linhas
+# Esc     → voltar ao NORMAL
+# gg      → início do arquivo
+# G       → fim do arquivo
+# dd      → deletar linha atual
+# u       → desfazer (undo)
+# yy      → copiar linha
+# p       → colar abaixo
+# /texto  → buscar
+# n       → próxima ocorrência
+# :wq     → salvar e sair
+
+cat /tmp/pratica-vim.txt`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Substituição com sed e diff</p>
+            <CodeBlock lang="bash" code={`# Criar arquivo de configuração de teste
+cat > /tmp/config-orig.conf << 'EOF'
+servidor = 192.168.1.100
+porta = 8080
+ambiente = desenvolvimento
+debug = true
+EOF
+
+# Substituir valores com sed (sem alterar o original)
+sed 's/192.168.1.100/10.0.0.1/g' /tmp/config-orig.conf
+
+# Substituição in-place com backup
+sed -i.bak 's/desenvolvimento/producao/g' /tmp/config-orig.conf
+sed -i.bak 's/debug = true/debug = false/g' /tmp/config-orig.conf
+
+# Ver diferenças entre original e modificado
+diff /tmp/config-orig.conf.bak /tmp/config-orig.conf`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/editores" order={FUNDAMENTOS_ORDER} />
     </div>
   );

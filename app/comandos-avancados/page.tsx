@@ -497,6 +497,91 @@ rm -rf /tmp/teste-restore`} />
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — sed: Edição de Arquivos de Configuração</p>
+              <CodeBlock lang="bash" code={`# Criar arquivo de configuração de teste
+cat > /tmp/nginx-test.conf << 'EOF'
+server {
+    listen 80;
+    server_name example.com;
+    root /var/www/html;
+    access_log /var/log/nginx/access.log;
+}
+EOF
+
+# Substituir porta 80 por 8080
+sed 's/listen 80/listen 8080/' /tmp/nginx-test.conf
+
+# Substituição in-place com backup
+sed -i.bak 's/example.com/meusite.local/g' /tmp/nginx-test.conf
+
+# Verificar mudança
+diff /tmp/nginx-test.conf.bak /tmp/nginx-test.conf
+
+# Deletar comentários e linhas em branco
+sed -i '/^#/d; /^$/d' /tmp/nginx-test.conf
+
+# Extrair apenas linhas 1-3
+sed -n '1,3p' /tmp/nginx-test.conf`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — dd e nc: Cópia e Transferência</p>
+              <CodeBlock lang="bash" code={`# Criar imagem de disco segura (usar arquivo, não disco real!)
+# Simular disco de 50MB
+dd if=/dev/zero of=/tmp/disco-simulado.img bs=1M count=50 status=progress
+
+# Criar filesystem no arquivo
+mkfs.ext4 /tmp/disco-simulado.img
+
+# Copiar arquivo com progresso
+dd if=/etc/passwd of=/tmp/passwd-backup bs=1 status=progress
+
+# NetCat: testar se porta está aberta
+nc -zv localhost 22    # SSH deve estar aberta
+nc -zv localhost 80    # HTTP (403 se nginx parado)
+
+# Testar com timeout
+nc -zv -w 3 8.8.8.8 53   # DNS Google
+
+# Transferir arquivo via netcat (2 terminais):
+# Terminal 1 (receptor): nc -l 9999 > /tmp/recebido.txt
+# Terminal 2 (emissor):  nc localhost 9999 < /etc/hostname`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Links e Compactação</p>
+              <CodeBlock lang="bash" code={`# Criar arquivo original
+echo "conteúdo original" > /tmp/original.txt
+
+# Criar hard link (mesmo inode)
+ln /tmp/original.txt /tmp/hard-link.txt
+
+# Criar link simbólico (atalho)
+ln -s /tmp/original.txt /tmp/soft-link.txt
+
+# Verificar inodes e tipos
+ls -lai /tmp/original.txt /tmp/hard-link.txt /tmp/soft-link.txt
+
+# Modificar via hard link afeta original
+echo "linha adicional" >> /tmp/hard-link.txt
+cat /tmp/original.txt   # mudou!
+
+# Compactação: comparar tamanhos
+dd if=/dev/urandom of=/tmp/dados-teste.bin bs=1M count=5
+
+time gzip -c /tmp/dados-teste.bin > /tmp/dados.gz
+time bzip2 -c /tmp/dados-teste.bin > /tmp/dados.bz2
+time xz -c /tmp/dados-teste.bin > /tmp/dados.xz
+
+# Ver tamanhos (xz menor mas mais lento)
+ls -lh /tmp/dados*`} />
+            </div>
+          </div>
+        </section>
+
         {/* ModuleNav */}
         <ModuleNav currentPath="/comandos-avancados" order={FUNDAMENTOS_ORDER} />
 

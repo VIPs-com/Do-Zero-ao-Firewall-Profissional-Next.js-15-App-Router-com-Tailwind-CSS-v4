@@ -257,6 +257,83 @@ systemctl is-active nginx          # confirmar`} lang="bash" />
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Listar e Inspecionar Processos</p>
+            <CodeBlock lang="bash" code={`# Ver todos os processos do sistema
+ps aux
+
+# Processos em árvore (quem criou quem)
+ps axjf | head -30
+
+# Top interativo — atualização em tempo real
+top
+# Dentro do top: q=sair, k=kill, r=renice
+
+# Ver processos de um usuário específico
+ps -u root | head -20
+
+# Ver apenas processos do SSH
+ps aux | grep ssh
+
+# Encontrar o PID de um processo por nome
+pgrep sshd
+pidof systemd`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Controlar Processos em Background</p>
+            <CodeBlock lang="bash" code={`# Iniciar processo em background
+sleep 300 &
+echo "PID do sleep: $!"
+
+# Ver jobs em background da sessão atual
+jobs
+
+# Trazer para foreground
+fg %1
+
+# Pausar com Ctrl+Z e mandar para background
+# Ctrl+Z
+bg %1
+
+# Matar processo pelo PID
+kill $(pgrep sleep)
+
+# Verificar que foi encerrado
+ps aux | grep sleep
+
+# Iniciar processo que sobrevive ao logout
+nohup sleep 1000 &
+disown`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Prioridade e Recursos com nice/renice</p>
+            <CodeBlock lang="bash" code={`# Ver prioridade (NI) dos processos
+ps -eo pid,ni,comm | head -20
+
+# Iniciar processo com baixa prioridade (nice 10)
+nice -n 10 sleep 100 &
+NICE_PID=$!
+
+# Verificar a prioridade atribuída
+ps -p $NICE_PID -o pid,ni,comm
+
+# Alterar prioridade de processo em execução
+renice -n 15 -p $NICE_PID
+ps -p $NICE_PID -o pid,ni,comm
+
+# Ver consumo de recursos em tempo real
+top -b -n 1 | head -20
+
+# Limpar
+kill $NICE_PID`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/processos" order={FUNDAMENTOS_ORDER} />
     </div>
   );

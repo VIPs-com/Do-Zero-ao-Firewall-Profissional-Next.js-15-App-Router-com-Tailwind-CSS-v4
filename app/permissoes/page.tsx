@@ -281,6 +281,87 @@ sudo grep "sudo" /var/log/auth.log | tail -5
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Criar Usuários e Grupos</p>
+            <CodeBlock lang="bash" code={`# Criar novo usuário de sistema
+useradd -m -s /bin/bash joao
+passwd joao
+
+# Criar grupo para desenvolvedores
+groupadd devteam
+
+# Adicionar usuário ao grupo
+usermod -aG devteam joao
+
+# Verificar grupos do usuário
+id joao
+groups joao
+
+# Ver entrada no /etc/passwd
+grep joao /etc/passwd
+
+# Ver grupos em /etc/group
+grep devteam /etc/group
+
+# Remover usuário (sem apagar home)
+# userdel joao`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — chmod e chown na Prática</p>
+            <CodeBlock lang="bash" code={`# Criar estrutura de teste
+mkdir /tmp/lab-permissoes
+cd /tmp/lab-permissoes
+touch arquivo.txt script.sh segredo.conf
+
+# Ver permissões iniciais
+ls -la
+
+# Definir permissões com notação octal
+chmod 644 arquivo.txt   # rw-r--r--
+chmod 755 script.sh     # rwxr-xr-x
+chmod 600 segredo.conf  # rw-------
+
+# Confirmar mudanças
+ls -la
+
+# Mudar dono e grupo
+chown root:devteam /tmp/lab-permissoes/
+chown joao:devteam arquivo.txt
+
+# Permissões recursivas
+chmod -R 750 /tmp/lab-permissoes/
+
+# Limpar
+rm -rf /tmp/lab-permissoes`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Bits Especiais: SUID, SGID e Sticky</p>
+            <CodeBlock lang="bash" code={`# Ver exemplos de SUID no sistema (executam como dono)
+find /usr/bin -perm -4000 -type f
+# Nota: passwd e sudo têm SUID — executam como root
+
+# Ver o bit sticky no /tmp (apenas dono pode deletar)
+ls -la / | grep tmp
+# drwxrwxrwt — o 't' no final é o sticky bit
+
+# Criar diretório compartilhado com SGID
+mkdir /tmp/compartilhado
+chown :devteam /tmp/compartilhado
+chmod 2775 /tmp/compartilhado  # 2 = SGID
+ls -la /tmp/ | grep compartilhado
+# drwxrwsr-x — o 's' no grupo = SGID
+
+# Aplicar sticky bit em diretório compartilhado
+chmod +t /tmp/compartilhado
+ls -la /tmp/ | grep compartilhado`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/permissoes" order={FUNDAMENTOS_ORDER} />
     </div>
   );

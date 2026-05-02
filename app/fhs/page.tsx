@@ -297,6 +297,67 @@ C:\\Windows\\Temp\\    → Arquivos temporários (equiv. /tmp)
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Explorar a Hierarquia FHS</p>
+            <CodeBlock lang="bash" code={`# Listar os diretórios raiz do sistema
+ls -la /
+
+# Ver tamanho de cada diretório principal
+du -sh /etc /var /usr /home /tmp 2>/dev/null
+
+# Contar arquivos em /etc
+find /etc -type f | wc -l
+
+# Explorar subdiretórios de /usr
+ls /usr
+ls /usr/bin | head -20
+ls /usr/lib | head -10
+
+# Ver arquivos de configuração de rede
+ls /etc/network/ 2>/dev/null || ls /etc/netplan/`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Localizar Arquivos por Tipo e Propósito</p>
+            <CodeBlock lang="bash" code={`# Encontrar todos os arquivos de configuração do SSH
+find /etc -name "*ssh*"
+
+# Localizar binários de rede instalados
+which ip iptables netstat ss curl wget
+
+# Ver onde um pacote instalou seus arquivos
+dpkg -L openssh-server | head -20
+
+# Encontrar arquivos de log com mais de 1MB
+find /var/log -size +1M -type f
+
+# Verificar arquivos temporários no /tmp
+ls -lath /tmp | head -10`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Compreender Montagens e Pontos de Mount</p>
+            <CodeBlock lang="bash" code={`# Ver partições e pontos de montagem
+lsblk
+df -h
+
+# Ver fstab — o mapa de montagens automáticas
+cat /etc/fstab
+
+# Ver montagens ativas no momento
+mount | grep -v "type proc\|type sysfs\|type devtmpfs"
+
+# Verificar uso de inodes (arquivos, não espaço)
+df -i
+
+# Encontrar qual partição contém /var/log
+df /var/log`} />
+          </div>
+        </div>
+      </section>
+
       <ModuleNav currentPath="/fhs" order={FUNDAMENTOS_ORDER} />
     </div>
   );

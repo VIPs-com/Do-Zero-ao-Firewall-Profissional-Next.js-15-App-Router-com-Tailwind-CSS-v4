@@ -378,6 +378,93 @@ apt-cache show nginx | grep Version`} />
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Gerenciar Pacotes com apt</p>
+              <CodeBlock lang="bash" code={`# Atualizar índice de repositórios
+apt update
+
+# Ver pacotes atualizáveis
+apt list --upgradable 2>/dev/null | head -15
+
+# Buscar pacote antes de instalar
+apt-cache search network scanner
+apt-cache show nmap | head -20
+
+# Instalar nmap e verificar versão
+apt install nmap -y
+nmap --version
+
+# Ver dependências do pacote
+apt-cache depends nmap
+
+# Ver que arquivos o pacote instalou
+dpkg -L nmap
+
+# Remover pacote mantendo configurações
+apt remove nmap -y
+
+# Remover pacote e configurações
+apt purge nmap -y
+apt autoremove -y`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Adicionar Repositório de Terceiros (GPG)</p>
+              <CodeBlock lang="bash" code={`# Exemplo: adicionar repositório do Grafana
+# 1. Baixar e instalar a chave GPG
+wget -q -O - https://packages.grafana.com/gpg.key | \
+  gpg --dearmor | tee /etc/apt/keyrings/grafana.gpg > /dev/null
+
+# 2. Adicionar o repositório
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] \
+  https://packages.grafana.com/oss/deb stable main" | \
+  tee /etc/apt/sources.list.d/grafana.list
+
+# 3. Atualizar e verificar
+apt update
+apt-cache show grafana | grep -E "Version|Description"
+
+# Ver todos os repositórios configurados
+cat /etc/apt/sources.list
+ls /etc/apt/sources.list.d/
+
+# Remover repositório de teste
+rm /etc/apt/sources.list.d/grafana.list
+rm /etc/apt/keyrings/grafana.gpg
+apt update`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — dpkg e Pacotes .deb Locais</p>
+              <CodeBlock lang="bash" code={`# Listar todos os pacotes instalados
+dpkg -l | head -20
+dpkg -l | wc -l  # total de pacotes
+
+# Buscar pacote por nome
+dpkg -l | grep nginx
+dpkg -l | grep -E "^ii.*python3"  # ii = instalado
+
+# Ver arquivos de um pacote instalado
+dpkg -L bash | head -20
+
+# Descobrir qual pacote instalou um arquivo
+dpkg -S /usr/bin/ssh
+dpkg -S /bin/ls
+
+# Ver arquivos de configuração que foram modificados
+dpkg -l | grep "^rc"  # rc = removido mas config restante
+
+# Baixar .deb sem instalar (para instalar offline depois)
+apt download htop
+ls -la htop_*.deb
+dpkg -i htop_*.deb
+rm htop_*.deb`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/pacotes" order={FUNDAMENTOS_ORDER} />
       </div>
     </main>
