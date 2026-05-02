@@ -429,6 +429,82 @@ openssl s_client -connect meusite.com:443`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Certificado autoassinado para ambiente de lab</p>
+            <CodeBlock lang="bash" code={`# Gerar certificado autoassinado válido por 365 dias
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \\
+  -keyout /etc/ssl/private/lab.key \\
+  -out /etc/ssl/certs/lab.crt \\
+  -subj "/CN=firewall.lab/O=Workshop/C=BR"
+
+# Configurar Nginx com o certificado
+sudo tee /etc/nginx/sites-available/lab-ssl << 'EOF'
+server {
+    listen 443 ssl;
+    server_name firewall.lab;
+    ssl_certificate     /etc/ssl/certs/lab.crt;
+    ssl_certificate_key /etc/ssl/private/lab.key;
+    location / { return 200 "Workshop Firewall — SSL OK!\n"; }
+}
+server {
+    listen 80;
+    server_name firewall.lab;
+    return 301 https://$host$request_uri;
+}
+EOF
+
+sudo ln -sf /etc/nginx/sites-available/lab-ssl /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+
+# Testar (ignorar aviso de autoassinado com -k):
+curl -k https://localhost/
+curl -k -I https://localhost/ | grep -E "HTTP|Location"`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Inspecionar certificado SSL com openssl</p>
+            <CodeBlock lang="bash" code={`# Inspecionar certificado de qualquer site:
+openssl s_client -connect github.com:443 -servername github.com </dev/null 2>/dev/null | \\
+  openssl x509 -noout -text | grep -E "Subject:|Issuer:|Not After"
+
+# Ver validade do seu certificado local:
+openssl x509 -in /etc/ssl/certs/lab.crt -noout -dates
+
+# Ver certificados usados pelo Nginx:
+sudo nginx -T | grep ssl_certificate
+
+# Testar handshake TLS e protocolo suportado:
+openssl s_client -connect localhost:443 -tls1_3 2>/dev/null | grep "Protocol"
+openssl s_client -connect localhost:443 -tls1_2 2>/dev/null | grep "Protocol"`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Headers de segurança HTTP</p>
+            <CodeBlock lang="bash" code={`# Adicionar headers de segurança no Nginx
+sudo tee /etc/nginx/snippets/security-headers.conf << 'EOF'
+add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+add_header X-Frame-Options "DENY" always;
+add_header X-Content-Type-Options "nosniff" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header X-XSS-Protection "1; mode=block" always;
+EOF
+
+# Incluir no server block do site:
+# include snippets/security-headers.conf;
+
+sudo nginx -t && sudo systemctl reload nginx
+
+# Verificar headers presentes:
+curl -k -I https://localhost/ | grep -E "Strict|X-Frame|X-Content|Referrer"
+
+# Testar com curl verbose para ver todo o handshake:
+curl -kv https://localhost/ 2>&1 | grep -E "< HTTP|< Strict|< X-Frame"`} />
+          </div>
+        </div>
+      </div>
+
       <ModuleNav currentPath="/nginx-ssl" />
     </div>
   );

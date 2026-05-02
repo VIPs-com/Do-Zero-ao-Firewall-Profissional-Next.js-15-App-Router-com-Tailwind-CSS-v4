@@ -478,6 +478,95 @@ tail -f /var/log/syslog | grep knockd`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Configurar e testar Port Knocking para SSH</p>
+            <CodeBlock lang="bash" code={`# Instalar knockd
+sudo apt install knockd -y
+
+# Configurar sequência secreta
+sudo tee /etc/knockd.conf << 'EOF'
+[options]
+    logfile = /var/log/knockd.log
+    interface = eth0
+
+[openSSH]
+    sequence    = 7000,8000,9000
+    seq_timeout = 5
+    command     = /sbin/iptables -A INPUT -s %IP% -p tcp --dport 22 -j ACCEPT
+    tcpflags    = syn
+
+[closeSSH]
+    sequence    = 9000,8000,7000
+    seq_timeout = 5
+    command     = /sbin/iptables -D INPUT -s %IP% -p tcp --dport 22 -j ACCEPT
+    tcpflags    = syn
+EOF
+
+# Fechar SSH por padrão e iniciar knockd
+sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+sudo systemctl enable --now knockd
+
+# Testar do cliente (instalar knock: apt install knockd)
+knock -v IP-SERVIDOR 7000 8000 9000
+ssh usuario@IP-SERVIDOR   # deve funcionar agora!
+
+knock -v IP-SERVIDOR 9000 8000 7000
+ssh usuario@IP-SERVIDOR   # deve falhar (fechado)`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Port Knocking nativo com iptables (sem knockd)</p>
+            <CodeBlock lang="bash" code={`# Sequência: bater na 7000, depois 8000, depois 9000 → abre 22
+
+# Estado 1: primeira batida (porta 7000)
+iptables -A INPUT -p tcp --dport 7000 \\
+  -m recent --name KNOCK --set
+
+# Estado 2: segunda batida (porta 8000) após 7000
+iptables -A INPUT -p tcp --dport 8000 \\
+  -m recent --name KNOCK --rcheck \\
+  -m recent --name KNOCK2 --set
+
+# Estado 3: terceira batida → abrir SSH por 30s
+iptables -A INPUT -p tcp --dport 9000 \\
+  -m recent --name KNOCK2 --rcheck \\
+  -m recent --name ABRE --set
+
+iptables -A INPUT -p tcp --dport 22 \\
+  -m recent --name ABRE --rcheck --seconds 30 \\
+  -j ACCEPT
+
+iptables -A INPUT -p tcp --dport 22 -j DROP
+
+# Ver estado das listas recent:
+cat /proc/net/xt_recent/KNOCK`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Monitorar tentativas de port scan</p>
+            <CodeBlock lang="bash" code={`# Ver logs do knockd em tempo real
+sudo tail -f /var/log/knockd.log
+
+# Simular tentativa de port scan (sequência errada)
+nmap -sS IP-SERVIDOR  # não deve abrir SSH
+
+# Tentar sequência correta do cliente:
+knock -v IP-SERVIDOR 7000 8000 9000
+
+# Verificar que o IP foi autorizado temporariamente:
+sudo iptables -L INPUT -n | grep "22.*ACCEPT"
+
+# Fechar conexão:
+knock -v IP-SERVIDOR 9000 8000 7000
+
+# Confirmar que a regra foi removida:
+sudo iptables -L INPUT -n | grep "22.*ACCEPT"  # vazio`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/port-knocking" />
     </div>

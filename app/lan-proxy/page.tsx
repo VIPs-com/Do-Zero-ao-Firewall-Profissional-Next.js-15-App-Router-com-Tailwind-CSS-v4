@@ -481,6 +481,77 @@ export https_proxy=http://192.168.57.250:3128`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Instalar Squid e testar proxy explícito</p>
+            <CodeBlock lang="bash" code={`# Instalar Squid
+sudo apt install squid -y
+
+# Configuração mínima para lab
+sudo tee /etc/squid/squid.conf << 'EOF'
+http_port 3128
+acl localnet src 192.168.57.0/24
+http_access allow localnet
+http_access deny all
+EOF
+
+sudo systemctl restart squid
+
+# Testar proxy explícito de um cliente:
+curl -x http://192.168.57.250:3128 http://example.com -o /dev/null -w "%{http_code}\n"
+
+# Monitorar em tempo real:
+sudo tail -f /var/log/squid/access.log`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Proxy transparente com iptables REDIRECT</p>
+            <CodeBlock lang="bash" code={`# Ativar proxy transparente no Squid
+# Adicionar em squid.conf:
+# http_port 3129 intercept
+
+# Redirecionar HTTP da LAN para o Squid (no firewall)
+sudo iptables -t nat -A PREROUTING \\
+  -i eth2 -p tcp --dport 80 \\
+  -j REDIRECT --to-port 3129
+
+# Verificar: clientes na LAN não precisam configurar proxy
+# O tráfego HTTP é capturado automaticamente
+
+# Ver conexões ativas no Squid:
+sudo squidclient mgr:active_requests
+
+# Ver estatísticas de cache:
+sudo squidclient mgr:info | grep -E "requests|hit|miss"`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Bloquear categorias de sites com ACL</p>
+            <CodeBlock lang="bash" code={`# Criar lista de domínios bloqueados
+sudo tee /etc/squid/blocked-domains.txt << 'EOF'
+.facebook.com
+.instagram.com
+.tiktok.com
+.youtube.com
+EOF
+
+# Adicionar ao squid.conf:
+# acl blocked_sites dstdomain "/etc/squid/blocked-domains.txt"
+# http_access deny blocked_sites
+
+sudo systemctl reload squid
+
+# Testar bloqueio:
+curl -x http://192.168.57.250:3128 http://facebook.com -o /dev/null -w "%{http_code}\n"
+# Deve retornar 403 (Forbidden)
+
+# Ver no log de acesso:
+sudo grep "DENIED" /var/log/squid/access.log | tail -5`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/lan-proxy" />
     </div>
