@@ -1,17 +1,20 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Server, Layers, Shield, Network, Package, Terminal, Database, Activity } from 'lucide-react';
+import { Server, Layers, Shield, Network, Package, Terminal, Database, Activity, Zap, ArrowRight } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 
 export default function KubernetesPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/kubernetes');
@@ -1139,6 +1142,26 @@ kubectl get networkpolicies -n producao`} />
             </div>
           </div>
         </section>
+
+        {/* ── Mergulho Técnico ── */}
+        <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
+          <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
+          <p className="text-xs text-text-2 leading-relaxed mb-4">
+            Entenda como o Kubernetes faz service discovery com CoreDNS e por que o ClusterIP não é uma interface de rede real.
+          </p>
+          <button
+            onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'k8s-service-discovery') ?? null)}
+            className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+          >
+            <div className="flex items-center gap-2">
+              <Zap size={14} className="text-accent" />
+              <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">Kubernetes Service Discovery</span>
+            </div>
+            <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+
+        <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
 
         <ModuleNav currentPath="/kubernetes" order={ADVANCED_ORDER} />
       </div>

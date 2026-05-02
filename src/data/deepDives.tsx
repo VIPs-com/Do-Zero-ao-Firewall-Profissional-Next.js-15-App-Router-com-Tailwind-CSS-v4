@@ -1,11 +1,11 @@
 import React from 'react';
-import { Shield, Zap, Terminal, Search, Lock, Globe } from 'lucide-react';
+import { Shield, Zap, Terminal, Search, Lock, Globe, Server, Network } from 'lucide-react';
 
 export interface DeepDive {
   id: string;
   title: string;
   icon: React.ReactNode;
-  category: 'Firewall' | 'DNS' | 'Proxy' | 'SSL' | 'Kernel';
+  category: 'Firewall' | 'DNS' | 'Proxy' | 'SSL' | 'Kernel' | 'Containers' | 'Kubernetes';
   content: string;
   tags: string[];
 }
@@ -145,5 +145,76 @@ iptables-translate -A INPUT -p tcp --dport 22 -j ACCEPT
 **Resumo**: Se você sabe iptables, já sabe nftables. É só aprender a nova sintaxe.
     `,
     tags: ['nftables', 'iptables', 'kernel', 'migration']
+  },
+  {
+    id: 'docker-networking-internals',
+    title: 'Docker Networking — Bridges, iptables e Isolamento',
+    icon: <Server className="text-info" />,
+    category: 'Containers',
+    content: `
+### Como o Docker realmente conecta containers
+
+Quando você instala o Docker, ele cria automaticamente uma interface de rede virtual chamada \`docker0\` — uma **bridge Linux** com IP 172.17.0.1 por padrão.
+
+**O que acontece quando você executa \`docker run\`:**
+1. Docker cria um par de interfaces virtuais (veth pair): uma fica no namespace do container, outra na bridge docker0.
+2. O container recebe IP via DHCP interno (ex: 172.17.0.2).
+3. O kernel roteia tráfego entre container → docker0 → interface do host.
+
+**Como o port mapping funciona (é DNAT!):**
+\`\`\`
+docker run -p 8080:80 nginx
+↓
+iptables -t nat -A DOCKER ! -i docker0 -p tcp --dport 8080 -j DNAT --to-destination 172.17.0.2:80
+\`\`\`
+Docker injeta regras DNAT em \`/proc/sys/net/ipv4/ip_forward\` = 1 automaticamente.
+
+**Por que não editar a chain DOCKER?**
+- Docker regenera as regras DOCKER a cada reinicialização.
+- Suas regras customizadas serão apagadas.
+- Use a chain **DOCKER-USER** — ela é chamada antes de DOCKER e nunca é limpa.
+
+**Redes customizadas (\`docker network create\`):**
+- Cada rede cria uma nova bridge (ex: br-abc123).
+- Containers na mesma rede customizada se resolvem pelo nome (DNS interno do Docker via 127.0.0.11).
+- **Isolamento real**: containers em redes diferentes não se comunicam sem regras explícitas de roteamento.
+    `,
+    tags: ['docker', 'networking', 'iptables', 'bridge', 'nat']
+  },
+  {
+    id: 'k8s-service-discovery',
+    title: 'Kubernetes Service Discovery — CoreDNS e kube-proxy',
+    icon: <Network className="text-ok" />,
+    category: 'Kubernetes',
+    content: `
+### Como um Pod encontra outro Pod no Kubernetes
+
+No Kubernetes, Pods são efêmeros: o IP muda a cada reinicialização. O **Service** resolve isso com um IP virtual estável — mas como o tráfego chega ao Pod certo?
+
+**Dois sistemas que trabalham juntos:**
+
+**1. CoreDNS — Service Discovery por Nome:**
+- Todo cluster K8s tem CoreDNS rodando como Deployment.
+- Cada Service recebe um registro DNS automático: \`<serviço>.<namespace>.svc.cluster.local\`
+- \`nginx.default.svc.cluster.local\` → 10.96.45.12 (ClusterIP)
+- Pods consultam o DNS via /etc/resolv.conf que aponta para o IP do CoreDNS (10.96.0.10).
+
+**2. kube-proxy — Roteamento do ClusterIP:**
+- kube-proxy roda em cada nó e cria regras iptables/ipvs para cada Service.
+- Quando o tráfego chega ao ClusterIP (IP virtual), iptables faz DNAT para um dos Endpoints (IPs reais dos Pods).
+- Load balancing é probabilístico (--probability com statistic mode).
+
+**Por que o ClusterIP não existe realmente:**
+\`\`\`
+kubectl get svc nginx → 10.96.45.12 (ClusterIP)
+ip route → nenhuma rota para 10.96.45.12 no host
+\`\`\`
+O ClusterIP é uma ficção mantida por regras iptables em todos os nós. **Não há interface de rede com esse IP** — é pura tradução de endereço no kernel.
+
+**Cilium e a revolução eBPF:**
+- Cilium substitui kube-proxy por eBPF maps: \`O(1)\` em vez de \`O(N)\` iptables.
+- Em clusters com 10.000 serviços, isso é a diferença entre 1ms e 100ms de latência.
+    `,
+    tags: ['kubernetes', 'coredns', 'kube-proxy', 'networking', 'cilium']
   },
 ];

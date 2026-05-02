@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Network, Shield, Terminal, AlertTriangle, CheckCircle2, Circle, Layers, Lock } from 'lucide-react';
+import { Network, Shield, Terminal, AlertTriangle, CheckCircle2, Circle, Layers, Lock, Zap, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 
 const DOCKER_CHECKLIST = [
   { id: 'docker-installed', text: 'Docker instalado, daemon ativo e hello-world executado com sucesso' },
@@ -179,6 +181,7 @@ docker stop web app && docker rm web app`;
 
 export default function DockerPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/docker');
@@ -642,6 +645,26 @@ docker network rm backend-net`} />
           </div>
         ))}
       </section>
+
+      {/* ── Mergulho Técnico ── */}
+      <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
+        <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
+        <p className="text-xs text-text-2 leading-relaxed mb-4">
+          Entenda como o Docker realmente conecta containers — bridges Linux, iptables DNAT e por que a chain DOCKER-USER existe.
+        </p>
+        <button
+          onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'docker-networking-internals') ?? null)}
+          className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+        >
+          <div className="flex items-center gap-2">
+            <Zap size={14} className="text-accent" />
+            <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">Docker Networking Internals</span>
+          </div>
+          <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+
+      <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
 
       <ModuleNav currentPath="/docker" />
     </div>
