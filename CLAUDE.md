@@ -56,7 +56,7 @@ src/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
     quizQuestions.ts        # perguntas do quiz — 173 perguntas (firewall=71, fundamentos=45, avancados=57; Sprint QUIZ-LATE: +9 para Pivoteamento/Laboratorio/Proxmox)
-    searchItems.ts          # 163 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    searchItems.ts          # 180 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -109,7 +109,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 160 (Sprint CONTENT-PIVOTING: +3 ataques + 3 pivoteamento) |
 | Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/59/56/7 |
 | Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
-| searchItems | `src/data/searchItems.ts` | 163 (Sprint SEARCH-EXPAND: +15 para módulos com cobertura única) |
+| searchItems | `src/data/searchItems.ts` | 180 (Sprint SEARCH-V2: +17 para módulos avançados atingirem ≥3 itens) |
 
 ---
 
@@ -406,6 +406,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint WINDOWS-POLISH (3 rounds): WindowsComparisonBox adicionada a 10 páginas do COURSE_ORDER que não tinham — Round 1: audit-logs (Event Viewer/Sysmon ↔ auditd/iptables LOG), wan-nat (RRAS/ICS ↔ iptables MASQUERADE), dnat (RRAS Port Forward ↔ PREROUTING DNAT), hardening (GPO/CIS ↔ sshd+sysctl+AppArmor); Round 2: docker (Docker Desktop/HyperV ↔ Docker Engine nativo), nginx-ssl (IIS+win-acme ↔ Nginx+Certbot), lan-proxy (ISA Server/WPAD ↔ Squid transparente), proxmox (Hyper-V/vSphere ↔ Proxmox VE); Round 3: ssh-2fa (Windows Hello/Duo ↔ PAM+TOTP), port-knocking (Azure JIT/netsh ↔ knockd+iptables). Nenhum curso principal da trilha v1.0 sem WindowsComparisonBox agora.
 - ✅ Sprint FUNDAMENTOS-WINDOWS: WindowsComparisonBox adicionada a fhs (C:\Windows↔/etc, Registry↔/proc), editores (Notepad/PowerShell↔nano/vim), comandos (dir↔ls, type↔cat, 20+ equivalências), vpn-ipsec (RRAS IKEv2↔StrongSwan) — 100% de cobertura WindowsComparisonBox em todos os módulos.
 - ✅ Sprint ERROS-COMUNS (3 rodadas): seção "Erros Comuns e Soluções" (4 cards por página) adicionada a 33 módulos — 100% de cobertura em todos os módulos de conteúdo (v1.0/v2.0/v3.0/v4.0/v5.0). Sem mudanças em constantes.
+- ✅ Sprint SEARCH-V2: +17 itens de busca — terceiro item (glossário técnico) para cada módulo avançado com apenas 2 itens: dhcp (DORA), samba (smb.conf shares), apache (VirtualHost a2ensite), openvpn (Easy-RSA PKI), traefik (labels autodiscovery), ldap (LDIF), pihole (DNS sinkhole), ansible (Vault AES-256), monitoring (Alertmanager), kubernetes (Helm), terraform (módulos reutilizáveis), ebpf (XDP), ebpf-avancado (Tetragon), sre (burn rate alerts), opnsense (pf ingress), nextcloud (WebDAV), ssh-proxy (autossh); searchItems 163→180.
 - ✅ Sprint EXERCICIOS (COMPLETO — 100% cobertura): seções "Exercícios Guiados" com 3 labs hands-on adicionadas a todos os módulos de conteúdo (59 páginas). Lotes: Round 1-4 (docker/hardening/audit-logs/dnat/nginx-ssl/lan-proxy/port-knocking/wan-nat/opnsense/vpn-ipsec/dns/nextcloud/proxmox); Round 5 (ataques-avancados/cicd/instalacao/laboratorio/service-mesh/sre); Fundamentos v2.0 (fhs/comandos/editores/processos/permissoes/discos/backup/logs-basicos/shell-script/cron/pacotes/boot/comandos-avancados/rsyslog); v1.0 restantes (fail2ban/wireguard/nftables/ssh-2fa/pivoteamento/ssh-proxy); v3.0 (dhcp/samba/apache/openvpn/pihole); v4.0 (docker-compose/ansible/monitoring/kubernetes/ldap/traefik/terraform/suricata/ebpf/ebpf-avancado). Sem mudanças em constantes.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
