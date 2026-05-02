@@ -548,6 +548,71 @@ docker network inspect bridge`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Rede bridge isolada com DNS interno</p>
+            <CodeBlock lang="bash" code={`# Criar rede customizada (tem DNS interno!)
+docker network create --driver bridge app-net
+
+# Iniciar dois containers na mesma rede
+docker run -d --name web --network app-net nginx:alpine
+docker run -d --name db  --network app-net redis:alpine
+
+# Testar DNS interno — containers se resolvem por nome
+docker exec web ping -c 2 db   # deve funcionar!
+docker exec db  ping -c 2 web  # deve funcionar!
+
+# Limpar
+docker stop web db && docker rm web db
+docker network rm app-net`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Inspecionar chains do iptables criadas pelo Docker</p>
+            <CodeBlock lang="bash" code={`# Ver chains criadas pelo Docker
+iptables -L -n | grep -E "^Chain (DOCKER|FORWARD)"
+
+# Iniciar um container com porta exposta
+docker run -d --name nginx-test -p 8080:80 nginx:alpine
+
+# Ver regra DNAT automática criada
+iptables -t nat -L -n | grep 8080
+
+# Proteger Redis de acesso externo (via DOCKER-USER)
+docker run -d --name redis-ext -p 6379:6379 redis:alpine
+iptables -I DOCKER-USER -i eth0 -p tcp --dport 6379 -j DROP
+
+# Testar: acesso externo bloqueado, interno funciona
+docker exec redis-ext redis-cli ping  # OK (interno)
+
+# Limpar
+docker stop nginx-test redis-ext && docker rm nginx-test redis-ext`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Rede internal (sem acesso externo)</p>
+            <CodeBlock lang="bash" code={`# Rede interna — containers sem acesso à internet
+docker network create --internal backend-net
+
+# Banco de dados só na rede interna
+docker run -d --name postgres --network backend-net \\
+  -e POSTGRES_PASSWORD=senha postgres:alpine
+
+# App com acesso às duas redes
+docker run -d --name app \\
+  --network backend-net nginx:alpine
+
+# Verificar: postgres não tem rota para internet
+docker exec postgres ping -c 2 8.8.8.8  # deve falhar
+docker exec app ping -c 2 8.8.8.8       # funciona (app não é --internal)
+
+docker stop postgres app && docker rm postgres app
+docker network rm backend-net`} />
+          </div>
+        </div>
+      </section>
+
       {/* ── Erros Comuns ── */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold flex items-center gap-2">

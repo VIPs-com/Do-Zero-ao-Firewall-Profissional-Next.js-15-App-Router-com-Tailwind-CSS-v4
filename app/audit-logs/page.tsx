@@ -599,6 +599,68 @@ journalctl -k -f | grep "SSH-ACCESS"`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Monitorar tentativas de login SSH em tempo real</p>
+            <CodeBlock lang="bash" code={`# Terminal 1: monitorar auth.log em tempo real
+sudo tail -f /var/log/auth.log | grep --line-buffered "sshd"
+
+# Terminal 2: simular tentativa de login falha (senha errada)
+ssh usuario-inexistente@localhost
+
+# Você deve ver no Terminal 1:
+# sshd[PID]: Invalid user usuario-inexistente from 127.0.0.1
+# sshd[PID]: Failed password for invalid user
+
+# Contar falhas por IP:
+sudo grep "Failed password" /var/log/auth.log | \\
+  awk '{print $(NF-3)}' | sort | uniq -c | sort -rn`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Auditoria de arquivos críticos com auditd</p>
+            <CodeBlock lang="bash" code={`# Instalar auditd
+sudo apt install auditd -y
+
+# Monitorar leituras e escritas em arquivos sensíveis
+sudo auditctl -w /etc/passwd    -p rwxa -k passwd-watch
+sudo auditctl -w /etc/shadow    -p rwxa -k shadow-watch
+sudo auditctl -w /etc/ssh/sshd_config -p rwa -k sshd-config
+
+# Gerar atividade para testar
+cat /etc/passwd > /dev/null    # leitura (r)
+sudo grep root /etc/shadow     # leitura com sudo
+
+# Ver os eventos gerados:
+sudo ausearch -k passwd-watch --start recent
+sudo ausearch -k shadow-watch  --start recent
+
+# Ver regras ativas:
+sudo auditctl -l`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Análise forense de um login bem-sucedido</p>
+            <CodeBlock lang="bash" code={`# Ver todos os logins bem-sucedidos hoje
+last | head -20
+
+# Ver logins falhos (tentativas)
+lastb | head -20   # requer sudo
+
+# Detalhar uma sessão específica via auditd
+# Substituir SESSION_ID pelo ID encontrado no ausearch
+sudo ausearch -k sshd --start today | grep -A 5 "type=USER_LOGIN"
+
+# Linha do tempo de um usuário específico:
+sudo ausearch -ua $(id -u usuario) --start today
+
+# Exportar relatório completo:
+sudo aureport --start today --summary`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/audit-logs" />
     </div>

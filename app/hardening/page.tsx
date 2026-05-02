@@ -491,6 +491,63 @@ lynis audit system  # lynis = CIS Benchmark para Linux`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Gerar e copiar chave SSH Ed25519</p>
+            <CodeBlock lang="bash" code={`# Na sua máquina LOCAL (não no servidor):
+ssh-keygen -t ed25519 -C "workshop-firewall" -f ~/.ssh/workshop_key
+
+# Copiar a chave para o servidor (antes de desabilitar senha!)
+ssh-copy-id -i ~/.ssh/workshop_key.pub usuario@IP-SERVIDOR
+
+# Testar login com chave (deve funcionar SEM pedir senha):
+ssh -i ~/.ssh/workshop_key usuario@IP-SERVIDOR
+
+# Só depois de confirmar que a chave funciona, desabilitar senha:
+sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/'  /etc/ssh/sshd_config
+sudo systemctl restart sshd`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Aplicar sysctl hardening e verificar</p>
+            <CodeBlock lang="bash" code={`# Aplicar configurações de kernel
+sudo tee /etc/sysctl.d/99-hardening.conf << 'EOF'
+kernel.randomize_va_space = 2
+net.ipv4.tcp_syncookies = 1
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+kernel.dmesg_restrict = 1
+EOF
+
+sudo sysctl --system   # Aplicar sem reiniciar
+
+# Verificar valores aplicados:
+sysctl kernel.randomize_va_space   # deve ser 2
+sysctl net.ipv4.tcp_syncookies     # deve ser 1
+sysctl net.ipv4.conf.all.rp_filter # deve ser 1`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Auditoria com Lynis</p>
+            <CodeBlock lang="bash" code={`# Instalar Lynis (auditor de segurança CIS)
+sudo apt install lynis -y
+
+# Rodar auditoria completa
+sudo lynis audit system 2>&1 | tee /tmp/lynis-report.txt
+
+# Ver score e avisos de alta prioridade:
+grep "Hardening index" /tmp/lynis-report.txt
+grep "\\[WARNING\\]" /tmp/lynis-report.txt | head -10
+
+# Ver sugestões de melhoria:
+grep "\\* " /tmp/lynis-report.txt | head -15`} />
+          </div>
+        </div>
+      </section>
+
       {/* ── Erros Comuns ── */}
       <section className="space-y-4">
         <h2 className="text-2xl font-bold flex items-center gap-2">

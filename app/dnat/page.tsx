@@ -473,6 +473,77 @@ iptables-save > /etc/iptables/rules.v4`}
         />
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — DNAT básico: expor servidor HTTP da DMZ</p>
+            <CodeBlock lang="bash" code={`# Cenário: WAN = eth0 (IP público), DMZ = eth1 (192.168.56.0/24)
+# Objetivo: tráfego HTTP da internet → servidor web na DMZ
+
+# 1. Ativar ip_forward (necessário para DNAT funcionar!)
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# 2. Regra PREROUTING: interceptar e redirecionar
+iptables -t nat -A PREROUTING \\
+  -i eth0 -p tcp --dport 80 \\
+  -j DNAT --to-destination 192.168.56.10:80
+
+# 3. Permitir o tráfego no FORWARD
+iptables -A FORWARD -i eth0 -o eth1 \\
+  -p tcp --dport 80 -m state \\
+  --state NEW,ESTABLISHED -j ACCEPT
+
+# 4. Testar de fora:
+# curl http://IP-WAN-DO-FIREWALL
+
+# 5. Verificar regra criada:
+iptables -t nat -L PREROUTING -n -v`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — DNAT com porta personalizada (segurança por obscuridade)</p>
+            <CodeBlock lang="bash" code={`# Expor SSH interno na porta 2222 externamente
+# (SSH real está na porta 22 do servidor 192.168.57.100)
+
+iptables -t nat -A PREROUTING \\
+  -i eth0 -p tcp --dport 2222 \\
+  -j DNAT --to-destination 192.168.57.100:22
+
+iptables -A FORWARD -i eth0 -o eth2 \\
+  -p tcp --dport 22 \\
+  -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# Testar:
+# ssh -p 2222 usuario@IP-WAN-FIREWALL
+# (isso se conecta na verdade ao servidor .100:22)
+
+# Ver NAT em ação — conexões ativas:
+conntrack -L | grep dport=22`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Verificar DNAT com tcpdump em duas interfaces</p>
+            <CodeBlock lang="bash" code={`# Terminal 1: capturar na interface WAN (entrada)
+sudo tcpdump -i eth0 -n 'tcp port 80' &
+
+# Terminal 2: capturar na interface DMZ (saída reescrita)
+sudo tcpdump -i eth1 -n 'tcp port 80' &
+
+# Terminal 3: gerar tráfego de teste
+curl -s http://IP-WAN-FIREWALL/ &> /dev/null
+
+# No Terminal 1 você verá o IP de origem real
+# No Terminal 2 você verá o destino reescrito para 192.168.56.10
+
+# Explicação: o DNAT acontece ANTES do roteamento (PREROUTING)
+# Por isso o tcpdump em eth0 vê o destino original (IP WAN)
+# E o tcpdump em eth1 vê o destino reescrito (IP DMZ)
+
+kill %1 %2`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/dnat" />
     </div>
