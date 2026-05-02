@@ -803,6 +803,114 @@ jobs:
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Pipeline CI com Lint e Testes</p>
+              <CodeBlock lang="yaml" code={`# .github/workflows/ci.yml
+name: CI
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Build e Push de Imagem Docker no GHCR</p>
+              <CodeBlock lang="yaml" code={`# .github/workflows/docker.yml
+name: Docker Build & Push
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: \${{ github.actor }}
+          password: \${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/\${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha,prefix=sha-
+      - uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: \${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Deploy SSH com Environment de Produção</p>
+              <CodeBlock lang="yaml" code={`# .github/workflows/deploy.yml
+name: Deploy to Production
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production   # requer aprovação manual!
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: \${{ secrets.DEPLOY_HOST }}
+          username: deploy
+          key: \${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd /opt/app
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
+            echo "Deploy concluído: \$(date)"
+
+# Verificar no servidor após deploy:
+# docker compose ps
+# docker compose logs --tail=50`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/cicd" order={ADVANCED_ORDER} />
       </div>
     </div>

@@ -712,6 +712,113 @@ istioctl dashboard kiali`}
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar Istio e Verificar mTLS Automático</p>
+              <CodeBlock lang="bash" code={`# Instalar istioctl
+curl -L https://istio.io/downloadIstio | sh -
+export PATH=$PWD/istio-*/bin:$PATH
+
+# Verificar pré-requisitos do cluster
+istioctl x precheck
+
+# Instalar Istio com perfil demo
+istioctl install --set profile=demo -y
+
+# Habilitar injeção automática de sidecar no namespace default
+kubectl label namespace default istio-injection=enabled
+
+# Verificar pods com sidecar Envoy (2 containers por pod)
+kubectl get pods -n default
+
+# Verificar PeerAuthentication (mTLS padrão)
+kubectl get peerauthentication --all-namespaces
+
+# Forçar mTLS STRICT no namespace
+kubectl apply -f - << 'EOF'
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: default
+spec:
+  mtls:
+    mode: STRICT
+EOF`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Canary Deployment com VirtualService</p>
+              <CodeBlock lang="bash" code={`# Criar DestinationRule com subsets v1 e v2
+kubectl apply -f - << 'EOF'
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: minha-app
+spec:
+  host: minha-app
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+EOF
+
+# Criar VirtualService com 90/10 split
+kubectl apply -f - << 'EOF'
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: minha-app
+spec:
+  hosts:
+  - minha-app
+  http:
+  - route:
+    - destination:
+        host: minha-app
+        subset: v1
+      weight: 90
+    - destination:
+        host: minha-app
+        subset: v2
+      weight: 10
+EOF
+
+# Verificar distribuição de tráfego com Kiali
+kubectl port-forward svc/kiali 20001:20001 -n istio-system`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Observabilidade com Kiali e Jaeger</p>
+              <CodeBlock lang="bash" code={`# Instalar addons de observabilidade
+kubectl apply -f istio-*/samples/addons/prometheus.yaml
+kubectl apply -f istio-*/samples/addons/grafana.yaml
+kubectl apply -f istio-*/samples/addons/kiali.yaml
+kubectl apply -f istio-*/samples/addons/jaeger.yaml
+
+# Aguardar pods ficarem prontos
+kubectl wait --for=condition=ready pod \
+  -l app=kiali -n istio-system --timeout=120s
+
+# Abrir Kiali (service graph interativo)
+istioctl dashboard kiali
+
+# Abrir Jaeger (distributed tracing)
+istioctl dashboard jaeger
+
+# Gerar tráfego de teste para ver no Kiali
+kubectl run curl-test --image=curlimages/curl --restart=Never -- \
+  sh -c 'for i in $(seq 1 100); do curl -s http://minha-app/; done'
+
+# Ver traces no Jaeger: buscar por serviço "minha-app"`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/service-mesh" order={ADVANCED_ORDER} />
       </div>
     </div>

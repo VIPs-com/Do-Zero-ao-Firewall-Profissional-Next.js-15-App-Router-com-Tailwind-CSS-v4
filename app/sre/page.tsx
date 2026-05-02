@@ -735,6 +735,103 @@ promtool query instant 'job:sli_http_availability:rate5m'
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Definir SLIs e SLOs com Prometheus Recording Rules</p>
+              <CodeBlock lang="yaml" code={`# prometheus/rules/slo-api.yml
+groups:
+  - name: slo-api
+    interval: 30s
+    rules:
+      # SLI: disponibilidade (requisições bem-sucedidas / total)
+      - record: sli:api_disponibilidade:ratio_rate5m
+        expr: |
+          sum(rate(http_requests_total{status=~"2.."}[5m]))
+          /
+          sum(rate(http_requests_total[5m]))
+
+      # SLI: latência P99 < 300ms
+      - record: sli:api_latencia_p99:rate5m
+        expr: |
+          histogram_quantile(0.99,
+            rate(http_request_duration_seconds_bucket[5m])
+          )
+
+      # Error budget restante (SLO = 99.9%)
+      - record: slo:error_budget_restante:ratio
+        expr: |
+          1 - (
+            (1 - sli:api_disponibilidade:ratio_rate5m)
+            / (1 - 0.999)
+          )`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Alertas de Burn Rate no Alertmanager</p>
+              <CodeBlock lang="yaml" code={`# prometheus/rules/burn-rate-alerts.yml
+groups:
+  - name: burn-rate-alerts
+    rules:
+      # Alerta crítico: burn rate 14.4× (esgota budget em 1 hora)
+      - alert: ErrorBudgetBurnRateCritico
+        expr: |
+          (
+            1 - sli:api_disponibilidade:ratio_rate5m
+          ) > (14.4 * (1 - 0.999))
+        for: 2m
+        labels:
+          severity: page   # PagerDuty / acorda on-call
+        annotations:
+          summary: "Burn rate crítico — error budget esgota em 1h"
+          runbook: "https://wiki.empresa.com/runbooks/api-alta-taxa-erro"
+
+      # Alerta alto: burn rate 6× (esgota budget em 6 horas)
+      - alert: ErrorBudgetBurnRateAlto
+        expr: |
+          (
+            1 - sli:api_disponibilidade:ratio_rate5m
+          ) > (6 * (1 - 0.999))
+        for: 15m
+        labels:
+          severity: slack
+        annotations:
+          summary: "Burn rate elevado — investigar em até 6h"`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Escrever um Postmortem Blameless</p>
+              <CodeBlock lang="bash" code={`# Template de postmortem — criar no wiki/Notion/Confluence
+cat > postmortem-2024-01-15.md << 'EOF'
+# Postmortem — Indisponibilidade API de Pagamentos
+**Data:** 2024-01-15 | **Duração:** 47 minutos | **Severidade:** P1
+**SLO impactado:** Disponibilidade caiu de 99.9% para 82% neste período
+
+## Resumo Executivo
+O deploy da v2.3.1 introduziu uma migration SQL sem índice em tabela de
+10M registros. O lock de leitura causou timeout em cascata nas réplicas.
+
+## Timeline (UTC)
+- 14:03 — Deploy v2.3.1 iniciado (automático, aprovado em staging)
+- 14:07 — Alertas burn rate crítico disparados
+- 14:09 — On-call notificado via PagerDuty
+- 14:22 — Rollback para v2.3.0 iniciado
+- 14:50 — Serviço normalizado, SLO recuperado
+
+## Causa Raiz
+Migration ALTER TABLE sem ALGORITHM=INPLACE causou lock exclusivo.
+
+## Ações Corretivas
+- [ ] Adicionar checklist de migrations na pipeline CI (Owner: @infra)
+- [ ] Criar teste de carga de migrations em staging (Owner: @dba)
+- [ ] Documentar padrão ALGORITHM=INPLACE para o time (Owner: @tech-lead)
+EOF
+
+echo "Postmortem criado. Compartilhar em até 48h após o incidente."`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/sre" order={ADVANCED_ORDER} />
       </div>
     </div>

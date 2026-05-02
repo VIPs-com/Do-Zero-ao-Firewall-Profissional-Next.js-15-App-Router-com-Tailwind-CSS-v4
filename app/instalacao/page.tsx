@@ -529,6 +529,84 @@ export default function InstallationPage() {
         ))}
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4 mb-8">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Explorar Interfaces de Rede Pós-Instalação</p>
+            <CodeBlock lang="bash" code={`# Listar todas as interfaces de rede
+ip link show
+
+# Ver endereços IP atribuídos
+ip addr show
+
+# Verificar rota padrão (gateway)
+ip route show
+
+# Testar conectividade com a WAN
+ping -c 4 8.8.8.8
+
+# Verificar DNS resolutivo
+cat /etc/resolv.conf
+nslookup google.com
+
+# Ver hostname configurado
+hostnamectl`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Configurar Interfaces WAN/LAN/DMZ Manualmente</p>
+            <CodeBlock lang="bash" code={`# Verificar interfaces disponíveis
+ip link show | grep -E "^[0-9]+"
+
+# Configurar IP estático temporário (sem persistência)
+ip addr add 192.168.1.1/24 dev eth1
+ip link set eth1 up
+
+# Configurar via Netplan (persistente)
+cat > /etc/netplan/01-firewall.yaml << 'EOF'
+network:
+  version: 2
+  ethernets:
+    eth0:                    # WAN
+      dhcp4: true
+    eth1:                    # LAN
+      addresses: [192.168.57.1/24]
+    eth2:                    # DMZ
+      addresses: [192.168.100.1/24]
+EOF
+
+# Aplicar configuração
+netplan apply
+
+# Verificar resultado
+ip addr show`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Habilitar IP Forwarding e Verificar Sistema</p>
+            <CodeBlock lang="bash" code={`# Verificar se IP forwarding está ativo
+cat /proc/sys/net/ipv4/ip_forward
+
+# Habilitar temporariamente
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# Habilitar permanentemente
+echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
+sysctl -p
+
+# Verificar versão do sistema operacional
+lsb_release -a
+uname -r
+
+# Confirmar recursos de hardware disponíveis
+free -h
+df -h
+nproc
+lscpu | grep "Model name"`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/instalacao" />
     </div>

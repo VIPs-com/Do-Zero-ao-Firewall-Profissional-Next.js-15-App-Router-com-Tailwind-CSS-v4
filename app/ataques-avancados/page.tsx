@@ -402,6 +402,70 @@ tcpdump -i eth0 arp
         ))}
       </section>
 
+      {/* ── Exercícios Guiados ── */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Reconhecimento Passivo com Nmap</p>
+            <CodeBlock lang="bash" code={`# Instalar nmap e explorar flags de detecção
+apt install nmap -y
+
+# Scan básico (SYN scan — requer root)
+nmap -sS 192.168.57.0/24
+
+# Scan com detecção de SO e serviços
+nmap -sV -O 192.168.57.10
+
+# Scan furtivo com timing lento (T1)
+nmap -sS -T1 --max-retries 1 192.168.57.10
+
+# Ver no firewall o que chegou nos logs
+journalctl -k | grep "IPTables-DROP" | tail -20`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Simulação e Defesa contra SYN Flood</p>
+            <CodeBlock lang="bash" code={`# Instalar hping3 para simular flood (ambiente de lab apenas!)
+apt install hping3 -y
+
+# Verificar regras connlimit existentes
+iptables -L INPUT -n -v | grep connlimit
+
+# Adicionar proteção SYN flood
+iptables -A INPUT -p tcp --syn -m connlimit --connlimit-above 20 -j DROP
+iptables -A INPUT -p tcp --syn -m limit --limit 100/s --limit-burst 150 -j ACCEPT
+
+# Monitorar conntrack durante o ataque
+watch -n1 'cat /proc/sys/net/netfilter/nf_conntrack_count'
+
+# Ver entradas SYN na tabela conntrack
+conntrack -L -p tcp --state SYN_SENT | wc -l`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Detecção de ARP Spoofing</p>
+            <CodeBlock lang="bash" code={`# Instalar arpwatch para monitoramento passivo
+apt install arpwatch -y
+
+# Verificar tabela ARP atual
+arp -n
+ip neigh show
+
+# Iniciar arpwatch na interface LAN
+arpwatch -i eth1 -f /var/lib/arpwatch/arp.dat
+
+# Ver log de mudanças de MAC
+journalctl -u arpwatch -f
+
+# Proteção estática via arptables
+apt install arptables -y
+arptables -A INPUT --source-mac ! aa:bb:cc:dd:ee:ff -j DROP
+
+# Verificar regras arptables
+arptables -L -n`} />
+          </div>
+        </div>
+      </section>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/ataques-avancados" />
     </div>

@@ -487,6 +487,94 @@ virsh snapshot-revert Firewall snap-base`}
         ))}
       </div>
 
+      {/* ── Exercícios Guiados ── */}
+      <div className="space-y-4 mb-8">
+        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+        <div className="grid gap-4">
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 1 — Criar VM com KVM/libvirt via linha de comando</p>
+            <CodeBlock lang="bash" code={`# Verificar suporte à virtualização no hardware
+egrep -c '(vmx|svm)' /proc/cpuinfo   # > 0 = suportado
+
+# Instalar KVM e ferramentas
+apt install qemu-kvm libvirt-daemon-system virtinst -y
+
+# Verificar se libvirtd está rodando
+systemctl status libvirtd
+
+# Criar VM Debian via virt-install (ISO em /var/lib/libvirt/images/)
+virt-install \
+  --name firewall-lab \
+  --ram 1024 \
+  --vcpus 2 \
+  --disk size=10,format=qcow2 \
+  --os-variant debian12 \
+  --network bridge=virbr0 \
+  --cdrom /var/lib/libvirt/images/debian-12-amd64.iso \
+  --graphics vnc
+
+# Listar VMs criadas
+virsh list --all`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 2 — Gerenciar Snapshots e Ciclo de Vida da VM</p>
+            <CodeBlock lang="bash" code={`# Criar snapshot antes de modificar a VM
+virsh snapshot-create-as --domain firewall-lab \
+  --name "pre-config" \
+  --description "Estado limpo antes da configuração"
+
+# Listar snapshots disponíveis
+virsh snapshot-list firewall-lab
+
+# Suspender e retomar VM
+virsh suspend firewall-lab
+virsh resume firewall-lab
+
+# Fazer rollback para snapshot anterior
+virsh snapshot-revert firewall-lab pre-config
+
+# Excluir snapshot desnecessário
+virsh snapshot-delete firewall-lab pre-config
+
+# Ver uso de disco do qcow2 (sparse)
+du -sh /var/lib/libvirt/images/firewall-lab.qcow2
+qemu-img info /var/lib/libvirt/images/firewall-lab.qcow2`} />
+          </div>
+          <div className="p-4 rounded-xl bg-bg-2 border border-border">
+            <p className="font-bold text-sm mb-2">Lab 3 — Configurar Rede com Bridges para Lab de Firewall</p>
+            <CodeBlock lang="bash" code={`# Criar bridge para rede LAN do lab
+virsh net-define /dev/stdin << 'EOF'
+<network>
+  <name>lab-lan</name>
+  <bridge name='virbr1'/>
+  <ip address='192.168.57.1' netmask='255.255.255.0'/>
+</network>
+EOF
+
+virsh net-start lab-lan
+virsh net-autostart lab-lan
+
+# Criar bridge para rede DMZ
+virsh net-define /dev/stdin << 'EOF'
+<network>
+  <name>lab-dmz</name>
+  <bridge name='virbr2'/>
+  <ip address='192.168.100.1' netmask='255.255.255.0'/>
+</network>
+EOF
+
+virsh net-start lab-dmz
+
+# Listar todas as redes virtuais
+virsh net-list --all
+
+# Conectar VM à rede adicional
+virsh attach-interface --domain firewall-lab \
+  --type network --source lab-lan --persistent`} />
+          </div>
+        </div>
+      </div>
+
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/laboratorio" />
     </div>
