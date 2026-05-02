@@ -468,6 +468,97 @@ pihole -w "cdn.site-legitimo.com"
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar Pi-hole com Docker Compose</p>
+              <CodeBlock lang="bash" code={`# Resolver conflito com systemd-resolved na porta 53
+systemctl stop systemd-resolved
+sed -i 's/^DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf
+systemctl restart systemd-resolved
+
+# Criar stack Docker Compose do Pi-hole
+mkdir -p /opt/pihole && cd /opt/pihole
+
+cat > docker-compose.yml << 'EOF'
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8080:80/tcp"
+    environment:
+      WEBPASSWORD: "minha-senha-segura"
+      PIHOLE_DNS_: "1.1.1.1;8.8.8.8"
+      TZ: "America/Sao_Paulo"
+    volumes:
+      - ./etc-pihole:/etc/pihole
+      - ./etc-dnsmasq:/etc/dnsmasq.d
+    restart: unless-stopped
+EOF
+
+docker compose up -d
+docker compose logs -f pihole`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Testar Bloqueio e Gerenciar Listas</p>
+              <CodeBlock lang="bash" code={`# Testar que o Pi-hole está respondendo DNS
+dig @127.0.0.1 google.com        # deve resolver
+dig @127.0.0.1 ads.google.com    # pode bloquear (NXDOMAIN ou 0.0.0.0)
+
+# Atualizar gravity (blocklists)
+docker exec pihole pihole -g
+# ou: pihole -g (se instalado diretamente)
+
+# Ver estatísticas de bloqueio
+docker exec pihole pihole -c
+
+# Adicionar domínio à whitelist (des-bloquear)
+docker exec pihole pihole -w meuservico.com
+
+# Adicionar domínio à blacklist (bloquear)
+docker exec pihole pihole -b ads.trafego.com
+
+# Ver queries recentes no log
+docker exec pihole pihole -t
+
+# Acessar o dashboard web
+echo "Dashboard: http://$(hostname -I | awk '{print $1}'):8080/admin"`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Forçar DNS da LAN via iptables DNAT</p>
+              <CodeBlock lang="bash" code={`# Forçar todos os clientes da LAN a usar o Pi-hole como DNS
+# (previne que clientes usem 8.8.8.8 diretamente, bypassando o filtro)
+
+PI_HOLE_IP="192.168.57.5"   # IP do servidor Pi-hole
+LAN_IFACE="eth1"
+
+# Redirecionar qualquer query DNS da LAN para o Pi-hole
+iptables -t nat -A PREROUTING \
+  -i $LAN_IFACE \
+  -p udp --dport 53 \
+  ! -d $PI_HOLE_IP \
+  -j DNAT --to-destination $PI_HOLE_IP:53
+
+iptables -t nat -A PREROUTING \
+  -i $LAN_IFACE \
+  -p tcp --dport 53 \
+  ! -d $PI_HOLE_IP \
+  -j DNAT --to-destination $PI_HOLE_IP:53
+
+# Verificar regras
+iptables -t nat -L PREROUTING -n -v | grep dpt:53
+
+# Testar — mesmo usando 8.8.8.8, a query vai para o Pi-hole
+dig @8.8.8.8 google.com   # ainda deve retornar resposta`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/pihole" order={ADVANCED_ORDER} />
       </div>
     </main>

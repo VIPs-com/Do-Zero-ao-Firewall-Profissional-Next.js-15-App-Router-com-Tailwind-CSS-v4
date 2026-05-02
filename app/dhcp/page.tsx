@@ -420,6 +420,94 @@ sudo journalctl -u isc-dhcp-server -b`} />
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar e Configurar isc-dhcp-server</p>
+              <CodeBlock lang="bash" code={`# Instalar DHCP server
+apt install isc-dhcp-server -y
+
+# Definir interface que vai servir DHCP (apenas LAN, nunca WAN)
+cat > /etc/default/isc-dhcp-server << 'EOF'
+INTERFACESv4="eth1"   # interface LAN
+INTERFACESv6=""
+EOF
+
+# Configurar o servidor DHCP
+cat > /etc/dhcp/dhcpd.conf << 'EOF'
+default-lease-time 86400;
+max-lease-time 172800;
+
+subnet 192.168.57.0 netmask 255.255.255.0 {
+  range 192.168.57.100 192.168.57.200;
+  option routers 192.168.57.1;
+  option domain-name-servers 192.168.57.1, 8.8.8.8;
+  option domain-name "lab.local";
+}
+EOF
+
+# Iniciar e habilitar
+systemctl start isc-dhcp-server
+systemctl enable isc-dhcp-server
+systemctl status isc-dhcp-server`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Reservas por MAC Address</p>
+              <CodeBlock lang="bash" code={`# Descobrir o MAC address da VM cliente
+# (na VM cliente, executar:)
+ip link show eth0 | grep "link/ether"
+
+# Adicionar reserva no dhcpd.conf
+cat >> /etc/dhcp/dhcpd.conf << 'EOF'
+
+# Reservas de IP fixo por MAC address
+host servidor-web {
+  hardware ethernet aa:bb:cc:dd:ee:01;
+  fixed-address 192.168.57.10;
+  option host-name "servidor-web";
+}
+
+host servidor-db {
+  hardware ethernet aa:bb:cc:dd:ee:02;
+  fixed-address 192.168.57.20;
+  option host-name "servidor-db";
+}
+EOF
+
+# Verificar sintaxe antes de reiniciar
+dhcpd -t -cf /etc/dhcp/dhcpd.conf
+systemctl restart isc-dhcp-server
+
+# Ver concessões ativas
+cat /var/lib/dhcp/dhcpd.leases`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Monitorar Concessões e Abrir Firewall</p>
+              <CodeBlock lang="bash" code={`# Abrir portas DHCP no iptables (67/68 UDP)
+iptables -A INPUT  -i eth1 -p udp --dport 67 -j ACCEPT
+iptables -A OUTPUT -o eth1 -p udp --sport 67 -j ACCEPT
+
+# Ver log de concessões em tempo real
+journalctl -u isc-dhcp-server -f &
+
+# Monitorar concessões com tcpdump
+tcpdump -i eth1 -n port 67 or port 68 &
+
+# Ver leases em formato legível
+cat /var/lib/dhcp/dhcpd.leases | grep -A 5 "^lease"
+
+# Estatísticas de uso do pool
+TOTAL=$(grep -c "^lease" /var/lib/dhcp/dhcpd.leases 2>/dev/null || echo 0)
+echo "Concessões ativas: $TOTAL de 101 IPs disponíveis (100-200)"
+
+# Forçar cliente a renovar lease (na VM cliente):
+# dhclient -r eth0 && dhclient eth0`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/dhcp" order={ADVANCED_ORDER} />
       </div>
     </main>

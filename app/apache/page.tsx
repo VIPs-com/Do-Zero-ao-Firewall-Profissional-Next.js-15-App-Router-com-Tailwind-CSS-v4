@@ -498,6 +498,113 @@ sudo a2enmod proxy_wstunnel
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar Apache e Criar VirtualHost</p>
+              <CodeBlock lang="bash" code={`# Instalar Apache
+apt install apache2 -y
+
+# Ver estrutura de diretórios
+ls /etc/apache2/
+
+# Criar diretório do site
+mkdir -p /var/www/meusite/
+echo "<h1>Funcionando!</h1>" > /var/www/meusite/index.html
+
+# Criar VirtualHost
+cat > /etc/apache2/sites-available/meusite.conf << 'EOF'
+<VirtualHost *:80>
+    ServerName meusite.local
+    ServerAlias www.meusite.local
+    DocumentRoot /var/www/meusite
+    ErrorLog \${APACHE_LOG_DIR}/meusite-error.log
+    CustomLog \${APACHE_LOG_DIR}/meusite-access.log combined
+
+    <Directory /var/www/meusite>
+        AllowOverride None
+        Require all granted
+    </Directory>
+</VirtualHost>
+EOF
+
+# Ativar site e testar configuração
+a2ensite meusite.conf
+apache2ctl configtest
+systemctl reload apache2
+
+# Testar (adicionar ao /etc/hosts: 127.0.0.1 meusite.local)
+curl -H "Host: meusite.local" http://localhost/`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Habilitar Módulos e SSL Autoassinado</p>
+              <CodeBlock lang="bash" code={`# Habilitar módulos essenciais
+a2enmod ssl rewrite headers deflate
+
+# Criar certificado autoassinado
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout /etc/ssl/private/meusite.key \
+  -out /etc/ssl/certs/meusite.crt \
+  -subj "/CN=meusite.local/O=Lab/C=BR"
+
+# Criar VirtualHost HTTPS
+cat > /etc/apache2/sites-available/meusite-ssl.conf << 'EOF'
+<VirtualHost *:443>
+    ServerName meusite.local
+    DocumentRoot /var/www/meusite
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/meusite.crt
+    SSLCertificateKeyFile /etc/ssl/private/meusite.key
+
+    Header always set Strict-Transport-Security "max-age=63072000"
+    Header always set X-Frame-Options DENY
+    Header always set X-Content-Type-Options nosniff
+</VirtualHost>
+EOF
+
+a2ensite meusite-ssl.conf
+apache2ctl configtest && systemctl reload apache2
+
+# Testar HTTPS (sem validar cert autoassinado)
+curl -k https://localhost/ -H "Host: meusite.local"`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Proxy Reverso para Aplicação Node.js</p>
+              <CodeBlock lang="bash" code={`# Habilitar módulos de proxy
+a2enmod proxy proxy_http proxy_wstunnel
+
+# Simular aplicação rodando na porta 3000
+python3 -m http.server 3000 --directory /var/www/meusite &
+
+# Configurar proxy reverso
+cat > /etc/apache2/sites-available/proxy-app.conf << 'EOF'
+<VirtualHost *:80>
+    ServerName app.local
+
+    ProxyPreserveHost On
+    ProxyPass        / http://127.0.0.1:3000/
+    ProxyPassReverse / http://127.0.0.1:3000/
+
+    # WebSocket (se necessário)
+    RewriteEngine On
+    RewriteCond %{HTTP:Upgrade} =websocket [NC]
+    RewriteRule /(.*) ws://127.0.0.1:3000/$1 [P,L]
+</VirtualHost>
+EOF
+
+a2ensite proxy-app.conf
+apache2ctl configtest && systemctl reload apache2
+
+curl -H "Host: app.local" http://localhost/
+
+# Parar servidor de teste
+kill $(pgrep -f "python3 -m http.server 3000") 2>/dev/null || true`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/apache" order={ADVANCED_ORDER} />
       </div>
     </main>

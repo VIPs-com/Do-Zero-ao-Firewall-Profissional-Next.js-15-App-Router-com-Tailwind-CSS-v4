@@ -545,6 +545,129 @@ ip route | grep tun0`} />
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Criar PKI com Easy-RSA</p>
+              <CodeBlock lang="bash" code={`# Instalar OpenVPN e Easy-RSA
+apt install openvpn easy-rsa -y
+
+# Configurar Easy-RSA
+make-cadir /etc/openvpn/easy-rsa
+cd /etc/openvpn/easy-rsa
+
+# Configurar variáveis
+cat > vars << 'EOF'
+set_var EASYRSA_ALGO     ec
+set_var EASYRSA_CURVE    secp384r1
+set_var EASYRSA_REQ_COUNTRY  "BR"
+set_var EASYRSA_REQ_ORG      "Lab"
+set_var EASYRSA_CA_EXPIRE    3650
+set_var EASYRSA_CERT_EXPIRE  825
+EOF
+
+# Inicializar PKI e criar CA
+./easyrsa init-pki
+./easyrsa build-ca nopass  # nopass = sem senha (lab apenas)
+
+# Criar certificado do servidor
+./easyrsa build-server-full servidor nopass
+
+# Gerar parâmetros Diffie-Hellman
+./easyrsa gen-dh
+
+# Gerar chave TLS
+openvpn --genkey secret /etc/openvpn/easy-rsa/ta.key
+
+ls pki/issued/ pki/private/`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Configurar Servidor OpenVPN</p>
+              <CodeBlock lang="bash" code={`# Copiar arquivos para /etc/openvpn/server/
+cd /etc/openvpn/easy-rsa
+cp pki/ca.crt pki/issued/servidor.crt pki/private/servidor.key \
+   pki/dh.pem ta.key /etc/openvpn/server/
+
+# Criar server.conf
+cat > /etc/openvpn/server/server.conf << 'EOF'
+port 1194
+proto udp
+dev tun
+ca   ca.crt
+cert servidor.crt
+key  servidor.key
+dh   dh.pem
+tls-auth ta.key 0
+server 10.8.0.0 255.255.255.0
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS 1.1.1.1"
+push "dhcp-option DNS 8.8.8.8"
+keepalive 10 120
+cipher AES-256-GCM
+tls-version-min 1.2
+compress lz4-v2
+persist-key
+persist-tun
+user nobody
+group nogroup
+verb 3
+EOF
+
+# Iniciar e verificar
+systemctl start openvpn-server@server
+systemctl status openvpn-server@server
+ip addr show tun0`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Criar Certificado de Cliente e .ovpn</p>
+              <CodeBlock lang="bash" code={`# Criar certificado do cliente
+cd /etc/openvpn/easy-rsa
+./easyrsa build-client-full cliente1 nopass
+
+# Script para gerar .ovpn inline
+cat > /usr/local/bin/gera-cliente.sh << 'SCRIPT'
+#!/bin/bash
+NOME="$1"
+EASYRSA="/etc/openvpn/easy-rsa"
+OUTPUT="/tmp/$NOME.ovpn"
+SERVER_IP=$(hostname -I | awk '{print $1}')
+
+cat > $OUTPUT << EOF
+client
+dev tun
+proto udp
+remote $SERVER_IP 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+cipher AES-256-GCM
+verb 3
+<ca>
+$(cat $EASYRSA/pki/ca.crt)
+</ca>
+<cert>
+$(openssl x509 -in $EASYRSA/pki/issued/$NOME.crt)
+</cert>
+<key>
+$(cat $EASYRSA/pki/private/$NOME.key)
+</key>
+<tls-auth>
+$(cat $EASYRSA/ta.key)
+</tls-auth>
+key-direction 1
+EOF
+echo "Cliente criado: $OUTPUT"
+SCRIPT
+
+chmod +x /usr/local/bin/gera-cliente.sh
+/usr/local/bin/gera-cliente.sh cliente1`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/openvpn" order={ADVANCED_ORDER} />
       </div>
     </main>

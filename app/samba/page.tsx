@@ -458,6 +458,100 @@ ls -la /srv/samba/privado
           ))}
         </section>
 
+        {/* ── Exercícios Guiados ── */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+          <div className="grid gap-4">
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 1 — Instalar Samba e Criar Share Público</p>
+              <CodeBlock lang="bash" code={`# Instalar Samba
+apt install samba -y
+
+# Fazer backup da config original
+cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
+
+# Criar diretório para compartilhamento público
+mkdir -p /srv/samba/publico
+chmod 0777 /srv/samba/publico
+
+# Configurar share público em /etc/samba/smb.conf
+cat >> /etc/samba/smb.conf << 'EOF'
+
+[publico]
+   path = /srv/samba/publico
+   browseable = yes
+   read only = no
+   guest ok = yes
+   comment = Pasta Pública
+EOF
+
+# Verificar configuração
+testparm -s
+
+# Reiniciar Samba
+systemctl restart smbd nmbd
+systemctl status smbd`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 2 — Criar Share com Autenticação</p>
+              <CodeBlock lang="bash" code={`# Criar usuário Linux e usuário Samba
+useradd -M -s /sbin/nologin joao 2>/dev/null || true
+smbpasswd -a joao   # Definir senha Samba (diferente da senha Linux)
+smbpasswd -e joao   # Habilitar usuário
+
+# Criar diretório privado
+mkdir -p /srv/samba/privado
+chown joao:joao /srv/samba/privado
+chmod 0770 /srv/samba/privado
+
+# Adicionar share autenticado
+cat >> /etc/samba/smb.conf << 'EOF'
+
+[privado]
+   path = /srv/samba/privado
+   browseable = no
+   read only = no
+   valid users = joao
+   create mask = 0644
+   directory mask = 0755
+   comment = Pasta Privada do Joao
+EOF
+
+testparm -s
+systemctl restart smbd
+
+# Ver usuários Samba cadastrados
+pdbedit -L`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 3 — Acessar Compartilhamento com smbclient</p>
+              <CodeBlock lang="bash" code={`# Instalar cliente Samba
+apt install smbclient cifs-utils -y
+
+# Listar compartilhamentos disponíveis no servidor
+smbclient -L //127.0.0.1 -N    # -N = sem senha (para share público)
+
+# Acessar share público via linha de comando
+smbclient //127.0.0.1/publico -N
+
+# Dentro do smbclient:
+# ls          → listar arquivos
+# put teste.txt → enviar arquivo
+# get arquivo → baixar arquivo
+# exit        → sair
+
+# Montar share no sistema de arquivos (persistente)
+mkdir /mnt/samba-publico
+mount -t cifs //127.0.0.1/publico /mnt/samba-publico -o guest,rw
+ls /mnt/samba-publico/
+
+# Ver sessões Samba ativas
+smbstatus --shares
+smbstatus --processes`} />
+            </div>
+          </div>
+        </section>
+
         <ModuleNav currentPath="/samba" order={ADVANCED_ORDER} />
       </div>
     </main>
