@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Shield, Lock, Terminal, AlertTriangle, CheckCircle2, Circle, Eye, Server } from 'lucide-react';
+import { Shield, Lock, Terminal, AlertTriangle, CheckCircle2, Circle, Eye, Server, ArrowRight, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
@@ -10,6 +10,8 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { TroubleshootingCard } from '@/components/ui/TroubleshootingCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 
 const HARDENING_CHECKLIST = [
   { id: 'ssh-hardened',    text: 'SSH endurecido: PasswordAuthentication no + PermitRootLogin no' },
@@ -172,6 +174,7 @@ aa-status | grep -A1 "enforce mode"`;
 
 export default function HardeningPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/hardening');
@@ -578,6 +581,26 @@ grep "\\* " /tmp/lynis-report.txt | head -15`} />
         ))}
       </section>
 
+      {/* Deep Dive — Defense in Depth */}
+      <div className="mt-12 border border-border rounded-xl p-6 bg-bg-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Zap size={18} className="text-warn" />
+          <span className="text-warn font-semibold text-sm uppercase tracking-wider">Mergulho Técnico</span>
+        </div>
+        <h3 className="text-lg font-bold text-text mb-2">Defense in Depth — 3 Camadas de Segurança do Servidor</h3>
+        <p className="text-text-2 text-sm mb-4">
+          Como SSH hardening, sysctl de defesa e AppArmor MAC formam 3 camadas independentes que, juntas, tornam a penetração exponencialmente mais difícil — mesmo que uma camada seja comprometida.
+        </p>
+        <button
+          onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'hardening-defense-depth') ?? null)}
+          className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-warn transition-all group"
+        >
+          <span className="text-sm text-text-2 group-hover:text-text transition-colors">Ver as 3 camadas em detalhe técnico →</span>
+          <ArrowRight size={14} className="text-text-3 group-hover:text-warn transition-colors" />
+        </button>
+      </div>
+
+      <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
       <ModuleNav currentPath="/hardening" />
     </div>
   );

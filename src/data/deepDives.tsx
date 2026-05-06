@@ -1,11 +1,11 @@
 import React from 'react';
-import { Shield, Zap, Terminal, Search, Lock, Globe, Server, Network, GitBranch, Activity, Cpu, Rocket } from 'lucide-react';
+import { Shield, Zap, Terminal, Search, Lock, Globe, Server, Network, GitBranch, Activity, Cpu, Rocket, Key, Eye } from 'lucide-react';
 
 export interface DeepDive {
   id: string;
   title: string;
   icon: React.ReactNode;
-  category: 'Firewall' | 'DNS' | 'Proxy' | 'SSL' | 'Kernel' | 'Containers' | 'Kubernetes' | 'Ansible' | 'SRE' | 'eBPF' | 'CI/CD';
+  category: 'Firewall' | 'DNS' | 'Proxy' | 'SSL' | 'Kernel' | 'Containers' | 'Kubernetes' | 'Ansible' | 'SRE' | 'eBPF' | 'CI/CD' | 'VPN' | 'Security';
   content: string;
   tags: string[];
 }
@@ -397,5 +397,238 @@ deploy-prod:
 **A regra de ouro**: Cada push para \`main\` deve passar por: lint → test → build → staging → aprovação → produção. Automatize tudo, mas mantenha humanos no loop para o último step.
     `,
     tags: ['cicd', 'github-actions', 'security', 'pipeline', 'devops']
+  },
+  {
+    id: 'tls-handshake-deep',
+    title: 'TLS 1.3 Handshake — Do ClientHello ao Dado Cifrado',
+    icon: <Lock className="text-ok" />,
+    category: 'SSL',
+    content: `
+### O que acontece em 1-RTT no TLS 1.3
+
+O TLS 1.2 precisava de 2 Round-Trips (2-RTT) para negociar a sessão. O TLS 1.3 reduziu para **1-RTT** e melhorou a segurança eliminando cifras fracas.
+
+**Fluxo completo TLS 1.3:**
+
+\`\`\`
+Cliente                         Servidor
+  │── ClientHello ──────────────────>│
+  │   (suported_versions: TLS 1.3)   │
+  │   (key_share: Curve25519 pubkey) │
+  │   (cipher_suites: AEAD only)     │
+  │                                   │
+  │<── ServerHello ──────────────────│
+  │<── Certificate ──────────────────│  ← Certificado + cadeia
+  │<── CertificateVerify ────────────│  ← Prova que tem a chave privada
+  │<── Finished ─────────────────────│  ← HMAC de toda a negociação
+  │                                   │
+  │── Finished ──────────────────────>│  ← 1-RTT completo!
+  │── [DADOS CIFRADOS] ──────────────>│  ← Pode enviar na mesma viagem
+\`\`\`
+
+**Por que Curve25519 e não RSA para o key exchange?**
+RSA key exchange: o cliente gera a chave de sessão e cifra com a chave pública do servidor. Se a chave privada do servidor vazar DEPOIS, todos os registros do passado podem ser decifrados (**sem Forward Secrecy**).
+
+Curve25519 (ECDH efêmero): ambos os lados geram pares de chaves efêmeras por sessão. A chave compartilhada é derivada via Diffie-Hellman. Se vazar a chave privada do certificado, as sessões antigas ficam seguras — **Perfect Forward Secrecy (PFS)**.
+
+**Configuração Nginx para TLS 1.3 + PFS:**
+\`\`\`nginx
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';
+ssl_prefer_server_ciphers off;  # TLS 1.3 o cliente escolhe
+ssl_session_cache shared:SSL:10m;
+ssl_session_timeout 1d;
+ssl_stapling on;                # OCSP Stapling — evita roundtrip ao CA
+ssl_stapling_verify on;
+resolver 1.1.1.1 8.8.8.8 valid=300s;
+\`\`\`
+
+**OCSP Stapling:** sem ele, o cliente consulta o CA a cada conexão para verificar revogação do certificado — latência extra. Com stapling, o Nginx faz essa consulta e "grampeia" a resposta no handshake. O cliente recebe a prova de validade junto com o certificado, sem roundtrip adicional.
+
+**Cadeia de certificados:** \`fullchain.pem\` (Let's Encrypt) contém leaf → intermediate. O browser valida até encontrar uma CA raiz no seu trust store. Se a cadeia estiver incompleta, mobile browsers falham mas desktop com cache pode não perceber.
+    `,
+    tags: ['ssl', 'tls', 'nginx', 'certificate', 'cryptography', 'forward-secrecy']
+  },
+  {
+    id: 'wireguard-noise-protocol',
+    title: 'Noise Protocol — A Criptografia por Trás do WireGuard',
+    icon: <Key className="text-accent" />,
+    category: 'VPN',
+    content: `
+### Por que o WireGuard é "absurdamente simples" — e isso é bom
+
+O código-fonte do WireGuard tem ~4.000 linhas. O OpenVPN tem ~600.000. Menos código = menos superfície de ataque.
+
+**As 3 primitivas criptográficas do WireGuard:**
+
+| Função | Algoritmo | Por que |
+|--------|-----------|---------|
+| Key Agreement | Curve25519 | ECDH efêmero — PFS garantido |
+| Encryption | ChaCha20-Poly1305 | AEAD — cifra + autentica em 1 operação |
+| Hashing | BLAKE2s | 2× mais rápido que SHA-256 no software |
+
+**Noise Protocol Framework — IKpsk2:**
+\`\`\`
+Iniciador                     Respondedor
+    │── HandshakeInitiation ──────>│
+    │   (ephemeral pubkey,          │
+    │    encrypted static pubkey,   │
+    │    timestamp cifrado)         │
+    │                               │
+    │<── HandshakeResponse ─────────│
+    │    (ephemeral pubkey,          │
+    │     empty encrypted payload)  │
+    │                               │
+    │<══ DataPackets ═══════════════│  ← Sessão estabelecida!
+    │═══ DataPackets ══════════════>│  ← Cada pacote é um UDP cifrado
+\`\`\`
+
+**AllowedIPs — a tabela de rotas embutida no WireGuard:**
+\`\`\`ini
+[Peer]
+PublicKey = abc123...
+AllowedIPs = 10.0.0.2/32, 192.168.10.0/24
+\`\`\`
+Isso faz duas coisas: ① pacotes SAINDO para 10.0.0.2 ou 192.168.10.0/24 são cifrados e enviados para esse peer; ② pacotes CHEGANDO são aceitos APENAS se vierem com IP fonte dentro do AllowedIPs. É um filtro bidirecional automático — sem regras iptables extras para isolar peers.
+
+**AllowedIPs = 0.0.0.0/0** redireciona TODO o tráfego pelo túnel (full tunnel). **0.0.0.0/0 exceto a rede local** é split tunnel manual — WireGuard não tem conceito nativo de split tunnel, você controla via AllowedIPs.
+
+**Roaming automático:** WireGuard detecta mudança de IP/porta do peer (ex: troca de Wi-Fi para 4G) e atualiza o endpoint automaticamente sem reconexão. IPSec e OpenVPN precisam reestabelecer o túnel.
+    `,
+    tags: ['wireguard', 'vpn', 'cryptography', 'noise-protocol', 'curve25519']
+  },
+  {
+    id: 'fail2ban-architecture',
+    title: 'Fail2ban — Regex Engine, Backends e Chains iptables',
+    icon: <Eye className="text-err" />,
+    category: 'Security',
+    content: `
+### Como o Fail2ban realmente funciona (por dentro)
+
+**Arquitetura em 3 camadas:**
+
+\`\`\`
+[Logs] ──> [Backend (inotify/systemd)] ──> [Filter (regex)] ──> [Action (iptables/firewalld)]
+\`\`\`
+
+**1. Backends de monitoramento:**
+
+| Backend | Mecanismo | Quando usar |
+|---------|-----------|-------------|
+| \`auto\` | systemd se disponível, senão pyinotify | padrão — deixe assim |
+| \`systemd\` | lê do journal via sd_journal | logs de serviços systemd |
+| \`pyinotify\` | kernel inotify — notificado a cada write | arquivos físicos em /var/log |
+| \`polling\` | lê arquivo a cada X segundos | NFS ou partições remotas |
+
+**2. failregex — a arte do regex com \`<HOST>\`:**
+\`\`\`ini
+# /etc/fail2ban/filter.d/custom-app.conf
+[Definition]
+failregex = ^%(__prefix_line)s.*authentication failure.*rhost=<HOST>\s*$
+            ^%(__prefix_line)sInvalid user .* from <HOST> port \d+$
+ignoreregex = ^.*INFO.*health.check.*$  # ignora health checks
+\`\`\`
+\`<HOST>\` é substituído por \`(?:::f{4,6}:)?(?P<host>\S+)\` — captura IPv4 e IPv6. O grupo \`host\` é o que vira o IP banido.
+
+**3. Chain iptables gerada automaticamente:**
+\`\`\`bash
+# Fail2ban cria uma chain própria por jail:
+iptables -N f2b-sshd
+iptables -A INPUT -p tcp --dport 22 -j f2b-sshd
+iptables -A f2b-sshd -j RETURN  # regra padrão: passa
+
+# Ao banir um IP, insere no topo da chain:
+iptables -I f2b-sshd 1 -s 192.168.1.100 -j REJECT --reject-with icmp-port-unreachable
+\`\`\`
+Por que \`REJECT\` e não \`DROP\`? REJECT responde com ICMP "port unreachable" — o atacante sabe que foi bloqueado (não fica tentando indefinidamente). DROP faz o ataque parecer um timeout de rede — o bot pode tentar mais vezes. Em brute force, REJECT é mais eficiente.
+
+**4. Bantime incremental (Fail2ban 0.11+):**
+\`\`\`ini
+[DEFAULT]
+bantime.increment = true
+bantime.factor = 1
+bantime.formula = ban.Time * (1<<(ban.Count if ban.Count<20 else 20)) * banFactor
+# 1ª vez: 10min → 2ª: 20min → 3ª: 40min → ... → máx: ~116 dias
+\`\`\`
+Bots que persistem são penalizados exponencialmente. Endereços legítimos que erram 1× voltam em 10 minutos.
+
+**5. Testar sem banir:**
+\`\`\`bash
+fail2ban-regex /var/log/auth.log /etc/fail2ban/filter.d/sshd.conf --print-all-matched
+# Mostra quais linhas seriam capturadas — sem afetar IPs reais
+\`\`\`
+    `,
+    tags: ['fail2ban', 'iptables', 'security', 'regex', 'brute-force']
+  },
+  {
+    id: 'hardening-defense-depth',
+    title: 'Defense in Depth — 3 Camadas de Segurança do Servidor',
+    icon: <Shield className="text-warn" />,
+    category: 'Security',
+    content: `
+### Por que uma camada nunca é suficiente
+
+Defense in Depth assume que qualquer camada PODE ser comprometida. O objetivo é que o atacante precise comprometer TODAS as camadas — e cada camada compra tempo para detecção.
+
+**Camada 1 — Acesso: SSH Hardening**
+\`\`\`bash
+# /etc/ssh/sshd_config
+PasswordAuthentication no          # Apenas chave — senha = phishing vulnerável
+PermitRootLogin no                 # Root direto = zero auditoria de "quem fez o quê"
+AllowUsers deploy admin            # Allowlist explícita — usuário criado por atacante não entra
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+KexAlgorithms curve25519-sha256    # Apenas key exchange moderno
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com
+MACs hmac-sha2-512-etm@openssh.com
+
+# Auditoria:
+sshd -T | grep -E "passwordauth|permitroot|allowusers"
+\`\`\`
+
+**Camada 2 — Kernel: sysctl de Defesa**
+\`\`\`bash
+# /etc/sysctl.d/99-hardening.conf
+net.ipv4.tcp_syncookies = 1         # Mitigação de SYN flood sem perder conexões legítimas
+net.ipv4.conf.all.rp_filter = 1     # Reverse path filtering — bloqueia IP spoofing
+kernel.randomize_va_space = 2       # ASLR: aleatoriza endereços de memória (anti-exploit)
+kernel.dmesg_restrict = 1           # Usuários não-root não veem mensagens do kernel
+net.ipv4.conf.all.accept_redirects = 0  # Não aceita ICMP redirects (anti-MITM)
+net.ipv6.conf.all.accept_redirects = 0
+fs.protected_hardlinks = 1          # Evita hardlinks para arquivos de outros usuários
+fs.protected_symlinks = 1           # Evita symlinks em sticky directories
+
+sysctl -p /etc/sysctl.d/99-hardening.conf  # aplica sem reboot
+\`\`\`
+
+**Camada 3 — Aplicação: AppArmor MAC**
+\`\`\`bash
+# Mandatory Access Control: processo só faz o que o perfil permite
+aa-status                           # ver perfis carregados
+aa-enforce /etc/apparmor.d/usr.sbin.nginx  # ativar modo enforce
+aa-complain /etc/apparmor.d/usr.sbin.nginx # modo complain: loga sem bloquear
+
+# Nginx com AppArmor enforce: mesmo que nginx seja comprometido via RCE,
+# o processo não consegue ler /etc/shadow, /root/, ou executar comandos
+aa-logprof                          # analisa logs e sugere regras para o perfil
+\`\`\`
+
+**Como as 3 camadas trabalham juntas:**
+\`\`\`
+Atacante → Tenta senha via SSH           → Bloqueado (PasswordAuthentication no)
+          → Explora bug no Nginx via RCE → AppArmor impede acesso a /etc/passwd
+          → Tenta SYN flood para derrubar → tcp_syncookies absorve sem colapso
+          → Tenta ler memória de outro processo → ASLR randomize_va_space=2
+\`\`\`
+
+**Auditoria completa em 4 comandos:**
+\`\`\`bash
+sshd -T | grep -E "passwordauth|permitroot"  # verificar SSH
+sysctl net.ipv4.tcp_syncookies kernel.randomize_va_space  # verificar kernel
+aa-status | grep enforce                     # verificar AppArmor
+ss -tlnp | grep -v "127.0.0.1"              # portas expostas publicamente
+\`\`\`
+    `,
+    tags: ['hardening', 'ssh', 'sysctl', 'apparmor', 'defense-in-depth', 'security']
   },
 ];

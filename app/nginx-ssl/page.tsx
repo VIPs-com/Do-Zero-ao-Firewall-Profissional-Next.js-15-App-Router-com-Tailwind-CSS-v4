@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Shield, Terminal, Lock, ArrowRight, Server, Globe, AlertTriangle } from 'lucide-react';
+import { Shield, Terminal, Lock, ArrowRight, Server, Globe, AlertTriangle, Zap } from 'lucide-react';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 
 export default function NginxSslPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('nginx-ssl');
@@ -505,6 +508,26 @@ curl -kv https://localhost/ 2>&1 | grep -E "< HTTP|< Strict|< X-Frame"`} />
         </div>
       </div>
 
+      {/* Deep Dive — TLS Handshake */}
+      <div className="mt-12 border border-border rounded-xl p-6 bg-bg-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Zap size={18} className="text-ok" />
+          <span className="text-ok font-semibold text-sm uppercase tracking-wider">Mergulho Técnico</span>
+        </div>
+        <h3 className="text-lg font-bold text-text mb-2">TLS 1.3 Handshake — Do ClientHello ao Dado Cifrado</h3>
+        <p className="text-text-2 text-sm mb-4">
+          Como o TLS 1.3 reduziu 2-RTT para 1-RTT, por que Curve25519 garante Forward Secrecy que o RSA não garante, e como configurar OCSP Stapling no Nginx para eliminar roundtrips desnecessários ao CA.
+        </p>
+        <button
+          onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'tls-handshake-deep') ?? null)}
+          className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-ok transition-all group"
+        >
+          <span className="text-sm text-text-2 group-hover:text-text transition-colors">Ver análise completa do handshake TLS 1.3 →</span>
+          <ArrowRight size={14} className="text-text-3 group-hover:text-ok transition-colors" />
+        </button>
+      </div>
+
+      <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
       <ModuleNav currentPath="/nginx-ssl" />
     </div>
   );

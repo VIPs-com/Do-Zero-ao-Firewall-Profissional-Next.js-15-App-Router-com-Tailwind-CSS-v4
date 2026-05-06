@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Shield, Eye, FileText, Ban, ArrowRight, CheckCircle2, Circle, AlertTriangle } from 'lucide-react';
+import { Shield, Eye, FileText, Ban, ArrowRight, CheckCircle2, Circle, AlertTriangle, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 
 const F2B_CHECKLIST = [
   { id: 'f2b-install', text: 'Fail2ban instalado e serviço ativo' },
@@ -115,6 +117,7 @@ grep "Ban" /var/log/fail2ban.log | \\
 
 export default function Fail2banPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/fail2ban');
@@ -612,6 +615,26 @@ fail2ban-client status`} />
         </div>
       </div>
 
+      {/* Deep Dive — Fail2ban Architecture */}
+      <div className="mt-12 border border-border rounded-xl p-6 bg-bg-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Zap size={18} className="text-err" />
+          <span className="text-err font-semibold text-sm uppercase tracking-wider">Mergulho Técnico</span>
+        </div>
+        <h3 className="text-lg font-bold text-text mb-2">Fail2ban — Regex Engine, Backends e Chains iptables</h3>
+        <p className="text-text-2 text-sm mb-4">
+          Como o Fail2ban realmente funciona por dentro: backends pyinotify vs systemd, a anatomia do failregex com {`<HOST>`}, como a chain f2b-sshd é construída no iptables e o bantime incremental exponencial.
+        </p>
+        <button
+          onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'fail2ban-architecture') ?? null)}
+          className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-err transition-all group"
+        >
+          <span className="text-sm text-text-2 group-hover:text-text transition-colors">Ver arquitetura interna do Fail2ban →</span>
+          <ArrowRight size={14} className="text-text-3 group-hover:text-err transition-colors" />
+        </button>
+      </div>
+
+      <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/fail2ban" />
     </div>

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Shield, Key, Server, Laptop, ArrowRight, CheckCircle2, Circle, AlertTriangle, Terminal } from 'lucide-react';
+import { Shield, Key, Server, Laptop, ArrowRight, CheckCircle2, Circle, AlertTriangle, Terminal, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 
 const WG_CHECKLIST = [
   { id: 'wg-keys',   text: 'Chaves pública/privada geradas em servidor e cliente' },
@@ -106,6 +108,7 @@ sysctl -p
 
 export default function WireGuardPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/wireguard');
@@ -633,6 +636,26 @@ systemctl enable wg-quick@wg0`} />
         </div>
       </div>
 
+      {/* Deep Dive — Noise Protocol */}
+      <div className="mt-12 border border-border rounded-xl p-6 bg-bg-2">
+        <div className="flex items-center gap-2 mb-3">
+          <Zap size={18} className="text-accent" />
+          <span className="text-accent font-semibold text-sm uppercase tracking-wider">Mergulho Técnico</span>
+        </div>
+        <h3 className="text-lg font-bold text-text mb-2">Noise Protocol — A Criptografia por Trás do WireGuard</h3>
+        <p className="text-text-2 text-sm mb-4">
+          Por que Curve25519, ChaCha20-Poly1305 e BLAKE2s tornam o WireGuard mais rápido e seguro que IPSec com 150× menos código. Como o AllowedIPs funciona como filtro bidirecional automático.
+        </p>
+        <button
+          onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'wireguard-noise-protocol') ?? null)}
+          className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+        >
+          <span className="text-sm text-text-2 group-hover:text-text transition-colors">Entender o Noise Protocol Framework →</span>
+          <ArrowRight size={14} className="text-text-3 group-hover:text-accent transition-colors" />
+        </button>
+      </div>
+
+      <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/wireguard" />
     </div>
