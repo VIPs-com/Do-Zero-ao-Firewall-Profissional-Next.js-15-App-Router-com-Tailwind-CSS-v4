@@ -3159,6 +3159,19 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     trail: 'avancados',
   },
   {
+    text: 'No Kubernetes, o que diferencia um `Deployment` de um `StatefulSet` e quando usar cada um?',
+    badge: '☸️ K8s',
+    options: [
+      'Deployment é mais rápido; StatefulSet é mais seguro — sempre use StatefulSet em produção',
+      'Deployment gerencia Pods stateless com identidade aleatória; StatefulSet garante identidade estável (nome, DNS, storage) — ideal para bancos de dados, Kafka e ZooKeeper que precisam de storage persistente por instância',
+      'StatefulSet é apenas para aplicações com mais de 3 réplicas — Deployments são usados para réplicas únicas',
+      'A diferença é apenas no nome — ambos funcionam da mesma forma para qualquer workload',
+    ],
+    correct: 1,
+    explanation: 'Deployment: Pods anônimos (pod-abc123), substituídos aleatoriamente, sem PVC próprio por réplica — ideal para APIs, frontends, workers stateless. StatefulSet: Pods nomeados (db-0, db-1, db-2), ordens garantidas de start/stop, cada réplica tem PVC próprio — obrigatório para PostgreSQL, MySQL, Kafka, Elasticsearch onde cada instância tem dados únicos. volumeClaimTemplates no StatefulSet cria PVC automático por réplica.',
+    trail: 'avancados',
+  },
+  {
     text: 'CENÁRIO: Um alerta Prometheus dispara "InstanceDown" mas o serviço está visivelmente rodando. `curl http://app:8080/metrics` retorna dados. O que verificar?',
     badge: '📊 Monitoring',
     options: [

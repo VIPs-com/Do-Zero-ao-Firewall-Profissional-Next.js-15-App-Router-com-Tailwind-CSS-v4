@@ -55,8 +55,8 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 253 perguntas (firewall=105, fundamentos=60, avancados=88; Sprint QUIZ-SCENARIOS: +10 cenários reais de diagnóstico)
-    searchItems.ts          # 180 itens indexados para GlobalSearch (CMD+K / Ctrl+K)
+    quizQuestions.ts        # perguntas do quiz — 254 perguntas (firewall=105, fundamentos=60, avancados=89; Sprint SEARCH-COMPLETE: +1 K8s Deployment vs StatefulSet)
+    searchItems.ts          # 220 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
@@ -109,7 +109,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 160 (Sprint CONTENT-PIVOTING: +3 ataques + 3 pivoteamento) |
 | Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/59/56/7 |
 | Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
-| searchItems | `src/data/searchItems.ts` | 185 (Sprint SEARCH-DIVES: +5 para deep dives Ansible/SRE/eBPF/CI-CD e nftables-vs-iptables) |
+| searchItems | `src/data/searchItems.ts` | 220 (Sprint SEARCH-COMPLETE: +35 — 3º item para todos os módulos com cobertura dupla + /quiz/certificado/topicos completos) |
 
 ---
 
@@ -420,6 +420,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint QUIZ-FIREWALL-DEPTH: +9 perguntas para os 9 módulos da trilha Firewall com apenas 3 questões — Diagnóstico (ss vs netstat), Análise de Pacotes (tcpdump filtro BPF), Diagnóstico SSL (openssl s_client showcerts), systemd (drop-in override), Compose (healthcheck + depends_on condition), SSH 2FA (por que testar em 2ª sessão), Pivoteamento (egress vs ingress filtering), Laboratório (CPU nested virtualization), Proxmox (ZFS snapshots COW); total 234→243 (firewall=101, fundamentos=60, avancados=82).
 - ✅ Sprint QUIZ-SCENARIOS: +10 questões de cenário real de diagnóstico em produção — DNS sem conectividade IP, iptables ordem de regras, certbot force-renewal, Docker sem internet (ip_forward+MASQUERADE), Ansible always-changed (command vs módulo idempotente), K8s CrashLoopBackOff (endpoints+DNS), Prometheus InstanceDown falso, Terraform ForceNew vs tags, GitHub Actions secrets não injetados, SRE error budget negativo; total 243→253 (firewall=105, fundamentos=60, avancados=88).
 - ✅ Sprint DEEP-DIVES-V3 FIX: corrigidos IDs errados em vpn-ipsec ('ipsec-deep'→'ipsec-ike-phases') e lan-proxy ('squid-https'→'squid-https-filtering'); adicionado deep dive 'nftables-vs-iptables' à página /nftables; todos os 12 deep dives agora acessíveis.
+- ✅ Sprint SEARCH-COMPLETE: +35 itens de busca — 3º item adicionado para TODOS os módulos com cobertura dupla (31 módulos de conteúdo: dns/web-server/dnat/port-knocking/ataques-avancados/pivoteamento/hardening/docker-compose/ssh-2fa/docker/laboratorio/proxmox/fundamentos/fhs/comandos/editores/processos/permissoes/discos/logs-basicos/backup/shell-script/cron/pacotes/boot/comandos-avancados/rsyslog/avancados + dashboard/evolucao) + /topicos (2→3) + /quiz (1→3) + /certificado (1→3); 100% dos módulos com ≥3 itens; searchItems 185→220. +1 quiz question K8s (Deployment vs StatefulSet — stateless vs identity estável); total 253→254 (avancados=88→89).
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
