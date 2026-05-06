@@ -15,6 +15,7 @@ import { ADVANCED_ORDER } from '@/data/courseOrder';
 export default function AnsiblePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/ansible');
@@ -48,7 +49,33 @@ export default function AnsiblePage() {
         </div>
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-6 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito' },
+            { id: 'config',     label: '⚙️ Playbooks & Roles' },
+            { id: 'referencia', label: '🔐 Vault & Galaxy' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
+
+        {/* ── Tab: Conceito ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* O que é Ansible */}
         <section>
@@ -238,6 +265,11 @@ ansible web1 -m setup -a "filter=ansible_memtotal_mb"
 # -u usuario = especificar usuário SSH
 # -k = pedir senha SSH interativamente`} />
         </section>
+
+        </div>}
+
+        {/* ── Tab: Playbooks & Roles ── */}
+        {activeTab === 'config' && <div className="space-y-16">
 
         {/* Playbooks */}
         <section>
@@ -622,6 +654,11 @@ nginx_ssl_port: 443`} />
       ansible.builtin.command: netfilter-persistent save`} />
         </section>
 
+        </div>}
+
+        {/* ── Tab: Vault & Galaxy ── */}
+        {activeTab === 'referencia' && <div className="space-y-16">
+
         {/* Ansible Galaxy */}
         <section>
           <h2 className="section-title flex items-center gap-2"><Package size={22} /> Ansible Galaxy — Roles Prontas</h2>
@@ -776,6 +813,8 @@ ansible-playbook site.yml
 # Sem compilar, sem reiniciar agente —
 # SSH direto, idempotente por padrão`}
         />
+
+        </div>}
 
         {/* Exercícios Guiados */}
         <section>

@@ -95,6 +95,7 @@ export default function CicdPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/cicd');
@@ -128,7 +129,33 @@ export default function CicdPage() {
         </div>
       </section>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-4 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito' },
+            { id: 'config',     label: '⚙️ Pipeline & Jobs' },
+            { id: 'referencia', label: '🔒 Secrets & Deploy' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+        {/* ── Tab: Conceito ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* Conceitos fundamentais */}
         <section>
@@ -264,6 +291,11 @@ jobs:
             </div>
           </div>
         </section>
+
+        </div>}
+
+        {/* ── Tab: Pipeline & Jobs ── */}
+        {activeTab === 'config' && <div className="space-y-16">
 
         {/* Docker build e push */}
         <section>
@@ -440,6 +472,11 @@ jobs:
             Cada um é faturado separadamente contra os minutos gratuitos da conta.
           </InfoBox>
         </section>
+
+        </div>}
+
+        {/* ── Tab: Secrets & Deploy ── */}
+        {activeTab === 'referencia' && <div className="space-y-16">
 
         {/* Secrets e segurança */}
         <section>
@@ -731,6 +768,8 @@ jobs:
 # Vantagem: YAML no repo, 20k+ actions
 # no Marketplace, gratuito para repos públicos`}
         />
+
+        </div>}
 
         {/* Checklist */}
         <section>

@@ -15,6 +15,7 @@ import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 export default function KubernetesPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/kubernetes');
@@ -48,7 +49,33 @@ export default function KubernetesPage() {
         </div>
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-6 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito' },
+            { id: 'config',     label: '⚙️ Recursos & kubectl' },
+            { id: 'referencia', label: '🎯 Avançado' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
+
+        {/* ── Tab: Conceito ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* Por que Kubernetes */}
         <section>
@@ -250,6 +277,11 @@ alias k=kubectl                          # economiza muita digitação
 kubectl get pods --watch                 # monitorar mudanças em tempo real
 kubectl explain deployment.spec          # documentação inline de qualquer campo`} />
         </section>
+
+        </div>}
+
+        {/* ── Tab: Recursos & kubectl ── */}
+        {activeTab === 'config' && <div className="space-y-16">
 
         {/* Manifestos YAML */}
         <section>
@@ -543,6 +575,11 @@ spec:
 EOF`} />
         </section>
 
+        </div>}
+
+        {/* ── Tab: Avançado ── */}
+        {activeTab === 'referencia' && <div className="space-y-16">
+
         {/* NetworkPolicy */}
         <section>
           <h2 className="section-title flex items-center gap-2"><Shield size={22} /> NetworkPolicy — Firewall Nativo do Kubernetes</h2>
@@ -810,6 +847,8 @@ kubectl rollout undo deploy/nginx
 # Multi-cloud: mesmo YAML roda em
 # AWS EKS, GCP GKE, Azure AKS, bare-metal`}
         />
+
+        </div>}
 
         {/* Exercícios Guiados */}
         <section>

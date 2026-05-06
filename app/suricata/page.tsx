@@ -59,6 +59,7 @@ const erros = [
 export default function SuricataPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/suricata');
@@ -91,7 +92,33 @@ export default function SuricataPage() {
         </div>
       </section>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-4 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito & Regras' },
+            { id: 'config',     label: '⚙️ Configuração' },
+            { id: 'referencia', label: '🛡️ IPS & Integração' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+        {/* ── Tab: Conceito & Regras ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* IDS vs IPS vs Firewall */}
         <section>
@@ -210,6 +237,11 @@ ls /var/lib/suricata/rules/   # confirmar download`} />
             </div>
           </div>
         </section>
+
+        </div>}
+
+        {/* ── Tab: Configuração ── */}
+        {activeTab === 'config' && <div className="space-y-16">
 
         {/* Configuração */}
         <section>
@@ -454,6 +486,11 @@ sudo jq 'select(.event_type=="alert" and (.timestamp > "2026-04-27T13"))' \\
           </HighlightBox>
         </section>
 
+        </div>}
+
+        {/* ── Tab: IPS & Integração ── */}
+        {activeTab === 'referencia' && <div className="space-y-16">
+
         {/* Modo IPS */}
         <section>
           <h2 className="section-title text-2xl mb-6 flex items-center gap-2">
@@ -571,6 +608,8 @@ jq -r '.src_ip' eve.json \\
 # Recarregar regras sem parar o serviço:
 sudo kill -USR2 \$(cat /var/run/suricata.pid)`}
         />
+
+        </div>}
 
         {/* Exercícios */}
         <section>

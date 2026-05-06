@@ -59,6 +59,7 @@ const erros = [
 export default function ServiceMeshPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/service-mesh');
@@ -92,7 +93,33 @@ export default function ServiceMeshPage() {
         </div>
       </section>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-4 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito' },
+            { id: 'config',     label: '🔐 mTLS & Traffic' },
+            { id: 'referencia', label: '📊 Observabilidade' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+        {/* ── Tab: Conceito ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* O problema que o Service Mesh resolve */}
         <section>
@@ -269,6 +296,11 @@ istioctl dashboard jaeger`} />
             </div>
           </div>
         </section>
+
+        </div>}
+
+        {/* ── Tab: mTLS & Traffic ── */}
+        {activeTab === 'config' && <div className="space-y-16">
 
         {/* mTLS automático */}
         <section>
@@ -464,6 +496,11 @@ spec:
       maxEjectionPercent: 100`} />
         </section>
 
+        </div>}
+
+        {/* ── Tab: Observabilidade ── */}
+        {activeTab === 'referencia' && <div className="space-y-16">
+
         {/* Observabilidade */}
         <section>
           <h2 className="section-title text-2xl mb-6 flex items-center gap-2">
@@ -637,6 +674,8 @@ kubectl apply -f virtual-service-canary.yaml
 # Observabilidade completa — sem alterar a app
 istioctl dashboard kiali`}
         />
+
+        </div>}
 
         {/* Checklist */}
         <section>

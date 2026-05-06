@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FileCode, Layers, RefreshCw, Shield, Server, Database, Package, Terminal } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -12,6 +12,7 @@ import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function TerraformPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/terraform');
@@ -46,7 +47,33 @@ export default function TerraformPage() {
         </div>
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-6 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito' },
+            { id: 'config',     label: '⚙️ Configuração HCL' },
+            { id: 'referencia', label: '📦 Módulos & State' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
+
+        {/* ── Tab: Conceito ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* O que é Terraform */}
         <section>
@@ -148,6 +175,11 @@ curl -fsSL https://get.opentofu.org/install-opentofu.sh | sudo sh -s - --install
             ))}
           </div>
         </section>
+
+        </div>}
+
+        {/* ── Tab: Configuração HCL ── */}
+        {activeTab === 'config' && <div className="space-y-16">
 
         {/* Projeto Inicial — Provider Docker */}
         <section>
@@ -448,6 +480,11 @@ terraform refresh          # deprecated → use: terraform apply -refresh-only
 # Forçar unlock (se alguém travou o state e crashou)
 terraform force-unlock LOCK-ID`} />
         </section>
+
+        </div>}
+
+        {/* ── Tab: Módulos & State ── */}
+        {activeTab === 'referencia' && <div className="space-y-16">
 
         {/* Módulos */}
         <section>
@@ -788,6 +825,8 @@ resource "azurerm_linux_virtual_machine" "web" {
 # Hetzner, bare-metal, Kubernetes, Docker...
 # 1 linguagem para TODA a infraestrutura`}
         />
+
+        </div>}
 
         {/* Exercícios Guiados */}
         <section>

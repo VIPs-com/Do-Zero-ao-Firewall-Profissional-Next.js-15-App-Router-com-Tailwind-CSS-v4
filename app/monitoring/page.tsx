@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Activity, BarChart2, Bell, Database, Server, Layers, Terminal, Shield } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -12,6 +12,7 @@ import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function MonitoringPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/monitoring');
@@ -45,7 +46,33 @@ export default function MonitoringPage() {
         </div>
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-6 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito' },
+            { id: 'config',     label: '⚙️ Stack & Dashboards' },
+            { id: 'referencia', label: '🔔 PromQL & Alertas' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
+
+        {/* ── Tab: Conceito ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* Os 3 Pilares da Observabilidade */}
         <section>
@@ -167,6 +194,11 @@ export default function MonitoringPage() {
             </table>
           </div>
         </section>
+
+        </div>}
+
+        {/* ── Tab: Stack & Dashboards ── */}
+        {activeTab === 'config' && <div className="space-y-16">
 
         {/* Stack com Docker Compose */}
         <section>
@@ -362,6 +394,11 @@ sudo systemctl enable --now node_exporter
 # Testar — deve retornar centenas de métricas
 curl http://localhost:9100/metrics | head -30`} />
         </section>
+
+        </div>}
+
+        {/* ── Tab: PromQL & Alertas ── */}
+        {activeTab === 'referencia' && <div className="space-y-16">
 
         {/* PromQL */}
         <section>
@@ -740,6 +777,8 @@ scrape_configs:
 # Retenção: configurável (30d padrão)
 # Scale: Thanos/Cortex para multi-cluster`}
         />
+
+        </div>}
 
         {/* Exercícios Guiados */}
         <section>

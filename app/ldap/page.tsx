@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Users, Shield, Search, Server, Key, Network } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -12,6 +12,7 @@ import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function LDAPPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/ldap');
@@ -43,6 +44,29 @@ export default function LDAPPage() {
         </div>
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-6 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '📖 Conceito & LDIF' },
+            { id: 'config',     label: '⚙️ Operações & Grupos' },
+            { id: 'referencia', label: '🔑 PAM & Segurança' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-10 space-y-12">
 
         {/* FluxoCard */}
@@ -57,6 +81,9 @@ export default function LDAPPage() {
             { label: 'PAM + nsswitch',        sub: 'usuários LDAP autenticam no sistema Linux',   icon: <Shield size={14}/>, color: 'border-warn/50' },
           ]}
         />
+
+        {/* ── Tab: Conceito ── */}
+        {activeTab === 'conceito' && <div className="space-y-12">
 
         {/* O que é LDAP */}
         <section>
@@ -228,6 +255,11 @@ ldapwhoami -x -H ldap://localhost \\
 # Saída esperada: dn:uid=joao,ou=usuarios,dc=empresa,dc=com`} />
         </section>
 
+        </div>}
+
+        {/* ── Tab: Instalação & LDIF ── */}
+        {activeTab === 'config' && <div className="space-y-12">
+
         {/* Operações LDAP */}
         <section>
           <h2 className="section-title">Operações Essenciais — Modificar, Buscar, Deletar</h2>
@@ -339,6 +371,11 @@ ldapsearch -x -H ldaps://localhost \\
             <strong>NUNCA expor LDAP sem TLS na internet.</strong> LDAP padrão (porta 389) transmite credenciais em texto claro. Use LDAPS (636) ou StartTLS mesmo dentro da LAN quando trafegar senhas.
           </WarnBox>
         </section>
+
+        </div>}
+
+        {/* ── Tab: PAM & Segurança ── */}
+        {activeTab === 'referencia' && <div className="space-y-12">
 
         {/* Integração PAM */}
         <section>
@@ -462,6 +499,8 @@ nslcd --debug
 ldapsearch -Y EXTERNAL -H ldapi:/// \\
   -b "cn=schema,cn=config" "(cn=*)" dn`} />
         </section>
+
+        </div>}
 
         {/* Exercícios */}
         <section>
