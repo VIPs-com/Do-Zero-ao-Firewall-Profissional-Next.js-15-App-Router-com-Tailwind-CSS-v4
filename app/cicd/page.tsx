@@ -9,8 +9,10 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { LayerBadge } from '@/components/ui/LayerBadge';
 import {
   GitMerge, Shield, Zap, Package, Server,
-  ChevronLeft, ChevronRight, Terminal, Lock, Activity,
+  ChevronLeft, ChevronRight, Terminal, Lock, Activity, ArrowRight,
 } from 'lucide-react';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 import Link from 'next/link';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
@@ -92,6 +94,7 @@ sudo systemctl restart actions.runner.*`,
 export default function CicdPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/cicd');
@@ -910,6 +913,25 @@ jobs:
             </div>
           </div>
         </section>
+
+        {/* ── Mergulho Técnico ── */}
+        <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
+          <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
+          <p className="text-xs text-text-2 leading-relaxed mb-4">
+            Conheça os 5 elementos que separam um pipeline amador de um pipeline de produção seguro.
+          </p>
+          <button
+            onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'cicd-pipeline-anatomy') ?? null)}
+            className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+          >
+            <div className="flex items-center gap-2">
+              <Zap size={14} className="text-accent" />
+              <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">CI/CD — Anatomia de um Pipeline de Produção</span>
+            </div>
+            <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+        <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
 
         <ModuleNav currentPath="/cicd" order={ADVANCED_ORDER} />
       </div>

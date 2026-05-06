@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Terminal, Server, FileCode, Package, RefreshCw, Users, Layers, Shield } from 'lucide-react';
+import { Terminal, Server, FileCode, Package, RefreshCw, Users, Layers, Shield, Zap, ArrowRight } from 'lucide-react';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
@@ -12,6 +14,7 @@ import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function AnsiblePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/ansible');
@@ -1132,6 +1135,25 @@ ansible-playbook -i inventory.ini site.yml --check`} />
             </div>
           </div>
         </section>
+
+        {/* ── Mergulho Técnico ── */}
+        <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
+          <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
+          <p className="text-xs text-text-2 leading-relaxed mb-4">
+            Entenda como o Ansible decide se uma task precisa executar — a diferença entre ok e changed, e por que handlers acumulam notificações.
+          </p>
+          <button
+            onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'ansible-idempotency') ?? null)}
+            className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+          >
+            <div className="flex items-center gap-2">
+              <Zap size={14} className="text-accent" />
+              <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">Ansible — Idempotência e Ciclo de Execução</span>
+            </div>
+            <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+        <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
 
         <ModuleNav currentPath="/ansible" order={ADVANCED_ORDER} />
       </div>

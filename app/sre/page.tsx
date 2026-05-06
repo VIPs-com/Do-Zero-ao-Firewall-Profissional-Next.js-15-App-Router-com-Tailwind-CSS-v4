@@ -9,8 +9,10 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { LayerBadge } from '@/components/ui/LayerBadge';
 import {
   Target, Activity, AlertTriangle, BookOpen, Users,
-  ChevronLeft, Shield, Clock, TrendingUp, FileText,
+  ChevronLeft, Shield, Clock, TrendingUp, FileText, Zap, ArrowRight,
 } from 'lucide-react';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 import Link from 'next/link';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
@@ -59,6 +61,7 @@ const erros = [
 export default function SrePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/sre');
@@ -831,6 +834,25 @@ echo "Postmortem criado. Compartilhar em até 48h após o incidente."`} />
             </div>
           </div>
         </section>
+
+        {/* ── Mergulho Técnico ── */}
+        <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
+          <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
+          <p className="text-xs text-text-2 leading-relaxed mb-4">
+            Entenda a matemática dos noves e como o burn rate guia decisões de deployment.
+          </p>
+          <button
+            onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'sre-error-budget') ?? null)}
+            className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+          >
+            <div className="flex items-center gap-2">
+              <Zap size={14} className="text-accent" />
+              <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">SRE — Error Budget e Burn Rate</span>
+            </div>
+            <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
+        <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
 
         <ModuleNav currentPath="/sre" order={ADVANCED_ORDER} />
       </div>
