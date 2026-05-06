@@ -13,7 +13,7 @@ const PHASE_V2 = {
   name: 'Fundamentos Linux',
   color: 'border-accent/40 bg-accent/5',
   badgeColor: 'bg-accent/15 text-accent border-accent/30',
-  status: '17 disponíveis · completo!',
+  status: '16 disponíveis · completo!',
   modules: [
     { name: 'Estrutura do Sistema (FHS)',   slug: '/fhs',               available: true,  icon: '🐧', tags: ['/etc', '/var', 'mapa do sistema'] },
     { name: 'Comandos Essenciais',          slug: '/comandos',          available: true,  icon: '💻', tags: ['ls', 'grep', 'find', 'pipe'] },
@@ -31,7 +31,6 @@ const PHASE_V2 = {
     { name: 'Processo de Boot do Linux',    slug: '/boot',              available: true,  icon: '🖥️', tags: ['GRUB', 'initrd', 'systemd targets'] },
     { name: 'Comandos Avançados',           slug: '/comandos-avancados', available: true,  icon: '🔧', tags: ['sed', 'dd', 'nc', 'ln', 'gzip'] },
     { name: 'Logs Centralizados (Rsyslog)', slug: '/rsyslog',           available: true,  icon: '📡', tags: ['rsyslog', 'facilities', 'logrotate'] },
-    { name: 'SSH como Proxy SOCKS',         slug: '/ssh-proxy',         available: true,  icon: '🚇', tags: ['-D SOCKS5', '-L/-R forward', 'Jump Host'] },
   ],
 };
 
@@ -40,7 +39,7 @@ const PHASE_V3 = {
   name: 'Servidores e Serviços',
   color: 'border-info/40 bg-info/5',
   badgeColor: 'bg-info/15 text-info border-info/30',
-  status: '9 disponíveis · 0 em breve ✅',
+  status: '10 disponíveis · 0 em breve ✅',
   modules: [
     { name: 'Docker Networking',         slug: '/docker',         available: true,  icon: '🐳', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
     { name: 'Docker Compose',            slug: '/docker-compose', available: true,  icon: '🐙', tags: ['multi-container', 'networks', 'secrets'] },
@@ -51,6 +50,7 @@ const PHASE_V3 = {
     { name: 'Traefik Proxy Reverso',     slug: '/traefik',        available: true,  icon: '🔀', tags: ['labels', 'ACME', 'middlewares'] },
     { name: 'LDAP / OpenLDAP',           slug: '/ldap',           available: true,  icon: '👥', tags: ['diretório', 'autenticação', 'AD-like'] },
     { name: 'Pi-hole',                   slug: '/pihole',         available: true,  icon: '🕳️', tags: ['DNS', 'bloqueio de anúncios', 'privacy'] },
+    { name: 'SSH como Proxy SOCKS',      slug: '/ssh-proxy',      available: true,  icon: '🚇', tags: ['-D SOCKS5', '-L/-R forward', 'Jump Host'] },
   ],
 };
 

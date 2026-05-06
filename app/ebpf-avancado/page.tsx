@@ -85,9 +85,12 @@ kubectl -n kube-system logs ds/tetragon | grep -i "error\\|kprobe"`,
   },
 ];
 
+type EbpfAvTab = 'cilium' | 'policies' | 'tetragon';
+
 export default function EbpfAvancadoPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<EbpfAvTab>('cilium');
 
   useEffect(() => {
     trackPageVisit('/ebpf-avancado');
@@ -120,6 +123,32 @@ export default function EbpfAvancadoPage() {
           <Link href="/kubernetes" className="text-accent underline underline-offset-2">módulo K3s</Link>.
         </InfoBox>
       </div>
+
+      {/* ── Abas de Navegação ── */}
+      <div role="tablist" className="flex gap-2 border-b border-border mb-12 flex-wrap">
+        {[
+          { id: 'cilium',   label: '📖 Cilium & Hubble' },
+          { id: 'policies', label: '🛡️ Políticas & LB' },
+          { id: 'tetragon', label: '🔒 Tetragon & Maps' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            onClick={() => setActiveTab(tab.id as EbpfAvTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── TAB: Cilium & Hubble ── */}
+      {activeTab === 'cilium' && <div className="space-y-12">
 
       {/* ── Por que Cilium? ──────────────────────────────────────────────────── */}
       <section className="mb-12">
@@ -307,6 +336,11 @@ kubectl port-forward -n kube-system svc/hubble-ui 12000:80 &
         </InfoBox>
       </section>
 
+      </div>} {/* end tab cilium */}
+
+      {/* ── TAB: Políticas & LB ── */}
+      {activeTab === 'policies' && <div className="space-y-12">
+
       {/* ── CiliumNetworkPolicy ─────────────────────────────────────────────── */}
       <section className="mb-12">
         <h2 className="section-title">CiliumNetworkPolicy — do L3 ao L7</h2>
@@ -454,6 +488,11 @@ helm upgrade cilium cilium/cilium \\
   --reuse-values \\
   --set loadBalancer.mode=dsr`} />
       </section>
+
+      </div>} {/* end tab policies */}
+
+      {/* ── TAB: Tetragon & Maps ── */}
+      {activeTab === 'tetragon' && <div className="space-y-12">
 
       {/* ── Tetragon ────────────────────────────────────────────────────────── */}
       <section className="mb-12">
@@ -647,7 +686,9 @@ interval:s:3 { print(@bytes); clear(@bytes); }
         />
       </section>
 
-      {/* ── WindowsComparisonBox ────────────────────────────────────────────── */}
+      </div>} {/* end tab tetragon */}
+
+      {/* ── Windows Comparison — sempre visível ── */}
       <section className="mb-12">
         <h2 className="section-title">Windows vs Linux — Networking e Runtime Security</h2>
         <WindowsComparisonBox

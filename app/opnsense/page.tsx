@@ -52,9 +52,12 @@ const commonErrors = [
   },
 ];
 
+type OpnTab = 'conceito' | 'firewall' | 'ha';
+
 export default function OPNsensePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<OpnTab>('conceito');
 
   useEffect(() => {
     trackPageVisit('/opnsense');
@@ -92,6 +95,32 @@ export default function OPNsensePage() {
             ))}
           </div>
         </section>
+
+        {/* ── Abas de Navegação ── */}
+        <div role="tablist" className="flex gap-2 border-b border-border -mt-8 pb-0 flex-wrap">
+          {[
+            { id: 'conceito',  label: '📖 Conceito & Install' },
+            { id: 'firewall',  label: '⚙️ Firewall & VPN' },
+            { id: 'ha',        label: '🔀 HA & API' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id as OpnTab)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── TAB: Conceito & Install ── */}
+        {activeTab === 'conceito' && <div className="space-y-10">
 
         {/* 1 — OPNsense vs pfSense */}
         <section className="space-y-4">
@@ -201,6 +230,11 @@ export default function OPNsensePage() {
             ))}
           </div>
         </section>
+
+        </div>} {/* end tab conceito */}
+
+        {/* ── TAB: Firewall & VPN ── */}
+        {activeTab === 'firewall' && <div className="space-y-10">
 
         {/* 4 — Firewall Rules */}
         <section className="space-y-4">
@@ -362,6 +396,11 @@ Services → Intrusion Detection → Stats`} />
           </InfoBox>
         </section>
 
+        </div>} {/* end tab firewall */}
+
+        {/* ── TAB: HA & API ── */}
+        {activeTab === 'ha' && <div className="space-y-10">
+
         {/* 7 — Alta Disponibilidade */}
         <section className="space-y-4">
           <h2 className="text-xl font-bold text-text">7. Alta Disponibilidade com CARP</h2>
@@ -483,7 +522,9 @@ curl -s -k \
           </InfoBox>
         </section>
 
-        {/* Checklist */}
+        </div>} {/* end tab ha */}
+
+        {/* Checklist — sempre visível */}
         <section className="space-y-3">
           <h2 className="text-xl font-bold text-text">Checklist do Laboratório</h2>
           <div className="space-y-2">

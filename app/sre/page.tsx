@@ -58,10 +58,13 @@ const erros = [
   },
 ];
 
+type SreTab = 'fundamentos' | 'implementacao' | 'postmortem';
+
 export default function SrePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<SreTab>('fundamentos');
 
   useEffect(() => {
     trackPageVisit('/sre');
@@ -96,6 +99,32 @@ export default function SrePage() {
       </section>
 
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+        {/* ── Abas de Navegação ── */}
+        <div role="tablist" className="flex gap-2 border-b border-border -mt-8 pb-0">
+          {[
+            { id: 'fundamentos',   label: '📖 SLI/SLO/SLA' },
+            { id: 'implementacao', label: '⚙️ Implementação' },
+            { id: 'postmortem',    label: '📋 Postmortem & Toil' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id as SreTab)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── TAB: Fundamentos ── */}
+        {activeTab === 'fundamentos' && <div className="space-y-16">
 
         {/* SLI SLO SLA */}
         <section>
@@ -252,6 +281,11 @@ export default function SrePage() {
             política, mas por matemática. Isso elimina o conflito clássico dev vs ops.
           </InfoBox>
         </section>
+
+        </div>} {/* end tab fundamentos */}
+
+        {/* ── TAB: Implementação ── */}
+        {activeTab === 'implementacao' && <div className="space-y-16">
 
         {/* SLOs com Prometheus */}
         <section>
@@ -503,6 +537,11 @@ topk(5, sum(rate(http_requests_total{status=~"5.."}[5m])) by (handler))
 Se não resolvido em 15 minutos → chamar lead de backend (@time-backend no Slack)`} />
         </section>
 
+        </div>} {/* end tab implementacao */}
+
+        {/* ── TAB: Postmortem & Toil ── */}
+        {activeTab === 'postmortem' && <div className="space-y-16">
+
         {/* Postmortem */}
         <section>
           <h2 className="section-title text-2xl mb-6 flex items-center gap-2">
@@ -642,7 +681,9 @@ do PostgreSQL em ~12 minutos após o deploy.
           </div>
         </section>
 
-        {/* Windows Comparison */}
+        </div>} {/* end tab postmortem */}
+
+        {/* Windows Comparison — sempre visível */}
         <WindowsComparisonBox
           windowsLabel="Windows — ITSM / ITIL tradicional"
           linuxLabel="Linux / Cloud — SRE moderno"

@@ -52,9 +52,12 @@ const commonErrors = [
   },
 ];
 
+type NcTab = 'conceito' | 'config' | 'storage';
+
 export default function NextcloudPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<NcTab>('conceito');
 
   useEffect(() => {
     trackPageVisit('/nextcloud');
@@ -92,6 +95,32 @@ export default function NextcloudPage() {
             ))}
           </div>
         </section>
+
+        {/* ── Abas de Navegação ── */}
+        <div role="tablist" className="flex gap-2 border-b border-border -mt-8 pb-0 flex-wrap">
+          {[
+            { id: 'conceito', label: '📖 Conceito & Stack' },
+            { id: 'config',   label: '⚙️ Config & Apps' },
+            { id: 'storage',  label: '🗄️ Storage & Backup' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id as NcTab)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── TAB: Conceito & Stack ── */}
+        {activeTab === 'conceito' && <div className="space-y-10">
 
         {/* 1 — Nextcloud vs alternativas */}
         <section className="space-y-4">
@@ -230,6 +259,11 @@ docker compose logs -f nextcloud
 # Acessar: https://cloud.seudominio.tld`} />
         </section>
 
+        </div>} {/* end tab conceito */}
+
+        {/* ── TAB: Config & Apps ── */}
+        {activeTab === 'config' && <div className="space-y-10">
+
         {/* 3 — Pós-instalação */}
         <section className="space-y-4">
           <h2 className="text-xl font-bold text-text">3. Pós-instalação — configurações essenciais</h2>
@@ -355,6 +389,11 @@ Email:    mail`} />
           </InfoBox>
         </section>
 
+        </div>} {/* end tab config */}
+
+        {/* ── TAB: Storage & Backup ── */}
+        {activeTab === 'storage' && <div className="space-y-10">
+
         {/* 6 — Object Storage S3 */}
         <section className="space-y-4">
           <h2 className="text-xl font-bold text-text">6. Armazenamento externo — S3 e MinIO</h2>
@@ -455,7 +494,9 @@ find /backups/nextcloud/ -maxdepth 1 -type d -mtime +7 -exec rm -rf {} \\;`} />
           </HighlightBox>
         </section>
 
-        {/* Windows Comparison */}
+        </div>} {/* end tab storage */}
+
+        {/* Windows Comparison — sempre visível */}
         <WindowsComparisonBox
           windowsCode={`# Windows — OneDrive / SharePoint
 # Configuração: GUI no navegador (admin.microsoft.com)

@@ -58,10 +58,13 @@ const erros = [
   },
 ];
 
+type EbpfTab = 'conceito' | 'tools' | 'cilium';
+
 export default function EbpfPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<EbpfTab>('conceito');
 
   useEffect(() => {
     trackPageVisit('/ebpf');
@@ -96,6 +99,32 @@ export default function EbpfPage() {
       </section>
 
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+        {/* ── Abas de Navegação ── */}
+        <div role="tablist" className="flex gap-2 border-b border-border -mt-8 pb-0">
+          {[
+            { id: 'conceito', label: '📖 Conceito & Ferramentas' },
+            { id: 'tools',    label: '🔭 bpftrace & XDP' },
+            { id: 'cilium',   label: '⚡ Cilium & Segurança' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              role="tab"
+              aria-selected={activeTab === tab.id}
+              onClick={() => setActiveTab(tab.id as EbpfTab)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── TAB: Conceito & Ferramentas ── */}
+        {activeTab === 'conceito' && <div className="space-y-16">
 
         {/* O que é eBPF */}
         <section>
@@ -236,6 +265,11 @@ sudo fileslower-bpfcc 10      # leituras/escritas mais lentas que 10ms`} />
             <code className="font-mono text-xs">biolatency-bpfcc</code> revela gargalos de disco — tudo em tempo real, sem reiniciar.
           </HighlightBox>
         </section>
+
+        </div>} {/* end tab conceito */}
+
+        {/* ── TAB: bpftrace & XDP ── */}
+        {activeTab === 'tools' && <div className="space-y-16">
 
         {/* bpftrace */}
         <section>
@@ -401,6 +435,11 @@ sudo xdp-filter status`} />
           </WarnBox>
         </section>
 
+        </div>} {/* end tab tools */}
+
+        {/* ── TAB: Cilium & Segurança ── */}
+        {activeTab === 'cilium' && <div className="space-y-16">
+
         {/* Cilium + Kubernetes */}
         <section>
           <h2 className="section-title text-2xl mb-6 flex items-center gap-2">
@@ -504,7 +543,9 @@ EOF
 sudo systemctl restart falco`} />
         </section>
 
-        {/* Windows Comparison */}
+        </div>} {/* end tab cilium */}
+
+        {/* Windows Comparison — sempre visível */}
         <WindowsComparisonBox
           windowsLabel="Windows — ETW / WFP"
           linuxLabel="Linux — eBPF / XDP"
