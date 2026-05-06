@@ -2,12 +2,11 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { motion } from 'motion/react';
-import { Search, ChevronRight } from 'lucide-react';
+import { Search, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 
-type TopicTrail = 'firewall' | 'fundamentos' | 'avancados';
+type TrailTab = 'firewall' | 'fundamentos' | 'avancados';
 
 interface Topic {
   id: string;
@@ -18,27 +17,6 @@ interface Topic {
   href: string;
   group: string;
 }
-
-const TRAIL_BY_GROUP: Record<string, TopicTrail> = {
-  'Fundamentos Linux': 'fundamentos',
-  'Servidores e Serviços': 'avancados',
-  'Infraestrutura Moderna': 'avancados',
-  'Cloud & Platform Engineering': 'avancados',
-};
-
-function getTrail(group: string): TopicTrail {
-  return TRAIL_BY_GROUP[group] ?? 'firewall';
-}
-
-function getBasePath(href: string): string {
-  return href.split('#')[0].replace(/^\//, '');
-}
-
-const TRAIL_LABEL: Record<TopicTrail, string> = {
-  firewall:    '🔥 Firewall',
-  fundamentos: '🐧 Fundamentos',
-  avancados:   '🚀 Avançados',
-};
 
 const TOPICS: Topic[] = [
   // ── LAN, DNS & Proxy ─────────────────────────────────────────────────────────
@@ -52,14 +30,7 @@ const TOPICS: Topic[] = [
   { id: '10', num: '10', title: 'Como a resposta da internet volta para o cliente interno via ESTABLISHED e conntrack.', layer: 'Camada 5 · Sessão', layerClass: 'l5', href: '/wan-nat#established', group: 'WAN, NAT & ESTABLISHED' },
 
   // ── Funções do Firewall ───────────────────────────────────────────────────────
-  {
-    id: '03', num: '03',
-    title: 'Todas as funções do Firewall: iptables, NAT, SNAT, DNAT, ip_forward, Port Knocking e Squid.',
-    layer: 'Camadas 3 e 4 · Rede e Transporte', layerClass: 'l4',
-    // FIX: era '/#firewall' — id="firewall" não existe em page.tsx. Agora aponta para /wan-nat que cobre o conteúdo correto.
-    href: '/wan-nat',
-    group: 'Funções do Firewall'
-  },
+  { id: '03', num: '03', title: 'Todas as funções do Firewall: iptables, NAT, SNAT, DNAT, ip_forward, Port Knocking e Squid.', layer: 'Camadas 3 e 4 · Rede e Transporte', layerClass: 'l4', href: '/wan-nat', group: 'Funções do Firewall' },
 
   // ── DNS com BIND9 ─────────────────────────────────────────────────────────────
   { id: '04', num: '04', title: 'Como o BIND9 funciona? Registros A, CNAME e PTR. Por que o DNS é a primeira coisa que quebra?', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/dns', group: 'DNS com BIND9' },
@@ -86,10 +57,8 @@ const TOPICS: Topic[] = [
   { id: '28', num: '28', title: 'Configuração prática de VPN Site-to-Site com StrongSwan e iptables.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/vpn-ipsec#configuracao', group: 'VPN & IPSec' },
   { id: '25', num: '25', title: 'WireGuard: VPN moderna com Curve25519, configuração de servidor e cliente, integração com iptables.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/wireguard', group: 'VPN & IPSec' },
 
-  // ── Defesa Ativa ─────────────────────────────────────────────────────────────
-  { id: '26', num: '26', title: 'Fail2ban: proteção contra brute force em SSH e Nginx com jails, filtros regex e ações iptables.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/fail2ban', group: 'Segurança Avançada' },
-
   // ── Segurança Avançada ────────────────────────────────────────────────────────
+  { id: '26', num: '26', title: 'Fail2ban: proteção contra brute force em SSH e Nginx com jails, filtros regex e ações iptables.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/fail2ban', group: 'Segurança Avançada' },
   { id: '21', num: '21', title: 'Pivoteamento DMZ → LAN: como um invasor usa o Web Server para atacar a rede interna.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/pivoteamento#cenario', group: 'Segurança Avançada' },
   { id: '22', num: '22', title: 'Mitigação de Pivoteamento: regras de FORWARD e isolamento de estado no iptables.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/pivoteamento#mitigacao', group: 'Segurança Avançada' },
   { id: '23', num: '23', title: 'Ataques Avançados: Fragmentação, Timing Attacks e DNS Rebinding na prática.', layer: 'Camadas 3-7 · Multi-layer', layerClass: 'l7', href: '/ataques-avancados', group: 'Segurança Avançada' },
@@ -114,7 +83,7 @@ const TOPICS: Topic[] = [
   { id: '36', num: '36', title: 'Cluster Proxmox: Live Migration de VMs, Alta Disponibilidade (HA) e storage compartilhado com Ceph.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox#cluster', group: 'Ambientes de Lab' },
   { id: '37', num: '37', title: 'vzdump e backups agendados: proteja seu lab com backups completos de VMs no Proxmox VE.', layer: 'Infraestrutura · Lab', layerClass: 'l3', href: '/proxmox#backup', group: 'Ambientes de Lab' },
 
-  // ── Sprint SIGMA Fase 2 — seções avançadas ────────────────────────────────────
+  // ── Sprint SIGMA Fase 2 ───────────────────────────────────────────────────────
   { id: '38', num: '38', title: 'Fluxo do administrador com Port Knocking: ~/entrar.sh, janela de 10s e por que bots nunca descobrem a porta.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/port-knocking#admin-em-acao', group: 'Port Knocking' },
   { id: '39', num: '39', title: 'Auditoria forense do Port Knocking: tail -f com awk, scripts audit-knock e knock-monitor, rotação 90 dias.', layer: 'Forense · Logs', layerClass: 'l4', href: '/audit-logs#forense-knock', group: 'Segurança Avançada' },
   { id: '40', num: '40', title: 'As 5 funções simultâneas do Firewall (Roteador+Filtro+Tradutor+Proxy+Guardião) e a magia do conntrack IDA/VOLTA.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/wan-nat#anatomia-nat', group: 'WAN, NAT & ESTABLISHED' },
@@ -126,18 +95,16 @@ const TOPICS: Topic[] = [
   { id: '44', num: '44', title: 'Mindset SysAdmin: systemctl vs Serviços Windows, journalctl vs Event Viewer, /etc/ vs Program Files.', layer: 'Fundação · Conceitos', layerClass: 'l7', href: '/instalacao#sysadmin-mindset', group: 'Fundação & Terminal' },
   { id: '45', num: '45', title: 'RosettaStone interativa: 25 equivalências Windows → Linux com filtro por categoria — ls, grep, systemctl e mais.', layer: 'Fundação · Conceitos', layerClass: 'l7', href: '/instalacao#rosetta-stone', group: 'Fundação & Terminal' },
 
-  // ── Sprint I.3 — Hardening Linux ─────────────────────────────────────────────
+  // ── Hardening Linux ───────────────────────────────────────────────────────────
   { id: '46', num: '46', title: 'Hardening Linux: SSH sem senha (Ed25519), sysctl de segurança (SYN cookies, ASLR) e AppArmor enforce para Nginx.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/hardening', group: 'Hardening Linux' },
-  // ── Sprint I.5 — SSH com 2FA ──────────────────────────────────────────────────
   { id: '48', num: '48', title: 'SSH com 2FA: TOTP com Google Authenticator, libpam-google-authenticator, PAM config e sshd_config para autenticação de dois fatores.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/ssh-2fa', group: 'Hardening Linux' },
 
-  // ── Sprint I.4 — Docker Networking ───────────────────────────────────────────
+  // ── Docker & Containers ───────────────────────────────────────────────────────
   { id: '47', num: '47', title: 'Docker Networking: bridge, host e none. Como o Docker manipula o iptables automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/docker#redes', group: 'Docker & Containers' },
   { id: '47b', num: '47', title: 'Port mapping (-p 8080:80) é DNAT automático: Docker cria regras iptables na chain DOCKER.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/docker#port-mapping', group: 'Docker & Containers' },
-  // ── Sprint I.6 — Docker Compose ───────────────────────────────────────────────
   { id: '49', num: '49', title: 'Docker Compose: docker-compose.yml declarativo, redes frontend/backend/internal isoladas, volumes persistentes e stack completa Nginx+App+PostgreSQL.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/docker-compose', group: 'Docker & Containers' },
 
-  // ── Sprint F1-F3 — Trilha Fundamentos Linux (v2.0) ────────────────────────
+  // ── Trilha Fundamentos Linux (v2.0) ──────────────────────────────────────────
   { id: 'f01', num: 'F01', title: 'Estrutura do Sistema (FHS): /etc, /var, /usr, /home, /tmp — o mapa do Linux comparado com C:\\Windows\\', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/fhs', group: 'Fundamentos Linux' },
   { id: 'f02', num: 'F02', title: 'Comandos Essenciais: ls, cd, cp, mv, rm, grep, find, cat, less e o operador pipe — navegando o terminal.', layer: 'Fundamentos · Terminal', layerClass: 'l7', href: '/comandos', group: 'Fundamentos Linux' },
   { id: 'f03', num: 'F03', title: 'Editores de Texto: nano para edições rápidas, VIM para produção — modos, atalhos e como sair do vim.', layer: 'Fundamentos · Ferramentas', layerClass: 'l7', href: '/editores', group: 'Fundamentos Linux' },
@@ -161,83 +128,188 @@ const TOPICS: Topic[] = [
   { id: 's05', num: 'S05', title: 'Traefik Proxy Reverso: labels Docker, HTTPS automático via ACME, middlewares (redirect, basicauth, rate-limit) e dashboard integrado — cloud-native.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/traefik', group: 'Servidores e Serviços' },
   { id: 's06', num: 'S06', title: 'LDAP / OpenLDAP: DIT, OUs, usuários posixAccount, ldapadd/ldapsearch, LDAPS com TLS e PAM — autenticação única para SSH, Samba e apps.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/ldap', group: 'Servidores e Serviços' },
   { id: 's07', num: 'S07', title: 'Pi-hole: DNS sinkhole com blocklists gravity, whitelist/blacklist, integração DHCP, iptables DNS redirect e Unbound resolver local para toda a rede.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/pihole', group: 'Servidores e Serviços' },
-  // Sprint SSH-PROXY
   { id: 's08', num: 'S08', title: 'SSH como Proxy SOCKS: ssh -D (SOCKS5 dinâmico), -L port forwarding local, -R remoto, Jump Host com -J, autossh persistente e ~/.ssh/config para produção.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/ssh-proxy', group: 'Servidores e Serviços' },
-  // Sprint I.14 — Ansible (v4.0 Infraestrutura Moderna)
+
+  // ── Infraestrutura Moderna (v4.0) ─────────────────────────────────────────────
   { id: 'i01', num: 'I01', title: 'Ansible para SysAdmins: inventário, comandos ad-hoc, playbooks YAML com tasks/handlers/templates, roles reutilizáveis, Ansible Galaxy e Vault para segredos.', layer: 'Infraestrutura · IaC', layerClass: 'l3', href: '/ansible', group: 'Infraestrutura Moderna' },
-  // Sprint I.15 — Prometheus + Grafana (v4.0 Infraestrutura Moderna)
   { id: 'i02', num: 'I02', title: 'Prometheus + Grafana: node_exporter, PromQL (rate/increase/sum), dashboards ID 1860, regras de alerta e Alertmanager com email/Slack — observabilidade real.', layer: 'Infraestrutura · Observabilidade', layerClass: 'l7', href: '/monitoring', group: 'Infraestrutura Moderna' },
-  // Sprint I.16 — Kubernetes / K3s (v4.0 Infraestrutura Moderna)
   { id: 'i03', num: 'I03', title: 'Kubernetes / K3s: Pod, Deployment, Service, ConfigMap/Secret, Ingress Traefik, NetworkPolicy com Calico e Helm — orquestração de containers do zero.', layer: 'Infraestrutura · Orquestração', layerClass: 'l3', href: '/kubernetes', group: 'Infraestrutura Moderna' },
-  // Sprint I.17 — Terraform IaC (v4.0 Infraestrutura Moderna)
   { id: 'i04', num: 'I04', title: 'Terraform IaC: HCL declarativo, providers Docker/AWS, init→plan→apply→destroy, state remoto (S3/GitLab), módulos reutilizáveis e workspaces para múltiplos ambientes.', layer: 'Infraestrutura · IaC', layerClass: 'l3', href: '/terraform', group: 'Infraestrutura Moderna' },
-  // Sprint I.18 — Suricata IDS/IPS (v4.0 Infraestrutura Moderna)
   { id: 'i05', num: 'I05', title: 'Suricata IDS/IPS: modo IDS passivo (af-packet) e IPS inline (NFQUEUE), regras customizadas com EVE JSON, Emerging Threats e integração com nftables.', layer: 'Segurança · IDS/IPS', layerClass: 'l4', href: '/suricata', group: 'Infraestrutura Moderna' },
-  // Sprint I.19 — eBPF & XDP (v4.0 Infraestrutura Moderna)
-  { id: 'i06', num: 'I06', title: 'eBPF & XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.', layer: 'Kernel · Observabilidade', layerClass: 'l2', href: '/ebpf', group: 'Infraestrutura Moderna' },
-  // Sprint I.20 — Service Mesh com Istio (v4.0 Infraestrutura Moderna)
+  { id: 'i06', num: 'I06', title: 'eBPF & XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.', layer: 'Kernel · Observabilidade', layerClass: 'l3', href: '/ebpf', group: 'Infraestrutura Moderna' },
   { id: 'i07', num: 'I07', title: 'Service Mesh com Istio: sidecar Envoy, mTLS automático (SPIFFE/X.509), VirtualService (canary/A-B), DestinationRule (circuit breaker), AuthorizationPolicy e observabilidade com Kiali/Jaeger.', layer: 'Camada 7 · mTLS', layerClass: 'l7', href: '/service-mesh', group: 'Infraestrutura Moderna' },
-  // Sprint I.21 — SRE & SLOs (v4.0 Infraestrutura Moderna)
   { id: 'i08', num: 'I08', title: 'SRE & SLOs: SLIs/SLOs com Prometheus (recording rules + burn rate), error budget como ferramenta de decisão, alertas por sintoma, runbooks acionáveis e postmortem blameless.', layer: 'Cultura · Confiabilidade', layerClass: 'l7', href: '/sre', group: 'Infraestrutura Moderna' },
-  // Sprint I.22 — CI/CD com GitHub Actions (v5.0 Cloud & Platform Engineering)
+
+  // ── Cloud & Platform Engineering (v5.0) ───────────────────────────────────────
   { id: 'c01', num: 'C01', title: 'CI/CD com GitHub Actions: lint/test/build em paralelo, Docker build+push ghcr.io, environments com aprovação manual, matrix strategy e self-hosted runner como serviço systemd.', layer: 'DevOps · Automação', layerClass: 'l5', href: '/cicd', group: 'Cloud & Platform Engineering' },
-  // Sprint I.23 — OPNsense / pfSense (v5.0 Cloud & Platform Engineering)
   { id: 'c02', num: 'C02', title: 'OPNsense: firewall enterprise com Web UI — regras por interface (ingress), Aliases, Port Forward (DNAT), VPN WireGuard/OpenVPN wizard, Suricata IDS/IPS integrado e Alta Disponibilidade com CARP.', layer: 'Firewall · Enterprise', layerClass: 'l3', href: '/opnsense', group: 'Cloud & Platform Engineering' },
-  // Sprint I.24 — Nextcloud (v5.0 Cloud & Platform Engineering)
   { id: 'c03', num: 'C03', title: 'Nextcloud self-hosted: Docker Compose (Nextcloud+MariaDB+Redis+Traefik), CalDAV/CardDAV, integração LDAP, object storage MinIO, backup 3-2-1 automatizado e apps Calendar/Contacts/Talk.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/nextcloud', group: 'Cloud & Platform Engineering' },
-  // Sprint I.25 — eBPF Avançado + Cilium (v5.0 Cloud & Platform Engineering)
   { id: 'c04', num: 'C04', title: 'eBPF Avançado + Cilium: CNI nativo eBPF substituindo kube-proxy e flannel, Hubble para observabilidade de fluxos L7 em tempo real, CiliumNetworkPolicy HTTP path e DNS (toFQDNs), Tetragon TracingPolicy para runtime security.', layer: 'eBPF · CNI', layerClass: 'l3', href: '/ebpf-avancado', group: 'Cloud & Platform Engineering' },
 ];
 
+// ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
+interface ModuleMeta { label: string; icon: string; trail: TrailTab }
+
+const MODULE_META: Record<string, ModuleMeta> = {
+  // Firewall v1.0
+  '/instalacao':        { label: 'Instalação & Lab',           icon: '🛠️', trail: 'firewall' },
+  '/wan-nat':           { label: 'WAN & NAT',                  icon: '🌐', trail: 'firewall' },
+  '/dns':               { label: 'DNS com BIND9',              icon: '📖', trail: 'firewall' },
+  '/nginx-ssl':         { label: 'Nginx & SSL/TLS',            icon: '🔒', trail: 'firewall' },
+  '/lan-proxy':         { label: 'LAN & Proxy Squid',          icon: '💻', trail: 'firewall' },
+  '/dnat':              { label: 'DNAT & Port Forward',        icon: '🔀', trail: 'firewall' },
+  '/port-knocking':     { label: 'Port Knocking',              icon: '🚪', trail: 'firewall' },
+  '/vpn-ipsec':         { label: 'VPN IPSec',                  icon: '🔐', trail: 'firewall' },
+  '/wireguard':         { label: 'WireGuard VPN',              icon: '🔑', trail: 'firewall' },
+  '/nftables':          { label: 'nftables',                   icon: '🔥', trail: 'firewall' },
+  '/fail2ban':          { label: 'Fail2ban',                   icon: '🛡️', trail: 'firewall' },
+  '/hardening':         { label: 'Hardening Linux',            icon: '🔐', trail: 'firewall' },
+  '/ssh-2fa':           { label: 'SSH com 2FA',                icon: '📱', trail: 'firewall' },
+  '/docker':            { label: 'Docker Networking',          icon: '🐳', trail: 'firewall' },
+  '/docker-compose':    { label: 'Docker Compose',             icon: '🐙', trail: 'firewall' },
+  '/audit-logs':        { label: 'Auditoria & Logs',           icon: '🔬', trail: 'firewall' },
+  '/ataques-avancados': { label: 'Ataques Avançados',          icon: '⚠️', trail: 'firewall' },
+  '/pivoteamento':      { label: 'Pivoteamento',               icon: '🎭', trail: 'firewall' },
+  '/laboratorio':       { label: 'Ambientes de Lab',           icon: '🧪', trail: 'firewall' },
+  '/proxmox':           { label: 'Proxmox VE',                 icon: '🖥️', trail: 'firewall' },
+  '/web-server':        { label: 'Web Server & PKI',           icon: '🌍', trail: 'firewall' },
+  '/glossario':         { label: 'Glossário Técnico',          icon: '📚', trail: 'firewall' },
+  '/evolucao':          { label: 'Roadmap & Evolução',         icon: '🗺️', trail: 'firewall' },
+  // Fundamentos v2.0
+  '/fhs':                { label: 'Estrutura do Sistema (FHS)',    icon: '📁', trail: 'fundamentos' },
+  '/comandos':           { label: 'Comandos Essenciais',           icon: '⌨️', trail: 'fundamentos' },
+  '/editores':           { label: 'Editores de Texto',             icon: '✏️', trail: 'fundamentos' },
+  '/processos':          { label: 'Gerenciamento de Processos',    icon: '⚙️', trail: 'fundamentos' },
+  '/permissoes':         { label: 'Permissões & Usuários',         icon: '🔑', trail: 'fundamentos' },
+  '/discos':             { label: 'Discos & Partições',            icon: '💾', trail: 'fundamentos' },
+  '/logs-basicos':       { label: 'Logs e Monitoramento',          icon: '📋', trail: 'fundamentos' },
+  '/backup':             { label: 'Backup & Restauração',          icon: '💿', trail: 'fundamentos' },
+  '/shell-script':       { label: 'Shell Script',                  icon: '📜', trail: 'fundamentos' },
+  '/cron':               { label: 'Cron & Agendamento',            icon: '⏰', trail: 'fundamentos' },
+  '/pacotes':            { label: 'Instalação de Programas',       icon: '📦', trail: 'fundamentos' },
+  '/boot':               { label: 'Processo de Boot',              icon: '🖥️', trail: 'fundamentos' },
+  '/comandos-avancados': { label: 'Comandos Avançados (SED/DD/NC)',icon: '🔧', trail: 'fundamentos' },
+  '/rsyslog':            { label: 'Logs Centralizados (Rsyslog)',  icon: '📡', trail: 'fundamentos' },
+  // Avançados v3.0–v5.0
+  '/dhcp':          { label: 'Servidor DHCP',               icon: '🌐', trail: 'avancados' },
+  '/samba':         { label: 'Samba File Sharing',          icon: '🗂️', trail: 'avancados' },
+  '/apache':        { label: 'Apache Web Server',           icon: '🌍', trail: 'avancados' },
+  '/openvpn':       { label: 'OpenVPN',                     icon: '🔒', trail: 'avancados' },
+  '/traefik':       { label: 'Traefik Proxy Reverso',       icon: '🔀', trail: 'avancados' },
+  '/ldap':          { label: 'LDAP / OpenLDAP',             icon: '👥', trail: 'avancados' },
+  '/pihole':        { label: 'Pi-hole DNS Sinkhole',        icon: '🕳️', trail: 'avancados' },
+  '/ssh-proxy':     { label: 'SSH como Proxy SOCKS',        icon: '🚇', trail: 'avancados' },
+  '/ansible':       { label: 'Ansible',                     icon: '⚙️', trail: 'avancados' },
+  '/monitoring':    { label: 'Prometheus + Grafana',        icon: '📊', trail: 'avancados' },
+  '/kubernetes':    { label: 'Kubernetes / K3s',            icon: '☸️', trail: 'avancados' },
+  '/terraform':     { label: 'Terraform IaC',               icon: '🏗️', trail: 'avancados' },
+  '/suricata':      { label: 'Suricata IDS/IPS',            icon: '🛡️', trail: 'avancados' },
+  '/ebpf':          { label: 'eBPF & XDP',                  icon: '⚡', trail: 'avancados' },
+  '/service-mesh':  { label: 'Service Mesh (Istio)',        icon: '🕸️', trail: 'avancados' },
+  '/sre':           { label: 'SRE & SLOs',                  icon: '🎯', trail: 'avancados' },
+  '/cicd':          { label: 'CI/CD GitHub Actions',        icon: '🚀', trail: 'avancados' },
+  '/opnsense':      { label: 'OPNsense',                    icon: '🔥', trail: 'avancados' },
+  '/nextcloud':     { label: 'Nextcloud',                   icon: '☁️', trail: 'avancados' },
+  '/ebpf-avancado': { label: 'eBPF Avançado + Cilium',      icon: '🧬', trail: 'avancados' },
+};
+
+// Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
+const TRAIL_MODULES: Record<TrailTab, string[]> = {
+  firewall: [
+    '/instalacao', '/wan-nat', '/dns', '/nginx-ssl', '/lan-proxy',
+    '/dnat', '/port-knocking', '/vpn-ipsec', '/wireguard', '/nftables',
+    '/fail2ban', '/hardening', '/ssh-2fa', '/docker', '/docker-compose',
+    '/audit-logs', '/ataques-avancados', '/pivoteamento', '/laboratorio',
+    '/proxmox', '/web-server', '/glossario', '/evolucao',
+  ],
+  fundamentos: [
+    '/fhs', '/comandos', '/editores', '/processos', '/permissoes',
+    '/discos', '/logs-basicos', '/backup', '/shell-script', '/cron',
+    '/pacotes', '/boot', '/comandos-avancados', '/rsyslog',
+  ],
+  avancados: [
+    '/dhcp', '/samba', '/apache', '/openvpn', '/traefik',
+    '/ldap', '/pihole', '/ssh-proxy', '/ansible', '/monitoring',
+    '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
+    '/sre', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
+  ],
+};
+
+// Configuração visual por trilha
+const TRAIL_CONFIG = {
+  firewall:    { label: '🔥 Firewall',    color: 'border-accent',      barColor: 'bg-accent',      activeTab: 'border-accent text-accent',         hrefStart: '/instalacao', desc: 'Do zero ao firewall profissional' },
+  fundamentos: { label: '🐧 Fundamentos', color: 'border-[#6366f1]',   barColor: 'bg-[#6366f1]',   activeTab: 'border-[#6366f1] text-[#6366f1]',   hrefStart: '/fundamentos', desc: 'Base Linux sólida para SysAdmins' },
+  avancados:   { label: '🚀 Avançados',   color: 'border-info',        barColor: 'bg-info',        activeTab: 'border-info text-info',              hrefStart: '/avancados',  desc: 'Servidores, IaC e Cloud' },
+} as const;
+
+function getModuleBase(href: string): string {
+  return '/' + href.split('#')[0].replace(/^\//, '');
+}
+
 export default function TopicsPage() {
+  const [activeTrail, setActiveTrail] = useState<TrailTab>('firewall');
+  const [openModules, setOpenModules] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [activeTrail, setActiveTrail] = useState<TopicTrail | 'all'>('all');
   const { visitedPages } = useBadges();
 
-  const isTopicVisited = useCallback((href: string): boolean => {
-    const base = getBasePath(href);
-    return visitedPages.has(base) || visitedPages.has('/' + base);
+  // Verifica se um path (módulo) foi visitado
+  const isVisited = useCallback((path: string): boolean => {
+    const clean = path.replace(/^\//, '');
+    return visitedPages.has(clean) || visitedPages.has('/' + clean);
   }, [visitedPages]);
 
-  const trailStats = useMemo(() => {
-    const stats: Record<string, { total: number; visited: number }> = {};
+  // Agrupa tópicos pelo path base do href (ex: /lan-proxy#x → /lan-proxy)
+  const topicsByModule = useMemo(() => {
+    const map = new Map<string, Topic[]>();
     for (const topic of TOPICS) {
-      const trail = getTrail(topic.group);
-      if (!stats[trail]) stats[trail] = { total: 0, visited: 0 };
-      stats[trail].total++;
-      if (isTopicVisited(topic.href)) stats[trail].visited++;
+      const base = getModuleBase(topic.href);
+      if (!map.has(base)) map.set(base, []);
+      map.get(base)!.push(topic);
+    }
+    return map;
+  }, []);
+
+  // Progresso por trilha (contagem de módulos visitados)
+  const trailStats = useMemo(() => {
+    const stats: Record<TrailTab, { total: number; visited: number }> = {
+      firewall:    { total: 0, visited: 0 },
+      fundamentos: { total: 0, visited: 0 },
+      avancados:   { total: 0, visited: 0 },
+    };
+    for (const [path, meta] of Object.entries(MODULE_META)) {
+      stats[meta.trail].total++;
+      if (isVisited(path)) stats[meta.trail].visited++;
     }
     return stats;
-  }, [isTopicVisited]);
+  }, [isVisited]);
 
-  const filteredTopics = useMemo(() => {
-    return TOPICS.filter(topic => {
-      const matchesSearch = topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           topic.group.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesLayer = activeFilter === 'all' || topic.layerClass === activeFilter;
-      const matchesTrail = activeTrail === 'all' || getTrail(topic.group) === activeTrail;
-      return matchesSearch && matchesLayer && matchesTrail;
+  // Abre/fecha accordion de um módulo
+  const toggleModule = useCallback((slug: string) => {
+    setOpenModules(prev => {
+      const next = new Set(prev);
+      next.has(slug) ? next.delete(slug) : next.add(slug);
+      return next;
     });
-  }, [searchQuery, activeFilter, activeTrail]);
+  }, []);
 
-  const groups = useMemo(() => {
-    const map = new Map<string, Topic[]>();
-    filteredTopics.forEach(topic => {
-      if (!map.has(topic.group)) map.set(topic.group, []);
-      map.get(topic.group)!.push(topic);
-    });
-    return Array.from(map.entries());
-  }, [filteredTopics]);
+  // Resultados de busca (flat, todas as trilhas)
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return null;
+    const q = searchQuery.toLowerCase();
+    return TOPICS.filter(t =>
+      t.title.toLowerCase().includes(q) ||
+      t.layer.toLowerCase().includes(q) ||
+      (MODULE_META[getModuleBase(t.href)]?.label ?? '').toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
-  const completionPercentage = useMemo(() => {
-    // FIX: era 20 — agora bate com TOPICS.length (24 tópicos reais no índice)
-    const totalPages = TOPICS.length;
-    return Math.round((visitedPages.size / totalPages) * 100);
-  }, [visitedPages]);
+  const tc = TRAIL_CONFIG[activeTrail];
+  const ts = trailStats[activeTrail];
+  const pct = ts.total ? Math.round((ts.visited / ts.total) * 100) : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      {/* Breadcrumb */}
       <div className="breadcrumb mb-8">
         <Link href="/">Início</Link>
         <span>/</span>
@@ -247,181 +319,196 @@ export default function TopicsPage() {
       <div className="section-label">Guia Completo</div>
       <h1 className="section-title">Todos os Tópicos</h1>
       <p className="section-sub">
-        {TOPICS.length} tópicos organizados por tema, cobrindo cada camada do Modelo OSI.
-        Cada página traz explicações completas, diagramas de fluxo e blocos de código comentados.
+        {TOPICS.length} tópicos organizados em {Object.keys(MODULE_META).length} módulos.
+        Escolha sua trilha, expanda um módulo para ver os tópicos e clique para ir direto ao conteúdo.
       </p>
 
-      {/* Por onde começar? */}
-      <div className="mb-6">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3">Por onde começar?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { id: 'firewall',    label: '🔥 Trilha Firewall',      href: '/instalacao', borderColor: 'border-accent/50',       hoverBorder: 'hover:border-accent',       barColor: 'bg-accent',   desc: '25 módulos — do zero ao firewall' },
-            { id: 'fundamentos', label: '🐧 Fundamentos Linux',     href: '/fundamentos', borderColor: 'border-[#6366f1]/50',   hoverBorder: 'hover:border-[#6366f1]',   barColor: 'bg-[#6366f1]', desc: '15 módulos — base Linux sólida'  },
-            { id: 'avancados',   label: '🚀 Módulos Avançados',     href: '/avancados',  borderColor: 'border-info/50',          hoverBorder: 'hover:border-info',         barColor: 'bg-info',      desc: '19 módulos — servidores e IaC'   },
-          ].map(trail => {
-            const s = trailStats[trail.id] ?? { total: 0, visited: 0 };
-            const pct = s.total ? Math.round((s.visited / s.total) * 100) : 0;
+      {/* ── Trail tabs ── */}
+      <div role="tablist" className="flex gap-0 border-b border-border mt-10 mb-0">
+        {(Object.entries(TRAIL_CONFIG) as [TrailTab, typeof TRAIL_CONFIG[TrailTab]][]).map(([id, cfg]) => {
+          const s = trailStats[id];
+          return (
+            <button
+              key={id}
+              role="tab"
+              aria-selected={activeTrail === id}
+              onClick={() => setActiveTrail(id)}
+              className={cn(
+                'flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
+                activeTrail === id ? cfg.activeTab : 'border-transparent text-text-2 hover:text-text'
+              )}
+            >
+              {cfg.label}
+              <span className="text-[11px] font-mono opacity-60 tabular-nums">
+                {s.visited}/{s.total}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Trail hero ── */}
+      {!searchQuery && (
+        <div className={cn('flex items-center gap-5 bg-bg-2 border rounded-b-xl rounded-tr-xl p-5 mb-6', tc.color + '/30')}>
+          <div className="flex-1 min-w-0">
+            <div className="font-bold text-sm mb-0.5">{tc.label}</div>
+            <div className="text-xs text-text-3 mb-3">{tc.desc} · {TRAIL_MODULES[activeTrail].length} módulos</div>
+            <div className="h-1.5 bg-border rounded-full overflow-hidden">
+              <div
+                className={cn('h-full rounded-full transition-[width] duration-700', tc.barColor)}
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <div className="text-[11px] text-text-3 mt-1.5">
+              {ts.visited} de {ts.total} módulos visitados · {pct}%
+            </div>
+          </div>
+          <Link
+            href={tc.hrefStart}
+            className="shrink-0 text-xs font-bold px-4 py-2 rounded-lg bg-accent text-white hover:bg-accent/80 transition-colors"
+          >
+            {ts.visited === 0 ? 'Começar →' : ts.visited === ts.total ? 'Revisar →' : 'Continuar →'}
+          </Link>
+        </div>
+      )}
+
+      {/* ── Busca ── */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-3" size={15} />
+        <input
+          type="text"
+          placeholder="Buscar em todos os módulos... (ex: DNS, iptables, SNAT, chmod)"
+          className="w-full bg-bg-2 border border-border rounded-lg py-2.5 pl-9 pr-20 text-sm focus:border-accent outline-none transition-colors"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-text-3 hover:text-text px-2 py-1 rounded hover:bg-bg-3 transition-colors"
+          >
+            ✕ limpar
+          </button>
+        )}
+      </div>
+
+      {/* ── Resultados de busca (flat) ── */}
+      {searchResults ? (
+        <div className="space-y-2">
+          <p className="text-xs text-text-3 mb-4">
+            {searchResults.length} resultado{searchResults.length !== 1 ? 's' : ''} para &ldquo;<strong className="text-text">{searchQuery}</strong>&rdquo;
+          </p>
+          {searchResults.map(topic => {
+            const base = getModuleBase(topic.href);
+            const meta = MODULE_META[base];
             return (
               <Link
-                key={trail.id}
-                href={trail.href}
-                className={`block bg-bg-2 border ${trail.borderColor} ${trail.hoverBorder} rounded-xl p-5 transition-all`}
+                key={topic.id}
+                href={topic.href}
+                className="flex items-start gap-3 p-4 bg-bg-2 border border-border hover:border-accent/50 rounded-xl transition-colors group"
               >
-                <div className="font-bold text-sm mb-1">{trail.label}</div>
-                <div className="text-xs text-text-2 mb-3">{trail.desc}</div>
-                <div className="text-xs text-text-2 mb-1.5">{s.visited}/{s.total} tópicos · {pct}%</div>
-                <div className="h-1.5 bg-border rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${trail.barColor} rounded-full transition-[width] duration-700`}
-                    style={{ width: `${pct}%` }}
-                  />
+                <span className="text-xl mt-0.5 shrink-0">{meta?.icon ?? '📄'}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-text-3 mb-1 font-medium">{meta?.label ?? base}</p>
+                  <p className="text-sm text-text-2 group-hover:text-text transition-colors leading-relaxed">{topic.title}</p>
+                  <span className={cn('layer-badge mt-2', topic.layerClass)}>{topic.layer}</span>
                 </div>
+                {isVisited(base) && <span className="text-ok text-xs font-bold self-center shrink-0">✓</span>}
+                <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center shrink-0" size={14} />
               </Link>
             );
           })}
-        </div>
-      </div>
-
-      {/* Progress Global */}
-      <div className="bg-bg-2 border border-border rounded-xl p-6 mb-12 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-bold text-lg flex items-center gap-2">
-            <span className="text-accent">📊</span> Seu Progresso no Workshop
-          </h3>
-          <span className="text-xs font-mono text-text-3 uppercase tracking-widest">Beta</span>
-        </div>
-        <div className="w-full h-3 bg-bg-3 rounded-full overflow-hidden mb-3">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: `${Math.min(completionPercentage, 100)}%` }}
-            className="h-full bg-gradient-to-r from-ok to-accent"
-          />
-        </div>
-        <div className="flex justify-between text-sm text-text-2">
-          <span>{Math.min(completionPercentage, 100)}% concluído</span>
-          {/* FIX: era hardcoded "20" — agora usa TOPICS.length dinamicamente */}
-          <span>{visitedPages.size} de {TOPICS.length} páginas visitadas</span>
-        </div>
-      </div>
-
-      {/* Search and Filters */}
-      <div className="space-y-4 mb-12">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={18} />
-          <input
-            type="text"
-            placeholder="Buscar tópico, camada ou serviço... (ex: DNS, Camada 4, SNAT)"
-            className="w-full bg-bg-2 border border-border rounded-lg py-3.5 pl-12 pr-4 text-sm focus:border-accent focus:ring-2 focus:ring-accent/10 outline-none transition-all"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        {/* Trail filters */}
-        <div
-          className="flex flex-wrap gap-2"
-          role="radiogroup"
-          aria-label="Filtrar por trilha"
-        >
-          {([
-            { id: 'all' as const,         label: '🗂️ Todas as Trilhas', activeClass: 'bg-accent border-accent text-white' },
-            { id: 'firewall' as const,    label: '🔥 Firewall',          activeClass: 'bg-[#e05a2b] border-[#e05a2b] text-white' },
-            { id: 'fundamentos' as const, label: '🐧 Fundamentos',       activeClass: 'bg-[#6366f1] border-[#6366f1] text-white' },
-            { id: 'avancados' as const,   label: '🚀 Avançados',         activeClass: 'bg-info border-info text-white' },
-          ] satisfies Array<{ id: TopicTrail | 'all'; label: string; activeClass: string }>).map(trail => (
-            <button
-              key={trail.id}
-              role="radio"
-              aria-checked={activeTrail === trail.id}
-              onClick={() => setActiveTrail(trail.id)}
-              className={cn(
-                "px-4 py-2 rounded-full text-xs font-bold transition-all border",
-                activeTrail === trail.id
-                  ? trail.activeClass
-                  : "bg-bg-2 border-border text-text-2 hover:border-accent/50 hover:text-text"
-              )}
-            >
-              {trail.label}
-            </button>
-          ))}
-        </div>
-
-        {/* OSI Layer filters */}
-        <div className="flex flex-wrap gap-2">
-          {[
-            { id: 'all', label: '📚 Todas as Camadas' },
-            { id: 'l7',  label: '📡 Camada 7' },
-            { id: 'l6',  label: '🔒 Camada 6' },
-            { id: 'l5',  label: '🔄 Camada 5' },
-            { id: 'l4',  label: '🔌 Camada 4' },
-            { id: 'l3',  label: '🌐 Camada 3' },
-          ].map(filter => (
-            <button
-              key={filter.id}
-              onClick={() => setActiveFilter(filter.id)}
-              className={cn(
-                "px-4 py-2 rounded-full text-xs font-bold transition-all border",
-                activeFilter === filter.id
-                  ? "bg-accent border-accent text-white"
-                  : "bg-bg-2 border-border text-text-2 hover:border-accent hover:text-accent"
-              )}
-            >
-              {filter.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Topics Grid */}
-      <div className="grid md:grid-cols-2 gap-6">
-        {groups.map(([groupName, topics]) => (
-          <div key={groupName} className="bg-bg-2 border border-border rounded-xl overflow-hidden flex flex-col hover:border-accent/30 transition-colors">
-            <div className="px-5 py-4 border-b border-border bg-bg-3 flex items-center gap-3">
-              <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center text-accent text-lg">
-                {groupName.includes('LAN') ? '💻' : groupName.includes('WAN') ? '🌐' : groupName.includes('DNS') ? '📖' : groupName.includes('Web Server') ? '🖥️' : groupName.includes('nftables') ? '🔥' : groupName.includes('Referência') ? '📚' : groupName.includes('Ambientes') ? '⚡' : '🛡️'}
-              </div>
-              <h3 className="font-bold text-sm">{groupName}</h3>
-              {activeTrail === 'all' && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full border border-border ml-auto text-text-3 font-medium">
-                  {TRAIL_LABEL[getTrail(groupName)]}
-                </span>
-              )}
+          {searchResults.length === 0 && (
+            <div className="text-center py-16 bg-bg-2 border border-dashed border-border rounded-xl">
+              <div className="text-3xl mb-3">🔍</div>
+              <p className="text-text-3">Nenhum tópico encontrado para &ldquo;<strong>{searchQuery}</strong>&rdquo;</p>
             </div>
-            <div className="flex-1 py-2">
-              {topics.map(topic => (
-                <Link
-                  key={topic.id}
-                  href={topic.href}
-                  className="group flex gap-4 px-5 py-4 hover:bg-bg-3 border-l-2 border-transparent hover:border-accent transition-all"
+          )}
+        </div>
+      ) : (
+        /* ── Accordion por módulo ── */
+        <div className="space-y-1.5">
+          {TRAIL_MODULES[activeTrail].map(modulePath => {
+            const meta = MODULE_META[modulePath];
+            if (!meta) return null;
+            const topics = topicsByModule.get(modulePath) ?? [];
+            const visited = isVisited(modulePath);
+            const isOpen = openModules.has(modulePath);
+
+            return (
+              <div
+                key={modulePath}
+                className={cn(
+                  'border rounded-xl overflow-hidden transition-all',
+                  visited ? 'border-ok/25 bg-bg-2' : 'border-border bg-bg-2',
+                  isOpen && 'border-accent/30'
+                )}
+              >
+                {/* Cabeçalho do módulo */}
+                <button
+                  className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-bg-3 transition-colors"
+                  onClick={() => toggleModule(modulePath)}
+                  aria-expanded={isOpen}
                 >
-                  <span className="font-mono text-[10px] text-text-3 bg-bg-3 px-2 py-1 rounded-full h-fit group-hover:bg-accent group-hover:text-white transition-colors">
-                    {topic.num}
+                  <span className="text-base shrink-0">{meta.icon}</span>
+                  <span className={cn('flex-1 text-sm font-semibold leading-snug', visited ? 'text-text' : 'text-text-2')}>
+                    {meta.label}
                   </span>
-                  <div className="flex-1">
-                    <p className="text-sm text-text-2 group-hover:text-text transition-colors leading-relaxed">
-                      {topic.title}
-                    </p>
-                    <span className={cn("layer-badge mt-3", topic.layerClass)}>
-                      {topic.layer}
+                  {topics.length > 0 && (
+                    <span className="text-[10px] text-text-3 font-mono tabular-nums shrink-0">
+                      {topics.length} tópico{topics.length !== 1 ? 's' : ''}
                     </span>
-                  </div>
-                  {isTopicVisited(topic.href) && (
-                    <span className="text-ok text-xs font-bold self-center">✓</span>
                   )}
-                  <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center" size={16} />
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+                  {visited && (
+                    <span className="text-ok text-[11px] font-bold shrink-0 ml-1">✓</span>
+                  )}
+                  <Link
+                    href={modulePath}
+                    onClick={e => e.stopPropagation()}
+                    className="text-[11px] text-accent hover:text-accent-2 font-bold px-2.5 py-1 rounded-lg hover:bg-accent/10 transition-colors shrink-0"
+                  >
+                    Abrir →
+                  </Link>
+                  {topics.length > 0 ? (
+                    isOpen
+                      ? <ChevronDown size={14} className="text-text-3 shrink-0" />
+                      : <ChevronRight size={14} className="text-text-3 shrink-0" />
+                  ) : (
+                    <span className="w-3.5 shrink-0" />
+                  )}
+                </button>
 
-      {groups.length === 0 && (
-        <div className="text-center py-20 bg-bg-2 border border-dashed border-border rounded-xl">
-          <div className="text-4xl mb-4">🔍</div>
-          <h3 className="text-lg font-bold mb-2">Nenhum tópico encontrado</h3>
-          <p className="text-text-3">Tente buscar por outros termos ou limpar os filtros.</p>
+                {/* Lista de tópicos (expandida) */}
+                {isOpen && topics.length > 0 && (
+                  <div className="border-t border-border/60">
+                    {topics.map((topic, idx) => (
+                      <Link
+                        key={topic.id}
+                        href={topic.href}
+                        className={cn(
+                          'flex items-start gap-3 px-4 py-3 hover:bg-bg-3 transition-colors group',
+                          idx > 0 && 'border-t border-border/40'
+                        )}
+                      >
+                        <span className="font-mono text-[10px] text-text-3 bg-bg-3 px-1.5 py-0.5 rounded shrink-0 mt-0.5 group-hover:bg-accent group-hover:text-white transition-colors">
+                          {topic.num}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-text-2 group-hover:text-text transition-colors leading-relaxed">
+                            {topic.title}
+                          </p>
+                          <span className={cn('layer-badge mt-1.5', topic.layerClass)}>
+                            {topic.layer}
+                          </span>
+                        </div>
+                        <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center shrink-0" size={13} />
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
