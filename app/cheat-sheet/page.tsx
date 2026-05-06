@@ -144,6 +144,37 @@ const COMMANDS: Command[] = [
   // Kubernetes avançado
   { id: 'kubectl-rollout', cmd: 'kubectl rollout status deployment/nome -n namespace', desc: 'Aguarda e exibe o progresso de um rolling update até conclusão ou timeout.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
   { id: 'kubectl-undo', cmd: 'kubectl rollout undo deployment/nome -n namespace', desc: 'Reverte o deployment para a revisão anterior. Usar após falha em rolling update.', layer: 'Camada 7', layerClass: 'l7', category: 'Kubernetes' },
+
+  // DNS — 3º comando (Sprint CHEAT-V3)
+  { id: 'dig-trace', cmd: 'dig +trace google.com', desc: 'Rastreia a resolução DNS passo a passo desde os root servers — mostra cada delegação até o autoritativo final.', layer: 'Camada 7', layerClass: 'l7', category: 'DNS' },
+
+  // Proxy — 3º comando (Sprint CHEAT-V3)
+  { id: 'squid-log-tail', cmd: "tail -f /var/log/squid/access.log | awk '{print $3, $7}'", desc: 'Monitora domínios acessados via Squid em tempo real — exibe apenas IP do cliente e URL.', layer: 'Camada 7', layerClass: 'l7', category: 'Proxy' },
+
+  // nftables (Sprint CHEAT-V3)
+  { id: 'nft-list', cmd: 'nft list ruleset', desc: 'Lista todas as tabelas, chains e regras do nftables em formato completo e reutilizável.', layer: 'Camada 4', layerClass: 'l4', category: 'nftables' },
+  { id: 'nft-load', cmd: 'nft -f /etc/nftables.conf', desc: 'Carrega (e valida) as regras do arquivo de configuração atomicamente — tudo ou nada.', layer: 'Camada 4', layerClass: 'l4', category: 'nftables' },
+  { id: 'nft-flush', cmd: 'nft flush ruleset', desc: 'Remove TODAS as regras de todos os tables/chains. Útil antes de carregar uma nova configuração completa.', layer: 'Camada 4', layerClass: 'l4', category: 'nftables' },
+
+  // Traefik (Sprint CHEAT-V3)
+  { id: 'traefik-api', cmd: "curl -s http://localhost:8080/api/http/routers | jq '.[].rule'", desc: 'Lista todas as regras de roteamento ativas no Traefik via API (requer dashboard habilitado).', layer: 'Camada 7', layerClass: 'l7', category: 'Traefik' },
+  { id: 'traefik-logs', cmd: "docker logs traefik 2>&1 | grep -E 'level=error|level=warn' | tail -20", desc: 'Filtra logs de erro e aviso do container Traefik — primeiro passo no diagnóstico de roteamento.', layer: 'Camada 7', layerClass: 'l7', category: 'Traefik' },
+  { id: 'traefik-acme', cmd: 'cat /letsencrypt/acme.json | jq ".le.Certificates[].domain"', desc: 'Lista todos os domínios com certificados Let\'s Encrypt gerenciados pelo Traefik.', layer: 'Camada 7', layerClass: 'l7', category: 'Traefik' },
+
+  // eBPF (Sprint CHEAT-V3)
+  { id: 'bpftrace-exec', cmd: "bpftrace -e 'tracepoint:syscalls:sys_enter_execve { printf(\"%s %s\\n\", comm, str(args->filename)); }'", desc: 'Monitora em tempo real todos os processos criados no sistema via syscall execve — equivalente a um audit log de execução.', layer: 'Camada 7', layerClass: 'l7', category: 'eBPF' },
+  { id: 'bpftool-list', cmd: 'bpftool prog list', desc: 'Lista todos os programas eBPF carregados no kernel com tipo, ID e nome.', layer: 'Camada 4', layerClass: 'l4', category: 'eBPF' },
+  { id: 'cilium-lb', cmd: 'cilium bpf lb list', desc: 'Exibe a tabela de load balancing do Cilium (substituto eBPF do kube-proxy) — mostra VIPs e endpoints.', layer: 'Camada 3', layerClass: 'l3', category: 'eBPF' },
+
+  // SRE (Sprint CHEAT-V3)
+  { id: 'promtool-rules', cmd: 'promtool check rules /etc/prometheus/alert_rules.yml', desc: 'Valida a sintaxe e lógica das alert rules do Prometheus antes de recarregar.', layer: 'Camada 7', layerClass: 'l7', category: 'SRE' },
+  { id: 'amtool-query', cmd: 'amtool alert query --alertmanager.url=http://localhost:9093', desc: 'Lista todos os alertas ativos no Alertmanager com labels e estado.', layer: 'Camada 7', layerClass: 'l7', category: 'SRE' },
+  { id: 'kubectl-hpa', cmd: 'kubectl describe hpa -n namespace', desc: 'Exibe o estado do HPA (autoscaling), métricas atuais vs targets e eventos de scale-up/down.', layer: 'Camada 7', layerClass: 'l7', category: 'SRE' },
+
+  // Service Mesh / Istio (Sprint CHEAT-V3)
+  { id: 'istio-analyze', cmd: 'istioctl analyze -n default', desc: 'Analisa a configuração do Istio no namespace e detecta problemas (VirtualService sem destino, mTLS incorreto etc).', layer: 'Camada 7', layerClass: 'l7', category: 'Service Mesh' },
+  { id: 'istio-status', cmd: 'istioctl proxy-status', desc: 'Verifica se todos os sidecars Envoy estão sincronizados com o istiod (status SYNCED vs STALE).', layer: 'Camada 7', layerClass: 'l7', category: 'Service Mesh' },
+  { id: 'hubble-obs', cmd: 'hubble observe --verdict DROPPED --namespace default', desc: 'Mostra todos os pacotes descartados pelo Cilium no namespace — essencial para debug de NetworkPolicy.', layer: 'Camada 3', layerClass: 'l3', category: 'Service Mesh' },
 ];
 
 const SOS_STEPS: TroubleshootingStep[] = [
@@ -207,7 +238,7 @@ export default function CheatSheetPage() {
     trackPageVisit('cheat-sheet');
   }, [trackPageVisit]);
 
-  const DEVOPS_CATEGORIES   = ['Docker', 'Ansible', 'Kubernetes', 'Terraform', 'CI/CD', 'Monitoring'];
+  const DEVOPS_CATEGORIES   = ['Docker', 'Ansible', 'Kubernetes', 'Terraform', 'CI/CD', 'Monitoring', 'eBPF', 'SRE', 'Service Mesh', 'nftables', 'Traefik'];
   const SERVERS_CATEGORIES  = ['DHCP', 'Samba', 'Apache', 'LDAP', 'Suricata', 'Pi-hole', 'SSH'];
 
   const filteredCommands = COMMANDS.filter(cmd => {
