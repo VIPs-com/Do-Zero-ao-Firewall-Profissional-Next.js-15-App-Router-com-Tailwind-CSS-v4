@@ -286,7 +286,7 @@ export default function VpnIpsecPage() {
               Aprenda os detalhes das fases do IKE e como os algoritmos Diffie-Hellman garantem a troca de chaves.
             </p>
             <button 
-              onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'ipsec-deep') || null)}
+              onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'ipsec-ike-phases') || null)}
               className="w-full flex items-center justify-between p-3 rounded-lg bg-bg-2 border border-border hover:border-accent transition-all group"
             >
               <div className="flex items-center gap-2">

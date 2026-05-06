@@ -9,6 +9,8 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { LayerBadge } from '@/components/ui/LayerBadge';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
+import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 
 const EQUIVALENCIA = [
   {
@@ -51,6 +53,7 @@ const EQUIVALENCIA = [
 export default function NftablesPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'equivalencia'>('conceito');
+  const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
     trackPageVisit('/nftables');
@@ -602,6 +605,26 @@ systemctl status nftables`} />
           </div>
         </div>
       </div>
+
+      {/* ── Mergulho Técnico ── */}
+      <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
+        <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
+        <p className="text-xs text-text-2 leading-relaxed mb-4">
+          Entenda por que o nftables substituiu o iptables — sets nativos, reload atômico e uma única ferramenta para IPv4, IPv6, ARP e bridges.
+        </p>
+        <button
+          onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'nftables-vs-iptables') ?? null)}
+          className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+        >
+          <div className="flex items-center gap-2">
+            <Zap size={14} className="text-accent" />
+            <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">nftables vs iptables — Por que migrar?</span>
+          </div>
+          <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+
+      <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/nftables" />

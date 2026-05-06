@@ -406,7 +406,7 @@ acl negados dstdomain "/etc/squid/negados.txt"
               Aprenda como configurar o SSL Bump para filtrar sites HTTPS sem quebrar o cadeado do navegador.
             </p>
             <button 
-              onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'squid-https') || null)}
+              onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'squid-https-filtering') || null)}
               className="w-full flex items-center justify-between p-3 rounded-lg bg-bg-2 border border-border hover:border-accent transition-all group"
             >
               <div className="flex items-center gap-2">
