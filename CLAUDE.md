@@ -109,7 +109,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 160 (Sprint CONTENT-PIVOTING: +3 ataques + 3 pivoteamento) |
 | Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/59/56/7 |
 | Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
-| searchItems | `src/data/searchItems.ts` | 180 (Sprint SEARCH-V2: +17 para módulos avançados atingirem ≥3 itens) |
+| searchItems | `src/data/searchItems.ts` | 185 (Sprint SEARCH-DIVES: +5 para deep dives Ansible/SRE/eBPF/CI-CD e nftables-vs-iptables) |
 
 ---
 
