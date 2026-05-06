@@ -167,13 +167,13 @@ db2 ansible_host=192.168.1.21
 proxy ansible_host=10.0.0.5
 
 # Variáveis por grupo
-[webservers:vars]
+[webservers${':'}vars]
 ansible_user=deploy
 ansible_python_interpreter=/usr/bin/python3
 http_port=80
 
 # Grupo de grupos
-[producao:children]
+[producao${':'}children]
 webservers
 dbservers`} />
 
@@ -1024,7 +1024,7 @@ web1 ansible_host=192.168.57.10
 [dbservers]
 db1  ansible_host=192.168.57.20
 
-[all:vars]
+[all${':'}vars]
 ansible_user=admin
 ansible_ssh_private_key_file=~/.ssh/id_ed25519
 EOF

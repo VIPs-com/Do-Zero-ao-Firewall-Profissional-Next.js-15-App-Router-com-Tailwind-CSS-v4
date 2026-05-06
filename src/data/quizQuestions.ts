@@ -734,7 +734,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'depends_on: [db]',
       'depends_on: { db: { condition: service_healthy } }',
       'requires: [db]',
-      'wait_for: [db:healthy]',
+      'wait_for: [db: healthy]',
     ],
     correct: 1,
     explanation: 'depends_on com condition: service_healthy aguarda o healthcheck do serviço dependente passar antes de iniciar. "depends_on: [db]" simples aguarda apenas o container iniciar, não o serviço estar pronto — o banco de dados pode ainda estar inicializando.',
