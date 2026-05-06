@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Terminal, Copy, Check, Search, Filter, BookOpen, Shield, Zap, Globe, Lock, Server } from 'lucide-react';
@@ -232,7 +232,17 @@ const SOS_STEPS: TroubleshootingStep[] = [
 export default function CheatSheetPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  type CheatTab = 'commands' | 'workflows' | 'windows' | 'scripts';
+  const [activeTab, setActiveTab] = useState<CheatTab>('commands');
   const { trackPageVisit } = useBadges();
+
+  const handleCopy = useCallback((id: string, text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    });
+  }, []);
 
   useEffect(() => {
     trackPageVisit('cheat-sheet');
@@ -265,6 +275,33 @@ export default function CheatSheetPage() {
       <p className="section-sub">
         Uma coleção dos comandos mais utilizados durante o workshop, organizados por camada OSI e categoria.
       </p>
+
+      {/* Tab bar */}
+      <div role="tablist" className="flex gap-1 border-b border-border mb-8 mt-8">
+        {([
+          { id: 'commands',  label: '⚡ Comandos' },
+          { id: 'workflows', label: '🔄 Workflows' },
+          { id: 'windows',   label: '🪟 Windows↔Linux' },
+          { id: 'scripts',   label: '📜 Scripts & VIM' },
+        ] as const).map(tab => (
+          <button
+            key={tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-accent text-accent'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Tab: Comandos ── */}
+      <div hidden={activeTab !== 'commands'}>
 
       {/* SOS Troubleshooting */}
       <TroubleshootingCard steps={SOS_STEPS} />
@@ -331,12 +368,17 @@ export default function CheatSheetPage() {
                   </h3>
                   <p className="text-sm text-text-2">{cmd.desc}</p>
                 </div>
-                <button 
-                  onClick={() => navigator.clipboard.writeText(cmd.cmd)}
-                  className="flex items-center gap-2 px-4 py-2 bg-bg-3 hover:bg-accent hover:text-white border border-border rounded-lg text-xs font-bold transition-all shrink-0"
+                <button
+                  onClick={() => handleCopy(cmd.id, cmd.cmd)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 border rounded-lg text-xs font-bold transition-all shrink-0",
+                    copiedId === cmd.id
+                      ? "bg-ok/10 border-ok/40 text-ok"
+                      : "bg-bg-3 hover:bg-accent hover:text-white border-border"
+                  )}
                 >
-                  <Copy size={14} />
-                  Copiar
+                  {copiedId === cmd.id ? <Check size={14} /> : <Copy size={14} />}
+                  {copiedId === cmd.id ? 'Copiado!' : 'Copiar'}
                 </button>
               </div>
             </div>
@@ -356,8 +398,13 @@ export default function CheatSheetPage() {
         </p>
       </HighlightBox>
 
+      </div>{/* /Tab: Comandos */}
+
+      {/* ── Tab: Scripts & VIM ── */}
+      <div hidden={activeTab !== 'scripts'}>
+
       {/* VIM Guide */}
-      <div className="mt-12 p-6 rounded-xl bg-bg-2 border border-border">
+      <div className="mt-4 p-6 rounded-xl bg-bg-2 border border-border">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Terminal size={20} className="text-accent" aria-hidden="true" />
           Sobrevivência no Terminal — Guia VIM
@@ -377,8 +424,13 @@ export default function CheatSheetPage() {
         </InfoBox>
       </div>
 
+      </div>{/* /Tab: Scripts & VIM (parte 1 — VIM guide) */}
+
+      {/* ── Tab: Windows↔Linux ── */}
+      <div hidden={activeTab !== 'windows'}>
+
       {/* Windows → Linux: Tabela de Equivalências */}
-      <section id="windows-linux" className="mt-8 p-6 rounded-xl bg-bg-2 border border-border">
+      <section id="windows-linux" className="mt-4 p-6 rounded-xl bg-bg-2 border border-border">
         <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
           <span aria-hidden="true">🪟→🐧</span>
           Windows → Linux — Tabela de Equivalências
@@ -462,8 +514,13 @@ export default function CheatSheetPage() {
         ))}
       </section>
 
+      </div>{/* /Tab: Windows↔Linux */}
+
+      {/* ── Tab: Scripts (continuação) ── */}
+      <div hidden={activeTab !== 'scripts'}>
+
       {/* Scripts para Download */}
-      <div className="mt-8 p-6 rounded-xl bg-bg-2 border border-border">
+      <div className="mt-4 p-6 rounded-xl bg-bg-2 border border-border">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <Terminal size={20} className="text-ok" aria-hidden="true" />
           Scripts do Laboratório
@@ -512,8 +569,13 @@ export default function CheatSheetPage() {
         </div>
       </div>
 
+      </div>{/* /Tab: Scripts & VIM (parte 2 — scripts) */}
+
+      {/* ── Tab: Workflows ── */}
+      <div hidden={activeTab !== 'workflows'}>
+
       {/* DevOps & Infraestrutura Moderna */}
-      <section id="devops" className="mt-8 p-6 rounded-xl bg-bg-2 border border-border">
+      <section id="devops" className="mt-4 p-6 rounded-xl bg-bg-2 border border-border">
         <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
           <Server size={20} className="text-accent" aria-hidden="true" />
           DevOps &amp; Infraestrutura Moderna — Workflows de Referência
@@ -685,6 +747,8 @@ gh secret set DEPLOY_KEY < ~/.ssh/id_ed25519
 gh api repos/:owner/:repo/environments | jq '.environments[].name'`} />
         </div>
       </section>
+
+      </div>{/* /Tab: Workflows */}
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/cheat-sheet" />

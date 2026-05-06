@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Search, ChevronRight } from 'lucide-react';
@@ -29,6 +29,16 @@ const TRAIL_BY_GROUP: Record<string, TopicTrail> = {
 function getTrail(group: string): TopicTrail {
   return TRAIL_BY_GROUP[group] ?? 'firewall';
 }
+
+function getBasePath(href: string): string {
+  return href.split('#')[0].replace(/^\//, '');
+}
+
+const TRAIL_LABEL: Record<TopicTrail, string> = {
+  firewall:    '🔥 Firewall',
+  fundamentos: '🐧 Fundamentos',
+  avancados:   '🚀 Avançados',
+};
 
 const TOPICS: Topic[] = [
   // ── LAN, DNS & Proxy ─────────────────────────────────────────────────────────
@@ -185,6 +195,22 @@ export default function TopicsPage() {
   const [activeTrail, setActiveTrail] = useState<TopicTrail | 'all'>('all');
   const { visitedPages } = useBadges();
 
+  const isTopicVisited = useCallback((href: string): boolean => {
+    const base = getBasePath(href);
+    return visitedPages.has(base) || visitedPages.has('/' + base);
+  }, [visitedPages]);
+
+  const trailStats = useMemo(() => {
+    const stats: Record<string, { total: number; visited: number }> = {};
+    for (const topic of TOPICS) {
+      const trail = getTrail(topic.group);
+      if (!stats[trail]) stats[trail] = { total: 0, visited: 0 };
+      stats[trail].total++;
+      if (isTopicVisited(topic.href)) stats[trail].visited++;
+    }
+    return stats;
+  }, [isTopicVisited]);
+
   const filteredTopics = useMemo(() => {
     return TOPICS.filter(topic => {
       const matchesSearch = topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -224,6 +250,38 @@ export default function TopicsPage() {
         {TOPICS.length} tópicos organizados por tema, cobrindo cada camada do Modelo OSI.
         Cada página traz explicações completas, diagramas de fluxo e blocos de código comentados.
       </p>
+
+      {/* Por onde começar? */}
+      <div className="mb-6">
+        <h2 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3">Por onde começar?</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { id: 'firewall',    label: '🔥 Trilha Firewall',      href: '/instalacao', borderColor: 'border-accent/50',       hoverBorder: 'hover:border-accent',       barColor: 'bg-accent',   desc: '25 módulos — do zero ao firewall' },
+            { id: 'fundamentos', label: '🐧 Fundamentos Linux',     href: '/fundamentos', borderColor: 'border-[#6366f1]/50',   hoverBorder: 'hover:border-[#6366f1]',   barColor: 'bg-[#6366f1]', desc: '15 módulos — base Linux sólida'  },
+            { id: 'avancados',   label: '🚀 Módulos Avançados',     href: '/avancados',  borderColor: 'border-info/50',          hoverBorder: 'hover:border-info',         barColor: 'bg-info',      desc: '19 módulos — servidores e IaC'   },
+          ].map(trail => {
+            const s = trailStats[trail.id] ?? { total: 0, visited: 0 };
+            const pct = s.total ? Math.round((s.visited / s.total) * 100) : 0;
+            return (
+              <Link
+                key={trail.id}
+                href={trail.href}
+                className={`block bg-bg-2 border ${trail.borderColor} ${trail.hoverBorder} rounded-xl p-5 transition-all`}
+              >
+                <div className="font-bold text-sm mb-1">{trail.label}</div>
+                <div className="text-xs text-text-2 mb-3">{trail.desc}</div>
+                <div className="text-xs text-text-2 mb-1.5">{s.visited}/{s.total} tópicos · {pct}%</div>
+                <div className="h-1.5 bg-border rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${trail.barColor} rounded-full transition-[width] duration-700`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Progress Global */}
       <div className="bg-bg-2 border border-border rounded-xl p-6 mb-12 shadow-sm">
@@ -324,6 +382,11 @@ export default function TopicsPage() {
                 {groupName.includes('LAN') ? '💻' : groupName.includes('WAN') ? '🌐' : groupName.includes('DNS') ? '📖' : groupName.includes('Web Server') ? '🖥️' : groupName.includes('nftables') ? '🔥' : groupName.includes('Referência') ? '📚' : groupName.includes('Ambientes') ? '⚡' : '🛡️'}
               </div>
               <h3 className="font-bold text-sm">{groupName}</h3>
+              {activeTrail === 'all' && (
+                <span className="text-[10px] px-2 py-0.5 rounded-full border border-border ml-auto text-text-3 font-medium">
+                  {TRAIL_LABEL[getTrail(groupName)]}
+                </span>
+              )}
             </div>
             <div className="flex-1 py-2">
               {topics.map(topic => (
@@ -343,6 +406,9 @@ export default function TopicsPage() {
                       {topic.layer}
                     </span>
                   </div>
+                  {isTopicVisited(topic.href) && (
+                    <span className="text-ok text-xs font-bold self-center">✓</span>
+                  )}
                   <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center" size={16} />
                 </Link>
               ))}
