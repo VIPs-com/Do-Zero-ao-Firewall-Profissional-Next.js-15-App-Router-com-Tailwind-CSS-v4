@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
@@ -18,6 +18,7 @@ const CHECKLIST_ITEMS = [
 
 export default function SambaPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/samba');
@@ -56,6 +57,31 @@ export default function SambaPage() {
             { label: '\\\\IP\\pasta', sub: 'Windows Explorer ou smbclient no Linux',           icon: <FolderOpen size={14}/>, color: 'border-layer-3/50' },
           ]}
         />
+
+        {/* Tabs de navegação */}
+        <div className="max-w-4xl mx-auto border-b border-border mb-8">
+          <div className="flex gap-2">
+            {[
+              { id: 'conceito',   label: '📁 Instalação & smb.conf' },
+              { id: 'config',     label: '🌐 Firewall & Acesso' },
+              { id: 'exercicios', label: '🔧 Diagnóstico & Exercícios' },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                  activeTab === tab.id
+                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    : 'border-transparent text-text-2 hover:text-text'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {activeTab === 'conceito' && (<>
 
         {/* 1. Instalação */}
         <section className="mb-12">
@@ -188,6 +214,10 @@ sudo systemctl enable smbd nmbd
 sudo ss -tlnp | grep -E "smbd|nmbd"
 sudo ss -ulnp | grep nmbd`} />
         </section>
+
+        </>)}
+
+        {activeTab === 'config' && (<>
 
         {/* 4. Firewall */}
         <section className="mb-12">
@@ -353,6 +383,10 @@ ls -la /srv/samba/privado
             </ol>
           </InfoBox>
         </section>
+
+        </>)}
+
+        {activeTab === 'exercicios' && (<>
 
         {/* Exercícios */}
         <section className="mb-12">
@@ -551,6 +585,8 @@ smbstatus --processes`} />
             </div>
           </div>
         </section>
+
+        </>)}
 
         <ModuleNav currentPath="/samba" order={ADVANCED_ORDER} />
       </div>

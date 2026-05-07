@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Server, Cpu, Layers, CheckCircle, ArrowRight, Terminal, Package, Zap } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -12,6 +12,7 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function LaboratorioPage() {
   const { trackPageVisit, updateChecklist, checklist } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'kvm' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('laboratorio');
@@ -47,6 +48,31 @@ export default function LaboratorioPage() {
         mínimo <strong>8 GB RAM</strong> (4 GB para as VMs + 4 GB para o host) e
         <strong>80 GB de disco</strong> livre. KVM e Proxmox exigem host Linux; VirtualBox roda em qualquer OS.
       </WarnBox>
+
+      {/* Tabs de navegação */}
+      <div className="border-b border-border mt-8 mb-8">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '🧪 VirtualBox & Escolha' },
+            { id: 'kvm',        label: '🔧 KVM / libvirt' },
+            { id: 'exercicios', label: '🖥️ Proxmox & Exercícios' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {activeTab === 'conceito' && (<>
 
       {/* ── Tabela Comparativa ────────────────────────────────────────────────── */}
       <section className="mb-16">
@@ -131,6 +157,10 @@ export default function LaboratorioPage() {
           Ver guia completo de instalação com VirtualBox
         </Link>
       </section>
+
+      </>)}
+
+      {activeTab === 'kvm' && (<>
 
       {/* ── KVM / libvirt ─────────────────────────────────────────────────────── */}
       <section id="kvm" className="mb-16">
@@ -330,6 +360,10 @@ virsh snapshot-revert Firewall snap-base`}
           </button>
         </div>
       </section>
+
+      </>)}
+
+      {activeTab === 'exercicios' && (<>
 
       {/* ── Proxmox ───────────────────────────────────────────────────────────── */}
       <section className="mb-16">
@@ -574,6 +608,8 @@ virsh attach-interface --domain firewall-lab \
           </div>
         </div>
       </div>
+
+      </>)}
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/laboratorio" />

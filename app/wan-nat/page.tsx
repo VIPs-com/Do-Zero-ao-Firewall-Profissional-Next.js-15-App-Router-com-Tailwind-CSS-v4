@@ -31,6 +31,7 @@ const FIREWALL_CHECKLIST = [
 
 export default function WanNatPage() {
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'fundamentos' | 'servicos' | 'diagnostico'>('fundamentos');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -59,8 +60,31 @@ export default function WanNatPage() {
         na fronteira entre esses dois mundos.
       </p>
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'fundamentos', label: '🌐 SNAT & Fundamentos' },
+          { id: 'servicos',    label: '⚙️ Persistência & Serviços' },
+          { id: 'diagnostico', label: '🔬 Diagnóstico & Exercícios' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+          {activeTab === 'fundamentos' && (
+          <div className="space-y-16">
           {/* Section 1: WAN & NAT */}
           <section id="wan-nat">
             <div className="flex items-center gap-3 mb-6">
@@ -214,6 +238,11 @@ export default function WanNatPage() {
             />
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'servicos' && (
+          <div className="space-y-16">
           {/* Section 4: Persistence & Automation */}
           <section id="persistence">
             <div className="flex items-center gap-3 mb-6">
@@ -398,6 +427,11 @@ export default function WanNatPage() {
             </InfoBox>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'diagnostico' && (
+          <div className="space-y-16">
           {/* Section 7: Diagnóstico Avançado */}
           <section id="diagnostico-avancado">
             <div className="flex items-center gap-3 mb-6">
@@ -558,6 +592,8 @@ cat /proc/net/xt_recent/abre-ssh     # Função 5: IPs autorizados ao SSH`} />
               </ul>
             </WarnBox>
           </section>
+          </div>
+          )}
         </div>
 
         <aside className="space-y-6">

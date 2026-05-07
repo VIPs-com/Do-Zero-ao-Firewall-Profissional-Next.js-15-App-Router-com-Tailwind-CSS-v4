@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Package, Network, Database, Lock, Terminal, Settings, CheckCircle2, Circle, Layers, ArrowRight, Server } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
@@ -351,6 +351,7 @@ docker system prune -f`;
 
 export default function DockerComposePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'redes' | 'stack'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/docker-compose');
@@ -462,6 +463,30 @@ docker compose down`}
           </div>
         </section>
 
+        {/* Tabs de navegação */}
+        <div className="flex gap-2 border-b border-border">
+          {[
+            { id: 'conceito', label: '📦 Conceito & yml' },
+            { id: 'redes',    label: '🌐 Redes & Volumes' },
+            { id: 'stack',    label: '🚀 Stack Completa & Exercícios' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === 'conceito' && (
+        <div className="space-y-14">
+
         {/* ── Anatomia ──────────────────────────────────────────────────────── */}
         <section className="space-y-6">
           <div>
@@ -521,6 +546,12 @@ docker compose down`}
             </p>
           </InfoBox>
         </section>
+
+        </div>
+        )}
+
+        {activeTab === 'redes' && (
+        <div className="space-y-14">
 
         {/* ── Redes Declarativas ────────────────────────────────────────────── */}
         <section className="space-y-6">
@@ -627,6 +658,12 @@ docker compose down`}
             </div>
           </InfoBox>
         </section>
+
+        </div>
+        )}
+
+        {activeTab === 'stack' && (
+        <div className="space-y-14">
 
         {/* ── Stack Completa ────────────────────────────────────────────────── */}
         <section className="space-y-6">
@@ -995,6 +1032,9 @@ ls /opt/lab-compose`} />
             </div>
           </div>
         </section>
+
+        </div>
+        )}
 
         <ModuleNav currentPath="/docker-compose" />
       </div>

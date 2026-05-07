@@ -22,6 +22,7 @@ const DNAT_CHECKLIST = [
 
 export default function DnatPage() {
   const [activeDeepDive, setActiveDeepDive] = React.useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = React.useState<'conceito' | 'config' | 'exercicios'>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -59,8 +60,32 @@ export default function DnatPage() {
         ]}
       />
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'conceito',   label: '🔀 DNAT & Fundamentos' },
+          { id: 'config',     label: '⚙️ Múltiplos Serviços' },
+          { id: 'exercicios', label: '🔧 Exercícios & Ref.' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+
+          {activeTab === 'conceito' && (
+          <div className="space-y-16">
           {/* Section 1: How it works */}
           <section id="acesso-externo">
             <div className="flex items-center gap-3 mb-6">
@@ -154,6 +179,11 @@ export default function DnatPage() {
           </section>
 
           {/* Section 4: Múltiplos Serviços */}
+          </div>
+          )}
+
+          {activeTab === 'config' && (
+          <div className="space-y-16">
           <section id="multiplos-servicos">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
@@ -301,6 +331,11 @@ curl -k https://192.168.20.200`} />
             </div>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'exercicios' && (
+          <div className="space-y-16">
           {/* Section 7: Erros Comuns (renumerado — era 5) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
@@ -331,6 +366,10 @@ curl -k https://192.168.20.200`} />
               </ul>
             </WarnBox>
           </section>
+
+          </div>
+          )}
+
         </div>
 
         <aside className="space-y-6">
@@ -418,6 +457,7 @@ curl -k https://192.168.20.200`} />
         onClose={() => setActiveDeepDive(null)}
       />
 
+      {activeTab === 'exercicios' && (<>
       {/* Windows Comparison */}
       <div className="mt-12">
         <WindowsComparisonBox
@@ -543,6 +583,8 @@ kill %1 %2`} />
           </div>
         </div>
       </div>
+
+      </>)}
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/dnat" />

@@ -14,6 +14,7 @@ import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 export default function NginxSslPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('nginx-ssl');
@@ -47,8 +48,32 @@ export default function NginxSslPage() {
         ]}
       />
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'conceito',   label: '🌐 Reverse Proxy & SSL' },
+          { id: 'config',     label: '🔒 Certbot & Headers' },
+          { id: 'exercicios', label: '🔧 Exercícios & Ref.' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+
+          {activeTab === 'conceito' && (
+          <div className="space-y-16">
 
           {/* Section 1: Reverse Proxy */}
           <section id="reverse-proxy">
@@ -142,6 +167,11 @@ export default function NginxSslPage() {
           </section>
 
           {/* Section 3: Certbot — Let's Encrypt para Produção */}
+          </div>
+          )}
+
+          {activeTab === 'config' && (
+          <div className="space-y-16">
           <section id="certbot">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
@@ -278,6 +308,11 @@ certbot renew --force-renewal`}
             </WarnBox>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'exercicios' && (
+          <div className="space-y-16">
           {/* Section 4: Erros Comuns */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
@@ -308,6 +343,9 @@ certbot renew --force-renewal`}
               </ul>
             </WarnBox>
           </section>
+
+          </div>
+          )}
 
         </div>
 
@@ -367,6 +405,7 @@ certbot renew --force-renewal`}
       </div>
 
       {/* Navegação sequencial */}
+      {activeTab === 'exercicios' && (<>
       {/* Windows Comparison */}
       <div className="mt-12">
         <WindowsComparisonBox
@@ -526,6 +565,8 @@ curl -kv https://localhost/ 2>&1 | grep -E "< HTTP|< Strict|< X-Frame"`} />
           <ArrowRight size={14} className="text-text-3 group-hover:text-ok transition-colors" />
         </button>
       </div>
+
+      </>)}
 
       <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
       <ModuleNav currentPath="/nginx-ssl" />

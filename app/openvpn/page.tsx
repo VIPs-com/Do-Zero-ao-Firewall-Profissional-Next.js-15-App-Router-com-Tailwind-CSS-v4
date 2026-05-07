@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Key, Shield, Server, Network, Globe, Lock } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -12,6 +12,7 @@ import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function OpenVPNPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/openvpn');
@@ -44,6 +45,29 @@ export default function OpenVPNPage() {
         </div>
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-6 pt-6 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '🔒 Conceito & PKI' },
+            { id: 'config',     label: '⚙️ Configuração' },
+            { id: 'exercicios', label: '🔧 Troubleshooting & Exercícios' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-10 space-y-12">
 
         {/* FluxoCard */}
@@ -59,6 +83,7 @@ export default function OpenVPNPage() {
           ]}
         />
 
+        {activeTab === 'conceito' && (<>
         {/* Comparação OpenVPN vs WireGuard vs IPSec */}
         <section>
           <h2 className="section-title">OpenVPN vs WireGuard vs IPSec — quando usar cada</h2>
@@ -170,6 +195,9 @@ ls -la pki/issued/ pki/private/`} />
           </InfoBox>
         </section>
 
+        </>)}
+
+        {activeTab === 'config' && (<>
         {/* server.conf */}
         <section>
           <h2 className="section-title">server.conf — Configuração do Servidor</h2>
@@ -433,6 +461,9 @@ curl -s ifconfig.me
 nmcli connection down empresa`}
         />
 
+        </>)}
+
+        {activeTab === 'exercicios' && (<>
         {/* Troubleshooting */}
         <section>
           <h2 className="section-title">Troubleshooting</h2>
@@ -667,6 +698,8 @@ chmod +x /usr/local/bin/gera-cliente.sh
             </div>
           </div>
         </section>
+
+        </>)}
 
         <ModuleNav currentPath="/openvpn" order={ADVANCED_ORDER} />
       </div>

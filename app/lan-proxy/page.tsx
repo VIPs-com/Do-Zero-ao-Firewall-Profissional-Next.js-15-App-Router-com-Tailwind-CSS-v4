@@ -22,6 +22,7 @@ const PROXY_CHECKLIST = [
 
 export default function LanProxyPage() {
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -50,8 +51,32 @@ export default function LanProxyPage() {
         depois abrir a conexão HTTPS. Para navegar na internet, o navegador usa o Squid Proxy.
       </p>
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'conceito',   label: '🔗 Conceito & Fluxo' },
+          { id: 'config',     label: '⚙️ Configuração Squid' },
+          { id: 'exercicios', label: '🔧 Exercícios & Ref.' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+
+          {activeTab === 'conceito' && (
+          <div className="space-y-16">
           {/* Section 1: DNS Access */}
           <section id="cliente-lan">
             <div className="flex items-center gap-3 mb-6">
@@ -145,6 +170,11 @@ export default function LanProxyPage() {
           </section>
 
           {/* Section 3: ACLs */}
+          </div>
+          )}
+
+          {activeTab === 'config' && (
+          <div className="space-y-16">
           <section id="dstdomain">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
@@ -306,6 +336,11 @@ acl negados dstdomain "/etc/squid/negados.txt"
             </div>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'exercicios' && (
+          <div className="space-y-16">
           {/* Section 7: Erros Comuns (renumerado — era 5) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
@@ -336,6 +371,10 @@ acl negados dstdomain "/etc/squid/negados.txt"
               </ul>
             </WarnBox>
           </section>
+
+          </div>
+          )}
+
         </div>
 
         <aside className="space-y-6">
@@ -424,6 +463,7 @@ acl negados dstdomain "/etc/squid/negados.txt"
         onClose={() => setActiveDeepDive(null)}
       />
 
+      {activeTab === 'exercicios' && (<>
       {/* Windows Comparison */}
       <div className="mt-12">
         <WindowsComparisonBox
@@ -551,6 +591,8 @@ sudo grep "DENIED" /var/log/squid/access.log | tail -5`} />
           </div>
         </div>
       </div>
+
+      </>)}
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/lan-proxy" />

@@ -175,6 +175,7 @@ aa-status | grep -A1 "enforce mode"`;
 export default function HardeningPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'apparmor' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/hardening');
@@ -210,8 +211,32 @@ export default function HardeningPage() {
         ]}
       />
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'conceito',   label: '🔐 SSH & sysctl' },
+          { id: 'apparmor',   label: '🛡️ AppArmor' },
+          { id: 'exercicios', label: '🔬 Exercícios & Ref.' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+
+          {activeTab === 'conceito' && (
+          <div className="space-y-16">
 
           {/* ── Seção 1: SSH Hardening ── */}
           <section id="ssh-hardening">
@@ -279,6 +304,12 @@ export default function HardeningPage() {
               </HighlightBox>
             </div>
           </section>
+
+          </div>
+          )}
+
+          {activeTab === 'apparmor' && (
+          <div className="space-y-16">
 
           {/* ── Seção 3: AppArmor ── */}
           <section id="apparmor">
@@ -369,6 +400,16 @@ export default function HardeningPage() {
             <CodeBlock code={VERIFY_ALL} lang="bash" />
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'exercicios' && (
+          <div className="space-y-4 text-sm text-text-2 py-6">
+            <p>Selecione as abas anteriores para ver SSH Hardening, sysctl e AppArmor.</p>
+            <p>Os Exercícios, Erros Comuns e comparativo Windows estão abaixo ↓</p>
+          </div>
+          )}
+
         </div>
 
         {/* ── Sidebar: Checklist ── */}
@@ -436,6 +477,7 @@ export default function HardeningPage() {
         </aside>
       </div>
 
+      {activeTab === 'exercicios' && (<>
       {/* Windows Comparison */}
       <div className="mt-12">
         <WindowsComparisonBox
@@ -599,6 +641,8 @@ grep "\\* " /tmp/lynis-report.txt | head -15`} />
           <ArrowRight size={14} className="text-text-3 group-hover:text-warn transition-colors" />
         </button>
       </div>
+
+      </>)}
 
       <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
       <ModuleNav currentPath="/hardening" />

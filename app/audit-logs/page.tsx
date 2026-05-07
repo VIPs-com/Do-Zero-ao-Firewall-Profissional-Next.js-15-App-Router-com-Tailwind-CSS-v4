@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Terminal, Search, Shield, AlertTriangle, Eye, FileText, Filter, CheckCircle2, Circle, Activity, UserCheck } from 'lucide-react';
 import { StepItem } from '@/components/ui/Steps';
@@ -25,6 +25,7 @@ const AUDIT_CHECKLIST = [
 
 export default function AuditLogsPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
+  const [activeTab, setActiveTab] = useState<'anatomia' | 'forense' | 'exercicios'>('anatomia');
 
   useEffect(() => {
     trackPageVisit('audit-logs');
@@ -51,8 +52,31 @@ export default function AuditLogsPage() {
         Aprenda a ler o que o kernel está dizendo.
       </p>
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'anatomia',   label: '📋 Anatomia & Análise' },
+          { id: 'forense',    label: '🔍 Forense & Port Knocking' },
+          { id: 'exercicios', label: '⚙️ Exercícios & Referência' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+          {activeTab === 'anatomia' && (
+          <div className="space-y-16">
           {/* Section 1: Anatomy of a Log */}
           <section id="anatomia">
             <div className="flex items-center gap-3 mb-6">
@@ -229,6 +253,11 @@ export default function AuditLogsPage() {
             </div>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'forense' && (
+          <div className="space-y-16">
           {/* Section 5: Auditoria Forense — Port Knocking */}
           <section id="forense-knock">
             <div className="flex items-center gap-3 mb-6">
@@ -437,6 +466,11 @@ tail -f /var/log/auditoria/knock.log`} />
             </div>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'exercicios' && (
+          <div className="space-y-16">
           {/* Section 6: Erros Comuns (renumerado — era 4) */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
@@ -467,6 +501,8 @@ tail -f /var/log/auditoria/knock.log`} />
               </ul>
             </WarnBox>
           </section>
+          </div>
+          )}
         </div>
 
         <aside className="space-y-6">

@@ -181,6 +181,7 @@ docker stop web app && docker rm web app`;
 
 export default function DockerPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'redes' | 'exercicios'>('conceito');
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
@@ -219,191 +220,394 @@ export default function DockerPage() {
         ]}
       />
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'conceito',    label: '🐳 Conceito & Drivers' },
+          { id: 'redes',       label: '⚙️ iptables & Segurança' },
+          { id: 'exercicios',  label: '🔧 Exercícios & Ref.' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
 
-          {/* ── Seção 1: Instalação ── */}
-          <section id="instalacao">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
-                <Terminal size={24} />
-              </div>
-              <h2 className="text-2xl font-bold">Instalação e Primeiros Passos</h2>
-            </div>
-
-            <CodeBlock code={DOCKER_INSTALL} lang="bash" />
-
-            <div className="mt-6">
-              <InfoBox title="Como o Docker daemon funciona">
-                O <code>dockerd</code> roda como root e tem acesso total ao iptables. Quando você executa
-                qualquer comando <code>docker run</code> ou <code>docker network</code>, o daemon
-                configura automaticamente as interfaces de rede, rotas e regras iptables necessárias.
-              </InfoBox>
-            </div>
-          </section>
-
-          {/* ── Seção 2: Drivers de rede ── */}
-          <section id="redes">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-layer-3/10 flex items-center justify-center text-layer-3">
-                <Network size={24} />
-              </div>
-              <h2 className="text-2xl font-bold">Drivers de Rede — bridge, host e none</h2>
-            </div>
-
-            <p className="text-text-2 mb-6 leading-relaxed">
-              Docker suporta múltiplos drivers de rede. O <strong>bridge</strong> é o padrão —
-              cria uma interface virtual (<code>docker0</code>) e isola containers via NAT,
-              exatamente como o firewall do laboratório isola a LAN da WAN.
-            </p>
-
-            <div className="grid sm:grid-cols-3 gap-4 mb-8">
-              {[
-                { name: 'bridge', icon: '🌉', desc: 'NAT via iptables. Containers isolados, acessíveis via port mapping. Padrão.', color: 'border-ok/30 bg-ok/5' },
-                { name: 'host', icon: '🖥️', desc: 'Compartilha pilha de rede do host. Sem isolamento. Performance máxima.', color: 'border-warn/30 bg-warn/5' },
-                { name: 'none', icon: '🚫', desc: 'Sem interface de rede. Isolamento total. Útil para jobs de processamento.', color: 'border-border bg-bg-3' },
-              ].map(d => (
-                <div key={d.name} className={`p-4 rounded-xl border ${d.color}`}>
-                  <div className="text-2xl mb-2">{d.icon}</div>
-                  <code className="font-bold text-sm">{d.name}</code>
-                  <p className="text-xs text-text-2 mt-2 leading-relaxed">{d.desc}</p>
+          {activeTab === 'conceito' && (
+            <div className="space-y-16">
+              {/* ── Seção 1: Instalação ── */}
+              <section id="instalacao">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                    <Terminal size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold">Instalação e Primeiros Passos</h2>
                 </div>
-              ))}
+
+                <CodeBlock code={DOCKER_INSTALL} lang="bash" />
+
+                <div className="mt-6">
+                  <InfoBox title="Como o Docker daemon funciona">
+                    O <code>dockerd</code> roda como root e tem acesso total ao iptables. Quando você executa
+                    qualquer comando <code>docker run</code> ou <code>docker network</code>, o daemon
+                    configura automaticamente as interfaces de rede, rotas e regras iptables necessárias.
+                  </InfoBox>
+                </div>
+              </section>
+
+              {/* ── Seção 2: Drivers de rede ── */}
+              <section id="redes">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-layer-3/10 flex items-center justify-center text-layer-3">
+                    <Network size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold">Drivers de Rede — bridge, host e none</h2>
+                </div>
+
+                <p className="text-text-2 mb-6 leading-relaxed">
+                  Docker suporta múltiplos drivers de rede. O <strong>bridge</strong> é o padrão —
+                  cria uma interface virtual (<code>docker0</code>) e isola containers via NAT,
+                  exatamente como o firewall do laboratório isola a LAN da WAN.
+                </p>
+
+                <div className="grid sm:grid-cols-3 gap-4 mb-8">
+                  {[
+                    { name: 'bridge', icon: '🌉', desc: 'NAT via iptables. Containers isolados, acessíveis via port mapping. Padrão.', color: 'border-ok/30 bg-ok/5' },
+                    { name: 'host', icon: '🖥️', desc: 'Compartilha pilha de rede do host. Sem isolamento. Performance máxima.', color: 'border-warn/30 bg-warn/5' },
+                    { name: 'none', icon: '🚫', desc: 'Sem interface de rede. Isolamento total. Útil para jobs de processamento.', color: 'border-border bg-bg-3' },
+                  ].map(d => (
+                    <div key={d.name} className={`p-4 rounded-xl border ${d.color}`}>
+                      <div className="text-2xl mb-2">{d.icon}</div>
+                      <code className="font-bold text-sm">{d.name}</code>
+                      <p className="text-xs text-text-2 mt-2 leading-relaxed">{d.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <CodeBlock code={NETWORK_DRIVERS} lang="bash" />
+              </section>
+
+              {/* ── Seção 3: Bridge customizada ── */}
+              <section id="bridge-custom">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
+                    <Layers size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold">Redes Bridge Customizadas</h2>
+                </div>
+
+                <p className="text-text-2 mb-6 leading-relaxed">
+                  A rede bridge <em>padrão</em> do Docker (<code>docker0</code>) tem uma limitação importante:
+                  containers não se resolvem por nome. Criando uma rede bridge <em>customizada</em>,
+                  o Docker ativa um servidor DNS interno (em <code>127.0.0.11</code>) e containers
+                  se comunicam diretamente pelo nome — sem precisar de IPs fixos.
+                </p>
+
+                <CodeBlock code={BRIDGE_CUSTOM} lang="bash" />
+
+                <div className="mt-6">
+                  <HighlightBox title="💡 Rede customizada vs padrão — a diferença crucial">
+                    Na rede <strong>padrão</strong> (<code>bridge</code>): containers se veem por IP, mas não por nome.
+                    Na rede <strong>customizada</strong>: Docker injeta um resolvedor DNS (<code>127.0.0.11</code>)
+                    — <code>ping web</code> funciona porque Docker resolve &quot;web&quot; para o IP atual do container.
+                    Containers podem reiniciar com IPs diferentes sem quebrar a comunicação.
+                  </HighlightBox>
+                </div>
+              </section>
             </div>
+          )}
 
-            <CodeBlock code={NETWORK_DRIVERS} lang="bash" />
-          </section>
+          {activeTab === 'redes' && (
+            <div className="space-y-16">
+              {/* ── Seção 4: Port mapping = DNAT ── */}
+              <section id="port-mapping">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                    <Shield size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold">Port Mapping é DNAT Automático</h2>
+                </div>
 
-          {/* ── Seção 3: Bridge customizada ── */}
-          <section id="bridge-custom">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
-                <Layers size={24} />
+                <p className="text-text-2 mb-6 leading-relaxed">
+                  Quando você faz <code>docker run -p 8080:80</code>, o Docker daemon executa
+                  internamente o equivalente a um <code>iptables -t nat -A DOCKER ... -j DNAT</code>.
+                  É exatamente o mesmo mecanismo que você configurou manualmente no módulo DNAT —
+                  só que agora o Docker gerencia o ciclo de vida automaticamente.
+                </p>
+
+                <CodeBlock code={PORT_MAPPING} lang="bash" />
+
+                <div className="mt-6">
+                  <InfoBox title="Por que isso importa para o SysAdmin">
+                    Se você tem um firewall (<code>iptables</code>) e instala Docker no mesmo servidor,
+                    o Docker <strong>vai modificar suas regras</strong>. Ele insere chains próprias e
+                    pode abrir portas que você pensava estar bloqueadas. Conhecer esse mecanismo é
+                    essencial para manter a postura de segurança do servidor.
+                  </InfoBox>
+                </div>
+              </section>
+
+              {/* ── Seção 5: Chains do iptables ── */}
+              <section id="iptables-chains">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-layer-4/10 flex items-center justify-center text-layer-4">
+                    <Layers size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold">As 4 Chains do Docker no iptables</h2>
+                </div>
+
+                <CodeBlock code={IPTABLES_CHAINS} lang="bash" />
+
+                <div className="mt-6">
+                  <WarnBox title="⚠️ Docker bypassa regras na chain INPUT e FORWARD">
+                    Por padrão, o Docker adiciona regras que permitem tráfego para containers <em>antes</em>
+                    de suas regras DROP. Isso significa que um container exposto com <code>-p</code>
+                    é acessível de qualquer IP mesmo que você tenha <code>iptables -P INPUT DROP</code>.
+                    A solução é usar a chain <code>DOCKER-USER</code>.
+                  </WarnBox>
+                </div>
+              </section>
+
+              {/* ── Seção 6: DOCKER-USER e Segurança ── */}
+              <section id="docker-user">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                    <Lock size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold">DOCKER-USER — Suas Regras, Respeitadas</h2>
+                </div>
+
+                <p className="text-text-2 mb-6 leading-relaxed">
+                  A chain <code>DOCKER-USER</code> é a única que o Docker daemon <em>nunca</em> modifica
+                  ou limpa. É o lugar correto para colocar regras de firewall que coexistam com Docker.
+                  Também é onde você implementa isolamento adicional entre containers e redes.
+                </p>
+
+                <CodeBlock code={DOCKER_USER} lang="bash" />
+              </section>
+
+              {/* ── Seção 7: Docker Compose ── */}
+              <section id="compose">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-lg bg-layer-6/10 flex items-center justify-center text-layer-6">
+                    <Network size={24} />
+                  </div>
+                  <h2 className="text-2xl font-bold">Docker Compose — Redes Declarativas</h2>
+                </div>
+
+                <p className="text-text-2 mb-4 leading-relaxed">
+                  O <code>docker-compose.yml</code> permite definir topologias de rede complexas de
+                  forma declarativa. O campo <code>internal: true</code> cria redes bridge sem rota
+                  para a internet — ideal para bancos de dados que não devem ter saída WAN.
+                </p>
+
+                <CodeBlock code={COMPOSE_NETWORK} lang="yaml" />
+
+                <div className="mt-6">
+                  <HighlightBox title="💡 Analogia com o laboratório">
+                    A rede <strong>frontend</strong> é sua DMZ — acessível de fora via port mapping.
+                    A rede <strong>backend</strong> com <code>internal: true</code> é sua LAN —
+                    o banco de dados (<code>db</code>) nunca vê a internet.
+                    Mesma arquitetura WAN/DMZ/LAN que você construiu com iptables, mas declarativa.
+                  </HighlightBox>
+                </div>
+              </section>
+
+              {/* ── Verificação Final ── */}
+              <section id="verificacao">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                  <AlertTriangle className="text-warn" />
+                  Verificação Final
+                </h2>
+                <CodeBlock code={VERIFY_DOCKER} lang="bash" />
+              </section>
+            </div>
+          )}
+
+          {activeTab === 'exercicios' && (
+            <div className="space-y-16">
+              {/* Windows Comparison */}
+              <div>
+                <WindowsComparisonBox
+                  windowsLabel="Windows — Docker Desktop / Hyper-V"
+                  linuxLabel="Linux — Docker Engine nativo"
+                  windowsCode={`# Docker Desktop no Windows
+# Requer: WSL2 + Windows 10 v2004+ ou Hyper-V
+
+# Instalar via winget:
+winget install Docker.DockerDesktop
+
+# Docker Desktop usa HyperV ou WSL2 como backend
+# Verificar backend ativo:
+docker info | findstr "Operating System"
+
+# Redes no Windows — diferença importante:
+# bridge network NÃO é acessível do host no Windows
+# (limitação do HyperV networking)
+# Use "host" mode no WSL2 ou exponha via -p
+
+# iptables NÃO existe no Windows — Docker Desktop
+# usa regras do Windows Firewall internamente
+
+# Ver regras de firewall que o Docker criou:
+netsh advfirewall firewall show rule name=all |
+  findstr -i docker
+
+# Equivalente ao docker network inspect:
+docker network ls
+docker network inspect bridge`}
+                  linuxCode={`# Docker Engine no Linux — sem virtualization overhead
+# O daemon roda direto no kernel host
+
+# Instalar o Docker Engine oficial:
+apt install ca-certificates curl gnupg -y
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
+  gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+chmod a+r /etc/apt/keyrings/docker.gpg
+apt install docker-ce docker-ce-cli containerd.io -y
+usermod -aG docker $USER
+
+# Docker cria chains no iptables automaticamente:
+# DOCKER, DOCKER-USER, DOCKER-ISOLATION-STAGE-1/2
+iptables -L -n | grep -E "DOCKER|Chain"
+
+# Regra para bloquear acesso externo ao container:
+# (adicionar na chain DOCKER-USER, não FORWARD!)
+iptables -I DOCKER-USER -i eth0 \\
+  -d 172.17.0.2 -p tcp --dport 6379 -j DROP
+
+# Ver redes Docker:
+docker network ls
+docker network inspect bridge`}
+                />
               </div>
-              <h2 className="text-2xl font-bold">Redes Bridge Customizadas</h2>
-            </div>
 
-            <p className="text-text-2 mb-6 leading-relaxed">
-              A rede bridge <em>padrão</em> do Docker (<code>docker0</code>) tem uma limitação importante:
-              containers não se resolvem por nome. Criando uma rede bridge <em>customizada</em>,
-              o Docker ativa um servidor DNS interno (em <code>127.0.0.11</code>) e containers
-              se comunicam diretamente pelo nome — sem precisar de IPs fixos.
-            </p>
+              {/* ── Exercícios Guiados ── */}
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+                <div className="grid gap-4">
+                  <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                    <p className="font-bold text-sm mb-2">Lab 1 — Rede bridge isolada com DNS interno</p>
+                    <CodeBlock lang="bash" code={`# Criar rede customizada (tem DNS interno!)
+docker network create --driver bridge app-net
 
-            <CodeBlock code={BRIDGE_CUSTOM} lang="bash" />
+# Iniciar dois containers na mesma rede
+docker run -d --name web --network app-net nginx:alpine
+docker run -d --name db  --network app-net redis:alpine
 
-            <div className="mt-6">
-              <HighlightBox title="💡 Rede customizada vs padrão — a diferença crucial">
-                Na rede <strong>padrão</strong> (<code>bridge</code>): containers se veem por IP, mas não por nome.
-                Na rede <strong>customizada</strong>: Docker injeta um resolvedor DNS (<code>127.0.0.11</code>)
-                — <code>ping web</code> funciona porque Docker resolve &quot;web&quot; para o IP atual do container.
-                Containers podem reiniciar com IPs diferentes sem quebrar a comunicação.
-              </HighlightBox>
-            </div>
-          </section>
+# Testar DNS interno — containers se resolvem por nome
+docker exec web ping -c 2 db   # deve funcionar!
+docker exec db  ping -c 2 web  # deve funcionar!
 
-          {/* ── Seção 4: Port mapping = DNAT ── */}
-          <section id="port-mapping">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
-                <Shield size={24} />
+# Limpar
+docker stop web db && docker rm web db
+docker network rm app-net`} />
+                  </div>
+                  <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                    <p className="font-bold text-sm mb-2">Lab 2 — Inspecionar chains do iptables criadas pelo Docker</p>
+                    <CodeBlock lang="bash" code={`# Ver chains criadas pelo Docker
+iptables -L -n | grep -E "^Chain (DOCKER|FORWARD)"
+
+# Iniciar um container com porta exposta
+docker run -d --name nginx-test -p 8080:80 nginx:alpine
+
+# Ver regra DNAT automática criada
+iptables -t nat -L -n | grep 8080
+
+# Proteger Redis de acesso externo (via DOCKER-USER)
+docker run -d --name redis-ext -p 6379:6379 redis:alpine
+iptables -I DOCKER-USER -i eth0 -p tcp --dport 6379 -j DROP
+
+# Testar: acesso externo bloqueado, interno funciona
+docker exec redis-ext redis-cli ping  # OK (interno)
+
+# Limpar
+docker stop nginx-test redis-ext && docker rm nginx-test redis-ext`} />
+                  </div>
+                  <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                    <p className="font-bold text-sm mb-2">Lab 3 — Rede internal (sem acesso externo)</p>
+                    <CodeBlock lang="bash" code={`# Rede interna — containers sem acesso à internet
+docker network create --internal backend-net
+
+# Banco de dados só na rede interna
+docker run -d --name postgres --network backend-net \\
+  -e POSTGRES_PASSWORD=senha postgres:alpine
+
+# App com acesso às duas redes
+docker run -d --name app \\
+  --network backend-net nginx:alpine
+
+# Verificar: postgres não tem rota para internet
+docker exec postgres ping -c 2 8.8.8.8  # deve falhar
+docker exec app ping -c 2 8.8.8.8       # funciona (app não é --internal)
+
+docker stop postgres app && docker rm postgres app
+docker network rm backend-net`} />
+                  </div>
+                </div>
+              </section>
+
+              {/* ── Erros Comuns ── */}
+              <section className="space-y-4">
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
+                </h2>
+                {[
+                  {
+                    err: 'docker: permission denied while trying to connect to the Docker daemon socket',
+                    fix: 'Adicionar o usuário ao grupo docker: sudo usermod -aG docker $USER — sair e entrar novamente na sessão (newgrp docker ou logout/login). Nunca rodar docker com sudo em produção.',
+                  },
+                  {
+                    err: 'Error response from daemon: network not found',
+                    fix: 'Rede foi removida ou o nome está errado. Listar redes: docker network ls. Recriar: docker network create --driver bridge minha-rede. Confirmar que o compose usa o mesmo nome.',
+                  },
+                  {
+                    err: 'Container não consegue acessar outro container pelo nome',
+                    fix: 'Containers na rede bridge padrão (docker0) não têm DNS interno. Criar uma rede bridge customizada: docker network create app-net e conectar ambos os containers. Na rede customizada, o nome do container vira hostname.',
+                  },
+                  {
+                    err: 'Port is already allocated — bind: address already in use',
+                    fix: 'Outra aplicação está usando a porta. Verificar: ss -tuln | grep :80. Parar o serviço conflitante (systemctl stop nginx) ou alterar o mapeamento de porta no docker run (-p 8080:80).',
+                  },
+                ].map(({ err, fix }) => (
+                  <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+                    <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+                    <p className="text-sm text-text-2">✅ {fix}</p>
+                  </div>
+                ))}
+              </section>
+
+              {/* ── Mergulho Técnico ── */}
+              <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
+                <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
+                <p className="text-xs text-text-2 leading-relaxed mb-4">
+                  Entenda como o Docker realmente conecta containers — bridges Linux, iptables DNAT e por que a chain DOCKER-USER existe.
+                </p>
+                <button
+                  onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'docker-networking-internals') ?? null)}
+                  className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
+                >
+                  <div className="flex items-center gap-2">
+                    <Zap size={14} className="text-accent" />
+                    <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">Docker Networking Internals</span>
+                  </div>
+                  <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
-              <h2 className="text-2xl font-bold">Port Mapping é DNAT Automático</h2>
             </div>
-
-            <p className="text-text-2 mb-6 leading-relaxed">
-              Quando você faz <code>docker run -p 8080:80</code>, o Docker daemon executa
-              internamente o equivalente a um <code>iptables -t nat -A DOCKER ... -j DNAT</code>.
-              É exatamente o mesmo mecanismo que você configurou manualmente no módulo DNAT —
-              só que agora o Docker gerencia o ciclo de vida automaticamente.
-            </p>
-
-            <CodeBlock code={PORT_MAPPING} lang="bash" />
-
-            <div className="mt-6">
-              <InfoBox title="Por que isso importa para o SysAdmin">
-                Se você tem um firewall (<code>iptables</code>) e instala Docker no mesmo servidor,
-                o Docker <strong>vai modificar suas regras</strong>. Ele insere chains próprias e
-                pode abrir portas que você pensava estar bloqueadas. Conhecer esse mecanismo é
-                essencial para manter a postura de segurança do servidor.
-              </InfoBox>
-            </div>
-          </section>
-
-          {/* ── Seção 5: Chains do iptables ── */}
-          <section id="iptables-chains">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-layer-4/10 flex items-center justify-center text-layer-4">
-                <Layers size={24} />
-              </div>
-              <h2 className="text-2xl font-bold">As 4 Chains do Docker no iptables</h2>
-            </div>
-
-            <CodeBlock code={IPTABLES_CHAINS} lang="bash" />
-
-            <div className="mt-6">
-              <WarnBox title="⚠️ Docker bypassa regras na chain INPUT e FORWARD">
-                Por padrão, o Docker adiciona regras que permitem tráfego para containers <em>antes</em>
-                de suas regras DROP. Isso significa que um container exposto com <code>-p</code>
-                é acessível de qualquer IP mesmo que você tenha <code>iptables -P INPUT DROP</code>.
-                A solução é usar a chain <code>DOCKER-USER</code>.
-              </WarnBox>
-            </div>
-          </section>
-
-          {/* ── Seção 6: DOCKER-USER e Segurança ── */}
-          <section id="docker-user">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
-                <Lock size={24} />
-              </div>
-              <h2 className="text-2xl font-bold">DOCKER-USER — Suas Regras, Respeitadas</h2>
-            </div>
-
-            <p className="text-text-2 mb-6 leading-relaxed">
-              A chain <code>DOCKER-USER</code> é a única que o Docker daemon <em>nunca</em> modifica
-              ou limpa. É o lugar correto para colocar regras de firewall que coexistam com Docker.
-              Também é onde você implementa isolamento adicional entre containers e redes.
-            </p>
-
-            <CodeBlock code={DOCKER_USER} lang="bash" />
-          </section>
-
-          {/* ── Seção 7: Docker Compose ── */}
-          <section id="compose">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-layer-6/10 flex items-center justify-center text-layer-6">
-                <Network size={24} />
-              </div>
-              <h2 className="text-2xl font-bold">Docker Compose — Redes Declarativas</h2>
-            </div>
-
-            <p className="text-text-2 mb-4 leading-relaxed">
-              O <code>docker-compose.yml</code> permite definir topologias de rede complexas de
-              forma declarativa. O campo <code>internal: true</code> cria redes bridge sem rota
-              para a internet — ideal para bancos de dados que não devem ter saída WAN.
-            </p>
-
-            <CodeBlock code={COMPOSE_NETWORK} lang="yaml" />
-
-            <div className="mt-6">
-              <HighlightBox title="💡 Analogia com o laboratório">
-                A rede <strong>frontend</strong> é sua DMZ — acessível de fora via port mapping.
-                A rede <strong>backend</strong> com <code>internal: true</code> é sua LAN —
-                o banco de dados (<code>db</code>) nunca vê a internet.
-                Mesma arquitetura WAN/DMZ/LAN que você construiu com iptables, mas declarativa.
-              </HighlightBox>
-            </div>
-          </section>
-
-          {/* ── Verificação Final ── */}
-          <section id="verificacao">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <AlertTriangle className="text-warn" />
-              Verificação Final
-            </h2>
-            <CodeBlock code={VERIFY_DOCKER} lang="bash" />
-          </section>
+          )}
 
         </div>
 
@@ -492,176 +696,6 @@ export default function DockerPage() {
             </div>
           </div>
         </aside>
-      </div>
-
-      {/* Windows Comparison */}
-      <div className="mt-12">
-        <WindowsComparisonBox
-          windowsLabel="Windows — Docker Desktop / Hyper-V"
-          linuxLabel="Linux — Docker Engine nativo"
-          windowsCode={`# Docker Desktop no Windows
-# Requer: WSL2 + Windows 10 v2004+ ou Hyper-V
-
-# Instalar via winget:
-winget install Docker.DockerDesktop
-
-# Docker Desktop usa HyperV ou WSL2 como backend
-# Verificar backend ativo:
-docker info | findstr "Operating System"
-
-# Redes no Windows — diferença importante:
-# bridge network NÃO é acessível do host no Windows
-# (limitação do HyperV networking)
-# Use "host" mode no WSL2 ou exponha via -p
-
-# iptables NÃO existe no Windows — Docker Desktop
-# usa regras do Windows Firewall internamente
-
-# Ver regras de firewall que o Docker criou:
-netsh advfirewall firewall show rule name=all |
-  findstr -i docker
-
-# Equivalente ao docker network inspect:
-docker network ls
-docker network inspect bridge`}
-          linuxCode={`# Docker Engine no Linux — sem virtualization overhead
-# O daemon roda direto no kernel host
-
-# Instalar o Docker Engine oficial:
-apt install ca-certificates curl gnupg -y
-install -m 0755 -d /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
-  gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-chmod a+r /etc/apt/keyrings/docker.gpg
-apt install docker-ce docker-ce-cli containerd.io -y
-usermod -aG docker $USER
-
-# Docker cria chains no iptables automaticamente:
-# DOCKER, DOCKER-USER, DOCKER-ISOLATION-STAGE-1/2
-iptables -L -n | grep -E "DOCKER|Chain"
-
-# Regra para bloquear acesso externo ao container:
-# (adicionar na chain DOCKER-USER, não FORWARD!)
-iptables -I DOCKER-USER -i eth0 \\
-  -d 172.17.0.2 -p tcp --dport 6379 -j DROP
-
-# Ver redes Docker:
-docker network ls
-docker network inspect bridge`}
-        />
-      </div>
-
-      {/* ── Exercícios Guiados ── */}
-      <section className="space-y-4">
-        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
-        <div className="grid gap-4">
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 1 — Rede bridge isolada com DNS interno</p>
-            <CodeBlock lang="bash" code={`# Criar rede customizada (tem DNS interno!)
-docker network create --driver bridge app-net
-
-# Iniciar dois containers na mesma rede
-docker run -d --name web --network app-net nginx:alpine
-docker run -d --name db  --network app-net redis:alpine
-
-# Testar DNS interno — containers se resolvem por nome
-docker exec web ping -c 2 db   # deve funcionar!
-docker exec db  ping -c 2 web  # deve funcionar!
-
-# Limpar
-docker stop web db && docker rm web db
-docker network rm app-net`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 2 — Inspecionar chains do iptables criadas pelo Docker</p>
-            <CodeBlock lang="bash" code={`# Ver chains criadas pelo Docker
-iptables -L -n | grep -E "^Chain (DOCKER|FORWARD)"
-
-# Iniciar um container com porta exposta
-docker run -d --name nginx-test -p 8080:80 nginx:alpine
-
-# Ver regra DNAT automática criada
-iptables -t nat -L -n | grep 8080
-
-# Proteger Redis de acesso externo (via DOCKER-USER)
-docker run -d --name redis-ext -p 6379:6379 redis:alpine
-iptables -I DOCKER-USER -i eth0 -p tcp --dport 6379 -j DROP
-
-# Testar: acesso externo bloqueado, interno funciona
-docker exec redis-ext redis-cli ping  # OK (interno)
-
-# Limpar
-docker stop nginx-test redis-ext && docker rm nginx-test redis-ext`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 3 — Rede internal (sem acesso externo)</p>
-            <CodeBlock lang="bash" code={`# Rede interna — containers sem acesso à internet
-docker network create --internal backend-net
-
-# Banco de dados só na rede interna
-docker run -d --name postgres --network backend-net \\
-  -e POSTGRES_PASSWORD=senha postgres:alpine
-
-# App com acesso às duas redes
-docker run -d --name app \\
-  --network backend-net nginx:alpine
-
-# Verificar: postgres não tem rota para internet
-docker exec postgres ping -c 2 8.8.8.8  # deve falhar
-docker exec app ping -c 2 8.8.8.8       # funciona (app não é --internal)
-
-docker stop postgres app && docker rm postgres app
-docker network rm backend-net`} />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Erros Comuns ── */}
-      <section className="space-y-4">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <AlertTriangle size={22} className="text-warn" /> Erros Comuns e Soluções
-        </h2>
-        {[
-          {
-            err: 'docker: permission denied while trying to connect to the Docker daemon socket',
-            fix: 'Adicionar o usuário ao grupo docker: sudo usermod -aG docker $USER — sair e entrar novamente na sessão (newgrp docker ou logout/login). Nunca rodar docker com sudo em produção.',
-          },
-          {
-            err: 'Error response from daemon: network not found',
-            fix: 'Rede foi removida ou o nome está errado. Listar redes: docker network ls. Recriar: docker network create --driver bridge minha-rede. Confirmar que o compose usa o mesmo nome.',
-          },
-          {
-            err: 'Container não consegue acessar outro container pelo nome',
-            fix: 'Containers na rede bridge padrão (docker0) não têm DNS interno. Criar uma rede bridge customizada: docker network create app-net e conectar ambos os containers. Na rede customizada, o nome do container vira hostname.',
-          },
-          {
-            err: 'Port is already allocated — bind: address already in use',
-            fix: 'Outra aplicação está usando a porta. Verificar: ss -tuln | grep :80. Parar o serviço conflitante (systemctl stop nginx) ou alterar o mapeamento de porta no docker run (-p 8080:80).',
-          },
-        ].map(({ err, fix }) => (
-          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
-            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
-            <p className="text-sm text-text-2">✅ {fix}</p>
-          </div>
-        ))}
-      </section>
-
-      {/* ── Mergulho Técnico ── */}
-      <div className="p-6 rounded-xl bg-bg-2 border border-border mb-8">
-        <h3 className="font-bold text-sm text-accent mb-3">🤿 Mergulho Técnico</h3>
-        <p className="text-xs text-text-2 leading-relaxed mb-4">
-          Entenda como o Docker realmente conecta containers — bridges Linux, iptables DNAT e por que a chain DOCKER-USER existe.
-        </p>
-        <button
-          onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'docker-networking-internals') ?? null)}
-          className="w-full flex items-center justify-between p-3 rounded-lg bg-bg border border-border hover:border-accent transition-all group"
-        >
-          <div className="flex items-center gap-2">
-            <Zap size={14} className="text-accent" />
-            <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">Docker Networking Internals</span>
-          </div>
-          <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
-        </button>
       </div>
 
       <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />

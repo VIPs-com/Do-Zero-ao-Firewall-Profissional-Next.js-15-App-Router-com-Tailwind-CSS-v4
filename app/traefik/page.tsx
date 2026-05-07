@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { GitMerge, Globe, Shield, Server, Zap, Lock, Network } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -12,6 +12,7 @@ import { ADVANCED_ORDER } from '@/data/courseOrder';
 
 export default function TraefikPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/traefik');
@@ -43,6 +44,29 @@ export default function TraefikPage() {
         </div>
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="max-w-4xl mx-auto px-6 pt-6 border-b border-border">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '🔀 Conceito & Stack' },
+            { id: 'config',     label: '⚙️ Middlewares & Dashboard' },
+            { id: 'exercicios', label: '🔧 Troubleshooting & Exercícios' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-6 py-10 space-y-12">
 
         {/* FluxoCard */}
@@ -58,6 +82,7 @@ export default function TraefikPage() {
           ]}
         />
 
+        {activeTab === 'conceito' && (<>
         {/* Traefik vs Nginx */}
         <section>
           <h2 className="section-title">Traefik vs Nginx como Proxy Reverso</h2>
@@ -256,6 +281,9 @@ docker compose logs traefik | grep -i "certificate\\|acme\\|tls"
 cat /var/lib/docker/volumes/.../acme.json | python3 -m json.tool | head -50`} />
         </section>
 
+        </>)}
+
+        {activeTab === 'config' && (<>
         {/* Middlewares */}
         <section>
           <h2 className="section-title">Middlewares — Redirect, BasicAuth e Rate Limit</h2>
@@ -481,6 +509,9 @@ labels:
 # http://localhost:8080/dashboard/`}
         />
 
+        </>)}
+
+        {activeTab === 'exercicios' && (<>
         {/* Troubleshooting */}
         <section>
           <h2 className="section-title">Troubleshooting</h2>
@@ -685,6 +716,8 @@ curl -s http://localhost:8080/api/http/services | python3 -m json.tool | grep -A
             </div>
           </div>
         </section>
+
+        </>)}
 
         <ModuleNav currentPath="/traefik" order={ADVANCED_ORDER} />
       </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { ShieldAlert, ShieldCheck, Terminal, Info, AlertTriangle, ArrowRightLeft, Skull, Network, Lock, Eye } from 'lucide-react';
@@ -28,6 +28,7 @@ const ATTACK_CHAIN = [
 
 export default function PivotingPage() {
   const { trackPageVisit, unlockBadge, checklist, updateChecklist } = useBadges();
+  const [activeTab, setActiveTab] = useState<'ataque' | 'defesa' | 'exercicios'>('ataque');
 
   useEffect(() => {
     trackPageVisit('pivoteamento');
@@ -67,8 +68,33 @@ export default function PivotingPage() {
         />
       </div>
 
+      {/* Tabs de navegação */}
+      <div className="border-b border-border mt-10 mb-2">
+        <div className="flex gap-2">
+          {[
+            { id: 'ataque',    label: '🎭 Vetor de Ataque' },
+            { id: 'defesa',    label: '🛡️ Egress & Evasão' },
+            { id: 'exercicios', label: '🔍 Defesa & Exercícios' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_350px] gap-12 mt-12">
-        <div className="space-y-16">
+        <div>
+
+          {activeTab === 'ataque' && (<div className="space-y-16">
 
           {/* 1. O Cenário */}
           <section id="cenario">
@@ -166,6 +192,10 @@ iptables -L FORWARD -n -v | grep -E "DROP|ACCEPT"
               o que o pivoteamento precisa.
             </InfoBox>
           </section>
+
+          </div>)}
+
+          {activeTab === 'defesa' && (<div className="space-y-16">
 
           {/* 3. Egress Filtering */}
           <section id="egress">
@@ -306,6 +336,10 @@ find / -name "authorized_keys" 2>/dev/null | xargs cat
 auditctl -a always,exit -F arch=b64 -S connect -k net-connect`} />
             </div>
           </section>
+
+          </div>)}
+
+          {activeTab === 'exercicios' && (<div className="space-y-16">
 
           {/* 5. Defesa em profundidade */}
           <section id="defesa-profundidade">
@@ -488,6 +522,7 @@ iptables -L FORWARD -n -v --line-numbers`}
               ))}
             </div>
           </section>
+          </div>)}
         </div>
 
         {/* Sidebar */}
@@ -543,6 +578,7 @@ iptables -L FORWARD -n -v --line-numbers`}
         </aside>
       </div>
 
+      {activeTab === 'exercicios' && (<>
       {/* ── Erros Comuns ── */}
       <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
         <h2 className="text-2xl font-bold flex items-center gap-2">
@@ -652,6 +688,8 @@ cat /var/log/pivote-detect.log`} />
           </div>
         </div>
       </div>
+
+      </>)}
 
       <ModuleNav currentPath="/pivoteamento" />
     </div>

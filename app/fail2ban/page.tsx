@@ -118,6 +118,7 @@ grep "Ban" /var/log/fail2ban.log | \\
 export default function Fail2banPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/fail2ban');
@@ -154,8 +155,32 @@ export default function Fail2banPage() {
         ]}
       />
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'conceito',   label: '🛡️ Conceito & Instalação' },
+          { id: 'config',     label: '⚙️ Jails & Monitoramento' },
+          { id: 'exercicios', label: '🔧 Exercícios & Ref.' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+
+          {activeTab === 'conceito' && (
+          <div className="space-y-16">
 
           {/* Section 1: Como funciona */}
           <section id="como-funciona">
@@ -251,6 +276,12 @@ fail2ban-client status sshd`}
             </div>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'config' && (
+          <div className="space-y-16">
+
           {/* Section 3: Jails para Nginx */}
           <section id="nginx">
             <div className="flex items-center gap-3 mb-6">
@@ -319,6 +350,12 @@ fail2ban-client status sshd`}
               ))}
             </div>
           </section>
+
+          </div>
+          )}
+
+          {activeTab === 'exercicios' && (
+          <div className="space-y-16">
 
           {/* Section 5: Erros Comuns */}
           <section id="erros-comuns">
@@ -453,6 +490,9 @@ fail2ban-client status | grep "Jail list" | \\
             </div>
           </section>
 
+          </div>
+          )}
+
         </div>
 
         {/* Sidebar */}
@@ -535,6 +575,7 @@ fail2ban-client status | grep "Jail list" | \\
         </aside>
       </div>
 
+      {activeTab === 'exercicios' && (<>
       {/* ── Exercícios Guiados ── */}
       <div className="space-y-4 mb-8">
         <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
@@ -633,6 +674,8 @@ fail2ban-client status`} />
           <ArrowRight size={14} className="text-text-3 group-hover:text-err transition-colors" />
         </button>
       </div>
+
+      </>)}
 
       <DeepDiveModal dive={activeDeepDive} onClose={() => setActiveDeepDive(null)} />
       {/* Navegação sequencial */}

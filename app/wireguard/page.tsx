@@ -109,6 +109,7 @@ sysctl -p
 export default function WireGuardPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'diagnostico'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/wireguard');
@@ -145,8 +146,31 @@ export default function WireGuardPage() {
         ]}
       />
 
+      {/* Tabs de navegação */}
+      <div className="flex gap-2 mb-10 border-b border-border">
+        {[
+          { id: 'conceito',    label: '🔒 Conceito & Chaves' },
+          { id: 'config',      label: '⚙️ Configuração' },
+          { id: 'diagnostico', label: '🔧 Diagnóstico & Exercícios' },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+              activeTab === tab.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-2 hover:text-text'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-16">
+        <div>
+          {activeTab === 'conceito' && (
+          <div className="space-y-16">
 
           {/* Section 1: Comparativo */}
           <section id="comparativo">
@@ -230,6 +254,11 @@ export default function WireGuardPage() {
             </div>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'config' && (
+          <div className="space-y-16">
           {/* Section 3: Servidor */}
           <section id="servidor">
             <div className="flex items-center gap-3 mb-6">
@@ -339,6 +368,11 @@ systemctl enable wg-quick@wg0  # inicia no boot`}
             </div>
           </section>
 
+          </div>
+          )}
+
+          {activeTab === 'diagnostico' && (
+          <div className="space-y-16">
           {/* Section 6: Erros Comuns */}
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
@@ -466,6 +500,8 @@ wg show wg0 public-key   # deve bater com PublicKey do [Peer] no servidor`} />
             </div>
           </section>
 
+          </div>
+          )}
         </div>
 
         {/* Sidebar */}

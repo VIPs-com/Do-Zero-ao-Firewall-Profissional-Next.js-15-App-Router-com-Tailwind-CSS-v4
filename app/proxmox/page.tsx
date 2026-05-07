@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Server, Shield, Database, Zap, CheckCircle, ExternalLink, GitFork } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -12,6 +12,7 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 
 export default function ProxmoxPage() {
   const { trackPageVisit, updateChecklist, checklist, unlockBadge } = useBadges();
+  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('proxmox');
@@ -40,6 +41,31 @@ export default function ProxmoxPage() {
       <p className="section-sub">
         A plataforma de virtualização empresarial em código aberto. Mesmo hypervisor usado em data centers reais — aprenda o padrão do mercado.
       </p>
+
+      {/* Tabs de navegação */}
+      <div className="border-b border-border mt-8 mb-8">
+        <div className="flex gap-2">
+          {[
+            { id: 'conceito',   label: '🖥️ Instalação & Rede' },
+            { id: 'config',     label: '⚙️ VMs & Snapshots' },
+            { id: 'exercicios', label: '🔗 Cluster & Exercícios' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                activeTab === tab.id
+                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  : 'border-transparent text-text-2 hover:text-text'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {activeTab === 'conceito' && (<>
 
       {/* ── Por que Proxmox ───────────────────────────────────────────────────── */}
       <section className="mb-16">
@@ -215,6 +241,10 @@ ip addr show vmbr2`}
         </button>
       </section>
 
+      </>)}
+
+      {activeTab === 'config' && (<>
+
       {/* ── Criando VMs ───────────────────────────────────────────────────────── */}
       <section className="mb-16">
         <h2 className="text-2xl font-bold mb-6">4. Criando as VMs do Laboratório</h2>
@@ -362,6 +392,10 @@ qmrestore /var/lib/vz/dump/vzdump-qemu-100-*.vma.gz 200`}
           {checklist['proxmox-snapshot'] ? 'Snapshot tirado e rollback testado ✓' : 'Snapshot criado e rollback funcionando'}
         </button>
       </section>
+
+      </>)}
+
+      {activeTab === 'exercicios' && (<>
 
       {/* ── Cluster básico ────────────────────────────────────────────────────── */}
       <section id="cluster" className="mb-16">
@@ -611,6 +645,8 @@ cat /var/log/pve/tasks/active`} />
           </div>
         </div>
       </div>
+
+      </>)}
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/proxmox" />
