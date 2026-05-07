@@ -1,16 +1,35 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, XCircle, RefreshCw, Award, ChevronRight, ChevronLeft, Trophy, Search, Circle } from 'lucide-react';
+import { CheckCircle2, XCircle, RefreshCw, Award, ChevronRight, ChevronLeft, Trophy, Search, BookOpen, History, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { QUIZ_QUESTIONS, type QuizQuestion, type QuizTrail } from '@/data/quizQuestions';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 
 /* Sprint F — perguntas extraídas para src/data/quizQuestions.ts (reduz o bundle da rota /quiz). */
-/* Sprint QUIZ-TRAIL — filtro por trilha na tela de início. */
+/* Sprint QUIZ-TRAIL — filtro por trilha na tela de início.                                       */
+/* Sprint QUIZ-v2 — explicação inline, histórico de sessões (últimas 3), revisão de erros.        */
+
+/* ── localStorage ────────────────────────────────────────────────────────────── */
+const LS_HISTORY  = 'workshop-quiz-history';   // SessionRecord[] (max 3)
+const LS_WRONG    = 'workshop-quiz-wrong-ids'; // number[] — índices em QUIZ_QUESTIONS
+
+interface SessionRecord {
+  date: string;
+  score: number;
+  total: number;
+  percentage: number;
+  trail: string;
+  sessionSize: number | string;
+}
+
+function safeReadLS<T>(key: string, fallback: T): T {
+  try { return JSON.parse(localStorage.getItem(key) ?? 'null') ?? fallback; }
+  catch { return fallback; }
+}
 
 const TRAIL_OPTIONS: Array<{ value: QuizTrail | 'all'; label: string; count: number; color: string }> = [
   { value: 'all',         label: 'Todas as Trilhas', count: QUIZ_QUESTIONS.length,                                         color: 'border-accent text-accent' },
@@ -45,6 +64,9 @@ export default function QuizPage() {
   const [showResult, setShowResult] = useState(false);
   // QUESTIONS é definido no handleStart — embaralhado + fatiado por sessão
   const [QUESTIONS, setQUESTIONS] = useState<QuizQuestion[]>([]);
+  // QUIZ-v2: histórico e erros
+  const [sessionHistory, setSessionHistory] = useState<SessionRecord[]>([]);
+  const [wrongCount, setWrongCount] = useState(0);
   const { updateQuizScore, trackPageVisit } = useBadges();
 
   // Contagem de preview para a tela de início (não embaralhado)
@@ -57,6 +79,9 @@ export default function QuizPage() {
 
   useEffect(() => {
     trackPageVisit('quiz');
+    // Carrega histórico e contagem de erros do localStorage
+    setSessionHistory(safeReadLS<SessionRecord[]>(LS_HISTORY, []));
+    setWrongCount((safeReadLS<number[]>(LS_WRONG, [])).length);
   }, [trackPageVisit]);
 
   const handleStart = () => {
@@ -88,14 +113,42 @@ export default function QuizPage() {
 
   const percentage = Math.round((score / QUESTIONS.length) * 100);
 
-  const finishQuiz = () => {
+  const finishQuiz = useCallback(() => {
     setShowResult(true);
     // updateQuizScore() já dispara o useEffect no BadgeContext que desbloqueia
     // 'quiz-beginner' (>0), 'quiz-expert' (≥80) e 'quiz-master' (===100).
-    // Não precisa chamar unlockBadge aqui — evita duplicidade.
     updateQuizScore(percentage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+
+    // ── QUIZ-v2: salva questões erradas ──────────────────────────────────
+    const wrongTexts = new Set(
+      QUESTIONS.filter((q, i) => answers[i] !== q.correct).map(q => q.text)
+    );
+    const wrongIds = QUIZ_QUESTIONS
+      .map((q, i) => (wrongTexts.has(q.text) ? i : -1))
+      .filter(i => i >= 0);
+    localStorage.setItem(LS_WRONG, JSON.stringify(wrongIds));
+    setWrongCount(wrongIds.length);
+
+    // ── QUIZ-v2: salva sessão no histórico (max 3) ───────────────────────
+    const trailLabel =
+      selectedTrail === 'all'         ? '🗂️ Todas'
+      : selectedTrail === 'firewall'  ? '🔥 Firewall'
+      : selectedTrail === 'fundamentos' ? '🐧 Fundamentos'
+      : '🚀 Avançados';
+    const record: SessionRecord = {
+      date: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+      score,
+      total: QUESTIONS.length,
+      percentage,
+      trail: trailLabel,
+      sessionSize: sessionSize === 'all' ? 'todas' : sessionSize,
+    };
+    const prev = safeReadLS<SessionRecord[]>(LS_HISTORY, []);
+    const next = [record, ...prev].slice(0, 3);
+    localStorage.setItem(LS_HISTORY, JSON.stringify(next));
+    setSessionHistory(next);
+  }, [percentage, score, QUESTIONS, answers, selectedTrail, sessionSize, updateQuizScore]);
 
   const resetQuiz = () => {
     setAnswers({});
@@ -105,6 +158,18 @@ export default function QuizPage() {
     setQUESTIONS([]);
     // não reseta selectedTrail nem sessionSize — o usuário pode querer repetir a mesma configuração
   };
+
+  /** QUIZ-v2: inicia sessão de revisão usando apenas as questões erradas da última sessão */
+  const handleReview = useCallback(() => {
+    const wrongIds = safeReadLS<number[]>(LS_WRONG, []);
+    if (wrongIds.length === 0) return;
+    const pool = QUIZ_QUESTIONS.filter((_, i) => wrongIds.includes(i));
+    setQUESTIONS(shuffleArray([...pool]));
+    setCurrentIdx(0);
+    setAnswers({});
+    setShowResult(false);
+    setStarted(true);
+  }, []);
 
   if (!started) {
     return (
@@ -169,6 +234,37 @@ export default function QuizPage() {
             </div>
           </div>
 
+          {/* Histórico das últimas sessões */}
+          {sessionHistory.length > 0 && (
+            <div className="mb-6 text-left">
+              <div className="text-xs font-bold uppercase tracking-widest text-text-3 mb-2 flex items-center gap-1.5">
+                <History size={12} /> Últimas sessões
+              </div>
+              <div className="space-y-1.5">
+                {sessionHistory.map((s, i) => (
+                  <div key={i} className="flex items-center justify-between bg-bg-3 rounded-lg px-3 py-2 text-xs">
+                    <span className="text-text-3">{s.trail} · {s.sessionSize}q · {s.date}</span>
+                    <span className={cn(
+                      'font-bold',
+                      s.percentage >= 80 ? 'text-ok' : s.percentage >= 50 ? 'text-warn' : 'text-err'
+                    )}>{s.percentage}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Botão revisar erros */}
+          {wrongCount > 0 && (
+            <button
+              onClick={handleReview}
+              className="w-full py-3 mb-3 rounded-xl border-2 border-warn/40 text-warn hover:border-warn hover:bg-warn/5 transition-all flex items-center justify-center gap-2 text-sm font-semibold"
+            >
+              <RotateCcw size={16} />
+              Revisar {wrongCount} erro{wrongCount !== 1 ? 's' : ''} da última sessão
+            </button>
+          )}
+
           <button
             onClick={handleStart}
             aria-label="Começar Quiz"
@@ -203,10 +299,19 @@ export default function QuizPage() {
               : '📚 Bom trabalho! Recomendamos revisar os tópicos onde houve dúvidas para solidificar seu conhecimento.'}
           </p>
 
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-3">
+            {wrongCount > 0 && (
+              <button
+                onClick={handleReview}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-warn/50 text-warn hover:border-warn hover:bg-warn/5 transition-all text-sm font-semibold"
+              >
+                <RotateCcw size={17} />
+                Revisar {wrongCount} erro{wrongCount !== 1 ? 's' : ''}
+              </button>
+            )}
             <button onClick={resetQuiz} className="btn-outline">
               <RefreshCw size={18} />
-              Refazer Quiz
+              Novo Quiz
             </button>
             <Link href="/certificado" className="btn-primary">
               <Award size={18} />
@@ -338,20 +443,29 @@ export default function QuizPage() {
             })}
           </div>
 
-          {/* Chip de feedback instantâneo */}
+          {/* Chip de feedback instantâneo + explicação inline (QUIZ-v2) */}
           {hasAnswered && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               className={cn(
-                "mt-4 p-3 rounded-lg flex items-center gap-3 text-sm font-medium",
-                isCorrect ? "bg-ok/10 border border-ok/30 text-ok" : "bg-err/10 border border-err/30 text-err"
+                "mt-4 p-3 rounded-lg border text-sm font-medium",
+                isCorrect ? "bg-ok/10 border-ok/30 text-ok" : "bg-err/10 border-err/30 text-err"
               )}
             >
-              {isCorrect
-                ? <><CheckCircle2 size={18} /> <span>Correto! ✓</span></>
-                : <><XCircle size={18} /> <span>Resposta correta: <strong>{currentQuestion.options[currentQuestion.correct]}</strong></span></>
-              }
+              <div className="flex items-center gap-3">
+                {isCorrect
+                  ? <><CheckCircle2 size={18} className="shrink-0" /> <span>Correto! ✓</span></>
+                  : <><XCircle size={18} className="shrink-0" /> <span>Resposta correta: <strong>{currentQuestion.options[currentQuestion.correct]}</strong></span></>
+                }
+              </div>
+              {/* Explicação imediata (apenas quando errou) */}
+              {!isCorrect && currentQuestion.explanation && (
+                <div className="mt-2 pt-2 border-t border-err/20 flex items-start gap-1.5 text-xs text-text-2 font-normal leading-relaxed">
+                  <BookOpen size={12} className="shrink-0 mt-0.5 text-err/60" />
+                  <span>{currentQuestion.explanation}</span>
+                </div>
+              )}
             </motion.div>
           )}
 
