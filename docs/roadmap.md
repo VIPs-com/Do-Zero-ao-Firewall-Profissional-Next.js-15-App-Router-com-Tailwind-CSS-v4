@@ -884,6 +884,47 @@ Sprint UX-TABS-3 ✅ Navegação por 3 abas em 19 páginas restantes (100% cober
   ├── Fix openvpn: closing </>)} antes de <ModuleNav> que estava ausente
   └── 100% de cobertura de abas em TODAS as páginas extensas · lint ✓ · 57 testes · 71/71 build ✓
 
+Sprint QUIZ-v2 ✅ 3 melhorias de UX no quiz (app/quiz/page.tsx)
+  ├── (1) Explicação inline: ao errar, q.explanation aparece no chip de feedback
+  │   (ícone BookOpen, border-t separador, text-xs text-text-2)
+  ├── (2) Histórico de sessões: últimas 3 sessões em workshop-quiz-history
+  │   (date/score/total/percentage/trail/sessionSize), mini-cards na tela inicial,
+  │   cor ok/warn/err por percentagem, carregados via safeReadLS helper
+  ├── (3) Revisão de erros: questões erradas mapeadas para índices em QUIZ_QUESTIONS,
+  │   salvas em workshop-quiz-wrong-ids; botão "Revisar X erros" na tela inicial e resultado
+  │   (RotateCcw icon, border-warn); handleReview() com useCallback filtra e inicia sessão
+  ├── finishQuiz convertido para useCallback; imports: BookOpen, History, RotateCcw
+  └── lint ✓ · 57 testes ✓ (zero mudanças em constantes de badge/checkpoint)
+
+Sprint Advanced-E2E ✅ Spec E2E para trilha avançada (e2e/11-advanced-trail.spec.ts)
+  ├── 6 casos espelhando 10-fundamentos-trail.spec.ts:
+  │   índice /avancados (3 fases), rastreamento visita /dhcp,
+  │   badge advanced-master seeded no dashboard,
+  │   ModuleNav /dhcp (sem Anterior, Próximo→/samba),
+  │   ModuleNav /ebpf-avancado (Anterior→/nextcloud, sem Próximo),
+  │   desbloqueio badge via seed 19 paths visitados
+  ├── Fix 10-fundamentos-trail.spec.ts: contador 1/154 → 1/160 (checklistItemsCount)
+  ├── tsconfig.json: .next/dev adicionado ao exclude (fix erro TS Turbopack dev server)
+  │   .next/dev/types/**/*.ts removido do include para evitar TS1434/TS1128
+  └── Total E2E: 11 specs (10 spec files + fixtures) · lint ✓ · 57 testes ✓
+
+Sprint CHEAT-v4 ✅ Cheat Sheet Interativo (app/cheat-sheet/page.tsx)
+  ├── (1) Filtro de trilha: 4 botões Todas/Firewall/Fundamentos/Avançados (activeTrail state)
+  │   cmdTrail() module-level mapeia categorias:
+  │     AVANCADOS: Docker/Ansible/K8s/Terraform/CI-CD/Monitoring/eBPF/SRE/ServiceMesh/Traefik/Suricata
+  │     FUNDAMENTOS: DHCP/Samba/Apache/LDAP/Pi-hole/SSH/systemd/Logs
+  │     resto = firewall
+  │   filtros de trilha e camada OSI são independentes (AND logic)
+  ├── (2) Contador: pill "X / 97 comandos" atualizado em tempo real
+  ├── (3) Scroll spy: IntersectionObserver (rootMargin -20%/-60%) monitora
+  │   5 seções de workflow (wf-docker/wf-ansible/wf-kubectl/wf-terraform/wf-cicd)
+  │   activeWorkflowSection state atualizado conforme seção visível
+  ├── (4) Mini-TOC: nav com 5 links de âncora no topo da aba Workflows
+  │   link ativo com bg-accent; smooth scroll via scrollIntoView
+  │   cada seção com scroll-mt-20 para offset do sticky header
+  ├── Fix: ID duplicado nft-list renomeado para nft-list-fw (categoria Firewall)
+  └── lint ✓ · 57 testes ✓ · zero mudanças em constantes de badge/checkpoint
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

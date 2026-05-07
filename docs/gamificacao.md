@@ -217,7 +217,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
   // Sprint SSH-PROXY — SSH como Proxy SOCKS (3)
   'ssh-dinamico', 'ssh-local', 'ssh-jump',
 ]
-// Total: 154 checkpoints
+// Total: 160 checkpoints
 ```
 
 ---
@@ -246,8 +246,8 @@ button > svg.text-ok {
 ## Linux Ninja — Threshold
 
 ```typescript
-// 75% de 142 checkpoints = 106 (floor)
-if (Object.values(checklist).filter(v => v).length >= 106) unlockBadge('linux-ninja');
+// 75% de 160 checkpoints = 120 (floor)
+if (Object.values(checklist).filter(v => v).length >= 120) unlockBadge('linux-ninja');
 ```
 
 ---
