@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev --port=3000",
+    "dev": "node --max-old-space-size=4096 node_modules/next/dist/bin/next dev --port=3000",
+    "dev:clean": "node -e \"require('fs').rmSync('.next/dev',{recursive:true,force:true})\" && node --max-old-space-size=4096 node_modules/next/dist/bin/next dev --port=3000",
     "build": "next build",
     "start": "next start --port=3000",
     "lint": "tsc --noEmit",
