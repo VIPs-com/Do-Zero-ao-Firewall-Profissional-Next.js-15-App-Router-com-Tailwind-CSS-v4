@@ -147,7 +147,7 @@ export default function DashboardPage() {
           {/* Hero Section */}
           <div className="bg-gradient-to-br from-bg-2 to-accent-bg/10 border border-border rounded-2xl p-8 relative overflow-hidden">
             <div className="relative z-10">
-              <h1 className="text-3xl font-bold mb-2">Olá, Administrador! 🧑</h1>
+              <h1 className="text-3xl font-bold mb-2">Olá, Administrador! 🐧</h1>
               <p className="text-text-2 mb-6">Aqui está o resumo da sua jornada rumo ao Firewall Profissional.</p>
 
               <div className="flex items-center gap-6">

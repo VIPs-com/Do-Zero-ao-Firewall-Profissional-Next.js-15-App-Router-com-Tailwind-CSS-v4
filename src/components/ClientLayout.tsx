@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Sun, Moon, Search, Terminal } from 'lucide-react';
+import { Menu, X, Sun, Moon, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { ProgressDropdown } from './ui/ProgressDropdown';
@@ -118,8 +118,8 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 font-bold text-lg shrink-0">
-            <div className="w-8 h-8 bg-accent rounded flex items-center justify-center text-white">
-              <Terminal size={18} />
+            <div className="w-8 h-8 bg-accent rounded flex items-center justify-center text-white text-lg leading-none">
+              🐧
             </div>
             <span className="hidden sm:inline">Workshop Linux</span>
           </Link>
@@ -233,7 +233,7 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
           {/* Coluna 1 — Brand */}
           <div className="space-y-4">
             <Link href="/" className="inline-flex items-center gap-2 group">
-              <Terminal size={20} className="text-accent" />
+              <span className="text-xl leading-none" aria-hidden="true">🐧</span>
               <span className="font-bold text-text group-hover:text-accent transition-colors">Workshop Linux</span>
             </Link>
             <p className="text-xs text-text-3 leading-relaxed">
