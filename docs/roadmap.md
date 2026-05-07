@@ -646,6 +646,244 @@ Sprint SSH-PROXY ✅ SSH como Proxy SOCKS (/ssh-proxy) — v3.0 COMPLETA
   ├── checklistItemsCount 151→154 · totalTopics 82→83 · CONTENT_PAGES_COUNT 47→48
   └── /evolucao v3.0: 10 disponíveis · 0 em breve ✅
 
+Sprint Quiz Completo ✅ Cobertura de ≥3 questões por módulo
+  ├── +17 perguntas para módulos com apenas 2 questões (F5, F7, I.7-I.13, I.15, I.17-I.24)
+  └── Total quiz: 108→122 perguntas (todos os módulos com ≥3 questões)
+
+Sprint Quiz Fundamentos F1-F10 ✅ Trilha Fundamentos com zero cobertura
+  ├── +30 perguntas — 3 por módulo: FHS, Comandos, Editores, Processos, Permissões,
+  │   Discos, Logs Básicos, Backup, Shell Script, Cron
+  └── Total quiz: 122→152 perguntas
+
+Sprint Polish-Stale ✅ Referências "10 módulos" → "15 módulos" Fundamentos
+  ├── app/page.tsx hero, app/cron/page.tsx checkpoint
+  ├── src/data/courseOrder.ts comment, src/lib/seo.ts description
+  └── Sem mudanças em constantes de código
+
+Sprint Counter-Sync + Evolucao Fix ✅ Sincronização de contadores
+  ├── totalTopics 84→85 (TOPICS.length confirmado = 85, inclui s08 SSH Proxy + sub-entries 27b/47b)
+  ├── Home stats '84'→'85' e "84 tópicos" → "85 tópicos"
+  ├── /evolucao: "Roadmap em 3 fases" → "4 fases (v2.0→v5.0)"
+  └── Botão "Me avise sobre v3.0" → "Me avise sobre novos módulos" (v3.0 COMPLETO)
+
+Sprint Advanced-Trail ✅ Trilha Avançada com 19 módulos
+  ├── ADVANCED_ORDER (19 módulos v3.0→v5.0) em courseOrder.ts
+  ├── Badge 🌐 advanced-master (56º — visitar todos os 19 módulos avançados)
+  ├── Seção "Módulos Avançados" no dashboard com barra de progresso + grid de módulos
+  ├── MILESTONE_BADGES inclui advanced-master
+  ├── home stats badges 55→56
+  ├── +6 novos testes vitest para ADVANCED_ORDER (57 testes total)
+  └── E2E 07-dashboard-counters 0/55→0/56
+
+Sprint Advanced-Nav ✅ ModuleNav em todos os módulos avançados
+  ├── ModuleNav estendido para aceitar SimpleModule[] (prev/next derivados do índice)
+  ├── ModuleNav adicionado em todos os 19 módulos avançados
+  └── Fix de import mislocado em monitoring/page.tsx
+
+Sprint PROGRESS-DROPDOWN ✅ ProgressDropdown com 3 abas
+  ├── 3 abas: Firewall (25 módulos) / Fundamentos (15) / Avançados (19)
+  ├── Botão exibe total X/59 com barra de progresso e lista por aba
+  ├── Cores distintas por trilha (accent/indigo/info)
+  └── A11y preservada (role=tablist, aria-selected, focus trap)
+
+Sprint QUIZ-TRAIL ✅ Campo trail em todas as 152 questões
+  ├── Campo trail: QuizTrail adicionado a todas as questões via script
+  │   (firewall=50, fundamentos=45, avancados=57)
+  └── Seletor de trilha (4 opções: Todas/Firewall/Fundamentos/Avançados) na tela inicial do quiz
+
+Sprint TOPICOS-TRAIL ✅ Filtro de trilha na página /topicos
+  ├── Filtro de trilha (🗂️ Todas / 🔥 Firewall / 🐧 Fundamentos / 🚀 Avançados)
+  ├── Mapeamento group→trail via TRAIL_BY_GROUP (sem modificar os 85 objetos Topic)
+  └── Filtros de trilha e camada OSI são independentes (AND)
+
+Sprint AVANCADOS-INDEX ✅ Índice da trilha avançada (/avancados)
+  ├── 19 módulos em 3 seções (v3.0 Servidores / v4.0 Infraestrutura / v5.0 Cloud)
+  ├── Hero com CTA inteligente (Começar/Continuar/Revisar)
+  ├── Nav link 🚀 Avançados adicionado em ClientLayout.tsx
+  ├── CONTENT_PAGES_COUNT 48→49 · SEO /avancados em seo.ts
+  └── +2 searchItems (145 total)
+
+Sprint GLOSSARIO-ADVANCED ✅ +12 termos ao glossário (73→85 termos)
+  ├── mTLS, Sidecar Proxy, VirtualService, Circuit Breaker, CNI, NetworkPolicy,
+  │   Pipeline CI/CD, GitOps, IDS/IPS, CARP, Burn Rate, Trace/Tracing
+  ├── trackPageVisit em /glossario, /certificado, /evolucao (contam para deep-diver)
+  └── +4 searchItems glossário (148 total)
+
+Sprint QUIZ-FIX ✅ Correção de trail para SSH-PROXY
+  └── 3 questões SSH-PROXY: trail 'avancados'→'fundamentos' (fundamentos 42→45, avancados 60→57)
+
+Sprint QUIZ-COVER ✅ +13 questões para módulos com <3 cobertura
+  ├── DNAT(+2), Port Knocking(+2), Diagnóstico SSL(+2), Camada 3(+1), Análise de Pacotes(+1)
+  ├── systemd(+1), Hardening(+1), Docker(+1), Compose(+1), SSH 2FA(+1)
+  └── Total: 151→164 (firewall=62, fundamentos=45, avancados=57)
+
+Sprint QUIZ-LATE-MODULES ✅ +9 questões para módulos sem cobertura
+  ├── Pivoteamento (🎭 +3), Laboratório (🧪 +3), Proxmox (🖥️ +3)
+  └── Total: 164→173 (firewall=71, fundamentos=45, avancados=57)
+
+Sprint QUIZ-UX ✅ Embaralhamento + Tamanho de Sessão
+  ├── Fisher-Yates shuffle — questões embaralhadas aleatoriamente em cada sessão
+  ├── Seletor de tamanho: Rápido (20 questões ~5min) / Normal (40) / Completo (todas)
+  ├── aria-label="Começar Quiz" para estabilidade nos testes E2E
+  └── E2E spec atualizado
+
+Sprint SEARCH-EXPAND ✅ +15 itens de busca para módulos com cobertura única
+  ├── 15 módulos: ataques-avancados, pivoteamento, hardening, docker, fundamentos,
+  │   fhs, comandos, editores, processos, permissoes, discos, logs-basicos,
+  │   backup, shell-script, cron
+  └── searchItems 148→163
+
+Sprint CONTENT-ATAQUES ✅ /ataques-avancados enriquecida
+  ├── 6 tipos de ataque: recon nmap, fragmentação, SYN flood+connlimit, ARP spoofing,
+  │   timing attack/SPA, DNS rebinding
+  ├── FluxoCard Cyber Kill Chain · WindowsComparisonBox · tcpdump analysis · WarnBox ético
+  ├── 3 checkpoints (ataques-recon, ataques-syn, ataques-arp)
+  └── checklistItemsCount 154→157 · linux-ninja 115→117
+
+Sprint CONTENT-PIVOTING ✅ /pivoteamento enriquecida
+  ├── FluxoCard cadeia 6 etapas · FORWARD DROP com logging · egress filtering completo
+  ├── Anti-DNS-tunneling DNAT · tabela técnicas evasão×defesa · script anti-pivoteamento
+  ├── WindowsComparisonBox (Azure NSG ↔ iptables) · detecção de IoC · exercícios guiados
+  ├── 3 checkpoints (pivote-forward-drop, pivote-egress, pivote-honeypot)
+  └── checklistItemsCount 157→160 · linux-ninja 117→120
+
+Sprint CONTENT-LABORATORIO ✅ /laboratorio enriquecida
+  ├── FluxoCard evolução do lab (VirtualBox→KVM→Proxmox→Cluster HA)
+  ├── WarnBox requisitos de hardware · WindowsComparisonBox (Hyper-V ↔ KVM/libvirt)
+  └── Sem mudanças em constantes (checkpoints já existiam)
+
+Sprint WINDOWS-POLISH ✅ WindowsComparisonBox em 10 páginas (3 rounds)
+  ├── Round 1: audit-logs, wan-nat, dnat, hardening
+  ├── Round 2: docker, nginx-ssl, lan-proxy, proxmox
+  ├── Round 3: ssh-2fa, port-knocking
+  └── 100% de cobertura WindowsComparisonBox em todos os módulos da trilha v1.0
+
+Sprint FUNDAMENTOS-WINDOWS ✅ WindowsComparisonBox na trilha Fundamentos
+  ├── fhs (C:\Windows↔/etc, Registry↔/proc)
+  ├── editores (Notepad/PowerShell↔nano/vim)
+  ├── comandos (dir↔ls, type↔cat, 20+ equivalências)
+  ├── vpn-ipsec (RRAS IKEv2↔StrongSwan)
+  └── 100% de cobertura em TODOS os módulos
+
+Sprint ERROS-COMUNS ✅ Seção "Erros Comuns e Soluções" em 100% das páginas
+  ├── 4 cards por página — causa, solução, comando de diagnóstico
+  ├── 3 rodadas cobrindo 33 módulos adicionais (59 páginas total)
+  └── Sem mudanças em constantes
+
+Sprint DEEP-DIVES-V2 ✅ +2 deep dives (6→8)
+  ├── "Docker Networking Internals" em /docker (bridge docker0, veth, DOCKER chains)
+  └── "Kubernetes Service Discovery" em /kubernetes (CoreDNS, iptables, Cilium eBPF)
+
+Sprint DEEP-DIVES-V3 ✅ +4 deep dives (8→12)
+  ├── "Ansible Idempotência e Ciclo de Execução" em /ansible
+  ├── "SRE Error Budget — Matemática dos Noves" em /sre
+  ├── "eBPF Maps — Memória Compartilhada" em /ebpf
+  └── "GitHub Actions — Pipeline Seguro" em /cicd
+
+Sprint GLOSSARIO-V2 ✅ +15 termos (85→100)
+  └── TOTP, PAM, SMB/CIFS, DN, objectClass, PFS, XDP, SLI, Postmortem, Toil,
+      ACME, Cilium, Artifact, Runner, DHCP Relay
+
+Sprint GLOSSARIO-V3 ✅ +15 termos (100→115)
+  └── Idempotência, Handler Ansible, eBPF Verifier, BPF Map, CrashLoopBackOff,
+      ImagePullBackOff, ForceNew Terraform, Concurrency GitHub Actions, mTLS, SPIFFE,
+      VirtualService Istio, Envoy Proxy, PodDisruptionBudget, Recording Rule, Deployment Strategy
+
+Sprint CHEAT-V2 ✅ +11 comandos no cheat-sheet (69→80)
+  └── DNS (dig PTR+MX), Proxy (squid -k), systemd (systemd-analyze blame), Logs (logrotate -f),
+      DHCP (journalctl DORA), Samba (testparm -s), Apache (apachectl -S), LDAP (slapcat backup),
+      Suricata (eve.json jq), Pi-hole (pihole -c), Monitoring (targets API)
+
+Sprint CHEAT-V3 ✅ +17 comandos (80→97)
+  └── DNS (dig +trace), Proxy (awk access.log), nftables (3 cmds), Traefik (3 cmds),
+      eBPF (3 cmds), SRE (promtool/amtool/kubectl hpa), Service Mesh (3 cmds istioctl/hubble)
+
+Sprint QUIZ-200 ✅ +27 perguntas de profundidade (173→200)
+  └── conntrack, DNAT, DNS reversa, HSTS, IPSec PFS, WireGuard, Fail2ban, nftables,
+      Hardening, Port Knocking, Squid, Docker host, Ansible, PromQL, K8s, Suricata,
+      SRE toil, CI/CD matrix
+
+Sprint SEARCH-V2 ✅ +17 itens de busca (163→180)
+  └── Terceiro item (glossário técnico) para cada módulo avançado com apenas 2 itens:
+      dhcp, samba, apache, openvpn, traefik, ldap, pihole, ansible, monitoring,
+      kubernetes, terraform, ebpf, ebpf-avancado, sre, opnsense, nextcloud, ssh-proxy
+
+Sprint EXERCICIOS ✅ Seções "Exercícios Guiados" — 100% cobertura (59 páginas)
+  ├── 3 labs hands-on por página em TODOS os módulos de conteúdo
+  ├── Lotes: Round 1-4 (v1.0 principais), Round 5 (v4.0+v5.0 avançados),
+  │   Fundamentos v2.0 (14 módulos), v1.0 restantes, v3.0 Servidores, v4.0 Infra
+  └── Sem mudanças em constantes
+
+Sprint QUIZ-FUNDAMENTOS-DEPTH ✅ +15 perguntas de profundidade Fundamentos (200→215)
+  └── 1 pergunta adicional para cada um dos 15 módulos da trilha Fundamentos
+      (firewall=92, fundamentos=60, avancados=63)
+
+Sprint QUIZ-AVANCADOS-DEPTH ✅ +19 perguntas de profundidade Avançados (215→234)
+  └── 1 pergunta adicional para cada um dos 19 módulos da trilha Avançados
+      (firewall=92, fundamentos=60, avancados=82)
+
+Sprint QUIZ-FIREWALL-DEPTH ✅ +9 perguntas para módulos Firewall com <4 questões (234→243)
+  └── Diagnóstico, Análise de Pacotes, Diagnóstico SSL, systemd, Compose,
+      SSH 2FA, Pivoteamento, Laboratório, Proxmox
+      (firewall=101, fundamentos=60, avancados=82)
+
+Sprint QUIZ-SCENARIOS ✅ +10 questões de cenário real de produção (243→253)
+  └── DNS sem IP, iptables ordem de regras, certbot force-renewal, Docker sem internet,
+      Ansible always-changed, K8s CrashLoopBackOff, Prometheus InstanceDown,
+      Terraform ForceNew, GitHub Actions secrets, SRE error budget negativo
+      (firewall=105, fundamentos=60, avancados=88)
+
+Sprint DEEP-DIVES-V3 FIX ✅ IDs corrigidos + nftables novo deep dive
+  ├── vpn-ipsec: 'ipsec-deep'→'ipsec-ike-phases'
+  ├── lan-proxy: 'squid-https'→'squid-https-filtering'
+  └── Adicionado 'nftables-vs-iptables' em /nftables (12 deep dives todos acessíveis)
+
+Sprint SEARCH-COMPLETE ✅ 100% de módulos com ≥3 itens de busca (185→220)
+  ├── 3º item adicionado para TODOS os módulos com cobertura dupla (31 módulos de conteúdo)
+  ├── /topicos (2→3), /quiz (1→3), /certificado (1→3), /dashboard, /evolucao
+  ├── +1 quiz question K8s (Deployment vs StatefulSet)
+  └── Total quiz: 253→254 (avancados=89)
+
+Sprint DEEP-DIVES-V4 ✅ +4 deep dives (12→16)
+  ├── "TLS 1.3 Handshake Detalhado" em /nginx-ssl
+  ├── "WireGuard Noise Protocol" em /wireguard
+  ├── "Fail2ban Arquitetura Interna" em /fail2ban
+  └── "Hardening Defense in Depth" em /hardening
+
+Sprint UX-TABS ✅ Navegação por 3 abas em 8 páginas extensas
+  ├── /ansible, /kubernetes, /terraform, /monitoring, /cicd,
+  │   /service-mesh, /suricata, /ldap
+  ├── Padrão: useState + border-b-2 -mb-px + border-[var(--mod)] ativo
+  └── Zero mudanças em constantes de badge/checkpoint
+
+Sprint UX-PAGES ✅ UX enriquecida em /topicos e /cheat-sheet
+  ├── /topicos: seção "Por onde começar?" com 3 cards de trilha (barra de progresso dinâmica),
+  │   ✓ verde por tópico visitado, pill de trilha nos cabeçalhos de grupo
+  └── /cheat-sheet: 4 abas (Comandos/Workflows/Windows↔Linux/Scripts&VIM),
+      feedback "Copiado!" 2s por botão via copiedId state
+
+Sprint EVOLUCAO-FIX ✅ /evolucao reflete exatamente as 4 trilhas
+  ├── ssh-proxy movido de PHASE_V2 para PHASE_V3 (slug correto)
+  ├── PHASE_V2.status '17 disponíveis' → '16 disponíveis'
+  ├── PHASE_V3.status '9 disponíveis' → '10 disponíveis'
+  └── Roadmap reflete: v1.0 (25) + v2.0 (16 Fundamentos) + v3.0 (10 Servidores) + v4.0 (8 Infra) + v5.0 (4 Cloud)
+
+Sprint UX-TABS-2 ✅ Navegação por 3 abas em 5 páginas (13 total)
+  └── /ebpf, /sre, /opnsense, /nextcloud, /ebpf-avancado
+      (100% de cobertura das páginas extensas do workshop)
+
+Sprint UX-TABS-3 ✅ Navegação por 3 abas em 19 páginas restantes (100% cobertura)
+  ├── Páginas max-w-4xl/5xl single-column (11):
+  │   /docker, /docker-compose, /wan-nat, /wireguard, /audit-logs, /ssh-2fa,
+  │   /fail2ban, /hardening, /proxmox, /laboratorio, /traefik, /openvpn, /apache, /samba
+  ├── Páginas grid com sidebar (6):
+  │   /port-knocking, /lan-proxy, /dnat, /nginx-ssl, /pivoteamento, /ssh-proxy
+  ├── Padrão de abas (single-column): tab nav inline, content wrapped com {activeTab === 'x' && (<>...</>)}
+  ├── Padrão de abas (grid): tab nav before grid, main column <div> com conditional wrappers,
+  │   sidebar sempre visível, conteúdo fora do grid wrapped em {activeTab === 'exercicios' && (<>...</>)}
+  ├── Fix openvpn: closing </>)} antes de <ModuleNav> que estava ausente
+  └── 100% de cobertura de abas em TODAS as páginas extensas · lint ✓ · 57 testes · 71/71 build ✓
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

@@ -55,7 +55,7 @@ Este projeto é uma **plataforma educacional completa** que ensina segurança de
 | Runtime | React | ^19.0.0 |
 | Build | Turbopack | (built-in) |
 
-**Sprints concluídos:** A (robustez) · B (SEO) · C (a11y WCAG 2.1 AA) · D (PWA Lite + headers) · E (CSP nonce) · G (a11y Topology) · F (code splitting) · M (cyber tokens) · T₀/T₁ (vitest) · J (export/import) · I.1 (WireGuard) · I.2 (Fail2ban) · Polish (module-accent) · T₂ (E2E Playwright) · R (realismo) · P (Diamond Polish) · L (Legacy Gold) · SIGMA (Elite Lab — /laboratorio, /proxmox, Certbot) · SIGMA Fase 2 · SIGMA Fase 3 (badge 🔬 sigma-master) · W (WindowsComparisonBox) · W2 (RosettaStone, 🧭 explorador-mundos) · Polish (ModuleNav) · Audit Fix · V+Topics+UX · T₃ (6 suítes · 51 testes) · Badge V2 (🎯 course-master) · UI-H (ProgressDropdown) · PV (Polish Visual) · **CE** (MilestoneCelebration modal + confetti) · **CERT** (Web Share API, @media print) · **ANIM** (checklist-pop spring) · **CE-E2E** (9 specs Playwright) · **EVOL** (roadmap visual v2.0/v3.0/v4.0) · **I.3** (Hardening — SSH Ed25519, sysctl, AppArmor) · **I.4** (Docker Networking) · **F1-F3** (Fundamentos Linux v2.0 — 10 módulos + badge 🐧) · **Polish-F** · **I.5** (SSH 2FA — TOTP) · **I.6** (Docker Compose) · **Polish-I + Quiz++** (50 perguntas) · **F4** (/pacotes) · **F5** (/boot) · **F6** (/comandos-avancados) · **F7** (/rsyslog — v2.0 COMPLETO 14 módulos) · **I.7** (/dhcp) · **I.8** (/samba) · **I.9** (/apache) · **I.10** (/openvpn) · **I.11** (/traefik) · **I.12** (/ldap) · **I.13** (/pihole — v3.0 COMPLETO) · **I.14** (/ansible) · **I.15** (/monitoring — Prometheus+Grafana) · **I.16** (/kubernetes — K3s) · **I.17** (/terraform — v4.0 parcial · 127 checkpoints · 46 badges · 74 tópicos).
+**Sprints concluídos:** A · B · C · D · E · G · F · M · T₀/T₁ · J · I.1 · I.2 · Polish · T₂ · R · P · L · SIGMA · SIGMA Fase 2 · SIGMA Fase 3 · W · W2 · Polish (ModuleNav) · Audit Fix · V+Topics+UX · T₃ · Badge V2 · UI-H · PV · CE · CERT · ANIM · CE-E2E · EVOL · I.3 (Hardening) · I.4 (Docker) · F1-F3 (Fundamentos v2.0 — 15 módulos) · Polish-F · I.5 (SSH 2FA) · I.6 (Docker Compose) · Polish-I+Quiz++ · F4-F7 (Pacotes/Boot/CmdAvançados/Rsyslog — v2.0 COMPLETO) · I.7-I.13 (DHCP/Samba/Apache/OpenVPN/Traefik/LDAP/Pi-hole — v3.0 COMPLETO) · I.14-I.17 (Ansible/Monitoring/K8s/Terraform) · I.18-I.25 (Suricata/eBPF/ServiceMesh/SRE/CICD/OPNsense/Nextcloud/eBPF-Avançado — v4.0+v5.0 COMPLETOS) · SSH-PROXY · Quiz-Completo · Quiz-Fundamentos · Advanced-Trail (ADVANCED_ORDER — 19 módulos, badge 🌐) · PROGRESS-DROPDOWN (3 abas) · QUIZ-TRAIL · TOPICOS-TRAIL · AVANCADOS-INDEX · GLOSSARIO-ADVANCED (85 termos) · QUIZ-UX (shuffle + tamanho de sessão) · SEARCH-EXPAND · CONTENT-ATAQUES/PIVOTING/LABORATORIO · WINDOWS-POLISH · FUNDAMENTOS-WINDOWS · ERROS-COMUNS (100% cobertura) · DEEP-DIVES-V2/V3/V4 (16 deep dives) · GLOSSARIO-V2/V3 (115 termos) · CHEAT-V2/V3 (97 comandos) · QUIZ-200/QUIZ-SCENARIOS (254 perguntas) · SEARCH-COMPLETE (220 itens) · UX-TABS (13 páginas) · UX-PAGES (topicos + cheat-sheet) · UX-TABS-2 (5 páginas) · **UX-TABS-3** (19 páginas — 100% cobertura de abas · 57 testes · 71/71 build · 56 badges · 160 checkpoints · 85 tópicos).
 
 ---
 
@@ -66,8 +66,8 @@ npm install        # instalar dependências
 npm run dev        # http://localhost:3000
 npm run lint       # tsc --noEmit — typecheck
 npm run lint:eslint # ESLint + jsx-a11y
-npm test           # vitest — 6 suítes · 51 testes
-npm run build      # 52/52 páginas (47 próprias + assets SEO/PWA)
+npm test           # vitest — 6 suítes · 57 testes
+npm run build      # 71/71 páginas (49 próprias + assets SEO/PWA)
 ```
 
 > Para guia completo de onboarding: [QUICKSTART.md](QUICKSTART.md)
@@ -81,7 +81,7 @@ app/                    ← App Router — 47 rotas públicas
   layout.tsx            ← Root layout + anti-FOUC + JSON-LD + nonce CSP
   globals.css           ← Tokens de tema dark/light (@theme)
   providers.tsx         ← <BadgeProvider> global
-  [47 rotas de conteúdo] ← v1.0 (25 módulos) + v2.0 Fundamentos (14) + v3.0 Servidores (7) + suporte
+  [49 rotas de conteúdo] ← v1.0 (25 módulos) + v2.0 Fundamentos (15) + v3.0 Servidores (10) + v4.0 Infra (8) + v5.0 Cloud (4) + suporte
   [páginas especiais]   ← /topicos, /quiz, /dashboard, /certificado, ...
 proxy.ts                ← CSP nonce per-request (Next.js 16)
 next.config.ts          ← Headers de segurança (HSTS, X-Frame-Options…)
@@ -119,17 +119,21 @@ src/
 | 15 | Docker Compose | `/docker-compose` | stacks, redes internas, secrets |
 | + | Ataques, Pivoting, Lab, Proxmox, Audit… | diversas | — |
 
-### v2.0 — Fundamentos Linux (14 módulos ✅)
+### v2.0 — Fundamentos Linux (15 módulos ✅)
 
-FHS · Comandos · Editores · Processos · Permissões · Discos · Logs · Backup · Shell Script · Cron · **Pacotes** · **Boot** · **Comandos Avançados** · **Rsyslog**
+FHS · Comandos · Editores · Processos · Permissões · Discos · Logs · Backup · Shell Script · Cron · Pacotes · Boot · Comandos Avançados · Rsyslog · **SSH Proxy**
 
-### v3.0 — Servidores e Serviços (9 módulos ✅)
+### v3.0 — Servidores e Serviços (10 módulos ✅)
 
-DHCP · Samba · Apache · OpenVPN · Traefik · LDAP · Pi-hole · Docker · Docker Compose
+DHCP · Samba · Apache · OpenVPN · Traefik · LDAP · Pi-hole · Docker · Docker Compose · SSH Proxy
 
-### v4.0 — Infraestrutura Moderna (4/8 módulos ✅)
+### v4.0 — Infraestrutura Moderna (8 módulos ✅)
 
-Ansible · Prometheus+Grafana · Kubernetes/K3s · Terraform
+Ansible · Prometheus+Grafana · Kubernetes/K3s · Terraform · Suricata IDS/IPS · eBPF & XDP · Service Mesh (Istio) · SRE & SLOs
+
+### v5.0 — Cloud & Platform Engineering (4 módulos ✅)
+
+CI/CD GitHub Actions · OPNsense · Nextcloud · eBPF Avançado + Cilium
 
 > Detalhes de cada módulo: [docs/modulos-linux.md](docs/modulos-linux.md)
 

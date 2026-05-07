@@ -3,14 +3,14 @@
 ## Arquivo central: `src/context/BadgeContext.tsx`
 
 Gerencia quatro dimensões de progresso:
-- **Badges** — 55 conquistas desbloqueáveis (5 são milestones com modal de celebração)
+- **Badges** — 56 conquistas desbloqueáveis (5 são milestones com modal de celebração)
 - **Páginas visitadas** — para badges de exploração e course-master
-- **Checkpoints** — 154 validações técnicas concluídas (ALL_CHECKLIST_IDS)
+- **Checkpoints** — 160 validações técnicas concluídas (ALL_CHECKLIST_IDS)
 - **Quiz score** — 0–100, persiste em localStorage
 
 ---
 
-## Tabela de badges (55 total)
+## Tabela de badges (56 total)
 
 | Ícone | Título | ID | Como desbloquear |
 |---|---|---|---|
@@ -18,7 +18,7 @@ Gerencia quatro dimensões de progresso:
 | 🥇 | Expert | `quiz-expert` | Score ≥ 80% no quiz |
 | **🏆** | **Mestre** | **`quiz-master`** | **Score 100% no quiz** ★ milestone |
 | 🗺️ | Explorador | `explorer` | Visitar 5+ páginas |
-| 🤿 | Mergulhador | `deep-diver` | Visitar todas as 39 páginas de conteúdo |
+| 🤿 | Mergulhador | `deep-diver` | Visitar todas as 49 páginas de conteúdo |
 | 🦉 | Coruja Noturna | `night-owl` | Ativar o dark mode |
 | 🔍 | Investigador | `searcher` | Usar a busca global (⌘K / Ctrl+K) |
 | 🖧 | Topólogo | `topology-pro` | Clicar em 5+ elementos da topologia interativa |
@@ -29,7 +29,7 @@ Gerencia quatro dimensões de progresso:
 | 🚪 | Proxy Master | `proxy-master` | proxy-funciona + proxy-bloqueio |
 | 🔑 | Knocking Master | `knocking-master` | port-knocking |
 | **🎓** | **Graduado** | **`certificado`** | **Gerar o certificado de conclusão** ★ milestone |
-| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 115 checkpoints (75% dos 154)** ★ milestone |
+| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 120 checkpoints (75% dos 160)** ★ milestone |
 | 💀 | Pivoting Master | `pivoting-master` | pivoting-risk |
 | 🛡️ | Defensor da Topologia | `defensor-topologia` | Clicar em 3+ riscos da topologia |
 | ⏳ | Viajante do Tempo | `time-traveler` | Importar progresso via JSON |
@@ -42,7 +42,7 @@ Gerencia quatro dimensões de progresso:
 | **🎯** | **Mestre do Curso** | **`course-master`** | **Visitar todos os 25 módulos do COURSE_ORDER** ★ milestone |
 | 🔐 | Hardening Master | `hardening-master` | ssh-hardened + sysctl-secured + apparmor-enabled |
 | 🐳 | Docker Master | `docker-master` | docker-installed + docker-bridge + docker-iptables |
-| 🐧 | Fundamentos Master | `fundamentos-master` | 10 checkpoints da Trilha Fundamentos Linux |
+| 🐧 | Fundamentos Master | `fundamentos-master` | 14 checkpoints da Trilha Fundamentos Linux |
 | 📱 | SSH 2FA Master | `ssh-2fa-master` | totp-instalado + pam-configurado + ssh-2fa-testado |
 | 🐙 | Compose Master | `compose-master` | compose-instalado + compose-stack + compose-networks |
 | 📦 | Package Master | `pacotes-master` | apt-atualizado + pacote-instalado + repo-adicionado |
@@ -69,6 +69,7 @@ Gerencia quatro dimensões de progresso:
 | ☁️ | Nextcloud Master | `nextcloud-master` | nextcloud-instalado + nextcloud-ssl + nextcloud-apps |
 | 🧬 | eBPF Avançado Master | `ebpf-avancado-master` | cilium-instalado + hubble-habilitado + tetragon-seguranca |
 | 🚇 | SSH Tunnel Master | `ssh-proxy-master` | ssh-dinamico + ssh-local + ssh-jump |
+| 🌐 | Advanced Master | `advanced-master` | Visitar todos os 19 módulos do ADVANCED_ORDER |
 
 > ★ **Milestone badges** disparam o `MilestoneCelebration` modal em vez do toast de 4s.
 > `course-master` e `quiz-master` disparam também confetti (canvas-confetti, lazy-loaded).
@@ -79,7 +80,7 @@ Gerencia quatro dimensões de progresso:
 
 | Tier | Badges | Feedback |
 |------|--------|----------|
-| **Comum** | 50 badges | Toast slide-in 4s (canto inferior direito, z-50) |
+| **Comum** | 51 badges | Toast slide-in 4s (canto inferior direito, z-50) |
 | **Milestone** | 5 badges | Modal centralizado full-screen (z-200) + confetti para os 2 maiores |
 
 ```typescript

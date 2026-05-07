@@ -26,7 +26,11 @@
 }
 ```
 
-## Deep Dives — Modais avançados
+## Quantidade de itens
+
+220 itens indexados (Sprint SEARCH-COMPLETE) — todos os módulos com ≥3 itens de busca.
+
+## Deep Dives — Modais avançados (16 total)
 
 Arquivo: `src/data/deepDives.tsx`
 
@@ -38,6 +42,16 @@ Arquivo: `src/data/deepDives.tsx`
 | `squid-https-filtering` | Squid Proxy e o Desafio do HTTPS | Proxy |
 | `ipsec-ike-phases` | As Fases do IKE (IPSec) | VPN |
 | `nftables-vs-iptables` | nftables vs iptables — Por que migrar? | Firewall |
+| `docker-networking-internals` | Docker Networking Internals | Containers |
+| `k8s-service-discovery` | Kubernetes Service Discovery | Kubernetes |
+| `ansible-idempotency` | Ansible Idempotência e Ciclo de Execução | Ansible |
+| `sre-error-budget-math` | SRE Error Budget — Matemática dos Noves | SRE |
+| `ebpf-maps-memory` | eBPF Maps — Memória Compartilhada | eBPF |
+| `github-actions-secure-pipeline` | GitHub Actions — Pipeline Seguro | CI/CD |
+| `tls-1.3-handshake` | TLS 1.3 Handshake Detalhado | VPN |
+| `wireguard-noise-protocol` | WireGuard Noise Protocol | VPN |
+| `fail2ban-internal-arch` | Fail2ban Arquitetura Interna | Firewall |
+| `hardening-defense-in-depth` | Hardening Defense in Depth | Firewall |
 
 Os modais seguem o padrão a11y (`role="dialog"` + focus trap) — veja [acessibilidade.md](acessibilidade.md).
 

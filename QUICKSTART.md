@@ -10,7 +10,7 @@
 npm install        # instalar dependências
 npm run dev        # http://localhost:3000
 npm test           # vitest — testes automatizados
-npm run build      # build de produção — 52/52 páginas (47 próprias + assets SEO/PWA)
+npm run build      # build de produção — 71/71 páginas (49 próprias + assets SEO/PWA)
 ```
 
 ---
@@ -21,7 +21,7 @@ npm run build      # build de produção — 52/52 páginas (47 próprias + asse
 npm run lint         # tsc --noEmit — typecheck TypeScript
 npm run lint:eslint  # ESLint + jsx-a11y — acessibilidade WCAG 2.1 AA
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm test             # vitest — 6 suítes · 51 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
+npm test             # vitest — 6 suítes · 57 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
 ```
 
 ---
@@ -30,7 +30,7 @@ npm test             # vitest — 6 suítes · 51 testes (BadgeContext, ClientLa
 
 | Pasta / Arquivo | O que é |
 |---|---|
-| `/app` | Rotas e Layouts (App Router) — 47 rotas próprias |
+| `/app` | Rotas e Layouts (App Router) — 49 rotas próprias |
 | `/app/globals.css` | Tokens de cor dark/light + classes reutilizáveis |
 | `/app/layout.tsx` | Root layout + anti-FOUC + JSON-LD + nonce CSP |
 | `/app/providers.tsx` | `<BadgeProvider>` global |
@@ -43,9 +43,9 @@ npm test             # vitest — 6 suítes · 51 testes (BadgeContext, ClientLa
 | `/src/components/ClientLayout.tsx` | Header, nav, toggle dark/light, busca global |
 | `/src/context/BadgeContext.tsx` | Estado global: badges, progresso, checkpoints |
 | `/src/data/quizQuestions.ts` | Perguntas do quiz extraídas (Sprint F) |
-| `/src/data/searchItems.ts` | Índice da busca global ⌘K (121 itens) |
-| `/src/data/courseOrder.ts` | COURSE_ORDER (25 módulos v1.0) + FUNDAMENTOS_ORDER (14 módulos v2.0) — usados pelo ModuleNav |
-| `/src/data/deepDives.tsx` | Conteúdo dos 6 modais avançados |
+| `/src/data/searchItems.ts` | Índice da busca global ⌘K (220 itens) |
+| `/src/data/courseOrder.ts` | COURSE_ORDER (25 módulos v1.0) + FUNDAMENTOS_ORDER (15 módulos v2.0) + ADVANCED_ORDER (19 módulos v3.0-v5.0) — usados pelo ModuleNav |
+| `/src/data/deepDives.tsx` | Conteúdo dos 16 modais avançados |
 | `/src/lib/seo.ts` | **Fonte única** — `SITE_CONFIG`, `ROUTE_SEO`, `buildMetadata()` |
 | `/src/lib/useFocusTrap.ts` | Hook a11y — focus trap + ESC + restore focus |
 | `/src/lib/utils.ts` | Helper `cn()` (clsx + tailwind-merge) |
@@ -90,8 +90,8 @@ npm test             # vitest — 6 suítes · 51 testes (BadgeContext, ClientLa
 - [ ] `npm run lint` — zero erros TypeScript
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — vitest passando
-- [ ] `npm run build` — 52/52 páginas (47 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 39`, `totalTopics = 74`, `checklistItemsCount = 127`, `badges = 46`, `searchItems = 121`)
+- [ ] `npm run build` — 71/71 páginas (49 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 49`, `totalTopics = 85`, `checklistItemsCount = 160`, `badges = 56`, `searchItems = 220`)
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)
@@ -206,4 +206,4 @@ node_modules/
 
 `Next.js 16.2.2` · `React 19` · `TypeScript 5.8` · `Tailwind CSS v4` · `Turbopack` · `motion/react 12` · `Lucide React`
 
-**Sprints concluídos:** A · B · C · D · E · G · F · M · T₀/T₁ · J · I.1 · I.2 · Polish · T₂ · R · P · L · SIGMA · SIGMA Fase 2 · SIGMA Fase 3 · W · W2 · Polish · Audit Fix · V+Topics+UX · T₃ · Badge V2 · UI-H · PV · **CE** (MilestoneCelebration modal + confetti, "Próxima Conquista" dashboard) · **CERT** (Web Share API, @media print certificado) · **ANIM** (checklist-pop spring, barra progresso) · **CE-E2E** (spec milestone modal — 9 specs E2E) · **EVOL** (roadmap visual v2.0/v3.0/v4.0) · **I.3** (Hardening — SSH Ed25519, sysctl, AppArmor) · **I.4** (Docker Networking — bridge/host/none, DOCKER-USER) · **F1-F3** (Trilha Fundamentos Linux v2.0 — 10 módulos base + badge 🐧) · **Polish-F** (7 módulos Fundamentos enriquecidos) · **I.5** (SSH 2FA — TOTP, libpam-google-authenticator) · **I.6** (Docker Compose — stacks, redes internas, secrets) · **Polish-I + Quiz++** (/wireguard, /fail2ban, /nftables enriquecidos + quiz 33→50 perguntas) · **F4** (Instalação de Programas — apt/dpkg/snap/pip) · **F5** (Boot — BIOS/UEFI/GRUB2/systemd) · **F6** (Comandos Avançados — sed/dd/nc/links/tar) · **F7** (Rsyslog — servidor central de logs + logrotate — v2.0 COMPLETO) · **I.7** (DHCP — isc-dhcp-server, leases, reservas MAC) · **I.8** (Samba — smb.conf, shares, smbpasswd) · **I.9** (Apache — VirtualHosts, mod_ssl, Certbot, proxy reverso) · **I.10** (OpenVPN — PKI Easy-RSA, split/full tunnel) · **I.11** (Traefik — ACME automático, middlewares, dashboard) · **I.12** (LDAP — OpenLDAP, DIT, LDIFS, PAM) · **I.13** (Pi-hole — DNS sinkhole, Unbound recursivo — v3.0 COMPLETO) · **I.14** (Ansible — playbooks, roles, Vault) · **I.15** (Prometheus+Grafana — PromQL, alertas, Alertmanager) · **I.16** (Kubernetes/K3s — kubectl, Helm, NetworkPolicy, PVC) · **I.17** (Terraform IaC — HCL, providers, state remoto, módulos — v4.0 parcial)
+**Sprints concluídos:** A · B · C · D · E · G · F · M · T₀/T₁ · J · I.1 · I.2 · Polish · T₂ · R · P · L · SIGMA · SIGMA Fase 2 · SIGMA Fase 3 · W · W2 · Polish (ModuleNav) · Audit Fix · V+Topics+UX · T₃ · Badge V2 · UI-H · PV · CE · CERT · ANIM · CE-E2E · EVOL · I.3 · I.4 · F1-F3 · Polish-F · I.5 · I.6 · Polish-I+Quiz++ · F4-F7 (v2.0 COMPLETO — 15 módulos) · I.7-I.13 (v3.0 COMPLETO — 10 módulos) · I.14-I.17 · I.18-I.25 (v4.0+v5.0 COMPLETOS) · SSH-PROXY · Quiz-Completo (111 questões) · Quiz-Fundamentos · Advanced-Trail (ADVANCED_ORDER — 19 módulos · badge 🌐 advanced-master) · Advanced-Nav · PROGRESS-DROPDOWN (3 abas: Firewall/Fundamentos/Avançados) · QUIZ-TRAIL (campo trail + seletor) · TOPICOS-TRAIL (filtro por trilha) · AVANCADOS-INDEX (/avancados) · GLOSSARIO-ADVANCED (85 termos) · QUIZ-FIX · QUIZ-COVER · QUIZ-LATE-MODULES · QUIZ-UX (Fisher-Yates shuffle + sessão Rápida/Normal/Completa) · SEARCH-EXPAND · CONTENT-ATAQUES · CONTENT-PIVOTING · CONTENT-LABORATORIO · WINDOWS-POLISH (3 rounds — 100% cobertura) · FUNDAMENTOS-WINDOWS · ERROS-COMUNS (100% — 59 páginas) · DEEP-DIVES-V2/V3/V4 (16 deep dives) · GLOSSARIO-V2/V3 (115 termos) · CHEAT-V2/V3 (97 comandos) · QUIZ-200+SCENARIOS (254 perguntas) · SEARCH-COMPLETE (220 itens) · UX-TABS (13 páginas) · UX-PAGES (topicos + cheat-sheet) · EVOLUCAO-FIX · UX-TABS-2 (5 páginas) · **UX-TABS-3** (19 páginas — 100% cobertura · 57 testes · 71/71 build · 56 badges · 160 checkpoints)
