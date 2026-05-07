@@ -72,8 +72,8 @@ const COMMANDS: Command[] = [
   { id: 'openssl-req', cmd: 'openssl req -new -key key.pem -out req.csr', desc: 'Cria uma requisição de assinatura de certificado (CSR).', layer: 'Camada 6', layerClass: 'l6', category: 'SSL/TLS' },
   { id: 'openssl-sclient', cmd: 'openssl s_client -connect host:443', desc: 'Testa o handshake SSL/TLS e exibe certificado do servidor.', layer: 'Camada 6', layerClass: 'l6', category: 'SSL/TLS' },
 
-  // nftables (Sprint R)
-  { id: 'nft-list', cmd: 'nft list ruleset', desc: 'Lista todas as tabelas, chains e regras nftables ativas.', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
+  // nftables (Sprint R) — ID distinto para evitar colisão com nft-list em category nftables
+  { id: 'nft-list-fw', cmd: 'nft list ruleset', desc: 'Lista todas as tabelas, chains e regras nftables ativas.', layer: 'Camada 4', layerClass: 'l4', category: 'Firewall' },
 
   // Docker & Docker Compose (v3.0+)
   { id: 'docker-ps', cmd: 'docker ps -a', desc: 'Lista todos os containers (rodando e parados) com status.', layer: 'Camada 7', layerClass: 'l7', category: 'Docker' },
@@ -177,6 +177,15 @@ const COMMANDS: Command[] = [
   { id: 'hubble-obs', cmd: 'hubble observe --verdict DROPPED --namespace default', desc: 'Mostra todos os pacotes descartados pelo Cilium no namespace — essencial para debug de NetworkPolicy.', layer: 'Camada 3', layerClass: 'l3', category: 'Service Mesh' },
 ];
 
+const AVANCADOS_CATS = new Set(['Docker', 'Ansible', 'Kubernetes', 'Terraform', 'CI/CD', 'Monitoring', 'eBPF', 'SRE', 'Service Mesh', 'Traefik', 'Suricata']);
+const FUNDAMENTOS_CATS = new Set(['DHCP', 'Samba', 'Apache', 'LDAP', 'Pi-hole', 'SSH', 'systemd', 'Logs']);
+
+function cmdTrail(cmd: Command): 'firewall' | 'fundamentos' | 'avancados' {
+  if (AVANCADOS_CATS.has(cmd.category)) return 'avancados';
+  if (FUNDAMENTOS_CATS.has(cmd.category)) return 'fundamentos';
+  return 'firewall';
+}
+
 const SOS_STEPS: TroubleshootingStep[] = [
   {
     layer: 1,
@@ -235,6 +244,8 @@ export default function CheatSheetPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   type CheatTab = 'commands' | 'workflows' | 'windows' | 'scripts';
   const [activeTab, setActiveTab] = useState<CheatTab>('commands');
+  const [activeTrail, setActiveTrail] = useState<'all' | 'firewall' | 'fundamentos' | 'avancados'>('all');
+  const [activeWorkflowSection, setActiveWorkflowSection] = useState<string | null>(null);
   const { trackPageVisit } = useBadges();
 
   const handleCopy = useCallback((id: string, text: string) => {
@@ -248,6 +259,26 @@ export default function CheatSheetPage() {
     trackPageVisit('cheat-sheet');
   }, [trackPageVisit]);
 
+  // Scroll spy for workflow sections
+  useEffect(() => {
+    if (activeTab !== 'workflows') return;
+    const sections = ['wf-docker', 'wf-ansible', 'wf-kubectl', 'wf-terraform', 'wf-cicd'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter(e => e.isIntersecting);
+        if (visible.length > 0) {
+          setActiveWorkflowSection(visible[0].target.id);
+        }
+      },
+      { rootMargin: '-20% 0px -60% 0px' }
+    );
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [activeTab]);
+
   const DEVOPS_CATEGORIES   = ['Docker', 'Ansible', 'Kubernetes', 'Terraform', 'CI/CD', 'Monitoring', 'eBPF', 'SRE', 'Service Mesh', 'nftables', 'Traefik'];
   const SERVERS_CATEGORIES  = ['DHCP', 'Samba', 'Apache', 'LDAP', 'Suricata', 'Pi-hole', 'SSH'];
 
@@ -259,7 +290,8 @@ export default function CheatSheetPage() {
       || (activeFilter === 'devops'   ? DEVOPS_CATEGORIES.includes(cmd.category)  :
           activeFilter === 'servers'  ? SERVERS_CATEGORIES.includes(cmd.category) :
           cmd.layerClass === activeFilter);
-    return matchesSearch && matchesFilter;
+    const matchesTrail = activeTrail === 'all' || cmdTrail(cmd) === activeTrail;
+    return matchesSearch && matchesFilter && matchesTrail;
   });
 
   return (
@@ -307,7 +339,7 @@ export default function CheatSheetPage() {
       <TroubleshootingCard steps={SOS_STEPS} />
 
       {/* Search and Filters */}
-      <div className="space-y-6 mb-12">
+      <div className="space-y-4 mb-12">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={18} />
           <input
@@ -319,6 +351,34 @@ export default function CheatSheetPage() {
           />
         </div>
 
+        {/* Trail filter */}
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-text-3 mr-1">Trilha:</span>
+          {[
+            { id: 'all',         label: '🗂️ Todas' },
+            { id: 'firewall',    label: '🔥 Firewall' },
+            { id: 'fundamentos', label: '🐧 Fundamentos' },
+            { id: 'avancados',   label: '🚀 Avançados' },
+          ].map(t => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTrail(t.id as typeof activeTrail)}
+              className={cn(
+                "px-3 py-1.5 rounded-full text-xs font-bold transition-all border",
+                activeTrail === t.id
+                  ? "bg-accent border-accent text-white"
+                  : "bg-bg-2 border-border text-text-2 hover:border-accent hover:text-accent"
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+          <span className="ml-auto text-xs text-text-3 font-mono">
+            {filteredCommands.length} / {COMMANDS.length} comandos
+          </span>
+        </div>
+
+        {/* Layer / category filter */}
         <div className="flex flex-wrap gap-2">
           {[
             { id: 'all', label: '📚 Todos' },
@@ -334,8 +394,8 @@ export default function CheatSheetPage() {
               onClick={() => setActiveFilter(filter.id)}
               className={cn(
                 "px-4 py-2 rounded-full text-xs font-bold transition-all border",
-                activeFilter === filter.id 
-                  ? "bg-accent border-accent text-white" 
+                activeFilter === filter.id
+                  ? "bg-accent border-accent text-white"
                   : "bg-bg-2 border-border text-text-2 hover:border-accent hover:text-accent"
               )}
             >
@@ -574,8 +634,33 @@ export default function CheatSheetPage() {
       {/* ── Tab: Workflows ── */}
       <div hidden={activeTab !== 'workflows'}>
 
+      {/* Mini-TOC */}
+      <nav aria-label="Seções de workflows" className="mt-4 mb-6 flex flex-wrap gap-2">
+        {[
+          { id: 'wf-docker',    label: '🐳 Docker Compose' },
+          { id: 'wf-ansible',   label: '⚙️ Ansible' },
+          { id: 'wf-kubectl',   label: '☸️ kubectl' },
+          { id: 'wf-terraform', label: '🏗️ Terraform' },
+          { id: 'wf-cicd',      label: '🚀 GitHub Actions' },
+        ].map(s => (
+          <a
+            key={s.id}
+            href={`#${s.id}`}
+            onClick={(e) => { e.preventDefault(); document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+            className={cn(
+              "px-3 py-1.5 rounded-full text-xs font-bold border transition-all",
+              activeWorkflowSection === s.id
+                ? "bg-accent border-accent text-white"
+                : "bg-bg-2 border-border text-text-2 hover:border-accent hover:text-accent"
+            )}
+          >
+            {s.label}
+          </a>
+        ))}
+      </nav>
+
       {/* DevOps & Infraestrutura Moderna */}
-      <section id="devops" className="mt-4 p-6 rounded-xl bg-bg-2 border border-border">
+      <section id="devops" className="mt-0 p-6 rounded-xl bg-bg-2 border border-border">
         <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
           <Server size={20} className="text-accent" aria-hidden="true" />
           DevOps &amp; Infraestrutura Moderna — Workflows de Referência
@@ -585,7 +670,7 @@ export default function CheatSheetPage() {
         </p>
 
         {/* Docker Compose */}
-        <div className="mb-8">
+        <div id="wf-docker" className="mb-8 scroll-mt-20">
           <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
             <span aria-hidden="true">🐳</span> Docker Compose — Ciclo Completo
           </h3>
@@ -615,7 +700,7 @@ docker network inspect projeto_backend`} />
         </div>
 
         {/* Ansible */}
-        <div className="mb-8">
+        <div id="wf-ansible" className="mb-8 scroll-mt-20">
           <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
             <span aria-hidden="true">⚙️</span> Ansible — Ad-hoc + Playbooks
           </h3>
@@ -642,7 +727,7 @@ ansible-playbook -i inventory.ini playbook.yml --tags nginx`} />
         </div>
 
         {/* kubectl */}
-        <div className="mb-8">
+        <div id="wf-kubectl" className="mb-8 scroll-mt-20">
           <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
             <span aria-hidden="true">☸️</span> kubectl — Operações Essenciais
           </h3>
@@ -675,7 +760,7 @@ kubectl port-forward svc/minha-app 8080:80 -n producao`} />
         </div>
 
         {/* Terraform */}
-        <div className="mb-8">
+        <div id="wf-terraform" className="mb-8 scroll-mt-20">
           <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
             <span aria-hidden="true">🏗️</span> Terraform — Fluxo IaC
           </h3>
@@ -718,7 +803,7 @@ terraform workspace select staging`} />
         </div>
 
         {/* CI/CD GitHub Actions */}
-        <div className="mb-2">
+        <div id="wf-cicd" className="mb-2 scroll-mt-20">
           <h3 className="text-sm font-bold uppercase tracking-widest text-text-3 mb-3 flex items-center gap-2">
             <span aria-hidden="true">🚀</span> GitHub Actions — CLI de Observabilidade
           </h3>
