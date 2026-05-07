@@ -90,8 +90,8 @@ test('checkpoint de módulo Fundamentos é contabilizado no dashboard', async ({
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos deve mostrar 1/154 (checklistItemsCount atual)
-  await expect(page.getByText('1/154')).toBeVisible();
+  // Labs Concluídos deve mostrar 1/160 (checklistItemsCount atual)
+  await expect(page.getByText('1/160')).toBeVisible();
 });
 
 // ── 4. Badge fundamentos-master seeded aparece no dashboard ───────────────
