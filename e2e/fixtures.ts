@@ -14,6 +14,10 @@ const WORKSHOP_LS_KEYS = [
   'workshop-checklist-v2',
   'workshop-quiz-score',
   'workshop-theme',
+  'workshop-srs-v1',
+  'workshop-quiz-history',
+  'workshop-quiz-wrong-ids',
+  'workshop-intent-mode',
 ];
 
 /**
