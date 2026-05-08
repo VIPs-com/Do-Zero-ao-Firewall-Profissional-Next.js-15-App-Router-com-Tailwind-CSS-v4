@@ -908,6 +908,54 @@ Sprint Advanced-E2E ✅ Spec E2E para trilha avançada (e2e/11-advanced-trail.sp
   │   .next/dev/types/**/*.ts removido do include para evitar TS1434/TS1128
   └── Total E2E: 11 specs (10 spec files + fixtures) · lint ✓ · 57 testes ✓
 
+Sprint TOPICOS-INTENT ✅ Power User Hub — /topicos (Épico A)
+  ├── Toggle 📚/🔥 persistente (localStorage workshop-intent-mode)
+  ├── Modo Estudo (padrão): accordion fechado, progress bar visível, ordem original
+  ├── Modo Operacional (🔥): todos os módulos da trilha expandidos automaticamente,
+  │   progress bar oculta, tópicos ordenados por camada OSI (L3/L4 primeiro),
+  │   badges L3/L4 em vermelho var(--color-err), padding compacto, títulos truncados
+  ├── toggle re-expande ao mudar trilha em modo 🔥 (useEffect [activeTrail, intentMode])
+  ├── toggle invisível durante busca ativa
+  ├── hover preview desktop: tooltip CSS group-hover:opacity-100 (role="tooltip", hidden md:block)
+  ├── tap expand mobile: botão "▼ detalhes" inline, expandedTooltip state
+  ├── SORT_STRATEGIES e INTENT_LS_KEY exportados para testabilidade
+  ├── setExpandedTooltip(null) dentro de toggleModule (orphan cleanup)
+  ├── src/topicos/page.test.tsx — 12 novos testes (sort strategies + localStorage)
+  └── lint ✓ · eslint ✓ · 69 testes ✓ · zero mudanças em BadgeContext/globals.css
+
+Sprint SRS ✅ Épico B — Motor de Revisão Inteligente SM-2
+  ├── src/lib/srs.ts — motor SM-2 Lite puro (zero imports React, totalmente desacoplado):
+  │   getNow() centralizado (Tech Lead: sem Date.now() espalhado)
+  │   getSRSData() com try/catch + validação version===1 + emptyStore fallback
+  │   saveSRSData() com try/catch (QuotaExceededError silenciado)
+  │   clearSRSData() — LGPD: apagar todos os dados de revisão
+  │   calculateNextReview() — SM-2 imutável: score 1-2 reseta, score 3-5 avança
+  │     easeFactor mínimo 1.3 (invariante), nextReview = now + interval * 86_400_000
+  │   getDueItems() ordenado por atraso; getTotalDue(); seedItem() não-destrutivo
+  │   applyReview() — aplica SM-2 e persiste em um passo
+  │   SRSStore: { version: 1, items: Record<questionIdx, SRSItem>, updatedAt }
+  ├── src/lib/srs.test.ts — 33 testes unitários (QA Lead: invariantes obrigatórios):
+  │   easeFactor NUNCA < 1.3; reset repetitions em score 1-2; nextReview correto;
+  │   round-trip localStorage; JSON corrompido → emptyStore; version !== 1 → emptyStore;
+  │   seedItem não sobrescreve; immutabilidade (item original não mutado)
+  ├── app/treino/page.tsx — "Treinamento Tático" (UX operacional, não flashcard escolar):
+  │   4 fases: lobby → question → rating → done
+  │   Lobby: stats 3 colunas, backlog alert, fila de revisão com urgência 🔴🟡🔵,
+  │     EF e repetitions visíveis, botão LGPD "Apagar dados de revisão"
+  │   Question: recall puro (sem opções múltiplas), "Ver Resposta" → resposta + explanation
+  │   Rating: 5 botões sem punição (❌ Não lembro / 😓 Muito difícil / 🤔 Com esforço /
+  │     ✅ Lembrei / ⚡ Fácil) — UX Dr. Henrique Valente
+  │   Done: stats forte/médio/fraco, próximas revisões, links Dashboard/Quiz
+  │   Terminologia: "Missão 3/8", "Ponto de revisão", "Área crítica", "Backlog operacional"
+  ├── app/treino/layout.tsx + seo.ts (/treino em ROUTE_SEO)
+  ├── app/quiz/page.tsx — seed SRS automático em finishQuiz (cada erro → seedItem)
+  │   + link "🎯 Treinar com SRS →" no result screen quando wrongCount > 0
+  ├── src/components/ClientLayout.tsx — link 🎯 Treino adicionado ao NAV_LINKS
+  ├── app/dashboard/page.tsx — card SRS semáforo ok/warn/err + useMemo srsDue
+  │   verde: "Tudo em dia" | amarelo: "N pendentes" | vermelho: "🔴 N missões atrasadas"
+  ├── localStorage: nova chave workshop-srs-v1 (versionada, isolada)
+  └── lint ✓ · eslint ✓ · 102 testes ✓ · 8 arquivos modificados/criados
+
 Sprint CHEAT-v4 ✅ Cheat Sheet Interativo (app/cheat-sheet/page.tsx)
   ├── (1) Filtro de trilha: 4 botões Todas/Firewall/Fundamentos/Avançados (activeTrail state)
   │   cmdTrail() module-level mapeia categorias:
