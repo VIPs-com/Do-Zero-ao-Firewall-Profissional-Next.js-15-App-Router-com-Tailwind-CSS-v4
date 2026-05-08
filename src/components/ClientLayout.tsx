@@ -167,10 +167,13 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
               className="p-2 rounded-md bg-bg-3 border border-border text-text-2 hover:border-accent hover:text-text transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
               title={isDark ? 'Tema claro' : 'Tema escuro'}
+              suppressHydrationWarning
             >
-              {isDark
-                ? <Sun  size={18} aria-hidden="true" />
-                : <Moon size={18} aria-hidden="true" />}
+              <span suppressHydrationWarning>
+                {isDark
+                  ? <Sun  size={18} aria-hidden="true" />
+                  : <Moon size={18} aria-hidden="true" />}
+              </span>
             </button>
 
             {/* Progresso do curso — Sprint UI-H */}
