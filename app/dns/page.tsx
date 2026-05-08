@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox, HighlightBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { WarnBox, HighlightBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -20,8 +20,16 @@ const DNS_CHECKLIST = [
   { id: 'dns-firewall', text: 'Firewall usa o DNS local como primário' },
 ];
 
+type DnsTab = 'conceito' | 'zonas' | 'diagnostico';
+const TABS: { id: DnsTab; label: string }[] = [
+  { id: 'conceito',    label: '🌐 Conceito & BIND9' },
+  { id: 'zonas',       label: '⚙️ Zonas & Validação' },
+  { id: 'diagnostico', label: '🔬 Erros & Exercícios' },
+];
+
 export default function DnsPage() {
   const [activeDeepDive, setActiveDeepDive] = React.useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = React.useState<DnsTab>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -45,7 +53,7 @@ export default function DnsPage() {
       <div className="section-label">Tópico 04 · Camada 7</div>
       <h1 className="section-title">📖 DNS BIND9</h1>
       <p className="section-sub">
-        O DNS é o "catálogo telefônico" da internet — traduz nomes de domínio em endereços IP.
+        O DNS é o &quot;catálogo telefônico&quot; da internet — traduz nomes de domínio em endereços IP.
         No modelo OSI, o DNS opera na Camada 7 (Aplicação).
       </p>
 
@@ -59,9 +67,29 @@ export default function DnsPage() {
         ]}
       />
 
-      <div className="grid lg:grid-cols-[1fr_320px] gap-12">
+      {/* ── Tab bar ── */}
+      <div className="flex gap-1 border-b border-border mb-8" role="tablist">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={activeTab === t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
+              activeTab === t.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-3 hover:text-text-2',
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Tab 1: Conceito & BIND9 ── */}
+      {activeTab === 'conceito' && (
         <div className="space-y-16">
-          {/* Section 1: How it works */}
           <section id="bind9">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
@@ -69,7 +97,7 @@ export default function DnsPage() {
               </div>
               <h2 className="text-2xl font-bold">1. Como o BIND9 funciona?</h2>
             </div>
-            
+
             <div className="grid md:grid-cols-3 gap-4 mb-8">
               {[
                 { t: 'Resolução Direta', d: 'Nome → IP (Registro A)', i: '🌐' },
@@ -91,7 +119,6 @@ export default function DnsPage() {
             </WarnBox>
           </section>
 
-          {/* Section 2: Configuration */}
           <section id="config">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
@@ -99,34 +126,39 @@ export default function DnsPage() {
               </div>
               <h2 className="text-2xl font-bold">2. Instalação e Configuração</h2>
             </div>
-
             <div className="space-y-8">
               <CodeBlock
                 title="Instalar BIND9 e utilitários"
                 lang="bash"
                 code={`apt install bind9 bind9utils dnsutils -y\nsystemctl enable named\nsystemctl start named\nsystemctl status named`}
               />
-              <CodeBlock 
+              <CodeBlock
                 title="/etc/bind/named.conf.options"
-                code={`options {\n  directory "/var/cache/bind";\n  forwarders { 8.8.8.8; 9.9.9.9; };\n  dnssec-validation yes;\n  listen-on-v6 { none; };\n  listen-on { any; };\n  allow-recursion { any; };\n  allow-query { any; };\n};`} 
-                lang="bind" 
+                code={`options {\n  directory "/var/cache/bind";\n  forwarders { 8.8.8.8; 9.9.9.9; };\n  dnssec-validation yes;\n  listen-on-v6 { none; };\n  listen-on { any; };\n  allow-recursion { any; };\n  allow-query { any; };\n};`}
+                lang="bind"
               />
-
               <CodeBlock
                 title="/etc/bind/named.conf.local"
                 code={`zone "workshop.local" {\n  type master;\n  file "db.workshop.local";\n};\n\n# Zona Reversa — resolve IP → nome (PTR records)\nzone "56.168.192.in-addr.arpa" {\n  type master;\n  file "db.56.168.192";\n};`}
                 lang="bind"
               />
+            </div>
+          </section>
+        </div>
+      )}
 
-              <CodeBlock
-                title="/var/cache/bind/db.workshop.local (Zona Direta)"
-                code={`$TTL 3600\n@ IN SOA ns1.workshop.local. admin.workshop.local. (\n  2026030901 ; Serial\n  3600 ; refresh\n  1800 ; retry\n  604800 ; expire\n  3600 ) ; ttl negativo\n\n@ IN NS ns1.workshop.local.\n\nns1      IN A     192.168.56.100\nfirewall IN A     192.168.56.250\nwww      IN A     192.168.56.120\nwindows  IN A     192.168.57.50\nweb      IN CNAME www`} 
-                lang="bind" 
-              />
-
-              <CodeBlock
-                title="/var/cache/bind/db.56.168.192 (Zona Reversa — Registros PTR)"
-                code={`$TTL 3600
+      {/* ── Tab 2: Zonas & Validação ── */}
+      {activeTab === 'zonas' && (
+        <div className="grid lg:grid-cols-[1fr_320px] gap-12">
+          <div className="space-y-8">
+            <CodeBlock
+              title="/var/cache/bind/db.workshop.local (Zona Direta)"
+              code={`$TTL 3600\n@ IN SOA ns1.workshop.local. admin.workshop.local. (\n  2026030901 ; Serial\n  3600 ; refresh\n  1800 ; retry\n  604800 ; expire\n  3600 ) ; ttl negativo\n\n@ IN NS ns1.workshop.local.\n\nns1      IN A     192.168.56.100\nfirewall IN A     192.168.56.250\nwww      IN A     192.168.56.120\nwindows  IN A     192.168.57.50\nweb      IN CNAME www`}
+              lang="bind"
+            />
+            <CodeBlock
+              title="/var/cache/bind/db.56.168.192 (Zona Reversa — Registros PTR)"
+              code={`$TTL 3600
 @ IN SOA ns1.workshop.local. admin.workshop.local. (
   2026030901 ; Serial
   3600       ; Refresh
@@ -139,71 +171,127 @@ export default function DnsPage() {
 100 IN PTR ns1.workshop.local.
 120 IN PTR www.workshop.local.
 250 IN PTR firewall.workshop.local.`}
-                lang="bind"
-              />
-
-              <CodeBlock
-                title="Validar zonas e recarregar BIND9"
-                lang="bash"
-                code={`named-checkconf
+              lang="bind"
+            />
+            <CodeBlock
+              title="Validar zonas e recarregar BIND9"
+              lang="bash"
+              code={`named-checkconf
 named-checkzone workshop.local /var/cache/bind/db.workshop.local
 named-checkzone 56.168.192.in-addr.arpa /var/cache/bind/db.56.168.192
 systemctl reload named`}
-              />
-            </div>
-          </section>
+            />
 
-          {/* Section 3: Diagnosis */}
-          <section id="diagnostico">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
-                <Search size={24} />
+            <section id="diagnostico">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                  <Search size={24} />
+                </div>
+                <h2 className="text-2xl font-bold">3. Validação e Diagnóstico</h2>
               </div>
-              <h2 className="text-2xl font-bold">3. Validação e Diagnóstico</h2>
-            </div>
-
-            <div className="space-y-4">
-              <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
-                <CheckCircle2 size={20} className="text-ok shrink-0 mt-1" />
-                <div className="flex-1">
-                  <h4 className="font-bold text-sm mb-1">Validar Sintaxe</h4>
-                  <p className="text-xs text-text-3 mb-3">Sempre valide antes de reiniciar o serviço.</p>
-                  <CodeBlock code={`named-checkconf\nnamed-checkzone workshop.local /etc/bind/db.workshop.local`} lang="bash" />
+              <div className="space-y-4">
+                <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
+                  <CheckCircle2 size={20} className="text-ok shrink-0 mt-1" />
+                  <div className="flex-1">
+                    <h4 className="font-bold text-sm mb-1">Validar Sintaxe</h4>
+                    <p className="text-xs text-text-3 mb-3">Sempre valide antes de reiniciar o serviço.</p>
+                    <CodeBlock code={`named-checkconf\nnamed-checkzone workshop.local /etc/bind/db.workshop.local`} lang="bash" />
+                  </div>
+                </div>
+                <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
+                  <Terminal size={20} className="text-info shrink-0 mt-1" />
+                  <div className="flex-1">
+                    <h4 className="font-bold text-sm mb-1">Testar Resolução</h4>
+                    <p className="text-xs text-text-3 mb-3">Use o dig para consultas detalhadas.</p>
+                    <CodeBlock code={`dig @127.0.0.1 www.workshop.local\ndig @127.0.0.1 -x 192.168.56.120`} lang="bash" />
+                    <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução direta):</p>
+                    <CodeBlock code={`;; ANSWER SECTION:\nwww.workshop.local. 3600 IN A 192.168.56.120\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
+                    <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução reversa — dig -x):</p>
+                    <CodeBlock code={`;; ANSWER SECTION:\n120.56.168.192.in-addr.arpa. 3600 IN PTR www.workshop.local.\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
+                  </div>
+                </div>
+                <WindowsComparisonBox
+                  linuxCode={`# Consulta direta ao servidor DNS local\ndig @192.168.56.10 workshop.local\n\n# Resolução reversa (IP → nome)\ndig -x 192.168.56.120 @192.168.56.10`}
+                  windowsCode={`# Consulta direta ao servidor DNS local\nnslookup workshop.local 192.168.56.10\n\n# Resolução reversa (IP → nome)\nnslookup 192.168.56.120 192.168.56.10`}
+                  linuxLabel="Linux — dig"
+                  windowsLabel="Windows — nslookup"
+                />
+                <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
+                  <Terminal size={20} className="text-accent shrink-0 mt-1" />
+                  <div className="flex-1">
+                    <h4 className="font-bold text-sm mb-1">Monitorar Logs do BIND9</h4>
+                    <p className="text-xs text-text-3 mb-3">Acompanhe erros em tempo real durante a configuração:</p>
+                    <CodeBlock code={`journalctl -u named -f`} lang="bash" />
+                  </div>
                 </div>
               </div>
+            </section>
+          </div>
 
-              <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
-                <Terminal size={20} className="text-info shrink-0 mt-1" />
-                <div className="flex-1">
-                  <h4 className="font-bold text-sm mb-1">Testar Resolução</h4>
-                  <p className="text-xs text-text-3 mb-3">Use o dig para consultas detalhadas.</p>
-                  <CodeBlock code={`dig @127.0.0.1 www.workshop.local\ndig @127.0.0.1 -x 192.168.56.120`} lang="bash" />
-                  <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução direta):</p>
-                  <CodeBlock code={`;; ANSWER SECTION:\nwww.workshop.local. 3600 IN A 192.168.56.120\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
-                  <p className="text-[10px] text-text-3 mt-3 mb-2">Saída esperada (resolução reversa — dig -x):</p>
-                  <CodeBlock code={`;; ANSWER SECTION:\n120.56.168.192.in-addr.arpa. 3600 IN PTR www.workshop.local.\n\n;; Query time: 1 msec\n;; SERVER: 127.0.0.1#53(127.0.0.1)`} lang="log" />
-                </div>
-              </div>
-
-              <WindowsComparisonBox
-                linuxCode={`# Consulta direta ao servidor DNS local\ndig @192.168.56.10 workshop.local\n\n# Resolução reversa (IP → nome)\ndig -x 192.168.56.120 @192.168.56.10`}
-                windowsCode={`# Consulta direta ao servidor DNS local\nnslookup workshop.local 192.168.56.10\n\n# Resolução reversa (IP → nome)\nnslookup 192.168.56.120 192.168.56.10`}
-                linuxLabel="Linux — dig"
-                windowsLabel="Windows — nslookup"
-              />
-
-              <div className="p-5 rounded-xl bg-bg-2 border border-border flex gap-4 items-start">
-                <Terminal size={20} className="text-accent shrink-0 mt-1" />
-                <div className="flex-1">
-                  <h4 className="font-bold text-sm mb-1">Monitorar Logs do BIND9</h4>
-                  <p className="text-xs text-text-3 mb-3">Acompanhe erros em tempo real durante a configuração:</p>
-                  <CodeBlock code={`journalctl -u named -f`} lang="bash" />
-                </div>
+          <aside className="space-y-6">
+            <div className="p-6 rounded-xl bg-bg-2 border border-border shadow-sm">
+              <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-ok" />
+                Checklist DNS
+              </h3>
+              <div className="space-y-3">
+                {DNS_CHECKLIST.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className="w-full flex items-start gap-3 text-left group"
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 size={14} className="text-ok shrink-0 mt-0.5" />
+                    ) : (
+                      <Circle size={14} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                    )}
+                    <span className={cn(
+                      "text-[10px] leading-tight transition-colors",
+                      checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                    )}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
-          </section>
 
-          {/* Section 4: Erros Comuns */}
+            <WarnBox title="Troubleshooting">
+              <p className="text-xs text-text-2 leading-relaxed mb-4">
+                Se o DNS não resolver, verifique:
+              </p>
+              <ul className="text-[10px] text-text-3 space-y-2 list-disc pl-4">
+                <li>Ponto final no FQDN</li>
+                <li>Serial da zona incrementado</li>
+                <li>Porta 53 liberada no Firewall</li>
+                <li>Status: <code>systemctl status named</code></li>
+              </ul>
+            </WarnBox>
+
+            <div className="p-6 rounded-xl bg-accent-bg border border-accent-bd">
+              <h3 className="font-bold text-sm text-accent-2 mb-3">Dica do Professor</h3>
+              <p className="text-xs text-text-2 leading-relaxed mb-4">
+                O DNS é a primeira coisa que quebra porque quase todos os serviços dependem de nomes. Se o ping por IP funciona mas por nome não, o culpado é o DNS.
+              </p>
+              <button
+                onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'dns-failure-points') || null)}
+                className="w-full flex items-center justify-between p-3 rounded-lg bg-bg-2 border border-border hover:border-accent transition-all group"
+              >
+                <div className="flex items-center gap-2">
+                  <BookOpen size={14} className="text-accent" />
+                  <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">Mergulho Profundo: Falhas de DNS</span>
+                </div>
+                <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* ── Tab 3: Erros & Exercícios ── */}
+      {activeTab === 'diagnostico' && (
+        <div className="space-y-10">
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
@@ -220,7 +308,7 @@ systemctl reload named`}
               </p>
             </HighlightBox>
 
-            <WarnBox title="⚠️ Problemas frequentes com BIND9">
+            <WarnBox title="⚠️ Problemas frequentes com BIND9" className="mt-4">
               <ul className="space-y-3 text-sm">
                 <li>
                   <strong>named não inicia após editar zona</strong> → erro de sintaxe na zona
@@ -241,81 +329,13 @@ systemctl reload named`}
               </ul>
             </WarnBox>
           </section>
-        </div>
 
-        <aside className="space-y-6">
-          {/* DNS Checklist */}
-          <div className="p-6 rounded-xl bg-bg-2 border border-border shadow-sm">
-            <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-ok" />
-              Checklist DNS
-            </h3>
-            <div className="space-y-3">
-              {DNS_CHECKLIST.map(item => (
-                <button 
-                  key={item.id}
-                  onClick={() => toggleCheck(item.id)}
-                  className="w-full flex items-start gap-3 text-left group"
-                >
-                  {checklist[item.id] ? (
-                    <CheckCircle2 size={14} className="text-ok shrink-0 mt-0.5" />
-                  ) : (
-                    <Circle size={14} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
-                  )}
-                  <span className={cn(
-                    "text-[10px] leading-tight transition-colors",
-                    checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
-                  )}>
-                    {item.text}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <WarnBox title="Troubleshooting">
-            <p className="text-xs text-text-2 leading-relaxed mb-4">
-              Se o DNS não resolver, verifique:
-            </p>
-            <ul className="text-[10px] text-text-3 space-y-2 list-disc pl-4">
-              <li>Ponto final no FQDN</li>
-              <li>Serial da zona incrementado</li>
-              <li>Porta 53 liberada no Firewall</li>
-              <li>Status: <code>systemctl status named</code></li>
-            </ul>
-          </WarnBox>
-
-          <div className="p-6 rounded-xl bg-accent-bg border border-accent-bd">
-            <h3 className="font-bold text-sm text-accent-2 mb-3">Dica do Professor</h3>
-            <p className="text-xs text-text-2 leading-relaxed mb-4">
-              O DNS é a primeira coisa que quebra porque quase todos os serviços dependem de nomes. Se o ping por IP funciona mas por nome não, o culpado é o DNS.
-            </p>
-            <button 
-              onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'dns-failure-points') || null)}
-              className="w-full flex items-center justify-between p-3 rounded-lg bg-bg-2 border border-border hover:border-accent transition-all group"
-            >
-              <div className="flex items-center gap-2">
-                <BookOpen size={14} className="text-accent" />
-                <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">Mergulho Profundo: Falhas de DNS</span>
-              </div>
-              <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </aside>
-      </div>
-
-      <DeepDiveModal
-        dive={activeDeepDive}
-        onClose={() => setActiveDeepDive(null)}
-      />
-
-      {/* ── Exercícios Guiados ── */}
-      <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
-        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
-        <div className="grid gap-4">
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 1 — Diagnóstico DNS com dig</p>
-            <CodeBlock lang="bash" code={`# dig é a ferramenta principal de diagnóstico DNS
+          <section>
+            <h2 className="text-2xl font-bold mb-4">🎯 Exercícios Guiados</h2>
+            <div className="grid gap-4">
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 1 — Diagnóstico DNS com dig</p>
+                <CodeBlock lang="bash" code={`# dig é a ferramenta principal de diagnóstico DNS
 
 # Resolução simples:
 dig google.com
@@ -334,10 +354,10 @@ dig google.com | grep -E "ANSWER|Query time|SERVER"
 
 # Trace completo (mostrar toda a cadeia de resolução):
 dig +trace google.com`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 2 — Criar zona DNS interna no BIND9</p>
-            <CodeBlock lang="bash" code={`# Adicionar zona em /etc/bind/named.conf.local
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 2 — Criar zona DNS interna no BIND9</p>
+                <CodeBlock lang="bash" code={`# Adicionar zona em /etc/bind/named.conf.local
 sudo tee -a /etc/bind/named.conf.local << 'EOF'
 zone "lab.interno" {
     type master;
@@ -365,10 +385,10 @@ sudo systemctl reload named
 
 # Testar:
 dig @192.168.57.254 webserver.lab.interno`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 3 — Capturar consultas DNS com tcpdump</p>
-            <CodeBlock lang="bash" code={`# DNS usa UDP porta 53 (TCP para grandes respostas)
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 3 — Capturar consultas DNS com tcpdump</p>
+                <CodeBlock lang="bash" code={`# DNS usa UDP porta 53 (TCP para grandes respostas)
 
 # Capturar todas as consultas DNS em tempo real:
 sudo tcpdump -i eth0 -n udp port 53
@@ -380,16 +400,20 @@ dig @8.8.8.8 github.com
 # Filtrar só queries (não respostas):
 sudo tcpdump -i eth0 -n udp port 53 and 'udp[10] & 0x80 = 0'
 
-# Ver consultas para um domínio específico:
-sudo tcpdump -i eth0 -n udp port 53 and 'dns[12:2] & 0xf = 1'
-
 # Verificar quantas consultas por segundo (carga):
 sudo tcpdump -i eth0 -n udp port 53 2>/dev/null | \\
   awk '{count++} END {print count/10 " queries/s"}' &
 sleep 10 && kill %1`} />
-          </div>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
+      )}
+
+      <DeepDiveModal
+        dive={activeDeepDive}
+        onClose={() => setActiveDeepDive(null)}
+      />
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/dns" />

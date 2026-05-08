@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ShieldAlert, Zap, Terminal, Info, AlertTriangle, ShieldCheck, Bug, Clock, Globe, Network, Radio, Circle, CheckCircle2 } from 'lucide-react';
@@ -167,8 +167,65 @@ http_access deny !valid_sites`,
   },
 ];
 
+type AtaquesTab = 'recon' | 'avancados' | 'analise';
+const ATAQUE_TABS: { id: AtaquesTab; label: string }[] = [
+  { id: 'recon',    label: '🔍 Reconhecimento & Flood' },
+  { id: 'avancados', label: '🎭 Spoofing & Evasão' },
+  { id: 'analise',  label: '🔬 Análise & Exercícios' },
+];
+
+function AttackCard({ attack, idx }: { attack: typeof attacks[0]; idx: number }) {
+  return (
+    <motion.section
+      key={attack.id}
+      id={attack.id}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: idx * 0.05 }}
+      className="bg-bg-2 border border-border rounded-2xl overflow-hidden shadow-sm"
+    >
+      <div className="p-6 md:p-8 border-b border-border bg-bg-3 flex items-center gap-4">
+        <div className="w-12 h-12 rounded-xl bg-bg-2 border border-border flex items-center justify-center shadow-inner">
+          {attack.icon}
+        </div>
+        <div>
+          <h2 className="text-xl font-bold">{attack.title}</h2>
+          <div className="text-[10px] font-mono text-text-3 uppercase tracking-widest">Ataque &amp; Defesa</div>
+        </div>
+      </div>
+      <div className="p-6 md:p-8 space-y-6">
+        <div className="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 className="text-sm font-bold text-accent mb-2 flex items-center gap-2">
+              <Info size={16} />
+              O Conceito
+            </h3>
+            <p className="text-text-2 text-sm leading-relaxed">{attack.concept}</p>
+          </div>
+          <div className="p-4 rounded-lg bg-ok/5 border border-ok/20">
+            <h3 className="text-sm font-bold text-ok mb-2 flex items-center gap-2">
+              <ShieldCheck size={16} />
+              Como Mitigar
+            </h3>
+            <p className="text-text-2 text-xs leading-relaxed">{attack.mitigation}</p>
+          </div>
+        </div>
+        <div>
+          <h3 className="text-xs font-bold text-text-3 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <Terminal size={14} />
+            Ataque &amp; Defesa na Prática
+          </h3>
+          <CodeBlock lang="bash" code={attack.code} />
+        </div>
+      </div>
+    </motion.section>
+  );
+}
+
 export default function AdvancedAttacksPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<AtaquesTab>('recon');
 
   useEffect(() => {
     trackPageVisit('ataques-avancados');
@@ -191,93 +248,78 @@ export default function AdvancedAttacksPage() {
         Entenda como burlar proteções básicas e como implementar defesas robustas.
       </p>
 
-      {/* Aviso ético */}
-      <WarnBox title="Uso Ético — Pentest Autorizado">
-        Este módulo descreve técnicas de ataque para fins <strong>exclusivamente defensivos e educacionais</strong>.
-        Nunca execute ataques em redes ou sistemas sem autorização expressa por escrito.
-        O uso não autorizado dessas técnicas é crime (Lei 12.737/2012 — Lei Carolina Dieckmann).
-      </WarnBox>
-
-      {/* Kill Chain */}
-      <div className="mt-8">
-        <FluxoCard
-          title="Cyber Kill Chain — Cadeia de Ataque"
-          steps={[
-            { label: 'Reconhecimento', sub: 'nmap, OSINT, shodan', icon: <Radio size={14} />, color: 'border-info/50' },
-            { label: 'Varredura', sub: 'ports, versions, OS', icon: <Radio size={14} />, color: 'border-warn/50' },
-            { label: 'Exploração', sub: 'CVE, misconfig, brute', icon: <Bug size={14} />, color: 'border-err/50' },
-            { label: 'Persistência', sub: 'backdoor, cron, SSH key', icon: <Terminal size={14} />, color: 'border-err/50' },
-            { label: 'Mov. Lateral', sub: 'pivot DMZ → LAN', icon: <Network size={14} />, color: 'border-err/50' },
-            { label: 'Exfiltração', sub: 'DNS tunnel, HTTPS C2', icon: <Globe size={14} />, color: 'border-err/50' },
-          ]}
-        />
-      </div>
-
-      {/* Cards de Ataque */}
-      <div className="grid grid-cols-1 gap-10 mt-10">
-        {attacks.map((attack, idx) => (
-          <motion.section
-            key={attack.id}
-            id={attack.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.05 }}
-            className="bg-bg-2 border border-border rounded-2xl overflow-hidden shadow-sm"
+      {/* ── Tab bar ── */}
+      <div className="flex gap-1 border-b border-border mb-8" role="tablist">
+        {ATAQUE_TABS.map(t => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={activeTab === t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
+              activeTab === t.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-3 hover:text-text-2',
+            )}
           >
-            <div className="p-6 md:p-8 border-b border-border bg-bg-3 flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-bg-2 border border-border flex items-center justify-center shadow-inner">
-                {attack.icon}
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">{attack.title}</h2>
-                <div className="text-[10px] font-mono text-text-3 uppercase tracking-widest">Ataque &amp; Defesa</div>
-              </div>
-            </div>
-
-            <div className="p-6 md:p-8 space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-sm font-bold text-accent mb-2 flex items-center gap-2">
-                    <Info size={16} />
-                    O Conceito
-                  </h3>
-                  <p className="text-text-2 text-sm leading-relaxed">{attack.concept}</p>
-                </div>
-                <div className="p-4 rounded-lg bg-ok/5 border border-ok/20">
-                  <h3 className="text-sm font-bold text-ok mb-2 flex items-center gap-2">
-                    <ShieldCheck size={16} />
-                    Como Mitigar
-                  </h3>
-                  <p className="text-text-2 text-xs leading-relaxed">{attack.mitigation}</p>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xs font-bold text-text-3 uppercase tracking-widest mb-3 flex items-center gap-2">
-                  <Terminal size={14} />
-                  Ataque &amp; Defesa na Prática
-                </h3>
-                <CodeBlock lang="bash" code={attack.code} />
-              </div>
-            </div>
-          </motion.section>
+            {t.label}
+          </button>
         ))}
       </div>
 
-      {/* WindowsComparisonBox */}
-      <div className="mt-10">
-        <WindowsComparisonBox
-          windowsLabel="Windows Defender ATP / Microsoft Sentinel"
-          linuxLabel="iptables + Fail2ban + tcpdump"
-          windowsCode={`# Windows — defesa passiva via GUI:
+      {/* ── Tab 1: Reconhecimento & Flood ── */}
+      {activeTab === 'recon' && (
+        <div className="space-y-8">
+          <WarnBox title="Uso Ético — Pentest Autorizado">
+            Este módulo descreve técnicas de ataque para fins <strong>exclusivamente defensivos e educacionais</strong>.
+            Nunca execute ataques em redes ou sistemas sem autorização expressa por escrito.
+            O uso não autorizado dessas técnicas é crime (Lei 12.737/2012 — Lei Carolina Dieckmann).
+          </WarnBox>
+
+          <FluxoCard
+            title="Cyber Kill Chain — Cadeia de Ataque"
+            steps={[
+              { label: 'Reconhecimento', sub: 'nmap, OSINT, shodan', icon: <Radio size={14} />, color: 'border-info/50' },
+              { label: 'Varredura', sub: 'ports, versions, OS', icon: <Radio size={14} />, color: 'border-warn/50' },
+              { label: 'Exploração', sub: 'CVE, misconfig, brute', icon: <Bug size={14} />, color: 'border-err/50' },
+              { label: 'Persistência', sub: 'backdoor, cron, SSH key', icon: <Terminal size={14} />, color: 'border-err/50' },
+              { label: 'Mov. Lateral', sub: 'pivot DMZ → LAN', icon: <Network size={14} />, color: 'border-err/50' },
+              { label: 'Exfiltração', sub: 'DNS tunnel, HTTPS C2', icon: <Globe size={14} />, color: 'border-err/50' },
+            ]}
+          />
+
+          <div className="grid grid-cols-1 gap-10">
+            {attacks.slice(0, 3).map((attack, idx) => (
+              <AttackCard key={attack.id} attack={attack} idx={idx} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Tab 2: Spoofing & Evasão ── */}
+      {activeTab === 'avancados' && (
+        <div className="grid grid-cols-1 gap-10">
+          {attacks.slice(3).map((attack, idx) => (
+            <AttackCard key={attack.id} attack={attack} idx={idx} />
+          ))}
+        </div>
+      )}
+
+      {/* ── Tab 3: Análise & Exercícios ── */}
+      {activeTab === 'analise' && (
+        <div className="space-y-10">
+          <WindowsComparisonBox
+            windowsLabel="Windows Defender ATP / Microsoft Sentinel"
+            linuxLabel="iptables + Fail2ban + tcpdump"
+            windowsCode={`# Windows — defesa passiva via GUI:
 - Windows Defender Firewall (bloquear por porta/app)
 - Microsoft Defender ATP (detecção comportamental)
 - Microsoft Sentinel (SIEM cloud)
 - Event Viewer → Security Log (audit)
 - netstat -an (ver conexões)
 - IPsec Policies (criptografia interna)`}
-          linuxCode={`# Linux — defesa ativa via CLI:
+            linuxCode={`# Linux — defesa ativa via CLI:
 # Bloquear scan (hashlimit):
 iptables -A INPUT -p tcp --syn \\
   -m hashlimit --hashlimit-above 15/sec \\
@@ -291,21 +333,19 @@ tcpdump -i eth0 -nn 'tcp[tcpflags] & tcp-syn != 0'
 
 # Ban automático com Fail2ban:
 fail2ban-client status sshd`}
-        />
-      </div>
+          />
 
-      {/* Seção: Análise de Tráfego com tcpdump */}
-      <section id="analise" className="mt-10">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-          <ShieldAlert className="text-warn" size={24} />
-          Analisar Ataques em Tempo Real com tcpdump
-        </h2>
-        <InfoBox title="tcpdump é a câmera de segurança da rede">
-          Quando um ataque acontece, você precisa de evidências. tcpdump captura pacotes em tempo real
-          e salva em formato PCAP para análise no Wireshark.
-        </InfoBox>
-        <div className="mt-4">
-          <CodeBlock lang="bash" code={`# Capturar todo tráfego TCP na interface de WAN:
+          <section id="analise">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <ShieldAlert className="text-warn" size={24} />
+              Analisar Ataques em Tempo Real com tcpdump
+            </h2>
+            <InfoBox title="tcpdump é a câmera de segurança da rede">
+              Quando um ataque acontece, você precisa de evidências. tcpdump captura pacotes em tempo real
+              e salva em formato PCAP para análise no Wireshark.
+            </InfoBox>
+            <div className="mt-4">
+              <CodeBlock lang="bash" code={`# Capturar todo tráfego TCP na interface de WAN:
 tcpdump -i eth0 -nn -w ataque.pcap
 
 # Filtrar apenas SYN flood (conexões novas em excesso):
@@ -320,95 +360,91 @@ tcpdump -i eth0 arp
 # Análise posterior com o PCAP gerado:
 # tcpdump -r ataque.pcap -nn | grep "192.168.57."
 # Abrir no Wireshark: Statistics > I/O Graphs, Protocol Hierarchy`} />
-        </div>
-      </section>
+            </div>
+          </section>
 
-      {/* Checklist */}
-      <section id="checklist" className="mt-10">
-        <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-          <ShieldCheck className="text-ok" size={24} />
-          Checklist do Lab — Ataques Avançados
-        </h2>
-        <div className="space-y-3">
-          {CHECKLIST.map(item => (
-            <label
-              key={item.id}
-              className={cn(
-                'flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all',
-                checklist[item.id]
-                  ? 'bg-ok/5 border-ok/30'
-                  : 'bg-bg-2 border-border hover:border-accent/30',
-              )}
-            >
-              <button
-                type="button"
-                onClick={() => updateChecklist(item.id, !checklist[item.id])}
-                className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
-                aria-label={checklist[item.id] ? 'Desmarcar checkpoint' : 'Marcar checkpoint'}
-              >
-                {checklist[item.id]
-                  ? <CheckCircle2 className="text-ok" size={22} />
-                  : <Circle className="text-text-3" size={22} />}
-              </button>
-              <span className={cn('text-sm font-medium', checklist[item.id] ? 'line-through text-text-3' : 'text-text')}>
-                {item.text}
-              </span>
-            </label>
-          ))}
-        </div>
-      </section>
+          <section id="checklist">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <ShieldCheck className="text-ok" size={24} />
+              Checklist do Lab — Ataques Avançados
+            </h2>
+            <div className="space-y-3">
+              {CHECKLIST.map(item => (
+                <label
+                  key={item.id}
+                  className={cn(
+                    'flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all',
+                    checklist[item.id]
+                      ? 'bg-ok/5 border-ok/30'
+                      : 'bg-bg-2 border-border hover:border-accent/30',
+                  )}
+                >
+                  <button
+                    type="button"
+                    onClick={() => updateChecklist(item.id, !checklist[item.id])}
+                    className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded"
+                    aria-label={checklist[item.id] ? 'Desmarcar checkpoint' : 'Marcar checkpoint'}
+                  >
+                    {checklist[item.id]
+                      ? <CheckCircle2 className="text-ok" size={22} />
+                      : <Circle className="text-text-3" size={22} />}
+                  </button>
+                  <span className={cn('text-sm font-medium', checklist[item.id] ? 'line-through text-text-3' : 'text-text')}>
+                    {item.text}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </section>
 
-      {/* CTA */}
-      <div className="mt-16 p-8 rounded-2xl bg-accent/5 border border-accent/20 text-center">
-        <Zap className="text-accent mx-auto mb-4" size={32} />
-        <h3 className="text-xl font-bold mb-2">Pronto para o Próximo Nível?</h3>
-        <p className="text-text-2 text-sm max-w-2xl mx-auto mb-8">
-          Entendeu os ataques, agora aprenda como um invasor usa um servidor comprometido na DMZ
-          para atacar toda a rede interna — e como impedir isso.
-        </p>
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/pivoteamento" className="btn-primary px-8 py-3">Próximo: Pivoteamento</Link>
-          <Link href="/quiz" className="btn-outline px-8 py-3">Testar no Quiz</Link>
-        </div>
-      </div>
-
-      {/* ── Erros Comuns ── */}
-      <section className="max-w-5xl mx-auto px-4 mb-8 space-y-4">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <AlertTriangle size={22} className="text-warn" /> Erros de Diagnóstico e Soluções
-        </h2>
-        {[
-          {
-            err: 'tcpdump: listen EACCES — permission denied on interface',
-            fix: 'tcpdump requer privilégios de root ou CAP_NET_RAW. Executar com sudo: sudo tcpdump -i eth0. Alternativa sem root: instalar wireshark-common e adicionar o usuário ao grupo wireshark (setuid).',
-          },
-          {
-            err: 'nmap mostra todas as portas como "filtered" — host parece inacessível',
-            fix: 'Firewall descarta pacotes silenciosamente (DROP em vez de REJECT). Confirmar que o host está ativo: ping -c 3 IP. Usar -Pn para pular o host discovery: nmap -Pn -sV IP. Verificar se o próprio nmap não está sendo bloqueado por fail2ban no servidor.',
-          },
-          {
-            err: 'hping3: unable to bind to source address',
-            fix: 'Interface ou endereço IP incorreto. Especificar a interface com -I eth0. Verificar o IP da interface: ip a. Em alguns sistemas, hping3 precisa de sudo mesmo com CAP_NET_RAW.',
-          },
-          {
-            err: 'arpwatch/arping não detecta ataques ARP na rede',
-            fix: 'Ferramenta pode estar monitorando a interface errada. Verificar: arpwatch -i eth1 (interface da LAN, não WAN). Em redes com switches gerenciados, habilitar Dynamic ARP Inspection (DAI) no switch — mais eficaz que monitoramento passivo.',
-          },
-        ].map(({ err, fix }) => (
-          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
-            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
-            <p className="text-sm text-text-2">✅ {fix}</p>
+          <div className="p-8 rounded-2xl bg-accent/5 border border-accent/20 text-center">
+            <Zap className="text-accent mx-auto mb-4" size={32} />
+            <h3 className="text-xl font-bold mb-2">Pronto para o Próximo Nível?</h3>
+            <p className="text-text-2 text-sm max-w-2xl mx-auto mb-8">
+              Entendeu os ataques, agora aprenda como um invasor usa um servidor comprometido na DMZ
+              para atacar toda a rede interna — e como impedir isso.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/pivoteamento" className="btn-primary px-8 py-3">Próximo: Pivoteamento</Link>
+              <Link href="/quiz" className="btn-outline px-8 py-3">Testar no Quiz</Link>
+            </div>
           </div>
-        ))}
-      </section>
 
-      {/* ── Exercícios Guiados ── */}
-      <section className="space-y-4">
-        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
-        <div className="grid gap-4">
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 1 — Reconhecimento Passivo com Nmap</p>
-            <CodeBlock lang="bash" code={`# Instalar nmap e explorar flags de detecção
+          <section className="space-y-4">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <AlertTriangle size={22} className="text-warn" /> Erros de Diagnóstico e Soluções
+            </h2>
+            {[
+              {
+                err: 'tcpdump: listen EACCES — permission denied on interface',
+                fix: 'tcpdump requer privilégios de root ou CAP_NET_RAW. Executar com sudo: sudo tcpdump -i eth0. Alternativa sem root: instalar wireshark-common e adicionar o usuário ao grupo wireshark (setuid).',
+              },
+              {
+                err: 'nmap mostra todas as portas como "filtered" — host parece inacessível',
+                fix: 'Firewall descarta pacotes silenciosamente (DROP em vez de REJECT). Confirmar que o host está ativo: ping -c 3 IP. Usar -Pn para pular o host discovery: nmap -Pn -sV IP. Verificar se o próprio nmap não está sendo bloqueado por fail2ban no servidor.',
+              },
+              {
+                err: 'hping3: unable to bind to source address',
+                fix: 'Interface ou endereço IP incorreto. Especificar a interface com -I eth0. Verificar o IP da interface: ip a. Em alguns sistemas, hping3 precisa de sudo mesmo com CAP_NET_RAW.',
+              },
+              {
+                err: 'arpwatch/arping não detecta ataques ARP na rede',
+                fix: 'Ferramenta pode estar monitorando a interface errada. Verificar: arpwatch -i eth1 (interface da LAN, não WAN). Em redes com switches gerenciados, habilitar Dynamic ARP Inspection (DAI) no switch — mais eficaz que monitoramento passivo.',
+              },
+            ].map(({ err, fix }) => (
+              <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+                <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+                <p className="text-sm text-text-2">✅ {fix}</p>
+              </div>
+            ))}
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+            <div className="grid gap-4">
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 1 — Reconhecimento Passivo com Nmap</p>
+                <CodeBlock lang="bash" code={`# Instalar nmap e explorar flags de detecção
 apt install nmap -y
 
 # Scan básico (SYN scan — requer root)
@@ -422,10 +458,10 @@ nmap -sS -T1 --max-retries 1 192.168.57.10
 
 # Ver no firewall o que chegou nos logs
 journalctl -k | grep "IPTables-DROP" | tail -20`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 2 — Simulação e Defesa contra SYN Flood</p>
-            <CodeBlock lang="bash" code={`# Instalar hping3 para simular flood (ambiente de lab apenas!)
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 2 — Simulação e Defesa contra SYN Flood</p>
+                <CodeBlock lang="bash" code={`# Instalar hping3 para simular flood (ambiente de lab apenas!)
 apt install hping3 -y
 
 # Verificar regras connlimit existentes
@@ -440,10 +476,10 @@ watch -n1 'cat /proc/sys/net/netfilter/nf_conntrack_count'
 
 # Ver entradas SYN na tabela conntrack
 conntrack -L -p tcp --state SYN_SENT | wc -l`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 3 — Detecção de ARP Spoofing</p>
-            <CodeBlock lang="bash" code={`# Instalar arpwatch para monitoramento passivo
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 3 — Detecção de ARP Spoofing</p>
+                <CodeBlock lang="bash" code={`# Instalar arpwatch para monitoramento passivo
 apt install arpwatch -y
 
 # Verificar tabela ARP atual
@@ -462,9 +498,11 @@ arptables -A INPUT --source-mac ! aa:bb:cc:dd:ee:ff -j DROP
 
 # Verificar regras arptables
 arptables -L -n`} />
-          </div>
+              </div>
+            </div>
+          </section>
         </div>
-      </section>
+      )}
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/ataques-avancados" />

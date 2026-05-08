@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { CheckCircle2, Terminal, Info, Package, Laptop, Shield, AlertTriangle, Globe, Network } from 'lucide-react';
@@ -31,8 +31,16 @@ const CHECKLIST_ITEMS = [
   { id: 'port-knocking', text: '🔑 Port Knocking', sub: 'SSH só acessível após knock', layer: 'Camada 4' },
 ];
 
+type InstalacaoTab = 'terminal' | 'lab' | 'erros';
+const TABS: { id: InstalacaoTab; label: string }[] = [
+  { id: 'terminal', label: '💻 Terminal & Mindset' },
+  { id: 'lab',      label: '🌐 Lab Setup & Rede' },
+  { id: 'erros',    label: '🔬 Erros & Exercícios' },
+];
+
 export default function InstallationPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
+  const [activeTab, setActiveTab] = useState<InstalacaoTab>('terminal');
 
   useEffect(() => {
     trackPageVisit('instalacao');
@@ -44,6 +52,59 @@ export default function InstallationPage() {
 
   const completedCount = Object.values(checklist).filter(v => v).length;
   const percentage = Math.round((completedCount / CHECKLIST_ITEMS.length) * 100);
+
+  const StickyChecklist = (
+    <aside className="lg:sticky lg:top-24 h-fit">
+      <div className="bg-bg-2 border border-border rounded-xl overflow-hidden shadow-lg">
+        <div className="px-5 py-4 border-b border-border bg-bg-3">
+          <h3 className="font-bold text-sm flex items-center gap-2">
+            <CheckCircle2 size={18} className="text-ok" />
+            Validação do Lab
+          </h3>
+        </div>
+        <div className="p-5">
+          <div className="mb-6">
+            <div className="flex justify-between text-xs font-bold mb-2">
+              <span className="text-text-3 uppercase tracking-wider">Progresso</span>
+              <span className="text-accent">{percentage}%</span>
+            </div>
+            <div className="w-full h-2 bg-bg-3 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${percentage}%` }}
+                className="h-full bg-gradient-to-r from-ok to-accent"
+              />
+            </div>
+          </div>
+          <div className="space-y-1">
+            {CHECKLIST_ITEMS.map(item => (
+              <ChecklistItem
+                key={item.id}
+                text={item.text}
+                sub={item.sub}
+                layer={item.layer}
+                checked={!!checklist[item.id]}
+                onToggle={() => toggleCheck(item.id)}
+              />
+            ))}
+          </div>
+          {percentage === 100 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-6 p-4 rounded-lg bg-ok/10 border border-ok/20 text-center"
+            >
+              <div className="text-2xl mb-2">🎉</div>
+              <p className="text-xs font-bold text-ok mb-3">Tudo validado!</p>
+              <Link href="/certificado" className="btn-primary w-full justify-center text-xs py-2">
+                Pegar Certificado
+              </Link>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </aside>
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 module-accent-instalacao">
@@ -58,484 +119,368 @@ export default function InstallationPage() {
       <div className="section-label">Pré-Lab · Fundação</div>
       <h1 className="section-title">🚀 Preparando o ambiente</h1>
       <p className="section-sub">
-        Antes de começar, é importante garantir que você tem as ferramentas e permissões corretas 
+        Antes de começar, é importante garantir que você tem as ferramentas e permissões corretas
         para configurar o laboratório. Siga os passos abaixo na ordem.
       </p>
 
-      {/* Vim Survival Guide */}
-      <div className="bg-bg-2 border border-border rounded-xl p-6 mb-12 shadow-sm">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
-            <Terminal size={20} />
-          </div>
-          <div>
-            <h3 className="font-bold text-lg">Guia de Sobrevivência: Editor Vim</h3>
-            <p className="text-xs text-text-3 uppercase tracking-widest">Essencial para edição de arquivos de configuração</p>
-          </div>
-        </div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { key: 'i', action: 'Entrar no modo de inserção (digitar)' },
-            { key: 'Esc', action: 'Sair do modo de inserção' },
-            { key: 'dd', action: 'Apagar uma linha inteira (no modo comando)' },
-            { key: ':wq', action: 'Salvar e Sair (Write & Quit)' },
-            { key: ':q!', action: 'Sair sem salvar (Forçar saída)' },
-            { key: '/', action: 'Buscar termo no arquivo' },
-          ].map(tip => (
-            <div key={tip.key} className="p-4 rounded-lg bg-bg-3 border border-border">
-              <kbd className="inline-block px-2 py-1 rounded bg-bg-2 border border-border text-accent font-mono text-sm mb-2">
-                {tip.key}
-              </kbd>
-              <p className="text-xs text-text-2">{tip.action}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <FluxoCard
-        title="As 3 Interfaces do Firewall — Zonas de Segurança"
-        direction="horizontal"
-        steps={[
-          { label: 'eth0 (WAN)', sub: 'IP Público · DHCP', color: 'var(--color-err)' },
-          { label: 'eth1 (DMZ)', sub: '192.168.56.1/24', color: 'var(--color-warn)' },
-          { label: 'eth2 (LAN)', sub: '192.168.57.1/24', color: 'var(--color-ok)' },
-        ]}
-      />
-
-      <div className="grid lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-12">
-          {/* Setup Steps */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <StepItem 
-              number={1} 
-              title="Criar as VMs" 
-              description="Use VirtualBox ou Proxmox para criar as VMs de Firewall, DMZ e LAN. Pelo menos 2GB RAM cada." 
-              icon={<Laptop size={20} />} 
-            />
-            <StepItem 
-              number={2} 
-              title="Definir redes" 
-              description="Crie redes isoladas: WAN (NAT), DMZ (Host-Only) e LAN (Host-Only)." 
-              icon={<Shield size={20} />} 
-            />
-            <StepItem 
-              number={3} 
-              title="Configurar IPs" 
-              description="Use Netplan (Ubuntu) para atribuir os IPs fixos definidos na topologia." 
-              icon={<Terminal size={20} />} 
-            />
-            <StepItem 
-              number={4} 
-              title="Instalar pacotes" 
-              description="Instale Nginx, BIND9, iptables-persistent, Squid e OpenSSH-Server." 
-              icon={<Package size={20} />} 
-            />
-          </div>
-
-          {/* Terminal do Zero */}
-          <section id="terminal-do-zero">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <Terminal size={24} className="text-accent" />
-              0. Terminal do Zero — Linux para quem vem do Windows
-            </h2>
-
-            <WarnBox title="Atenção antes de começar">
-              <p className="text-sm text-text-2">
-                O terminal do Linux <strong>NÃO é</strong> o Prompt de Comando do Windows.
-                Maiúsculas e minúsculas importam: <code>Arquivo.txt</code> ≠ <code>arquivo.txt</code>.
-                <strong> Ctrl+C CANCELA</strong> um comando (não copia!) — use <strong>Ctrl+Shift+C</strong> para copiar.
-              </p>
-            </WarnBox>
-
-            <WindowsComparisonBox
-              windowsCode={`dir              ← listar arquivos\ncd C:\\Users      ← navegar pasta\ntype arquivo.txt ← ler arquivo\nipconfig         ← ver IP\nping -n 4 8.8.8.8`}
-              linuxCode={`ls -la           # listar arquivos\ncd /home/user    # navegar pasta\ncat arquivo.txt  # ler arquivo\nip addr          # ver IP\nping -c 4 8.8.8.8`}
-            />
-
-            <div className="highlight-box mt-4">
-              <div className="flex items-center gap-2 mb-2 text-accent font-bold uppercase tracking-widest text-[10px]">
-                <span aria-hidden="true">💡</span>
-                3 atalhos que salvam vidas
-              </div>
-              <div className="grid sm:grid-cols-3 gap-3 mt-3">
-                {[
-                  { key: 'Tab', desc: 'Autocompleta nomes (não existe no CMD!)' },
-                  { key: '↑ / ↓', desc: 'Navega pelo histórico de comandos' },
-                  { key: 'Ctrl+L', desc: 'Limpa a tela (= cls no Windows)' },
-                ].map(tip => (
-                  <div key={tip.key} className="p-3 rounded-lg bg-bg-3 border border-border">
-                    <kbd className="inline-block px-2 py-1 rounded bg-bg-2 border border-border text-accent font-mono text-sm mb-2">{tip.key}</kbd>
-                    <p className="text-xs text-text-2">{tip.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <CodeBlock
-              title="Seus primeiros 5 comandos no terminal Linux"
-              lang="bash"
-              code={`pwd                    # onde estou? (= "C:\\Users\\..." no Windows)\nls -la                 # o que tem aqui? (= dir)\ncd ~                   # ir para home (= cd %USERPROFILE%)\nmkdir ~/lab-testes     # criar pasta (= mkdir)\ncat /etc/hostname      # ler arquivo (= type)`}
-            />
-
-            <WarnBox title="sudo = 'Executar como Administrador'">
-              <p className="text-sm text-text-2 mb-3">
-                Toda vez que vir <strong>"Permission denied"</strong>, adicione <code>sudo</code> antes do comando.
-                <br />
-                <strong>sudo</strong> = Super User DO. É o equivalente de clicar com botão direito
-                → <em>"Executar como administrador"</em> no Windows.
-              </p>
-              <CodeBlock
-                lang="bash"
-                code={`# Windows: botão direito → "Executar como administrador"\n# Linux:\nsudo apt update                    # atualizar lista de pacotes\nsudo systemctl restart nginx       # reiniciar serviço\nsudo nano /etc/hosts               # editar arquivo do sistema`}
-              />
-            </WarnBox>
-
-            <div className="mt-4 space-y-2">
-              {(['terminal-basico', 'sudo-entendido'] as const).map(id => {
-                const item = CHECKLIST_ITEMS.find(i => i.id === id)!;
-                return (
-                  <ChecklistItem
-                    key={id}
-                    text={item.text}
-                    sub={item.sub}
-                    layer={item.layer}
-                    checked={!!checklist[id]}
-                    onToggle={() => toggleCheck(id)}
-                  />
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Mindset SysAdmin */}
-          <section id="sysadmin-mindset">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <Shield size={24} className="text-ok" />
-              0.1 Mindset SysAdmin — De Usuário Windows a Administrador Linux
-            </h2>
-
-            <div className="info-box mb-4">
-              <div className="flex items-center gap-2 mb-2 text-info font-bold uppercase tracking-widest text-[10px]">
-                <Info size={14} />
-                Como o Linux pensa
-              </div>
-              <p className="text-sm text-text-2">
-                No Windows, você <strong>clica</strong> para configurar.
-                No Linux, você <strong>edita arquivos de texto</strong> em <code>/etc/</code> e usa comandos no terminal.
-                Cada serviço tem um arquivo de configuração — isso é uma vantagem: tudo é versionável com Git.
-              </p>
-            </div>
-
-            <WindowsComparisonBox
-              linuxLabel="Linux (systemd / bash)"
-              windowsLabel="Windows (GUI / cmd)"
-              windowsCode={`Serviços (services.msc)\nVisualizador de Eventos\nFirewall do Windows\nGerenciador de Tarefas\nPainel de Controle → Rede\nAgendador de Tarefas`}
-              linuxCode={`systemctl list-units --type=service\njournalctl -u nginx -f\niptables -L  /  nft list ruleset\nhtop  /  ps aux\nip addr  /  nmcli\ncron  /  systemd timers`}
-            />
-
-            <CodeBlock
-              title="Gerenciar serviços (= Serviços do Windows)"
-              lang="bash"
-              code={`systemctl status nginx      # ver estado do serviço\nsystemctl start nginx       # iniciar\nsystemctl stop nginx        # parar\nsystemctl enable nginx      # iniciar automaticamente no boot\nsystemctl restart nginx     # reiniciar (ex: após editar config)`}
-            />
-
-            <CodeBlock
-              title="Ver logs (= Visualizador de Eventos do Windows)"
-              lang="bash"
-              code={`journalctl -u nginx -f              # logs do Nginx em tempo real\njournalctl --since "1 hour ago"     # última hora\ntail -f /var/log/syslog             # syslog geral`}
-            />
-
-            <InfoBox title="Onde ficam as configurações (= C:\\Program Files\\... no Windows)">
-              <div className="font-mono text-xs space-y-1 mt-2">
-                {[
-                  ['/etc/nginx/nginx.conf', 'configuração do Nginx'],
-                  ['/etc/bind/named.conf', 'configuração do BIND9'],
-                  ['/etc/iptables/rules.v4', 'regras do firewall persistidas'],
-                  ['/var/log/', 'logs de todos os serviços'],
-                ].map(([path, desc]) => (
-                  <div key={path} className="flex flex-wrap gap-2">
-                    <code className="text-accent-2">{path}</code>
-                    <span className="text-text-3">← {desc}</span>
-                  </div>
-                ))}
-              </div>
-            </InfoBox>
-
-            <div className="highlight-box mt-4">
-              <div className="flex items-center gap-2 mb-2 text-accent font-bold uppercase tracking-widest text-[10px]">
-                <span aria-hidden="true">💡</span>
-                A regra de ouro do Linux
-              </div>
-              <p className="text-sm text-text-2">
-                <strong>Um arquivo de texto em <code>/etc/</code> controla cada serviço.</strong>
-                <br />
-                Edite, salve e reinicie o serviço com <code>systemctl restart</code>. Simples assim.
-              </p>
-            </div>
-
-            <div className="mt-4">
-              <ChecklistItem
-                text={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.text}
-                sub={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.sub}
-                layer={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.layer}
-                checked={!!checklist['sysadmin-mindset']}
-                onToggle={() => toggleCheck('sysadmin-mindset')}
-              />
-            </div>
-          </section>
-
-          {/* Rosetta Stone */}
-          <section id="rosetta-stone">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-              <span aria-hidden="true">🗿</span>
-              Rosetta Stone — Windows e Linux lado a lado
-            </h2>
-            <p className="text-text-2 mb-6 leading-relaxed">
-              25 comandos do dia a dia com seus equivalentes exatos. Busque pelo nome que você já conhece
-              no Windows e descubra o equivalente Linux. Filtros por categoria disponíveis.
-            </p>
-
-            <RosettaStone
-              onFirstInteraction={() => {
-                if (!checklist['rosetta-stone-explored']) {
-                  updateChecklist('rosetta-stone-explored', true);
-                }
-              }}
-            />
-
-            <div className="mt-4">
-              <ChecklistItem
-                text={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.text}
-                sub={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.sub}
-                layer={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.layer}
-                checked={!!checklist['rosetta-stone-explored']}
-                onToggle={() => toggleCheck('rosetta-stone-explored')}
-              />
-            </div>
-          </section>
-
-          {/* Troubleshooting Mental Map */}
-          <section id="troubleshooting-map">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-              <span aria-hidden="true">🗺️</span>
-              Mapa Mental de Troubleshooting
-            </h2>
-            <p className="text-text-2 mb-6 leading-relaxed">
-              Quando algo não funciona, siga esta escada lógica das camadas OSI. Comece sempre pelo
-              mais simples — a maioria dos problemas está nas camadas 1, 2 ou 3.
-            </p>
-
-            <FluxoCard
-              direction="horizontal"
-              steps={[
-                { label: 'Problema detectado', sub: 'Site não carrega / ping falha', icon: <AlertTriangle size={16} />, color: 'border-red-500/40' },
-                { label: 'L1/L2 — Físico', sub: 'ip link show — eth0 UP?', icon: <Network size={16} />, color: 'border-layer-2/40' },
-                { label: 'L3 — Rede', sub: 'ip route — ping 8.8.8.8', icon: <Globe size={16} />, color: 'border-layer-3/40' },
-                { label: 'L4 — Transporte', sub: 'ss -tlnp — porta ouvindo?', icon: <Shield size={16} />, color: 'border-layer-4/40' },
-                { label: 'L7 — Aplicação', sub: 'curl localhost — responde?', icon: <Terminal size={16} />, color: 'border-layer-7/40' },
-                { label: '✅ Resolvido', sub: 'Documente e avance', icon: <CheckCircle2 size={16} />, color: 'border-ok/40' },
-              ]}
-            />
-
-            <WarnBox title="80% dos problemas estão nas primeiras camadas">
-              <p className="text-sm text-text-2">
-                Antes de investigar firewall ou aplicação, verifique o óbvio: a interface está UP?
-                (<code>ip link show</code>). O IP está correto? (<code>ip addr</code>). A rota existe?
-                (<code>ip route</code>). Só depois suba para L4 e L7.
-              </p>
-            </WarnBox>
-          </section>
-
-          {/* IP Architecture */}
-          <section id="arquitetura">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <Info size={24} className="text-info" />
-              Arquitetura de IPs
-            </h2>
-            <div className="grid md:grid-cols-3 gap-4">
-              {[
-                { z: 'WAN', c: 'text-accent', ips: [['Firewall', '192.168.20.200'], ['Gateway', '192.168.20.1']] },
-                { z: 'DMZ', c: 'text-layer-3', ips: [['Firewall', '192.168.56.250'], ['DNS', '192.168.56.100'], ['Web', '192.168.56.120']] },
-                { z: 'LAN', c: 'text-layer-5', ips: [['Firewall', '192.168.57.250'], ['Cliente', '192.168.57.50']] }
-              ].map(zone => (
-                <div key={zone.z} className="p-5 rounded-xl bg-bg-2 border border-border">
-                  <h4 className={cn("font-bold text-xs uppercase tracking-widest mb-4", zone.c)}>Zona {zone.z}</h4>
-                  <div className="space-y-3 font-mono text-[11px]">
-                    {zone.ips.map(([name, ip]) => (
-                      <div key={name} className="flex justify-between border-b border-border/50 pb-2">
-                        <span className="text-text-3">{name}:</span>
-                        <span className="text-accent-2 font-bold">{ip}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <InfoBox title="Dica de Rede">
-            <p className="text-sm text-text-2">
-              Certifique-se de que o <strong>IP Forwarding</strong> está habilitado no Firewall para que ele possa rotear pacotes entre as interfaces.
-              Use <code>sysctl -w net.ipv4.ip_forward=1</code> para teste imediato.
-            </p>
-          </InfoBox>
-
-          {/* Netplan YAML */}
-          <section id="netplan">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <Terminal size={24} className="text-accent" />
-              Configuração de Rede — Netplan (Ubuntu 22.04+)
-            </h2>
-            <p className="text-text-2 mb-6 leading-relaxed">
-              O Ubuntu Server 22.04+ usa o Netplan para configurar interfaces de rede. O arquivo YAML abaixo configura as três interfaces do Firewall (WAN, DMZ e LAN) com IPs fixos.
-            </p>
-            <CodeBlock
-              title="/etc/netplan/00-installer-config.yaml (Firewall)"
-              lang="yaml"
-              code={`network:\n  version: 2\n  renderer: networkd\n  ethernets:\n    enp0s3:             # Interface WAN (NAT para internet)\n      dhcp4: no\n      addresses: [192.168.20.200/24]\n      routes:\n        - to: default\n          via: 192.168.20.1\n      nameservers:\n        addresses: [8.8.8.8, 9.9.9.9]\n    enp0s8:             # Interface DMZ\n      dhcp4: no\n      addresses: [192.168.56.250/24]\n    enp0s9:             # Interface LAN\n      dhcp4: no\n      addresses: [192.168.57.250/24]`}
-            />
-            <CodeBlock
-              title="Aplicar e verificar"
-              lang="bash"
-              code={`sudo netplan apply\nip addr show      # verificar IPs\nip route show     # verificar rotas`}
-            />
-          </section>
-
-          {/* Pacotes por VM */}
-          <section id="pacotes-vm">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <Package size={24} className="text-info" />
-              Pacotes por Papel de VM
-            </h2>
-            <p className="text-text-2 mb-6 leading-relaxed">
-              Cada VM do laboratório tem um papel específico. Instale apenas os pacotes necessários para cada função (princípio do privilégio mínimo aplicado ao software).
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-bg-3 border border-border">
-                    <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">VM</th>
-                    <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">Função</th>
-                    <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">Pacotes</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {[
-                    { vm: '🔥 Firewall', func: 'Gateway, NAT, iptables', pkgs: 'iptables iptables-persistent squid curl tcpdump conntrack net-tools' },
-                    { vm: '📖 DNS Server', func: 'BIND9 autoritativo', pkgs: 'bind9 bind9utils dnsutils' },
-                    { vm: '🌐 Web Server', func: 'Nginx + SSL', pkgs: 'nginx openssl certbot python3-certbot-nginx' },
-                    { vm: '💻 Cliente LAN', func: 'Testes e diagnóstico', pkgs: 'curl wget telnet dnsutils netcat-openbsd' },
-                  ].map(row => (
-                    <tr key={row.vm} className="bg-bg-2 hover:bg-bg-3 transition-colors">
-                      <td className="p-3 font-bold text-xs">{row.vm}</td>
-                      <td className="p-3 text-xs text-text-2">{row.func}</td>
-                      <td className="p-3 font-mono text-[10px] text-accent-2">{row.pkgs}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <CodeBlock
-              title="Instalar pacotes de uma VM (ex: Firewall)"
-              lang="bash"
-              code={`apt update && apt install -y iptables iptables-persistent squid curl tcpdump conntrack net-tools`}
-            />
-          </section>
-        </div>
-
-        {/* Sticky Checklist */}
-        <aside className="lg:sticky lg:top-24 h-fit">
-          <div className="bg-bg-2 border border-border rounded-xl overflow-hidden shadow-lg">
-            <div className="px-5 py-4 border-b border-border bg-bg-3">
-              <h3 className="font-bold text-sm flex items-center gap-2">
-                <CheckCircle2 size={18} className="text-ok" />
-                Validação do Lab
-              </h3>
-            </div>
-            <div className="p-5">
-              <div className="mb-6">
-                <div className="flex justify-between text-xs font-bold mb-2">
-                  <span className="text-text-3 uppercase tracking-wider">Progresso</span>
-                  <span className="text-accent">{percentage}%</span>
-                </div>
-                <div className="w-full h-2 bg-bg-3 rounded-full overflow-hidden">
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${percentage}%` }}
-                    className="h-full bg-gradient-to-r from-ok to-accent"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                {CHECKLIST_ITEMS.map(item => (
-                  <ChecklistItem
-                    key={item.id}
-                    text={item.text}
-                    sub={item.sub}
-                    layer={item.layer}
-                    checked={!!checklist[item.id]}
-                    onToggle={() => toggleCheck(item.id)}
-                  />
-                ))}
-              </div>
-
-              {percentage === 100 && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 p-4 rounded-lg bg-ok/10 border border-ok/20 text-center"
-                >
-                  <div className="text-2xl mb-2">🎉</div>
-                  <p className="text-xs font-bold text-ok mb-3">Tudo validado!</p>
-                  <Link href="/certificado" className="btn-primary w-full justify-center text-xs py-2">
-                    Pegar Certificado
-                  </Link>
-                </motion.div>
-              )}
-            </div>
-          </div>
-        </aside>
-      </div>
-
-      {/* ── Erros Comuns ── */}
-      <div className="max-w-5xl mx-auto px-4 mb-8 space-y-4">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <span className="text-warn">⚠️</span> Erros Comuns na Instalação
-        </h2>
-        {[
-          {
-            err: 'VirtualBox: Kernel driver not installed (rc=-1908) — virtualização não inicia',
-            fix: 'Módulos do kernel VirtualBox não compilados. Instalar headers e recompilar: apt install linux-headers-$(uname -r) dkms && dpkg-reconfigure virtualbox-dkms. Se persistir, verificar se Secure Boot está ativo (bloqueia módulos não assinados).',
-          },
-          {
-            err: 'ISO não inicia no boot — "No bootable device found"',
-            fix: 'A ordem de boot não prioriza o drive virtual ou a ISO não foi anexada corretamente. No VirtualBox: Settings → Storage → adicionar ISO no drive óptico. Settings → System → Boot Order → mover "Optical" para cima. Verificar se a ISO foi baixada completa (md5sum).',
-          },
-          {
-            err: 'Rede NAT funciona mas host não acessa a VM (ping falha)',
-            fix: 'Com NAT, o host não acessa a VM diretamente — tráfego é unidirecional. Usar "Host-only" ou "Bridge" para acesso bidirecional. Para SSH da máquina real para a VM com NAT, configurar Port Forwarding: Settings → Network → Advanced → Port Forwarding.',
-          },
-          {
-            err: 'Instalação do Debian trava em "Configuring network" — timeout longo',
-            fix: 'Interface de rede não detectada ou DHCP falhou. Pressionar Esc para ver logs. Verificar se o adaptador de rede virtual está configurado. No installer, selecionar "Configure network manually" e definir IP fixo temporariamente.',
-          },
-        ].map(({ err, fix }) => (
-          <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
-            <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
-            <p className="text-sm text-text-2">✅ {fix}</p>
-          </div>
+      {/* ── Tab bar ── */}
+      <div className="flex gap-1 border-b border-border mb-8" role="tablist">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={activeTab === t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
+              activeTab === t.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-3 hover:text-text-2',
+            )}
+          >
+            {t.label}
+          </button>
         ))}
       </div>
 
-      {/* ── Exercícios Guiados ── */}
-      <div className="space-y-4 mb-8">
-        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
-        <div className="grid gap-4">
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 1 — Explorar Interfaces de Rede Pós-Instalação</p>
-            <CodeBlock lang="bash" code={`# Listar todas as interfaces de rede
+      {/* ── Tab 1: Terminal & Mindset ── */}
+      {activeTab === 'terminal' && (
+        <div className="grid lg:grid-cols-[1fr_320px] gap-12">
+          <div className="space-y-12">
+            {/* Vim Survival Guide */}
+            <div className="bg-bg-2 border border-border rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                  <Terminal size={20} />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">Guia de Sobrevivência: Editor Vim</h3>
+                  <p className="text-xs text-text-3 uppercase tracking-widest">Essencial para edição de arquivos de configuração</p>
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { key: 'i', action: 'Entrar no modo de inserção (digitar)' },
+                  { key: 'Esc', action: 'Sair do modo de inserção' },
+                  { key: 'dd', action: 'Apagar uma linha inteira (no modo comando)' },
+                  { key: ':wq', action: 'Salvar e Sair (Write & Quit)' },
+                  { key: ':q!', action: 'Sair sem salvar (Forçar saída)' },
+                  { key: '/', action: 'Buscar termo no arquivo' },
+                ].map(tip => (
+                  <div key={tip.key} className="p-4 rounded-lg bg-bg-3 border border-border">
+                    <kbd className="inline-block px-2 py-1 rounded bg-bg-2 border border-border text-accent font-mono text-sm mb-2">
+                      {tip.key}
+                    </kbd>
+                    <p className="text-xs text-text-2">{tip.action}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <FluxoCard
+              title="As 3 Interfaces do Firewall — Zonas de Segurança"
+              direction="horizontal"
+              steps={[
+                { label: 'eth0 (WAN)', sub: 'IP Público · DHCP', color: 'var(--color-err)' },
+                { label: 'eth1 (DMZ)', sub: '192.168.56.1/24', color: 'var(--color-warn)' },
+                { label: 'eth2 (LAN)', sub: '192.168.57.1/24', color: 'var(--color-ok)' },
+              ]}
+            />
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <StepItem number={1} title="Criar as VMs" description="Use VirtualBox ou Proxmox para criar as VMs de Firewall, DMZ e LAN. Pelo menos 2GB RAM cada." icon={<Laptop size={20} />} />
+              <StepItem number={2} title="Definir redes" description="Crie redes isoladas: WAN (NAT), DMZ (Host-Only) e LAN (Host-Only)." icon={<Shield size={20} />} />
+              <StepItem number={3} title="Configurar IPs" description="Use Netplan (Ubuntu) para atribuir os IPs fixos definidos na topologia." icon={<Terminal size={20} />} />
+              <StepItem number={4} title="Instalar pacotes" description="Instale Nginx, BIND9, iptables-persistent, Squid e OpenSSH-Server." icon={<Package size={20} />} />
+            </div>
+
+            <section id="terminal-do-zero">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <Terminal size={24} className="text-accent" />
+                0. Terminal do Zero — Linux para quem vem do Windows
+              </h2>
+              <WarnBox title="Atenção antes de começar">
+                <p className="text-sm text-text-2">
+                  O terminal do Linux <strong>NÃO é</strong> o Prompt de Comando do Windows.
+                  Maiúsculas e minúsculas importam: <code>Arquivo.txt</code> ≠ <code>arquivo.txt</code>.
+                  <strong> Ctrl+C CANCELA</strong> um comando (não copia!) — use <strong>Ctrl+Shift+C</strong> para copiar.
+                </p>
+              </WarnBox>
+              <WindowsComparisonBox
+                windowsCode={`dir              ← listar arquivos\ncd C:\\Users      ← navegar pasta\ntype arquivo.txt ← ler arquivo\nipconfig         ← ver IP\nping -n 4 8.8.8.8`}
+                linuxCode={`ls -la           # listar arquivos\ncd /home/user    # navegar pasta\ncat arquivo.txt  # ler arquivo\nip addr          # ver IP\nping -c 4 8.8.8.8`}
+              />
+              <div className="highlight-box mt-4">
+                <div className="flex items-center gap-2 mb-2 text-accent font-bold uppercase tracking-widest text-[10px]">
+                  <span aria-hidden="true">💡</span>
+                  3 atalhos que salvam vidas
+                </div>
+                <div className="grid sm:grid-cols-3 gap-3 mt-3">
+                  {[
+                    { key: 'Tab', desc: 'Autocompleta nomes (não existe no CMD!)' },
+                    { key: '↑ / ↓', desc: 'Navega pelo histórico de comandos' },
+                    { key: 'Ctrl+L', desc: 'Limpa a tela (= cls no Windows)' },
+                  ].map(tip => (
+                    <div key={tip.key} className="p-3 rounded-lg bg-bg-3 border border-border">
+                      <kbd className="inline-block px-2 py-1 rounded bg-bg-2 border border-border text-accent font-mono text-sm mb-2">{tip.key}</kbd>
+                      <p className="text-xs text-text-2">{tip.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <CodeBlock
+                title="Seus primeiros 5 comandos no terminal Linux"
+                lang="bash"
+                code={`pwd                    # onde estou? (= "C:\\Users\\..." no Windows)\nls -la                 # o que tem aqui? (= dir)\ncd ~                   # ir para home (= cd %USERPROFILE%)\nmkdir ~/lab-testes     # criar pasta (= mkdir)\ncat /etc/hostname      # ler arquivo (= type)`}
+              />
+              <WarnBox title="sudo = 'Executar como Administrador'">
+                <p className="text-sm text-text-2 mb-3">
+                  Toda vez que vir <strong>&quot;Permission denied&quot;</strong>, adicione <code>sudo</code> antes do comando.
+                  <strong>sudo</strong> = Super User DO. É o equivalente de clicar com botão direito → <em>&quot;Executar como administrador&quot;</em> no Windows.
+                </p>
+                <CodeBlock lang="bash" code={`sudo apt update\nsudo systemctl restart nginx\nsudo nano /etc/hosts`} />
+              </WarnBox>
+              <div className="mt-4 space-y-2">
+                {(['terminal-basico', 'sudo-entendido'] as const).map(id => {
+                  const item = CHECKLIST_ITEMS.find(i => i.id === id)!;
+                  return (
+                    <ChecklistItem key={id} text={item.text} sub={item.sub} layer={item.layer} checked={!!checklist[id]} onToggle={() => toggleCheck(id)} />
+                  );
+                })}
+              </div>
+            </section>
+
+            <section id="sysadmin-mindset">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <Shield size={24} className="text-ok" />
+                0.1 Mindset SysAdmin — De Usuário Windows a Administrador Linux
+              </h2>
+              <div className="info-box mb-4">
+                <div className="flex items-center gap-2 mb-2 text-info font-bold uppercase tracking-widest text-[10px]">
+                  <Info size={14} />
+                  Como o Linux pensa
+                </div>
+                <p className="text-sm text-text-2">
+                  No Windows, você <strong>clica</strong> para configurar. No Linux, você <strong>edita arquivos de texto</strong> em <code>/etc/</code> e usa comandos no terminal. Cada serviço tem um arquivo de configuração — isso é uma vantagem: tudo é versionável com Git.
+                </p>
+              </div>
+              <WindowsComparisonBox
+                linuxLabel="Linux (systemd / bash)"
+                windowsLabel="Windows (GUI / cmd)"
+                windowsCode={`Serviços (services.msc)\nVisualizador de Eventos\nFirewall do Windows\nGerenciador de Tarefas\nPainel de Controle → Rede\nAgendador de Tarefas`}
+                linuxCode={`systemctl list-units --type=service\njournalctl -u nginx -f\niptables -L  /  nft list ruleset\nhtop  /  ps aux\nip addr  /  nmcli\ncron  /  systemd timers`}
+              />
+              <CodeBlock title="Gerenciar serviços" lang="bash" code={`systemctl status nginx\nsystemctl start nginx\nsystemctl stop nginx\nsystemctl enable nginx\nsystemctl restart nginx`} />
+              <CodeBlock title="Ver logs" lang="bash" code={`journalctl -u nginx -f\njournalctl --since "1 hour ago"\ntail -f /var/log/syslog`} />
+              <InfoBox title="Onde ficam as configurações">
+                <div className="font-mono text-xs space-y-1 mt-2">
+                  {[
+                    ['/etc/nginx/nginx.conf', 'configuração do Nginx'],
+                    ['/etc/bind/named.conf', 'configuração do BIND9'],
+                    ['/etc/iptables/rules.v4', 'regras do firewall persistidas'],
+                    ['/var/log/', 'logs de todos os serviços'],
+                  ].map(([path, desc]) => (
+                    <div key={path} className="flex flex-wrap gap-2">
+                      <code className="text-accent-2">{path}</code>
+                      <span className="text-text-3">← {desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </InfoBox>
+              <div className="mt-4">
+                <ChecklistItem
+                  text={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.text}
+                  sub={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.sub}
+                  layer={CHECKLIST_ITEMS.find(i => i.id === 'sysadmin-mindset')!.layer}
+                  checked={!!checklist['sysadmin-mindset']}
+                  onToggle={() => toggleCheck('sysadmin-mindset')}
+                />
+              </div>
+            </section>
+          </div>
+          {StickyChecklist}
+        </div>
+      )}
+
+      {/* ── Tab 2: Lab Setup & Rede ── */}
+      {activeTab === 'lab' && (
+        <div className="grid lg:grid-cols-[1fr_320px] gap-12">
+          <div className="space-y-12">
+            <section id="rosetta-stone">
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                <span aria-hidden="true">🗿</span>
+                Rosetta Stone — Windows e Linux lado a lado
+              </h2>
+              <p className="text-text-2 mb-6 leading-relaxed">
+                25 comandos do dia a dia com seus equivalentes exatos. Busque pelo nome que você já conhece no Windows e descubra o equivalente Linux.
+              </p>
+              <RosettaStone
+                onFirstInteraction={() => {
+                  if (!checklist['rosetta-stone-explored']) {
+                    updateChecklist('rosetta-stone-explored', true);
+                  }
+                }}
+              />
+              <div className="mt-4">
+                <ChecklistItem
+                  text={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.text}
+                  sub={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.sub}
+                  layer={CHECKLIST_ITEMS.find(i => i.id === 'rosetta-stone-explored')!.layer}
+                  checked={!!checklist['rosetta-stone-explored']}
+                  onToggle={() => toggleCheck('rosetta-stone-explored')}
+                />
+              </div>
+            </section>
+
+            <section id="troubleshooting-map">
+              <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                <span aria-hidden="true">🗺️</span>
+                Mapa Mental de Troubleshooting
+              </h2>
+              <p className="text-text-2 mb-6 leading-relaxed">
+                Quando algo não funciona, siga esta escada lógica das camadas OSI. Comece sempre pelo mais simples — a maioria dos problemas está nas camadas 1, 2 ou 3.
+              </p>
+              <FluxoCard
+                direction="horizontal"
+                steps={[
+                  { label: 'Problema detectado', sub: 'Site não carrega / ping falha', icon: <AlertTriangle size={16} />, color: 'border-red-500/40' },
+                  { label: 'L1/L2 — Físico', sub: 'ip link show — eth0 UP?', icon: <Network size={16} />, color: 'border-layer-2/40' },
+                  { label: 'L3 — Rede', sub: 'ip route — ping 8.8.8.8', icon: <Globe size={16} />, color: 'border-layer-3/40' },
+                  { label: 'L4 — Transporte', sub: 'ss -tlnp — porta ouvindo?', icon: <Shield size={16} />, color: 'border-layer-4/40' },
+                  { label: 'L7 — Aplicação', sub: 'curl localhost — responde?', icon: <Terminal size={16} />, color: 'border-layer-7/40' },
+                  { label: '✅ Resolvido', sub: 'Documente e avance', icon: <CheckCircle2 size={16} />, color: 'border-ok/40' },
+                ]}
+              />
+              <WarnBox title="80% dos problemas estão nas primeiras camadas">
+                <p className="text-sm text-text-2">
+                  Antes de investigar firewall ou aplicação, verifique o óbvio: a interface está UP? (<code>ip link show</code>). O IP está correto? (<code>ip addr</code>). A rota existe? (<code>ip route</code>). Só depois suba para L4 e L7.
+                </p>
+              </WarnBox>
+            </section>
+
+            <section id="arquitetura">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <Info size={24} className="text-info" />
+                Arquitetura de IPs
+              </h2>
+              <div className="grid md:grid-cols-3 gap-4">
+                {[
+                  { z: 'WAN', c: 'text-accent', ips: [['Firewall', '192.168.20.200'], ['Gateway', '192.168.20.1']] },
+                  { z: 'DMZ', c: 'text-layer-3', ips: [['Firewall', '192.168.56.250'], ['DNS', '192.168.56.100'], ['Web', '192.168.56.120']] },
+                  { z: 'LAN', c: 'text-layer-5', ips: [['Firewall', '192.168.57.250'], ['Cliente', '192.168.57.50']] }
+                ].map(zone => (
+                  <div key={zone.z} className="p-5 rounded-xl bg-bg-2 border border-border">
+                    <h4 className={cn("font-bold text-xs uppercase tracking-widest mb-4", zone.c)}>Zona {zone.z}</h4>
+                    <div className="space-y-3 font-mono text-[11px]">
+                      {zone.ips.map(([name, ip]) => (
+                        <div key={name} className="flex justify-between border-b border-border/50 pb-2">
+                          <span className="text-text-3">{name}:</span>
+                          <span className="text-accent-2 font-bold">{ip}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <InfoBox title="Dica de Rede" className="mt-6">
+                <p className="text-sm text-text-2">
+                  Certifique-se de que o <strong>IP Forwarding</strong> está habilitado no Firewall para que ele possa rotear pacotes entre as interfaces.
+                  Use <code>sysctl -w net.ipv4.ip_forward=1</code> para teste imediato.
+                </p>
+              </InfoBox>
+            </section>
+
+            <section id="netplan">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <Terminal size={24} className="text-accent" />
+                Configuração de Rede — Netplan (Ubuntu 22.04+)
+              </h2>
+              <p className="text-text-2 mb-6 leading-relaxed">
+                O Ubuntu Server 22.04+ usa o Netplan para configurar interfaces de rede. O arquivo YAML abaixo configura as três interfaces do Firewall com IPs fixos.
+              </p>
+              <CodeBlock
+                title="/etc/netplan/00-installer-config.yaml (Firewall)"
+                lang="yaml"
+                code={`network:\n  version: 2\n  renderer: networkd\n  ethernets:\n    enp0s3:             # Interface WAN (NAT para internet)\n      dhcp4: no\n      addresses: [192.168.20.200/24]\n      routes:\n        - to: default\n          via: 192.168.20.1\n      nameservers:\n        addresses: [8.8.8.8, 9.9.9.9]\n    enp0s8:             # Interface DMZ\n      dhcp4: no\n      addresses: [192.168.56.250/24]\n    enp0s9:             # Interface LAN\n      dhcp4: no\n      addresses: [192.168.57.250/24]`}
+              />
+              <CodeBlock title="Aplicar e verificar" lang="bash" code={`sudo netplan apply\nip addr show\nip route show`} />
+            </section>
+
+            <section id="pacotes-vm">
+              <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <Package size={24} className="text-info" />
+                Pacotes por Papel de VM
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-bg-3 border border-border">
+                      <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">VM</th>
+                      <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">Função</th>
+                      <th className="text-left p-3 text-xs font-bold uppercase tracking-wider text-text-3">Pacotes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {[
+                      { vm: '🔥 Firewall', func: 'Gateway, NAT, iptables', pkgs: 'iptables iptables-persistent squid curl tcpdump conntrack net-tools' },
+                      { vm: '📖 DNS Server', func: 'BIND9 autoritativo', pkgs: 'bind9 bind9utils dnsutils' },
+                      { vm: '🌐 Web Server', func: 'Nginx + SSL', pkgs: 'nginx openssl certbot python3-certbot-nginx' },
+                      { vm: '💻 Cliente LAN', func: 'Testes e diagnóstico', pkgs: 'curl wget telnet dnsutils netcat-openbsd' },
+                    ].map(row => (
+                      <tr key={row.vm} className="bg-bg-2 hover:bg-bg-3 transition-colors">
+                        <td className="p-3 font-bold text-xs">{row.vm}</td>
+                        <td className="p-3 text-xs text-text-2">{row.func}</td>
+                        <td className="p-3 font-mono text-[10px] text-accent-2">{row.pkgs}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <CodeBlock title="Instalar pacotes (ex: Firewall)" lang="bash" code={`apt update && apt install -y iptables iptables-persistent squid curl tcpdump conntrack net-tools`} />
+            </section>
+          </div>
+          {StickyChecklist}
+        </div>
+      )}
+
+      {/* ── Tab 3: Erros & Exercícios ── */}
+      {activeTab === 'erros' && (
+        <div className="space-y-10">
+          <section className="space-y-4">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <span className="text-warn">⚠️</span> Erros Comuns na Instalação
+            </h2>
+            {[
+              {
+                err: 'VirtualBox: Kernel driver not installed (rc=-1908) — virtualização não inicia',
+                fix: 'Módulos do kernel VirtualBox não compilados. Instalar headers e recompilar: apt install linux-headers-$(uname -r) dkms && dpkg-reconfigure virtualbox-dkms. Se persistir, verificar se Secure Boot está ativo (bloqueia módulos não assinados).',
+              },
+              {
+                err: 'ISO não inicia no boot — "No bootable device found"',
+                fix: 'A ordem de boot não prioriza o drive virtual ou a ISO não foi anexada corretamente. No VirtualBox: Settings → Storage → adicionar ISO no drive óptico. Settings → System → Boot Order → mover "Optical" para cima. Verificar se a ISO foi baixada completa (md5sum).',
+              },
+              {
+                err: 'Rede NAT funciona mas host não acessa a VM (ping falha)',
+                fix: 'Com NAT, o host não acessa a VM diretamente — tráfego é unidirecional. Usar "Host-only" ou "Bridge" para acesso bidirecional. Para SSH da máquina real para a VM com NAT, configurar Port Forwarding: Settings → Network → Advanced → Port Forwarding.',
+              },
+              {
+                err: 'Instalação do Debian trava em "Configuring network" — timeout longo',
+                fix: 'Interface de rede não detectada ou DHCP falhou. Pressionar Esc para ver logs. Verificar se o adaptador de rede virtual está configurado. No installer, selecionar "Configure network manually" e definir IP fixo temporariamente.',
+              },
+            ].map(({ err, fix }) => (
+              <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
+                <p className="font-mono text-sm text-err mb-2">❌ {err}</p>
+                <p className="text-sm text-text-2">✅ {fix}</p>
+              </div>
+            ))}
+          </section>
+
+          <section className="space-y-4">
+            <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
+            <div className="grid gap-4">
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 1 — Explorar Interfaces de Rede Pós-Instalação</p>
+                <CodeBlock lang="bash" code={`# Listar todas as interfaces de rede
 ip link show
 
 # Ver endereços IP atribuídos
@@ -553,10 +498,10 @@ nslookup google.com
 
 # Ver hostname configurado
 hostnamectl`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 2 — Configurar Interfaces WAN/LAN/DMZ Manualmente</p>
-            <CodeBlock lang="bash" code={`# Verificar interfaces disponíveis
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 2 — Configurar Interfaces WAN/LAN/DMZ Manualmente</p>
+                <CodeBlock lang="bash" code={`# Verificar interfaces disponíveis
 ip link show | grep -E "^[0-9]+"
 
 # Configurar IP estático temporário (sem persistência)
@@ -576,15 +521,12 @@ network:
       addresses: [192.168.100.1/24]
 EOF
 
-# Aplicar configuração
 netplan apply
-
-# Verificar resultado
 ip addr show`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 3 — Habilitar IP Forwarding e Verificar Sistema</p>
-            <CodeBlock lang="bash" code={`# Verificar se IP forwarding está ativo
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 3 — Habilitar IP Forwarding e Verificar Sistema</p>
+                <CodeBlock lang="bash" code={`# Verificar se IP forwarding está ativo
 cat /proc/sys/net/ipv4/ip_forward
 
 # Habilitar temporariamente
@@ -603,9 +545,11 @@ free -h
 df -h
 nproc
 lscpu | grep "Model name"`} />
-          </div>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
+      )}
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/instalacao" />

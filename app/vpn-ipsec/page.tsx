@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'motion/react';
-import { Lock, Shield, Zap, Globe, Key as KeyIcon, ArrowRight, Info, AlertTriangle, Terminal, Search, Activity, BookOpen } from 'lucide-react';
+import { Lock, Shield, ArrowRight, Info, AlertTriangle, Terminal, Activity, BookOpen, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, DeepDive } from '@/data/deepDives';
@@ -20,8 +19,16 @@ const VPN_CHECKLIST = [
   { id: 'vpn-psk', text: 'Chave PSK configurada com segurança' },
 ];
 
+type VpnTab = 'conceito' | 'config' | 'diagnostico';
+const TABS: { id: VpnTab; label: string }[] = [
+  { id: 'conceito',    label: '🛡️ Conceito & Protocolos' },
+  { id: 'config',      label: '⚙️ StrongSwan & Config' },
+  { id: 'diagnostico', label: '🔬 Diagnóstico & Exercícios' },
+];
+
 export default function VpnIpsecPage() {
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
+  const [activeTab, setActiveTab] = useState<VpnTab>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -45,7 +52,7 @@ export default function VpnIpsecPage() {
       <div className="section-label">Tópico 07 · Camada 3</div>
       <h1 className="section-title">🛡️ IPSec & VPN</h1>
       <p className="section-sub">
-        <strong>IPSec (Internet Protocol Security)</strong> é um conjunto de protocolos que autentica e criptografa 
+        <strong>IPSec (Internet Protocol Security)</strong> é um conjunto de protocolos que autentica e criptografa
         pacotes IP para garantir comunicação segura entre dois pontos. É a base das VPNs corporativas.
       </p>
 
@@ -59,9 +66,29 @@ export default function VpnIpsecPage() {
         ]}
       />
 
-      <div className="grid lg:grid-cols-[1fr_320px] gap-12">
+      {/* ── Tab bar ── */}
+      <div className="flex gap-1 border-b border-border mb-8" role="tablist">
+        {TABS.map(t => (
+          <button
+            key={t.id}
+            role="tab"
+            aria-selected={activeTab === t.id}
+            onClick={() => setActiveTab(t.id)}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
+              activeTab === t.id
+                ? 'border-[var(--mod)] text-[var(--mod)]'
+                : 'border-transparent text-text-3 hover:text-text-2',
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Tab 1: Conceito & Protocolos ── */}
+      {activeTab === 'conceito' && (
         <div className="space-y-16">
-          {/* Section 1: IPSec Pillars */}
           <section id="ipsec">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
@@ -69,7 +96,6 @@ export default function VpnIpsecPage() {
               </div>
               <h2 className="text-2xl font-bold">1. Os Pilares do IPSec</h2>
             </div>
-            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {[
                 { icon: <Lock />, title: 'Autenticação', tag: 'Quem é você?', desc: 'Garante que os dados vêm de quem dizem vir. Usa certificados ou PSK.' },
@@ -85,7 +111,6 @@ export default function VpnIpsecPage() {
                 </div>
               ))}
             </div>
-
             <InfoBox title="Onde o IPSec é usado?">
               <ul className="space-y-1 ml-6 list-disc text-sm text-text-2">
                 <li>VPN Site-to-Site entre filiais de empresas</li>
@@ -96,7 +121,6 @@ export default function VpnIpsecPage() {
             </InfoBox>
           </section>
 
-          {/* Section 2: Modes */}
           <section id="modos">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
@@ -107,7 +131,6 @@ export default function VpnIpsecPage() {
             <p className="text-text-2 mb-8 leading-relaxed">
               O IPSec opera em dois modos principais. A escolha define quanto do pacote original é protegido.
             </p>
-
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               <div className="p-6 rounded-xl bg-bg-2 border border-border border-t-4 border-t-info">
                 <h3 className="font-bold text-info mb-4 flex items-center gap-2">
@@ -134,7 +157,6 @@ export default function VpnIpsecPage() {
                 </div>
               </div>
             </div>
-
             <HighlightBox title="💡 Site-to-Site vs Remote Access — Quando usar cada um?">
               <ul className="space-y-2 text-sm text-text-2">
                 <li>
@@ -150,55 +172,130 @@ export default function VpnIpsecPage() {
               </ul>
             </HighlightBox>
           </section>
+        </div>
+      )}
 
-          {/* Section 3: Configuration */}
-          <section id="configuracao">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
-                <Terminal size={24} />
+      {/* ── Tab 2: StrongSwan & Config ── */}
+      {activeTab === 'config' && (
+        <div className="grid lg:grid-cols-[1fr_320px] gap-12">
+          <div className="space-y-8">
+            <section id="configuracao">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                  <Terminal size={24} />
+                </div>
+                <h2 className="text-2xl font-bold">3. Configurando StrongSwan</h2>
               </div>
-              <h2 className="text-2xl font-bold">3. Configurando StrongSwan</h2>
-            </div>
-            <p className="text-text-2 mb-6 leading-relaxed">
-              Instale o StrongSwan em ambos os gateways antes de configurar:
-            </p>
-            <CodeBlock title="Instalação" lang="bash" code="apt install strongswan strongswan-pki -y" />
+              <p className="text-text-2 mb-6 leading-relaxed">
+                Instale o StrongSwan em ambos os gateways antes de configurar:
+              </p>
+              <CodeBlock title="Instalação" lang="bash" code="apt install strongswan strongswan-pki -y" />
 
-            <div className="mt-6 space-y-4">
-              <WarnBox title="⚠️ Pré-requisito: Abrir portas IPSec no Firewall">
-                <p className="text-sm text-text-2 mb-3">
-                  Sem essas 3 regras de INPUT, o handshake IKE nunca será completado — mesmo com o StrongSwan corretamente configurado.
-                </p>
+              <div className="mt-6 space-y-4">
+                <WarnBox title="⚠️ Pré-requisito: Abrir portas IPSec no Firewall">
+                  <p className="text-sm text-text-2 mb-3">
+                    Sem essas 3 regras de INPUT, o handshake IKE nunca será completado — mesmo com o StrongSwan corretamente configurado.
+                  </p>
+                  <CodeBlock
+                    title="Regras iptables obrigatórias para IPSec"
+                    lang="bash"
+                    code={`# IKE — troca de chaves (Internet Key Exchange)\niptables -A INPUT -p udp --dport 500 -j ACCEPT\n\n# NAT-T — IPSec atravessando NAT (encapsula ESP em UDP)\niptables -A INPUT -p udp --dport 4500 -j ACCEPT\n\n# ESP — protocolo de dados criptografados (não é TCP/UDP)\niptables -A INPUT -p esp -j ACCEPT\n\n# FORWARD entre as subredes das duas filiais\niptables -A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT\niptables -A FORWARD -s 192.168.2.0/24 -d 192.168.1.0/24 -j ACCEPT\n\n# Monitorar logs do charon (daemon IPSec do StrongSwan)\njournalctl -u strongswan -f`}
+                  />
+                </WarnBox>
+              </div>
+
+              <div className="space-y-8 mt-6">
                 <CodeBlock
-                  title="Regras iptables obrigatórias para IPSec"
-                  lang="bash"
-                  code={`# IKE — troca de chaves (Internet Key Exchange)\niptables -A INPUT -p udp --dport 500 -j ACCEPT\n\n# NAT-T — IPSec atravessando NAT (encapsula ESP em UDP)\niptables -A INPUT -p udp --dport 4500 -j ACCEPT\n\n# ESP — protocolo de dados criptografados (não é TCP/UDP)\niptables -A INPUT -p esp -j ACCEPT\n\n# FORWARD entre as subredes das duas filiais\niptables -A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT\niptables -A FORWARD -s 192.168.2.0/24 -d 192.168.1.0/24 -j ACCEPT\n\n# Monitorar logs do charon (daemon IPSec do StrongSwan)\njournalctl -u strongswan -f`}
+                  title="/etc/ipsec.conf — Configuração Site-to-Site"
+                  code={`config setup\n    charondebug="all"\n    uniqueids=yes\n\nconn matriz-filial\n    type=tunnel\n    keyexchange=ikev2\n    authby=secret\n    left=200.200.200.1          # IP público da Matriz\n    leftsubnet=192.168.1.0/24   # Rede interna da Matriz\n    right=200.200.200.2         # IP público da Filial\n    rightsubnet=192.168.2.0/24  # Rede interna da Filial\n    ike=aes256-sha256-modp2048\n    esp=aes256-sha256\n    auto=start`}
+                  lang="conf"
                 />
-              </WarnBox>
+                <CodeBlock
+                  title="/etc/ipsec.secrets — Chave PSK"
+                  code={`200.200.200.1 200.200.200.2 : PSK "ChaveSuperSecreta123!"`}
+                  lang="secrets"
+                />
+                <WarnBox title="Segurança da PSK">
+                  <p className="text-sm text-text-2">
+                    Nunca use chaves fracas. Prefira senhas longas e aleatórias. Se a PSK for comprometida, todo o túnel poderá ser interceptado.
+                  </p>
+                </WarnBox>
+              </div>
+            </section>
+          </div>
+
+          <aside className="space-y-6">
+            <div className="p-6 rounded-xl bg-bg-2 border border-border shadow-sm">
+              <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-ok" />
+                Checklist VPN
+              </h3>
+              <div className="space-y-3">
+                {VPN_CHECKLIST.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => toggleCheck(item.id)}
+                    className="w-full flex items-start gap-3 text-left group"
+                  >
+                    {checklist[item.id] ? (
+                      <CheckCircle2 size={14} className="text-ok shrink-0 mt-0.5" />
+                    ) : (
+                      <Circle size={14} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
+                    )}
+                    <span className={cn(
+                      "text-[10px] leading-tight transition-colors",
+                      checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
+                    )}>
+                      {item.text}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
-            <div className="space-y-8 mt-6">
-              <CodeBlock 
-                title="/etc/ipsec.conf — Configuração Site-to-Site"
-                code={`config setup\n    charondebug="all"\n    uniqueids=yes\n\nconn matriz-filial\n    type=tunnel\n    keyexchange=ikev2\n    authby=secret\n    left=200.200.200.1          # IP público da Matriz\n    leftsubnet=192.168.1.0/24   # Rede interna da Matriz\n    right=200.200.200.2         # IP público da Filial\n    rightsubnet=192.168.2.0/24  # Rede interna da Filial\n    ike=aes256-sha256-modp2048\n    esp=aes256-sha256\n    auto=start`} 
-                lang="conf" 
-              />
-
-              <CodeBlock 
-                title="/etc/ipsec.secrets — Chave PSK"
-                code={`200.200.200.1 200.200.200.2 : PSK "ChaveSuperSecreta123!"`} 
-                lang="secrets" 
-              />
-
-              <WarnBox title="Segurança da PSK">
-                <p className="text-sm text-text-2">
-                  Nunca use chaves fracas. Prefira senhas longas e aleatórias. Se a PSK for comprometida, todo o túnel poderá ser interceptado.
-                </p>
-              </WarnBox>
+            <div className="p-6 rounded-xl bg-bg-2 border border-border shadow-sm">
+              <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
+                <Terminal size={16} className="text-accent" />
+                Comandos Úteis
+              </h3>
+              <div className="space-y-4">
+                <CodeBlock title="Iniciar IPSec" code="ipsec start" lang="bash" />
+                <CodeBlock title="Verificar Status" code="ipsec statusall" lang="bash" />
+                <p className="text-[10px] text-text-3 mt-1 mb-2">Saída esperada (túnel estabelecido):</p>
+                <CodeBlock code={`Security Associations (1 up, 0 connecting):\nmatriz-filial[1]: ESTABLISHED 2 minutes ago\nmatriz-filial{'{'}1{'}'}: INSTALLED, TUNNEL, reqid 1\nmatriz-filial{'{'}1{'}'}: 192.168.1.0/24 === 192.168.2.0/24`} lang="log" />
+                <CodeBlock title="Reiniciar" code="ipsec restart" lang="bash" />
+              </div>
             </div>
-          </section>
 
-          {/* Section 4: Erros Comuns */}
+            <HighlightBox title="IKEv1 vs IKEv2">
+              <p className="text-xs text-text-2 leading-relaxed">
+                Sempre prefira o <strong>IKEv2</strong>. Ele é mais rápido, mais seguro, suporta mobilidade e tem melhor tratamento de NAT Traversal.
+              </p>
+            </HighlightBox>
+
+            <div className="p-6 rounded-xl bg-accent-bg border border-accent-bd">
+              <h3 className="font-bold text-sm text-accent-2 mb-3">Mergulho Técnico</h3>
+              <p className="text-xs text-text-2 leading-relaxed mb-4">
+                Aprenda os detalhes das fases do IKE e como os algoritmos Diffie-Hellman garantem a troca de chaves.
+              </p>
+              <button
+                onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'ipsec-ike-phases') || null)}
+                className="w-full flex items-center justify-between p-3 rounded-lg bg-bg-2 border border-border hover:border-accent transition-all group"
+              >
+                <div className="flex items-center gap-2">
+                  <Shield size={14} className="text-accent" />
+                  <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">IPSec Deep Dive</span>
+                </div>
+                <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* ── Tab 3: Diagnóstico & Exercícios ── */}
+      {activeTab === 'diagnostico' && (
+        <div className="space-y-10">
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
@@ -206,7 +303,6 @@ export default function VpnIpsecPage() {
               </div>
               <h2 className="text-2xl font-bold">4. Erros Comuns</h2>
             </div>
-
             <WarnBox title="⚠️ Problemas frequentes com IPSec">
               <ul className="space-y-3 text-sm">
                 <li>
@@ -228,88 +324,11 @@ export default function VpnIpsecPage() {
               </ul>
             </WarnBox>
           </section>
-        </div>
 
-        <aside className="space-y-6">
-          {/* VPN Checklist */}
-          <div className="p-6 rounded-xl bg-bg-2 border border-border shadow-sm">
-            <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
-              <CheckCircle2 size={16} className="text-ok" />
-              Checklist VPN
-            </h3>
-            <div className="space-y-3">
-              {VPN_CHECKLIST.map(item => (
-                <button 
-                  key={item.id}
-                  onClick={() => toggleCheck(item.id)}
-                  className="w-full flex items-start gap-3 text-left group"
-                >
-                  {checklist[item.id] ? (
-                    <CheckCircle2 size={14} className="text-ok shrink-0 mt-0.5" />
-                  ) : (
-                    <Circle size={14} className="text-text-3 shrink-0 mt-0.5 group-hover:text-accent" />
-                  )}
-                  <span className={cn(
-                    "text-[10px] leading-tight transition-colors",
-                    checklist[item.id] ? "text-text-2 line-through opacity-50" : "text-text-3 group-hover:text-text-2"
-                  )}>
-                    {item.text}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="p-6 rounded-xl bg-bg-2 border border-border shadow-sm">
-            <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
-              <Terminal size={16} className="text-accent" />
-              Comandos Úteis
-            </h3>
-            <div className="space-y-4">
-              <CodeBlock title="Iniciar IPSec" code="ipsec start" lang="bash" />
-              <CodeBlock title="Verificar Status" code="ipsec statusall" lang="bash" />
-              <p className="text-[10px] text-text-3 mt-1 mb-2">Saída esperada (túnel estabelecido):</p>
-              <CodeBlock code={`Security Associations (1 up, 0 connecting):\nmatriz-filial[1]: ESTABLISHED 2 minutes ago\nmatriz-filial{'{'}1{'}'}: INSTALLED, TUNNEL, reqid 1\nmatriz-filial{'{'}1{'}'}: 192.168.1.0/24 === 192.168.2.0/24`} lang="log" />
-              <CodeBlock title="Reiniciar" code="ipsec restart" lang="bash" />
-            </div>
-          </div>
-
-          <HighlightBox title="IKEv1 vs IKEv2">
-            <p className="text-xs text-text-2 leading-relaxed">
-              Sempre prefira o <strong>IKEv2</strong>. Ele é mais rápido, mais seguro, suporta mobilidade e tem melhor tratamento de NAT Traversal.
-            </p>
-          </HighlightBox>
-
-          <div className="p-6 rounded-xl bg-accent-bg border border-accent-bd">
-            <h3 className="font-bold text-sm text-accent-2 mb-3">Mergulho Técnico</h3>
-            <p className="text-xs text-text-2 leading-relaxed mb-4">
-              Aprenda os detalhes das fases do IKE e como os algoritmos Diffie-Hellman garantem a troca de chaves.
-            </p>
-            <button 
-              onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'ipsec-ike-phases') || null)}
-              className="w-full flex items-center justify-between p-3 rounded-lg bg-bg-2 border border-border hover:border-accent transition-all group"
-            >
-              <div className="flex items-center gap-2">
-                <Shield size={14} className="text-accent" />
-                <span className="text-[10px] font-bold text-text group-hover:text-accent uppercase tracking-wider">IPSec Deep Dive</span>
-              </div>
-              <ArrowRight size={12} className="text-text-3 group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </aside>
-      </div>
-
-      <DeepDiveModal
-        dive={activeDeepDive}
-        onClose={() => setActiveDeepDive(null)}
-      />
-
-      {/* Windows Comparison */}
-      <div className="mt-12">
-        <WindowsComparisonBox
-          windowsLabel="Windows — RRAS VPN IKEv2"
-          linuxLabel="Linux — StrongSwan IKEv2"
-          windowsCode={`# Windows RRAS — VPN IKEv2 Site-to-Site
+          <WindowsComparisonBox
+            windowsLabel="Windows — RRAS VPN IKEv2"
+            linuxLabel="Linux — StrongSwan IKEv2"
+            windowsCode={`# Windows RRAS — VPN IKEv2 Site-to-Site
 
 # 1. Habilitar RRAS no Windows Server:
 Install-WindowsFeature Routing -IncludeManagementTools
@@ -335,7 +354,7 @@ netsh ras diagnostics show all
 # 5. Rota estática para rede da filial:
 route add 192.168.2.0 mask 255.255.255.0 \\
   192.168.1.1 metric 10 -p`}
-          linuxCode={`# Linux StrongSwan — VPN IKEv2 Site-to-Site
+            linuxCode={`# Linux StrongSwan — VPN IKEv2 Site-to-Site
 
 # 1. Instalar StrongSwan:
 apt install strongswan strongswan-pki -y
@@ -364,16 +383,14 @@ apt install strongswan strongswan-pki -y
 ipsec start
 ipsec statusall
 # Procurar: ESTABLISHED e INSTALLED TUNNEL`}
-        />
-      </div>
+          />
 
-      {/* ── Exercícios Guiados ── */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
-        <div className="grid gap-4">
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 1 — Verificar status do túnel IPSec</p>
-            <CodeBlock lang="bash" code={`# Ver status completo (procurar ESTABLISHED e INSTALLED)
+          <section>
+            <h2 className="text-2xl font-bold mb-4">🎯 Exercícios Guiados</h2>
+            <div className="grid gap-4">
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 1 — Verificar status do túnel IPSec</p>
+                <CodeBlock lang="bash" code={`# Ver status completo (procurar ESTABLISHED e INSTALLED)
 sudo ipsec statusall
 
 # Ver apenas conexões ativas:
@@ -389,10 +406,10 @@ sudo ip xfrm state list | grep -E "lifetime|bytes"
 # Reiniciar uma conexão específica:
 sudo ipsec restart
 sudo ipsec up matriz-filial  # nome definido no ipsec.conf`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 2 — Capturar tráfego ESP/IKE com tcpdump</p>
-            <CodeBlock lang="bash" code={`# ESP = protocolo 50 (dados criptografados do túnel)
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 2 — Capturar tráfego ESP/IKE com tcpdump</p>
+                <CodeBlock lang="bash" code={`# ESP = protocolo 50 (dados criptografados do túnel)
 # IKE = UDP porta 500 + 4500 (negociação das chaves)
 
 # Capturar tráfego ESP (você verá pacotes mas não o conteúdo):
@@ -407,10 +424,10 @@ sudo tcpdump -i eth0 -n udp port 500 &
 sudo ipsec start
 
 # Procurar no output: IKE_SA_INIT e IKE_AUTH`} />
-          </div>
-          <div className="p-4 rounded-xl bg-bg-2 border border-border">
-            <p className="font-bold text-sm mb-2">Lab 3 — Testar conectividade através do túnel</p>
-            <CodeBlock lang="bash" code={`# Com o túnel ativo, tráfego entre as redes vai criptografado
+              </div>
+              <div className="p-4 rounded-xl bg-bg-2 border border-border">
+                <p className="font-bold text-sm mb-2">Lab 3 — Testar conectividade através do túnel</p>
+                <CodeBlock lang="bash" code={`# Com o túnel ativo, tráfego entre as redes vai criptografado
 
 # Testar ping através do túnel (deve funcionar):
 # Matriz: 192.168.57.0/24, Filial: 10.0.0.0/24
@@ -425,9 +442,16 @@ ping -c 3 10.0.0.1  # o ping gera tráfego ESP no tcpdump
 
 # Confirmar: pacotes ICMP viram ESP ao sair
 # O destino real (10.0.0.1) é invisível para observadores externos`} />
-          </div>
+              </div>
+            </div>
+          </section>
         </div>
-      </div>
+      )}
+
+      <DeepDiveModal
+        dive={activeDeepDive}
+        onClose={() => setActiveDeepDive(null)}
+      />
 
       {/* Navegação sequencial */}
       <ModuleNav currentPath="/vpn-ipsec" />
