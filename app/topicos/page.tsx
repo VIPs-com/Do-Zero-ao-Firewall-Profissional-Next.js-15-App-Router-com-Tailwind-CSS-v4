@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, ChevronRight, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -17,6 +17,22 @@ interface Topic {
   href: string;
   group: string;
 }
+
+type IntentMode = 'estudo' | 'incendio';
+type SortFn = (a: Topic, b: Topic) => number;
+
+const SORT_STRATEGIES: Record<IntentMode, SortFn> = {
+  estudo: () => 0,
+  incendio: (a, b) => {
+    const rank: Record<string, number> = { l3: 0, l4: 1, l5: 2, l6: 3, l7: 4 };
+    return (rank[a.layerClass] ?? 5) - (rank[b.layerClass] ?? 5);
+  },
+};
+
+const INTENT_LS_KEY = 'workshop-intent-mode' as const;
+
+// Exportar para testabilidade (tree-shaken em produção)
+export { SORT_STRATEGIES, INTENT_LS_KEY };
 
 const TOPICS: Topic[] = [
   // ── LAN, DNS & Proxy ─────────────────────────────────────────────────────────
@@ -248,8 +264,21 @@ function getModuleBase(href: string): string {
 
 export default function TopicsPage() {
   const [activeTrail, setActiveTrail] = useState<TrailTab>('firewall');
-  const [openModules, setOpenModules] = useState<Set<string>>(new Set());
+
+  const [intentMode, setIntentMode] = useState<IntentMode>(() => {
+    if (typeof window === 'undefined') return 'estudo';
+    return localStorage.getItem(INTENT_LS_KEY) === 'incendio' ? 'incendio' : 'estudo';
+  });
+
+  const [openModules, setOpenModules] = useState<Set<string>>(() => {
+    if (typeof window === 'undefined') return new Set<string>();
+    return localStorage.getItem(INTENT_LS_KEY) === 'incendio'
+      ? new Set<string>(TRAIL_MODULES['firewall'])
+      : new Set<string>();
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
+  const [expandedTooltip, setExpandedTooltip] = useState<string | null>(null);
   const { visitedPages } = useBadges();
 
   // Verifica se um path (módulo) foi visitado
@@ -259,15 +288,20 @@ export default function TopicsPage() {
   }, [visitedPages]);
 
   // Agrupa tópicos pelo path base do href (ex: /lan-proxy#x → /lan-proxy)
+  // Em modo INCÊNDIO, os tópicos são ordenados por camada OSI (L3 antes de L7)
   const topicsByModule = useMemo(() => {
+    const sortFn = SORT_STRATEGIES[intentMode];
     const map = new Map<string, Topic[]>();
     for (const topic of TOPICS) {
       const base = getModuleBase(topic.href);
       if (!map.has(base)) map.set(base, []);
       map.get(base)!.push(topic);
     }
+    for (const topics of map.values()) {
+      topics.sort(sortFn);
+    }
     return map;
-  }, []);
+  }, [intentMode]);
 
   // Progresso por trilha (contagem de módulos visitados)
   const trailStats = useMemo(() => {
@@ -285,12 +319,26 @@ export default function TopicsPage() {
 
   // Abre/fecha accordion de um módulo
   const toggleModule = useCallback((slug: string) => {
+    setExpandedTooltip(null);
     setOpenModules(prev => {
       const next = new Set(prev);
       next.has(slug) ? next.delete(slug) : next.add(slug);
       return next;
     });
   }, []);
+
+  // Toggle de intenção: 📚 Estudo ↔ 🔥 Incêndio
+  const toggleIntentMode = useCallback(() => {
+    setIntentMode(prev => {
+      const next: IntentMode = prev === 'estudo' ? 'incendio' : 'estudo';
+      setOpenModules(
+        next === 'incendio'
+          ? new Set<string>(TRAIL_MODULES[activeTrail])
+          : new Set<string>()
+      );
+      return next;
+    });
+  }, [activeTrail]);
 
   // Resultados de busca (flat, todas as trilhas)
   const searchResults = useMemo(() => {
@@ -302,6 +350,18 @@ export default function TopicsPage() {
       (MODULE_META[getModuleBase(t.href)]?.label ?? '').toLowerCase().includes(q)
     );
   }, [searchQuery]);
+
+  // Persistência da preferência de intenção
+  useEffect(() => {
+    localStorage.setItem(INTENT_LS_KEY, intentMode);
+  }, [intentMode]);
+
+  // Manter módulos expandidos ao mudar trilha em modo INCÊNDIO
+  useEffect(() => {
+    if (intentMode === 'incendio') {
+      setOpenModules(new Set<string>(TRAIL_MODULES[activeTrail]));
+    }
+  }, [activeTrail, intentMode]);
 
   const tc = TRAIL_CONFIG[activeTrail];
   const ts = trailStats[activeTrail];
@@ -353,15 +413,19 @@ export default function TopicsPage() {
           <div className="flex-1 min-w-0">
             <div className="font-bold text-sm mb-0.5">{tc.label}</div>
             <div className="text-xs text-text-3 mb-3">{tc.desc} · {TRAIL_MODULES[activeTrail].length} módulos</div>
-            <div className="h-1.5 bg-border rounded-full overflow-hidden">
-              <div
-                className={cn('h-full rounded-full transition-[width] duration-700', tc.barColor)}
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-            <div className="text-[11px] text-text-3 mt-1.5">
-              {ts.visited} de {ts.total} módulos visitados · {pct}%
-            </div>
+            {intentMode === 'estudo' && (
+              <>
+                <div className="h-1.5 bg-border rounded-full overflow-hidden">
+                  <div
+                    className={cn('h-full rounded-full transition-[width] duration-700', tc.barColor)}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <div className="text-[11px] text-text-3 mt-1.5">
+                  {ts.visited} de {ts.total} módulos visitados · {pct}%
+                </div>
+              </>
+            )}
           </div>
           <Link
             href={tc.hrefStart}
@@ -391,6 +455,30 @@ export default function TopicsPage() {
           </button>
         )}
       </div>
+
+      {/* ── Toggle de intenção: Estudo ↔ Incêndio ── */}
+      {!searchQuery && (
+        <div className="flex items-center justify-between mb-4">
+          <button
+            aria-pressed={intentMode === 'incendio'}
+            onClick={toggleIntentMode}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold border transition-all',
+              intentMode === 'incendio'
+                ? 'bg-[rgba(248,81,73,0.12)] border-[rgba(248,81,73,0.4)] text-[var(--color-err)]'
+                : 'bg-bg-2 border-border text-text-2 hover:border-accent/50 hover:text-text'
+            )}
+          >
+            <span aria-hidden="true">{intentMode === 'incendio' ? '🔥' : '📚'}</span>
+            {intentMode === 'incendio' ? 'MODO OPERACIONAL' : 'Modo Estudo'}
+          </button>
+          {intentMode === 'incendio' && (
+            <span aria-live="polite" className="text-[11px] font-mono text-[var(--color-err)] opacity-70 uppercase tracking-wider">
+              L3/L4 primeiro · todos expandidos
+            </span>
+          )}
+        </div>
+      )}
 
       {/* ── Resultados de busca (flat) ── */}
       {searchResults ? (
@@ -446,12 +534,19 @@ export default function TopicsPage() {
               >
                 {/* Cabeçalho do módulo */}
                 <button
-                  className="w-full flex items-center gap-3 px-4 py-3.5 text-left hover:bg-bg-3 transition-colors"
+                  className={cn(
+                    'w-full flex items-center gap-3 px-4 text-left hover:bg-bg-3 transition-colors',
+                    intentMode === 'incendio' ? 'py-2.5' : 'py-3.5'
+                  )}
                   onClick={() => toggleModule(modulePath)}
                   aria-expanded={isOpen}
                 >
                   <span className="text-base shrink-0">{meta.icon}</span>
-                  <span className={cn('flex-1 text-sm font-semibold leading-snug', visited ? 'text-text' : 'text-text-2')}>
+                  <span className={cn(
+                    'flex-1 text-sm font-semibold leading-snug',
+                    visited ? 'text-text' : 'text-text-2',
+                    intentMode === 'incendio' && 'truncate'
+                  )}>
                     {meta.label}
                   </span>
                   {topics.length > 0 && (
@@ -482,27 +577,53 @@ export default function TopicsPage() {
                 {isOpen && topics.length > 0 && (
                   <div className="border-t border-border/60">
                     {topics.map((topic, idx) => (
-                      <Link
-                        key={topic.id}
-                        href={topic.href}
-                        className={cn(
-                          'flex items-start gap-3 px-4 py-3 hover:bg-bg-3 transition-colors group',
-                          idx > 0 && 'border-t border-border/40'
-                        )}
-                      >
-                        <span className="font-mono text-[10px] text-text-3 bg-bg-3 px-1.5 py-0.5 rounded shrink-0 mt-0.5 group-hover:bg-accent group-hover:text-white transition-colors">
-                          {topic.num}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-text-2 group-hover:text-text transition-colors leading-relaxed">
-                            {topic.title}
-                          </p>
-                          <span className={cn('layer-badge mt-1.5', topic.layerClass)}>
-                            {topic.layer}
+                      <div key={topic.id} className={cn('group', idx > 0 && 'border-t border-border/40')}>
+                        <Link
+                          href={topic.href}
+                          className="relative flex items-start gap-3 px-4 py-3 hover:bg-bg-3 transition-colors"
+                        >
+                          <span className="font-mono text-[10px] text-text-3 bg-bg-3 px-1.5 py-0.5 rounded shrink-0 mt-0.5 group-hover:bg-accent group-hover:text-white transition-colors">
+                            {topic.num}
                           </span>
-                        </div>
-                        <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center shrink-0" size={13} />
-                      </Link>
+                          <div className="flex-1 min-w-0">
+                            <p className={cn(
+                              'text-sm text-text-2 group-hover:text-text transition-colors leading-relaxed',
+                              intentMode === 'incendio' && 'truncate'
+                            )}>
+                              {topic.title}
+                            </p>
+                            <span className={cn(
+                              'layer-badge mt-1.5',
+                              topic.layerClass,
+                              intentMode === 'incendio' && (topic.layerClass === 'l3' || topic.layerClass === 'l4') && 'text-[var(--color-err)] bg-[rgba(248,81,73,0.1)] border-[rgba(248,81,73,0.3)]'
+                            )}>
+                              {topic.layer}
+                            </span>
+                          </div>
+                          <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center shrink-0" size={13} />
+                          {/* Tooltip desktop — CSS puro */}
+                          <div
+                            role="tooltip"
+                            className="hidden md:block absolute left-full top-0 ml-3 z-50 w-64 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 bg-bg-2 border border-border rounded-lg p-3 shadow-lg"
+                          >
+                            <p className="text-xs text-text-3">{topic.layer}</p>
+                            <p className="text-xs text-text-2 mt-1">{topic.group}</p>
+                            <span className="text-[10px] text-accent">→ {topic.href.split('#')[0]}</span>
+                          </div>
+                        </Link>
+                        {/* Expand mobile */}
+                        <button
+                          className="md:hidden w-full text-left px-4 pb-1 text-[11px] text-text-3 hover:text-accent transition-colors"
+                          onClick={() => setExpandedTooltip(prev => prev === topic.id ? null : topic.id)}
+                        >
+                          {expandedTooltip === topic.id ? '▲ ocultar' : '▼ detalhes'}
+                        </button>
+                        {expandedTooltip === topic.id && (
+                          <div className="md:hidden px-4 pb-2 text-[11px] text-text-3 bg-bg-3 border-t border-border/40">
+                            {topic.layer} · {topic.group} · {topic.href.split('#')[0]}
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}
