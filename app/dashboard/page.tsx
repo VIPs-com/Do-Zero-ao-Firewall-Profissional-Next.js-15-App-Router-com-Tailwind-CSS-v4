@@ -20,6 +20,8 @@ import {
 import { cn } from '@/lib/utils';
 import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
 import { COURSE_ORDER, FUNDAMENTOS_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
+import { getSRSData, getTotalDue } from '@/lib/srs';
+import { QUIZ_QUESTIONS } from '@/data/quizQuestions';
 
 export default function DashboardPage() {
   const {
@@ -126,6 +128,11 @@ export default function DashboardPage() {
       current: sigmaCompleted, total: 11, href: '/audit-logs', cta: 'Ir para o Lab' };
   }
 
+  const srsDue = React.useMemo(
+    () => getTotalDue(getSRSData(), Date.now(), QUIZ_QUESTIONS.length),
+    []
+  );
+
   const stats = [
     { label: 'Tópicos Lidos',    value: `${visitedPages.size}/${totalTopics}`,          icon: <BookOpen />, color: 'text-info' },
     { label: 'Labs Concluídos',  value: `${checklistCompleted}/${checklistItemsCount}`, icon: <Shield />,   color: 'text-ok' },
@@ -197,6 +204,37 @@ export default function DashboardPage() {
                 <div className="text-[10px] font-bold uppercase tracking-widest text-text-3">{stat.label}</div>
               </div>
             ))}
+          </div>
+
+          {/* SRS — Revisões Pendentes */}
+          <div className={cn(
+            'flex items-center gap-4 p-4 rounded-xl border',
+            srsDue === 0    ? 'bg-ok/5 border-ok/30'
+            : srsDue <= 5   ? 'bg-warn/5 border-warn/30'
+            :                 'bg-err/5 border-err/30',
+          )}>
+            <span className="text-2xl shrink-0" aria-hidden="true">
+              {srsDue === 0 ? '✅' : srsDue <= 5 ? '🟡' : '🔴'}
+            </span>
+            <div className="flex-1">
+              <p className="text-[11px] font-mono uppercase tracking-wider text-text-3">Treinamento Tático · SM-2</p>
+              <p className={cn('font-bold', srsDue === 0 ? 'text-ok' : srsDue <= 5 ? 'text-warn' : 'text-err')}>
+                {srsDue === 0
+                  ? 'Tudo em dia — nenhuma revisão pendente'
+                  : `${srsDue} revisão${srsDue !== 1 ? 'ões' : ''} pendente${srsDue !== 1 ? 's' : ''}`}
+              </p>
+            </div>
+            <Link
+              href="/treino"
+              className={cn(
+                'shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors',
+                srsDue === 0
+                  ? 'border-ok/30 text-ok hover:bg-ok/10'
+                  : 'border-warn/40 text-warn hover:bg-warn/10'
+              )}
+            >
+              {srsDue === 0 ? 'Ver →' : 'Treinar →'}
+            </Link>
           </div>
 
           {/* Módulos do Curso */}

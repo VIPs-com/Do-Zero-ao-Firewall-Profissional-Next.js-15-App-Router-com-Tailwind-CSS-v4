@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { QUIZ_QUESTIONS, type QuizQuestion, type QuizTrail } from '@/data/quizQuestions';
 import { ModuleNav } from '@/components/ui/ModuleNav';
+import { getSRSData, saveSRSData, seedItem, getNow } from '@/lib/srs';
 
 /* Sprint F — perguntas extraídas para src/data/quizQuestions.ts (reduz o bundle da rota /quiz). */
 /* Sprint QUIZ-TRAIL — filtro por trilha na tela de início.                                       */
@@ -129,6 +130,12 @@ export default function QuizPage() {
       .filter(i => i >= 0);
     localStorage.setItem(LS_WRONG, JSON.stringify(wrongIds));
     setWrongCount(wrongIds.length);
+
+    // ── Épico B — seed SRS: cada questão errada entra na fila de revisão espaçada
+    let srsStore = getSRSData();
+    const srsNow = getNow();
+    wrongIds.forEach(idx => { srsStore = seedItem(srsStore, idx, srsNow); });
+    saveSRSData(srsStore);
 
     // ── QUIZ-v2: salva sessão no histórico (max 3) ───────────────────────
     const trailLabel =
@@ -308,6 +315,14 @@ export default function QuizPage() {
                 <RotateCcw size={17} />
                 Revisar {wrongCount} erro{wrongCount !== 1 ? 's' : ''}
               </button>
+            )}
+            {wrongCount > 0 && (
+              <Link
+                href="/treino"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-accent/40 bg-accent/10 text-accent hover:bg-accent/20 transition-all text-sm font-bold"
+              >
+                🎯 Treinar com SRS →
+              </Link>
             )}
             <button onClick={resetQuiz} className="btn-outline">
               <RefreshCw size={18} />

@@ -26,6 +26,7 @@ const NAV_LINKS = [
   { href: '/topicos',      label: 'Tópicos',     icon: '📚' },
   { href: '/instalacao',   label: 'Instalação',  icon: '🛠️' },
   { href: '/quiz',         label: 'Quiz',        icon: '🧠' },
+  { href: '/treino',       label: 'Treino',      icon: '🎯' },
   { href: '/cheat-sheet',  label: 'Cheat Sheet', icon: '⚡' },
   { href: '/certificado',  label: 'Certificado', icon: '🎓' },
 ];

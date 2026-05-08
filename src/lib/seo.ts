@@ -73,6 +73,11 @@ export const ROUTE_SEO = {
     description:
       'Acompanhe seu progresso no Workshop Linux: badges desbloqueados, checklist de lab, pontuação do quiz e estatísticas de exploração.',
   },
+  '/treino': {
+    title: 'Treinamento Tático',
+    description:
+      'Motor de revisão espaçada SM-2: revise as questões certas no momento certo e consolide o conhecimento de redes Linux com método científico.',
+  },
   '/topicos': {
     title: 'Índice de Tópicos',
     description:
