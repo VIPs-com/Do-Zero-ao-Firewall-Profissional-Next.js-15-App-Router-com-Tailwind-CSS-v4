@@ -13,7 +13,7 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run test         # vitest run — 6 suítes · 57 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav)
+npm run test         # vitest run — 8 suítes · 115 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav, srs, topicos)
 npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
@@ -55,9 +55,9 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 254 perguntas (firewall=105, fundamentos=60, avancados=89; Sprint SEARCH-COMPLETE: +1 K8s Deployment vs StatefulSet)
-    searchItems.ts          # 220 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens
-    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) para ModuleNav
+    quizQuestions.ts        # perguntas do quiz — 257 perguntas (firewall=105, fundamentos=60, avancados=92; Sprint NFS: +3)
+    searchItems.ts          # 223 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens
+    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
@@ -73,8 +73,10 @@ e2e/                        # Playwright E2E (Sprint T₂)
   04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
-  07-dashboard-counters.spec.ts # 3/91 checklist + 75% quiz + 0/34 badges
+  07-dashboard-counters.spec.ts # 3/163 checklist + 75% quiz + 0/58 badges
   10-fundamentos-trail.spec.ts  # /fundamentos índice, visita /fhs, checkpoints, badge, ModuleNav (8 casos)
+  11-advanced-trail.spec.ts     # /avancados índice, visita /dhcp, badge advanced-master, ModuleNav (6 casos)
+  12-treino-srs.spec.ts         # /treino SRS: lobby, questão, Ver Resposta, score 1-5, done, SM-2 localStorage (8 casos)
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
 
@@ -94,6 +96,11 @@ Todo o progresso do usuário vive no `BadgeContext` (React Context) e persiste e
 | `workshop-clicked-risks` | Array de risk IDs clicados |
 | `workshop-checklist-v2` | Record de string para boolean dos checkpoints |
 | `workshop-quiz-score` | Inteiro 0 a 100 |
+| `workshop-quiz-history` | Últimas 3 sessões de quiz (date/score/total/percentage/trail) |
+| `workshop-quiz-wrong-ids` | Índices das questões erradas na última sessão |
+| `workshop-srs-v1` | `SRSStore` versionado — motor SM-2 Lite (Sprint SRS) |
+| `workshop-srs-streak` | `SRSStreak` — streak de dias consecutivos de treino |
+| `workshop-intent-mode` | `"study"` ou `"fire"` — modo 📚/🔥 da página /topicos |
 | `workshop-theme` | "light" ou ausente (dark e o padrao) |
 
 ---
@@ -104,12 +111,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 49 (Sprint AVANCADOS-INDEX: +/avancados) |
-| `totalTopics` | `app/dashboard/page.tsx` | 85 (Counter-Sync: 27b+47b sub-entries + s08 SSH Proxy = 85) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 160 (Sprint CONTENT-PIVOTING: +3 ataques + 3 pivoteamento) |
-| Texto na Home | `app/page.tsx` | "85 tópicos práticos" + stats: 85/59/56/7 |
-| Badges | `src/context/BadgeContext.tsx` | 56 (Sprint Advanced-Trail: +advanced-master) |
-| searchItems | `src/data/searchItems.ts` | 220 (Sprint SEARCH-COMPLETE: +35 — 3º item para todos os módulos com cobertura dupla + /quiz/certificado/topicos completos) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 50 (Sprint NFS: +/nfs) |
+| `totalTopics` | `app/dashboard/page.tsx` | 86 (Sprint NFS: +S09 NFS) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 163 (Sprint NFS: +3 checkpoints nfs) |
+| Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
+| Badges | `src/context/BadgeContext.tsx` | 58 (Sprint SRS-STREAK: +srs-streak-7 · Sprint NFS: +nfs-master) |
+| searchItems | `src/data/searchItems.ts` | 223 (Sprint NFS: +3 — nfs-conceito/nfs-exports/nfs-cliente) |
 
 ---
 
@@ -436,6 +443,9 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint SRS-E2E: `e2e/12-treino-srs.spec.ts` — 8 casos Playwright (lobby vazio/pendentes, question→Ver Resposta, 5 score buttons, score→done, SM-2 localStorage, link Dashboard, Encerrar); `e2e/fixtures.ts` estendido com workshop-srs-v1/streak/quiz-history/quiz-wrong-ids/intent-mode; lint ✓ · 113 testes ✓.
 - ✅ Sprint SRS-STREAK: badge 🔥 `srs-streak-7` — motor streak em `src/lib/srs.ts` (SRSStreak, getDateString UTC, getSRSStreak/saveSRSStreak defensivos, recordTrainingSession idempotente); `/treino` dispara unlockBadge ao completar 7 dias consecutivos; +11 testes unitários de streak; badges 56→57; `workshop-srs-streak` nova chave localStorage.
 - ✅ Sprint NFS (v3.0 Módulo 8): `/nfs` — NFS vs Samba tabela, NFSv3/v4/v4.2, /etc/exports (rw/ro/sync/root_squash/all_squash), mount NFSv4, /etc/fstab (_netdev/nofail/soft), iptables porta 2049, idmapd.conf, WindowsComparisonBox DFS/CIFS↔NFS, 4 erros comuns, 3 exercícios; badge 🗂️ nfs-master (58º); 3 checkpoints; module-accent-nfs #005f73; CONTENT_PAGES_COUNT 49→50, checklistItemsCount 160→163, totalTopics 85→86, ADVANCED_ORDER 19→20, linux-ninja 120→122, searchItems 220→223, quiz 254→257; lint ✓ · 113 testes ✓.
+- ✅ Sprint QUIZ-MODULO: filtro por módulo no quiz (`?modulo=BADGE`) — `selectedModule` state; `moduleOptions` useMemo derivando badges únicos do pool de trilha atual; URL param pré-seleção via `useEffect` + `window.location.search` (sem Suspense); chips colapsáveis `aria-expanded` + grid `max-h-48 overflow-y-auto`; trail change reseta selectedModule; histórico de sessão inclui `module` no label; icon `Filter` (lucide-react); lint ✓ · 115 testes ✓.
+- ✅ Sprint QUIZ-CTA: botão "🎯 Quiz deste módulo" centrado no `ModuleNav` — `PATH_TO_QUIZ_BADGE` record com **60 rotas mapeadas** (trilhas Firewall/Fundamentos/Avançados v3.0–v5.0); layout refatorado para `space-y-4` + CTA acima da row Anterior/Próximo; link `/quiz?modulo=${encodeURIComponent(badge)}`; rotas sem badge (ex: `/evolucao`, `/glossario`) não exibem botão; +2 testes ModuleNav (DNS mostra href correto, /evolucao sem botão); lint ✓ · 115 testes ✓.
+- ✅ Sprint PRINT-CHEAT: modo de impressão para `/cheat-sheet` — botão `🖨️ Imprimir` (`window.print()`, `aria-label`, `no-print`); `id="cheat-sheet-print"` no container; `no-print` em breadcrumb, tab bar, search/filter e copy buttons; `@media print` em `globals.css`: `[hidden] → display: block` (todas as abas visíveis), `break-after: avoid` em headings, `break-inside: avoid` em cards, grid `column-count: 2`, `print-color-adjust: exact` para preservar badges de camada OSI; lint ✓ · 115 testes ✓.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
