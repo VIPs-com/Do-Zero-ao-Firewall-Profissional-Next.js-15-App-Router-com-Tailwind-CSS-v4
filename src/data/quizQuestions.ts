@@ -3210,6 +3210,31 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Problemas comuns com secrets: (1) Scope errado: secret definido no Environment "production" mas o job não referencia environment: production. (2) Typo: MY_SECRET_KEY vs MY_SECRET_KEYS — case-sensitive. (3) Fork PRs: secrets não são injetados em PRs de forks por segurança (comportamento deliberado). Debug: echo "secret length: ${{ secrets.MY_SECRET && secrets.MY_SECRET != \'\' }}" — não imprime o valor mas valida se existe.',
     trail: 'avancados',
   },
+  // ========== NFS — Network File System ==========
+  {
+    text: 'Qual porta TCP é usada exclusivamente pelo NFSv4, eliminando a necessidade do rpcbind externo?',
+    badge: 'NFS',
+    options: ['111', '2049', '20048', '445'],
+    correct: 1,
+    trail: 'avancados',
+    explanation: 'NFSv4 usa apenas a porta 2049/TCP, tornando-o muito mais fácil de configurar no firewall que NFSv3 (que usa rpcbind na porta 111 + portas dinâmicas do mountd).',
+  },
+  {
+    text: 'No /etc/exports, qual opção IMPEDE que o usuário root do cliente tenha privilégios root no servidor NFS?',
+    badge: 'NFS',
+    options: ['no_subtree_check', 'root_squash', 'sync', 'all_squash'],
+    correct: 1,
+    trail: 'avancados',
+    explanation: 'root_squash (padrão) mapeia o UID 0 do cliente para o usuário anônimo no servidor, evitando que root remoto acesse arquivos privilegiados. no_root_squash desativa essa proteção.',
+  },
+  {
+    text: 'Qual opção do /etc/fstab garante que a montagem NFS aguarde a rede estar disponível antes de montar (evitando falha no boot)?',
+    badge: 'NFS',
+    options: ['nofail', '_netdev', 'soft', 'defaults'],
+    correct: 1,
+    trail: 'avancados',
+    explanation: '_netdev indica ao systemd que o dispositivo depende de rede, garantindo que a montagem ocorra apenas após a rede estar ativa. nofail complementa: se a montagem falhar, o boot continua.',
+  },
   {
     text: 'CENÁRIO: Um serviço que usava 99.8% de disponibilidade no último mês vai receber um deploy arriscado. O SLO é 99.9% mensal (budget = 43.2 min). O que o SRE deve fazer?',
     badge: '🎯 SRE',

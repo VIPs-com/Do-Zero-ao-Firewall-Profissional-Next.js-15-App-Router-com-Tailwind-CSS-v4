@@ -37,6 +37,7 @@ const SECTIONS: Section[] = [
       { path: '/traefik',  num: 'S05', title: 'Traefik Proxy Reverso',  icon: '🔀', checkpoint: 'traefik-instalado',   desc: 'Docker labels, HTTPS automático via ACME, middlewares' },
       { path: '/ldap',     num: 'S06', title: 'LDAP / OpenLDAP',        icon: '👥', checkpoint: 'ldap-instalado',      desc: 'DIT, OUs, posixAccount, PAM — autenticação única' },
       { path: '/pihole',   num: 'S07', title: 'Pi-hole',                icon: '🕳️', checkpoint: 'pihole-instalado',    desc: 'DNS sinkhole, blocklists gravity, Unbound local' },
+      { path: '/nfs',      num: 'S09', title: 'NFS — Network File System', icon: '🗂️', checkpoint: 'nfs-instalado',       desc: '/etc/exports, NFSv4 porta 2049, mount _netdev, ID mapping' },
     ],
   },
   {

@@ -49,7 +49,7 @@ export interface SimpleModule {
 }
 
 export const ADVANCED_ORDER: SimpleModule[] = [
-  // v3.0 — Servidores e Serviços (7 módulos; ssh-proxy está no FUNDAMENTOS_ORDER como F15)
+  // v3.0 — Servidores e Serviços (8 módulos; ssh-proxy está no FUNDAMENTOS_ORDER como F15)
   { path: '/dhcp',          title: 'Servidor DHCP' },
   { path: '/samba',         title: 'Samba — File Sharing' },
   { path: '/apache',        title: 'Servidor Apache' },
@@ -57,6 +57,7 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/traefik',       title: 'Traefik Proxy Reverso' },
   { path: '/ldap',          title: 'LDAP / OpenLDAP' },
   { path: '/pihole',        title: 'Pi-hole' },
+  { path: '/nfs',           title: 'NFS — Network File System' },
   // v4.0 — Infraestrutura Moderna (8 módulos)
   { path: '/ansible',       title: 'Ansible para SysAdmins' },
   { path: '/monitoring',    title: 'Prometheus + Grafana' },

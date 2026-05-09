@@ -49,7 +49,8 @@ export type BadgeId =
   | 'ebpf-avancado-master'
   | 'ssh-proxy-master'
   | 'advanced-master'
-  | 'srs-streak-7';
+  | 'srs-streak-7'
+  | 'nfs-master';
 
 export interface BadgeDef {
   icon: string;
@@ -62,7 +63,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'quiz-expert':        { icon: '🥇', title: 'Expert',             desc: 'Score ≥ 80% no Quiz' },
   'quiz-master':        { icon: '🏆', title: 'Mestre',             desc: 'Score 100% no Quiz' },
   'explorer':           { icon: '🗺️', title: 'Explorador',         desc: 'Visitou 5+ páginas diferentes' },
-  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Explorou 49+ páginas de conteúdo do workshop (62 disponíveis)' },
+  'deep-diver':         { icon: '🤿', title: 'Mergulhador',        desc: 'Explorou 50+ páginas de conteúdo do workshop (63 disponíveis)' },
   'night-owl':          { icon: '🦉', title: 'Coruja Noturna',     desc: 'Ativou o Dark Mode' },
   'searcher':           { icon: '🔍', title: 'Investigador',       desc: 'Usou a busca global' },
   'topology-pro':       { icon: '🖧', title: 'Topólogo',           desc: 'Clicou em 5+ elementos da topologia' },
@@ -115,6 +116,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'ssh-proxy-master':       { icon: '🚇', title: 'SSH Tunnel Master',       desc: 'Dominou SSH como proxy SOCKS5 (-D), port forwarding local/remoto (-L/-R) e Jump Hosts para acesso seguro a redes privadas' },
   'advanced-master':        { icon: '🌐', title: 'Advanced Master',         desc: 'Explorou todos os 19 módulos avançados — Servidores (v3.0), Infraestrutura (v4.0) e Cloud & Platform Engineering (v5.0)' },
   'srs-streak-7':           { icon: '🔥', title: 'Streak 7 Dias',           desc: '7 dias consecutivos de Treinamento Tático — a repetição espaçada funciona!' },
+  'nfs-master':             { icon: '🗂️', title: 'NFS Master',             desc: 'Configurou servidor NFS com /etc/exports, montou cliente e configurou /etc/fstab com opções seguras' },
 };
 
 export const ALL_CHECKLIST_IDS = [
@@ -213,7 +215,9 @@ export const ALL_CHECKLIST_IDS = [
   'ataques-recon', 'ataques-syn', 'ataques-arp',
   // Sprint CONTENT-PIVOTING — Pivoteamento DMZ→LAN (/pivoteamento)
   'pivote-forward-drop', 'pivote-egress', 'pivote-honeypot',
-]; // 160 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint NFS — Network File System (/nfs)
+  'nfs-instalado', 'nfs-share', 'nfs-cliente',
+]; // 163 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (49 rotas técnicas — threshold). Base do badge 'deep-diver'.
@@ -260,9 +264,10 @@ export const ALL_CHECKLIST_IDS = [
  * 47. /ebpf-avancado
  * 48. /ssh-proxy
  * 49. /avancados     (índice trilha avançada — Sprint AVANCADOS-INDEX)
+ * 50. /nfs           (Sprint NFS — Network File System)
  * + /fundamentos já era parte dos 48 implicitamente; corrigido na contagem 49
  */
-export const CONTENT_PAGES_COUNT = 49;
+export const CONTENT_PAGES_COUNT = 50;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -456,8 +461,11 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['sed-dominado'] && checklist['rsyslog-configurado'] && checklist['ssh-dinamico']
     ) unlockBadge('fundamentos-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (120 de 160 → floor(160*0.75) = 120).
-    if (Object.values(checklist).filter(v => v).length >= 120) unlockBadge('linux-ninja');
+    // Sprint NFS — Network File System (/nfs)
+    if (checklist['nfs-instalado'] && checklist['nfs-share'] && checklist['nfs-cliente']) unlockBadge('nfs-master');
+
+    // Linux Ninja: desbloqueado com 75% do checklist (122 de 163 → floor(163*0.75) = 122).
+    if (Object.values(checklist).filter(v => v).length >= 122) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

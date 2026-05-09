@@ -153,6 +153,11 @@ export const ROUTE_SEO = {
     description:
       'Auditoria forense de Port Knocking com tail -f awk, scripts audit-knock e knock-monitor. Correlação de batidas com logins SSH.',
   },
+  '/nfs': {
+    title: 'NFS — Network File System',
+    description: 'Configure um servidor NFS no Linux: /etc/exports, NFSv4, mount persistente com /etc/fstab, iptables e ID mapping — compartilhamento de arquivos Linux-nativo de alta performance.',
+    keywords: ['NFS', 'NFSv4', '/etc/exports', 'nfs-kernel-server', 'mount nfs4', 'fstab _netdev', 'compartilhamento arquivos Linux'],
+  },
   '/nftables': {
     title: 'nftables — Substituto Moderno do iptables',
     description:

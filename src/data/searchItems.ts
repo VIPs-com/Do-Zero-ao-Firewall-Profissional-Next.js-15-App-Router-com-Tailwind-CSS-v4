@@ -227,6 +227,11 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 't-samba',     category: 'Tópico',    title: 'Samba — File Sharing Linux↔Windows', description: 'smb.conf, smbpasswd, shares públicos/privados, mount.cifs e Windows Explorer', href: '/samba', icon: FolderOpen },
   { id: 'g-smb',       category: 'Glossário', title: 'SMB/CIFS — Server Message Block',    description: 'Protocolo de compartilhamento de arquivos da Microsoft. Samba implementa SMB no Linux', href: '/samba', icon: Network },
 
+  // Sprint NFS — Network File System (/nfs)
+  { id: 'nfs-conceito',  title: 'NFS — Network File System', description: 'Compartilhamento de arquivos Linux nativo de alta performance — NFSv4 usa apenas porta 2049/TCP', category: 'Tópico', href: '/nfs', icon: HardDrive },
+  { id: 'nfs-exports',   title: 'NFS /etc/exports',           description: 'Sintaxe de exports, opções rw/ro/sync/no_subtree_check/root_squash/all_squash e exportfs -ra', category: 'Tópico', href: '/nfs', icon: HardDrive },
+  { id: 'nfs-cliente',   title: 'NFS mount e /etc/fstab',     description: 'Mount NFSv4 com -t nfs4, opções _netdev/nofail/soft, persistência no fstab e ID mapping', category: 'Tópico', href: '/nfs', icon: HardDrive },
+
   // Sprint I.9 — Apache Web Server (/apache)
   { id: 't-apache',    category: 'Tópico',    title: 'Apache Web Server',                  description: 'apache2, VirtualHost, a2ensite/a2dissite, SSL com Certbot e proxy reverso',       href: '/apache', icon: Server },
   { id: 'g-apache',    category: 'Glossário', title: 'Apache vs Nginx',                    description: 'Apache usa threads por conexão; Nginx usa eventos assíncronos. Escolha depende do caso', href: '/apache', icon: Globe },

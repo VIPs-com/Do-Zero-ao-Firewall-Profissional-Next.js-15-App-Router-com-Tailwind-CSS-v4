@@ -301,6 +301,8 @@ html.light {
   .module-accent-ebpf-avancado      { --mod: #6d28d9; }
   /* Sprint SSH-PROXY — SSH como Proxy SOCKS */
   .module-accent-ssh-proxy          { --mod: #0ea5e9; }
+  /* Sprint NFS — Network File System */
+  .module-accent-nfs                { --mod: #005f73; }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.
