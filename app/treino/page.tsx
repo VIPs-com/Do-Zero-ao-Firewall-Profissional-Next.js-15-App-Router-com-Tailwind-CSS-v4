@@ -13,6 +13,7 @@ import {
   calculateNextReview,
   clearSRSData,
   getNow,
+  recordTrainingSession,
   type SRSStore,
   type SRSItem,
 } from '@/lib/srs';
@@ -52,7 +53,7 @@ function getDaysUntil(item: SRSItem, now: number): number {
 // ─── Componente principal ─────────────────────────────────────────────────────
 
 export default function TreinoPage() {
-  const { trackPageVisit } = useBadges();
+  const { trackPageVisit, unlockBadge } = useBadges();
 
   React.useEffect(() => { trackPageVisit('/treino'); window.scrollTo(0, 0); }, [trackPageVisit]);
 
@@ -114,10 +115,13 @@ export default function TreinoPage() {
       setShowAnswer(false);
       window.scrollTo(0, 0);
     } else {
+      // Sessão concluída — registrar streak e verificar badge
+      const streak = recordTrainingSession(getNow());
+      if (streak.currentStreak >= 7) unlockBadge('srs-streak-7');
       setPhase('done');
       window.scrollTo(0, 0);
     }
-  }, [currentItem, currentIdx, session, store]);
+  }, [currentItem, currentIdx, session, store, unlockBadge]);
 
   const handleRestart = useCallback(() => {
     setPhase('lobby');

@@ -48,7 +48,8 @@ export type BadgeId =
   | 'nextcloud-master'
   | 'ebpf-avancado-master'
   | 'ssh-proxy-master'
-  | 'advanced-master';
+  | 'advanced-master'
+  | 'srs-streak-7';
 
 export interface BadgeDef {
   icon: string;
@@ -113,6 +114,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'ebpf-avancado-master':   { icon: '🧬', title: 'eBPF Avançado Master',    desc: 'Cilium CNI substituindo kube-proxy, Hubble para observabilidade de fluxos L7, CiliumNetworkPolicy DNS/HTTP e Tetragon detectando anomalias runtime' },
   'ssh-proxy-master':       { icon: '🚇', title: 'SSH Tunnel Master',       desc: 'Dominou SSH como proxy SOCKS5 (-D), port forwarding local/remoto (-L/-R) e Jump Hosts para acesso seguro a redes privadas' },
   'advanced-master':        { icon: '🌐', title: 'Advanced Master',         desc: 'Explorou todos os 19 módulos avançados — Servidores (v3.0), Infraestrutura (v4.0) e Cloud & Platform Engineering (v5.0)' },
+  'srs-streak-7':           { icon: '🔥', title: 'Streak 7 Dias',           desc: '7 dias consecutivos de Treinamento Tático — a repetição espaçada funciona!' },
 };
 
 export const ALL_CHECKLIST_IDS = [

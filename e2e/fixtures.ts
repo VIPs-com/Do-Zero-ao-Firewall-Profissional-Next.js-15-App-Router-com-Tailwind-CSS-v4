@@ -15,6 +15,7 @@ const WORKSHOP_LS_KEYS = [
   'workshop-quiz-score',
   'workshop-theme',
   'workshop-srs-v1',
+  'workshop-srs-streak',
   'workshop-quiz-history',
   'workshop-quiz-wrong-ids',
   'workshop-intent-mode',

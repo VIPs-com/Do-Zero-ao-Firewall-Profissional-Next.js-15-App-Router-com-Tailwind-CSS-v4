@@ -14,6 +14,10 @@ import {
   saveSRSData,
   seedItem,
   applyReview,
+  getDateString,
+  getSRSStreak,
+  saveSRSStreak,
+  recordTrainingSession,
   type SRSItem,
   type SRSStore,
 } from './srs';
@@ -299,6 +303,89 @@ describe('getSRSData', () => {
     expect(loaded.items[7].interval).toBe(14);
     expect(loaded.items[7].easeFactor).toBe(1.8);
     expect(loaded.items[7].repetitions).toBe(3);
+  });
+});
+
+// ─── getDateString ────────────────────────────────────────────────────────────
+
+describe('getDateString', () => {
+  it('converte timestamp para formato YYYY-MM-DD', () => {
+    // 2023-11-14T22:13:20.000Z
+    expect(getDateString(1_700_000_000_000)).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it('dias consecutivos diferem por exatamente 1 dia', () => {
+    const day1 = getDateString(NOW);
+    const day2 = getDateString(NOW + 86_400_000);
+    expect(day1).not.toBe(day2);
+  });
+});
+
+// ─── recordTrainingSession ────────────────────────────────────────────────────
+
+describe('recordTrainingSession', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('primeira sessão → streak = 1', () => {
+    const streak = recordTrainingSession(NOW);
+    expect(streak.currentStreak).toBe(1);
+    expect(streak.lastSessionDate).toBe(getDateString(NOW));
+  });
+
+  it('mesma data → idempotente (streak não muda)', () => {
+    recordTrainingSession(NOW);
+    const streak = recordTrainingSession(NOW + 3600_000); // +1h, mesmo dia UTC
+    expect(streak.currentStreak).toBe(1);
+  });
+
+  it('dia seguinte → streak incrementa', () => {
+    recordTrainingSession(NOW);
+    const streak = recordTrainingSession(NOW + 86_400_000);
+    expect(streak.currentStreak).toBe(2);
+  });
+
+  it('7 dias consecutivos → streak = 7', () => {
+    let streak = { currentStreak: 0, lastSessionDate: '' };
+    for (let i = 0; i < 7; i++) {
+      streak = recordTrainingSession(NOW + i * 86_400_000);
+    }
+    expect(streak.currentStreak).toBe(7);
+  });
+
+  it('gap de 2 dias → streak reinicia em 1', () => {
+    recordTrainingSession(NOW);
+    const streak = recordTrainingSession(NOW + 2 * 86_400_000); // salto de 2 dias
+    expect(streak.currentStreak).toBe(1);
+  });
+
+  it('persiste no localStorage via saveSRSStreak → getSRSStreak', () => {
+    recordTrainingSession(NOW);
+    const stored = getSRSStreak();
+    expect(stored.currentStreak).toBe(1);
+    expect(stored.lastSessionDate).toBe(getDateString(NOW));
+  });
+});
+
+describe('getSRSStreak', () => {
+  beforeEach(() => localStorage.clear());
+
+  it('retorna streak vazio se localStorage vazio', () => {
+    const s = getSRSStreak();
+    expect(s.currentStreak).toBe(0);
+    expect(s.lastSessionDate).toBe('');
+  });
+
+  it('retorna streak vazio se JSON corrompido', () => {
+    localStorage.setItem('workshop-srs-streak', 'BAD_JSON{{');
+    const s = getSRSStreak();
+    expect(s.currentStreak).toBe(0);
+  });
+
+  it('round-trip saveSRSStreak → getSRSStreak preserva campos', () => {
+    saveSRSStreak({ lastSessionDate: '2024-01-01', currentStreak: 5 });
+    const s = getSRSStreak();
+    expect(s.currentStreak).toBe(5);
+    expect(s.lastSessionDate).toBe('2024-01-01');
   });
 });
 

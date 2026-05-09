@@ -186,6 +186,86 @@ export function seedItem(store: SRSStore, questionIdx: number, now: number): SRS
   };
 }
 
+// ── Streak diário ─────────────────────────────────────────────────────────────
+
+export interface SRSStreak {
+  lastSessionDate: string;  // "YYYY-MM-DD" da última sessão concluída
+  currentStreak: number;    // dias consecutivos de treino
+}
+
+const STREAK_KEY = 'workshop-srs-streak' as const;
+
+/**
+ * getDateString() — converte timestamp ms para string "YYYY-MM-DD".
+ * Baseado em UTC para consistência entre fusos horários.
+ */
+export function getDateString(now: number): string {
+  return new Date(now).toISOString().slice(0, 10);
+}
+
+/**
+ * getSRSStreak() — lê o streak com validação defensiva.
+ */
+export function getSRSStreak(): SRSStreak {
+  try {
+    const raw = localStorage.getItem(STREAK_KEY);
+    if (!raw) return { lastSessionDate: '', currentStreak: 0 };
+    const parsed = JSON.parse(raw) as SRSStreak;
+    if (
+      typeof parsed?.lastSessionDate !== 'string' ||
+      typeof parsed?.currentStreak !== 'number' ||
+      !Number.isFinite(parsed.currentStreak)
+    ) {
+      return { lastSessionDate: '', currentStreak: 0 };
+    }
+    return parsed;
+  } catch {
+    return { lastSessionDate: '', currentStreak: 0 };
+  }
+}
+
+/**
+ * saveSRSStreak() — persiste com try/catch (SSR-safe).
+ */
+export function saveSRSStreak(streak: SRSStreak): void {
+  try {
+    localStorage.setItem(STREAK_KEY, JSON.stringify(streak));
+  } catch {
+    // QuotaExceededError ou SSR — silenciar
+  }
+}
+
+/**
+ * recordTrainingSession() — registra uma sessão concluída e atualiza o streak.
+ *
+ * Regras:
+ * - Mesma data: nenhuma mudança (sessão dupla no mesmo dia não conta duplo)
+ * - Ontem:      streak++ (continuidade)
+ * - Gap:        streak = 1 (reinício)
+ *
+ * Retorna o streak atualizado.
+ */
+export function recordTrainingSession(now: number): SRSStreak {
+  const today     = getDateString(now);
+  const streak    = getSRSStreak();
+
+  // Já registrou hoje — idempotente
+  if (streak.lastSessionDate === today) return streak;
+
+  const yesterday = getDateString(now - MS_PER_DAY);
+  const newStreak: SRSStreak = {
+    lastSessionDate: today,
+    currentStreak: streak.lastSessionDate === yesterday
+      ? streak.currentStreak + 1
+      : 1,
+  };
+
+  saveSRSStreak(newStreak);
+  return newStreak;
+}
+
+// ── applyReview ────────────────────────────────────────────────────────────────
+
 /**
  * applyReview() — aplica resultado de uma revisão e persiste imediatamente.
  * Retorna o store atualizado.
