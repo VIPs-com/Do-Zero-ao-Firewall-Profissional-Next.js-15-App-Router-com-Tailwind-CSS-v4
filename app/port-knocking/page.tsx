@@ -93,7 +93,7 @@ export default function PortKnockingPage() {
               </div>
               <h2 className="text-2xl font-bold">1. O Conceito da Batida</h2>
             </div>
-            
+
             <p className="text-text-2 mb-8 leading-relaxed">
               Diferente de serviços tradicionais de Port Knocking (como o <code>knockd</code>), aqui usamos apenas o módulo <strong>recent</strong> do iptables. Isso é mais performático e não requer processos extras rodando.
             </p>
@@ -113,9 +113,191 @@ export default function PortKnockingPage() {
                 </div>
               ))}
             </div>
+
+            <InfoBox title="🧠 O que acontece no kernel durante a batida?">
+              <p className="text-sm text-text-2 mb-3">
+                Quando você &quot;bate&quot; em uma porta, o pacote TCP SYN chega ao kernel. O módulo <code>xt_recent</code> anota o IP de origem numa lista nomeada (ex: <code>FASE1</code>) com um timestamp. Nenhum serviço &quot;escuta&quot; essa porta — o pacote é <strong>silenciosamente descartado</strong> (DROP). Para o atacante, parece que não existe nada rodando.
+              </p>
+              <p className="text-sm text-text-2">
+                Na próxima regra, quando o mesmo IP bate na segunda porta, o kernel verifica: <em>&quot;esse IP está na lista FASE1 e foi adicionado há menos de 10 segundos?&quot;</em>. Se sim, avança para FASE2. É uma <strong>máquina de estados implementada no kernel</strong>, sem daemon, sem memória extra, sem processos.
+              </p>
+            </InfoBox>
           </section>
 
-          {/* Section 2: Implementation */}
+          {/* Section 2: Por que é poderoso */}
+          <section id="vantagens">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                <Shield size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">2. Por que é poderoso?</h2>
+            </div>
+
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Port Knocking resolve um problema real: <strong>qualquer porta aberta é um alvo</strong>. Bots e scanners automatizados varrrem a internet continuamente tentando explorar serviços expostos. Com Port Knocking, sua porta administrativa simplesmente não existe para eles.
+            </p>
+
+            <div className="grid md:grid-cols-3 gap-4 mb-8">
+              {[
+                {
+                  icon: '🕵️',
+                  title: 'Invisibilidade Total',
+                  desc: 'nmap enxerga a porta como "filtered". Não há como distinguir uma porta com Port Knocking de uma porta que não existe. Bots abandonam o alvo.',
+                  color: 'border-accent/30 bg-accent/5',
+                },
+                {
+                  icon: '⚡',
+                  title: 'Zero Overhead',
+                  desc: 'Sem daemon extra. Sem processo rodando em background. O módulo xt_recent é processado diretamente no kernel — latência de nanossegundos por regra.',
+                  color: 'border-ok/30 bg-ok/5',
+                },
+                {
+                  icon: '🔑',
+                  title: 'Segredo Compartilhável',
+                  desc: 'A sequência de portas é uma senha prática: pode ser distribuída a sysadmins, automatizada em scripts, integrada em ferramentas como Ansible.',
+                  color: 'border-info/30 bg-info/5',
+                },
+              ].map(card => (
+                <div key={card.title} className={`p-5 rounded-xl border ${card.color}`}>
+                  <div className="text-3xl mb-3">{card.icon}</div>
+                  <h4 className="font-bold text-sm mb-2">{card.title}</h4>
+                  <p className="text-xs text-text-2 leading-relaxed">{card.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <HighlightBox title="📊 Impacto real em logs de autenticação">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <p className="text-xs font-bold text-err mb-2">❌ SSH exposto (sem Port Knocking)</p>
+                  <CodeBlock lang="bash" code={`grep "Failed password" /var/log/auth.log | wc -l
+# 847  ← tentativas só hoje
+# Bots tentando 24h/dia, 7 dias por semana`} />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-ok mb-2">✅ SSH com Port Knocking</p>
+                  <CodeBlock lang="bash" code={`grep "Failed password" /var/log/auth.log | wc -l
+# 0    ← zero tentativas
+# Bots nem chegam à tela de login`} />
+                </div>
+              </div>
+            </HighlightBox>
+          </section>
+
+          {/* Section 3: Casos de uso */}
+          <section id="casos-uso">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info">
+                <Terminal size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">3. Quando Usar Port Knocking</h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+              {[
+                {
+                  label: '✅ Cenários Ideais',
+                  items: [
+                    'Servidor SSH em IP público sem VPN',
+                    'Acesso administrativo ocasional (não contínuo)',
+                    'Ambientes com IP dinâmico (sem IP fixo para whitelist)',
+                    'Adicionar camada extra sobre autenticação por chave',
+                    'Servidores de laboratório e home lab expostos na internet',
+                  ],
+                  cls: 'border-ok/30 bg-ok/5',
+                  dot: 'text-ok',
+                },
+                {
+                  label: '⚠️ Quando NÃO é o ideal',
+                  items: [
+                    'Equipes grandes (mais difícil distribuir a sequência)',
+                    'Serviços que precisam de acesso contínuo (use VPN)',
+                    'Ambientes com perda de pacotes alta (sequência falha)',
+                    'Como única camada de segurança (combine com chaves SSH)',
+                    'Portas HTTP/HTTPS públicas (incompatível por definição)',
+                  ],
+                  cls: 'border-warn/30 bg-warn/5',
+                  dot: 'text-warn',
+                },
+              ].map(col => (
+                <div key={col.label} className={`p-5 rounded-xl border ${col.cls}`}>
+                  <p className="font-bold text-sm mb-3">{col.label}</p>
+                  <ul className="space-y-2">
+                    {col.items.map(item => (
+                      <li key={item} className="flex items-start gap-2 text-xs text-text-2">
+                        <span className={`mt-0.5 ${col.dot}`}>•</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <WarnBox title="⚠️ Segurança por Obscuridade — entenda o limite">
+              <p className="text-sm text-text-2 mb-2">
+                Port Knocking é classificado como <strong>&quot;segurança por obscuridade&quot;</strong> — funciona porque o atacante não conhece a sequência, não porque é matematicamente impossível de quebrar.
+              </p>
+              <p className="text-sm text-text-2">
+                Um atacante com acesso a um sniffer na rede pode capturar a sequência de pacotes e reproduzi-la. Por isso, <strong>combine sempre Port Knocking com autenticação por chave SSH</strong>: mesmo que a sequência vaze, o atacante ainda precisa da chave privada.
+              </p>
+            </WarnBox>
+          </section>
+
+          {/* Section 4: Comparação de abordagens */}
+          <section id="comparacao">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                <Shield size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">4. Port Knocking vs Alternativas</h2>
+            </div>
+
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Existem várias formas de proteger acesso administrativo. Cada abordagem tem trade-offs diferentes de complexidade, custo e proteção real.
+            </p>
+
+            <div className="overflow-x-auto rounded-xl border border-border mb-6">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-bg-2 border-b border-border">
+                    <th className="px-4 py-3 text-left font-bold text-text-2 text-xs uppercase tracking-wider">Abordagem</th>
+                    <th className="px-4 py-3 text-left font-bold text-text-2 text-xs uppercase tracking-wider">Invisível ao scanner</th>
+                    <th className="px-4 py-3 text-left font-bold text-text-2 text-xs uppercase tracking-wider">Complexidade</th>
+                    <th className="px-4 py-3 text-left font-bold text-text-2 text-xs uppercase tracking-wider">Custo</th>
+                    <th className="px-4 py-3 text-left font-bold text-text-2 text-xs uppercase tracking-wider">Escala em equipes</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {[
+                    ['Port Knocking (iptables)', '✅ Total', '🟢 Baixa', '🟢 Zero', '🟡 Médio'],
+                    ['IP Whitelist no firewall', '❌ Porta visível', '🟢 Baixa', '🟢 Zero', '🔴 IP fixo obrigatório'],
+                    ['VPN (WireGuard/OpenVPN)', '✅ Total', '🟡 Média', '🟢 Zero', '✅ Excelente'],
+                    ['SSH Bastion Host', '🟡 Parcial', '🔴 Alta', '🔴 Servidor extra', '✅ Excelente'],
+                    ['Porta SSH não-padrão', '❌ Visível', '🟢 Mínima', '🟢 Zero', '✅ Simples'],
+                    ['Fail2ban + chave SSH', '❌ Visível', '🟢 Baixa', '🟢 Zero', '✅ Boa'],
+                  ].map(([abord, ...cols]) => (
+                    <tr key={abord} className="hover:bg-bg-2/50 transition-colors">
+                      <td className="px-4 py-3 font-mono text-xs font-bold text-accent">{abord}</td>
+                      {cols.map((c, i) => <td key={i} className="px-4 py-3 text-xs text-text-2">{c}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <InfoBox title="💡 Combinação ideal para produção">
+              <p className="text-sm text-text-2">
+                A combinação mais robusta para acesso SSH em servidor público: <strong>Port Knocking + chave SSH Ed25519 + Fail2ban</strong>.
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-text-2 list-disc pl-4">
+                <li>Port Knocking: elimina 100% das tentativas automatizadas</li>
+                <li>Chave SSH: mesmo que a sequência vaze, a chave protege</li>
+                <li>Fail2ban: camada extra para quem eventualmente chega ao SSH</li>
+              </ul>
+            </InfoBox>
+          </section>
+
           </div>
           )}
 
