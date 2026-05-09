@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'motion/react';
-import { CheckCircle2, XCircle, RefreshCw, Award, ChevronRight, ChevronLeft, Trophy, Search, BookOpen, History, RotateCcw } from 'lucide-react';
+import { CheckCircle2, XCircle, RefreshCw, Award, ChevronRight, ChevronLeft, Trophy, Search, BookOpen, History, RotateCcw, Filter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { QUIZ_QUESTIONS, type QuizQuestion, type QuizTrail } from '@/data/quizQuestions';
@@ -60,6 +60,8 @@ export default function QuizPage() {
   const [started, setStarted] = useState(false);
   const [selectedTrail, setSelectedTrail] = useState<QuizTrail | 'all'>('all');
   const [sessionSize, setSessionSize] = useState<SessionSize>(20);
+  const [selectedModule, setSelectedModule] = useState<string | null>(null);
+  const [showModuleFilter, setShowModuleFilter] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResult, setShowResult] = useState(false);
@@ -70,25 +72,46 @@ export default function QuizPage() {
   const [wrongCount, setWrongCount] = useState(0);
   const { updateQuizScore, trackPageVisit } = useBadges();
 
-  // Contagem de preview para a tela de início (não embaralhado)
-  const previewCount = useMemo(() => {
+  // Módulos disponíveis para a trilha selecionada (derivado, ordenado a-z)
+  const moduleOptions = useMemo(() => {
     const pool = selectedTrail === 'all'
       ? QUIZ_QUESTIONS
       : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail);
+    const counts = new Map<string, number>();
+    pool.forEach(q => counts.set(q.badge, (counts.get(q.badge) ?? 0) + 1));
+    return Array.from(counts.entries())
+      .sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'))
+      .map(([badge, count]) => ({ badge, count }));
+  }, [selectedTrail]);
+
+  // Contagem de preview para a tela de início (não embaralhado)
+  const previewCount = useMemo(() => {
+    let pool = selectedTrail === 'all'
+      ? QUIZ_QUESTIONS
+      : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail);
+    if (selectedModule) pool = pool.filter(q => q.badge === selectedModule);
     return sessionSize === 'all' ? pool.length : Math.min(sessionSize, pool.length);
-  }, [selectedTrail, sessionSize]);
+  }, [selectedTrail, sessionSize, selectedModule]);
 
   useEffect(() => {
     trackPageVisit('quiz');
     // Carrega histórico e contagem de erros do localStorage
     setSessionHistory(safeReadLS<SessionRecord[]>(LS_HISTORY, []));
     setWrongCount((safeReadLS<number[]>(LS_WRONG, [])).length);
+    // URL param ?modulo=NFS — pré-seleciona módulo
+    const params = new URLSearchParams(window.location.search);
+    const mod = params.get('modulo');
+    if (mod) {
+      setSelectedModule(mod);
+      setShowModuleFilter(true);
+    }
   }, [trackPageVisit]);
 
   const handleStart = () => {
-    const pool = selectedTrail === 'all'
+    let pool = selectedTrail === 'all'
       ? [...QUIZ_QUESTIONS]
       : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail);
+    if (selectedModule) pool = pool.filter(q => q.badge === selectedModule);
     const shuffled = shuffleArray([...pool]);
     const limit = sessionSize === 'all' ? shuffled.length : Math.min(sessionSize, shuffled.length);
     setQUESTIONS(shuffled.slice(0, limit));
@@ -139,8 +162,8 @@ export default function QuizPage() {
 
     // ── QUIZ-v2: salva sessão no histórico (max 3) ───────────────────────
     const trailLabel =
-      selectedTrail === 'all'         ? '🗂️ Todas'
-      : selectedTrail === 'firewall'  ? '🔥 Firewall'
+      selectedTrail === 'all'           ? '🗂️ Todas'
+      : selectedTrail === 'firewall'    ? '🔥 Firewall'
       : selectedTrail === 'fundamentos' ? '🐧 Fundamentos'
       : '🚀 Avançados';
     const record: SessionRecord = {
@@ -148,7 +171,7 @@ export default function QuizPage() {
       score,
       total: QUESTIONS.length,
       percentage,
-      trail: trailLabel,
+      trail: selectedModule ? `${trailLabel} · ${selectedModule}` : trailLabel,
       sessionSize: sessionSize === 'all' ? 'todas' : sessionSize,
     };
     const prev = safeReadLS<SessionRecord[]>(LS_HISTORY, []);
@@ -202,7 +225,7 @@ export default function QuizPage() {
                 key={opt.value}
                 role="radio"
                 aria-checked={selectedTrail === opt.value}
-                onClick={() => setSelectedTrail(opt.value)}
+                onClick={() => { setSelectedTrail(opt.value); setSelectedModule(null); }}
                 className={cn(
                   'p-4 rounded-xl border-2 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
                   selectedTrail === opt.value
@@ -239,6 +262,63 @@ export default function QuizPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Filtro por módulo (colapsável) */}
+          <div className="mb-6">
+            <button
+              onClick={() => setShowModuleFilter(v => !v)}
+              className={cn(
+                'w-full flex items-center justify-between px-4 py-2.5 rounded-xl border text-sm font-medium transition-all',
+                showModuleFilter
+                  ? 'border-accent/50 bg-accent/5 text-accent'
+                  : 'border-border text-text-2 hover:border-accent/30'
+              )}
+              aria-expanded={showModuleFilter}
+            >
+              <span className="flex items-center gap-2">
+                <Filter size={14} />
+                {selectedModule
+                  ? <>Módulo: <span className="font-bold text-accent">{selectedModule}</span></>
+                  : 'Filtrar por módulo (opcional)'}
+              </span>
+              <span className="text-text-3 text-xs font-mono">{showModuleFilter ? '▲' : '▼'}</span>
+            </button>
+
+            {showModuleFilter && (
+              <div className="mt-2 p-3 bg-bg-3 border border-border rounded-xl">
+                <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto">
+                  {/* chip "Todos" */}
+                  <button
+                    onClick={() => setSelectedModule(null)}
+                    className={cn(
+                      'px-3 py-1 rounded-full text-xs font-bold border transition-all',
+                      selectedModule === null
+                        ? 'bg-accent border-accent text-bg'
+                        : 'border-border text-text-3 hover:border-accent/50'
+                    )}
+                  >
+                    Todos ({selectedTrail === 'all'
+                      ? QUIZ_QUESTIONS.length
+                      : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail).length})
+                  </button>
+                  {moduleOptions.map(({ badge, count }) => (
+                    <button
+                      key={badge}
+                      onClick={() => setSelectedModule(badge === selectedModule ? null : badge)}
+                      className={cn(
+                        'px-3 py-1 rounded-full text-xs font-bold border transition-all',
+                        selectedModule === badge
+                          ? 'bg-accent border-accent text-bg'
+                          : 'border-border text-text-2 hover:border-accent/50'
+                      )}
+                    >
+                      {badge} <span className="opacity-60">({count})</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Histórico das últimas sessões */}
