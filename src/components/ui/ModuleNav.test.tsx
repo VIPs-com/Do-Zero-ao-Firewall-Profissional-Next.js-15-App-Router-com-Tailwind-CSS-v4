@@ -64,4 +64,19 @@ describe('ModuleNav — navegação sequencial entre módulos', () => {
       screen.getByRole('link', { name: /próximo módulo: lan/i }).getAttribute('href'),
     ).toBe('/lan-proxy');
   });
+
+  it('/dns: exibe botão "Quiz deste módulo" com href /quiz?modulo=...', () => {
+    render(<ModuleNav currentPath="/dns" />);
+
+    const quizLink = screen.getByRole('link', { name: /quiz do módulo/i });
+    const href = quizLink.getAttribute('href') ?? '';
+    expect(href).toMatch(/^\/quiz\?modulo=/);
+    expect(decodeURIComponent(href)).toContain('DNS');
+  });
+
+  it('/evolucao: sem botão de quiz (página sem questões mapeadas)', () => {
+    render(<ModuleNav currentPath="/evolucao" />);
+
+    expect(screen.queryByRole('link', { name: /quiz do módulo/i })).toBeNull();
+  });
 });
