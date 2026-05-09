@@ -404,9 +404,100 @@ export default function HardeningPage() {
           )}
 
           {activeTab === 'exercicios' && (
-          <div className="space-y-4 text-sm text-text-2 py-6">
-            <p>Selecione as abas anteriores para ver SSH Hardening, sysctl e AppArmor.</p>
-            <p>Os Exercícios, Erros Comuns e comparativo Windows estão abaixo ↓</p>
+          <div className="space-y-16">
+
+          {/* Erros Comuns */}
+          <section id="erros-comuns">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-warn/10 flex items-center justify-center text-warn">
+                <AlertTriangle size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">Erros Comuns</h2>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                {
+                  title: 'SSH inacessível após desativar PasswordAuthentication',
+                  cause: 'Não testou a chave SSH antes de recarregar o sshd. O daemon rejeitou a conexão sem senha e sem chave válida.',
+                  fix: 'Acesse pelo console da VM (Proxmox / VirtualBox → tela de login). Reative temporariamente com: sed -i \'s/PasswordAuthentication no/PasswordAuthentication yes/\' /etc/ssh/sshd_config && systemctl reload sshd. Depois copie a chave corretamente: ssh-copy-id user@IP.',
+                },
+                {
+                  title: 'sysctl: setting key failed — read-only',
+                  cause: 'Tentou aplicar um parâmetro que não é suportado pelo kernel atual, ou que requer módulo específico carregado.',
+                  fix: 'Verifique se o parâmetro existe: sysctl -a | grep nome_parametro. Para net.ipv4.tcp_syncookies, certifique-se que o kernel foi compilado com CONFIG_SYN_COOKIES (praticamente todo kernel de distribuição tem).',
+                },
+                {
+                  title: 'AppArmor "Permission denied" mesmo com chmod 777',
+                  cause: 'O bloqueio está no kernel (MAC layer), não nas permissões POSIX. O Nginx pode ter arquivo legível mas o perfil AppArmor proíbe a leitura.',
+                  fix: 'Cheque o log: journalctl -k | grep apparmor | grep DENIED. Mude para complain temporariamente: aa-complain nginx. Reproduza o acesso, depois execute aa-logprof para gerar as regras faltantes. Volte para enforce: aa-enforce nginx.',
+                },
+                {
+                  title: 'Chave Ed25519 funciona localmente mas não no servidor',
+                  cause: 'A chave pública não foi copiada corretamente para ~/.ssh/authorized_keys, ou as permissões do diretório .ssh estão erradas.',
+                  fix: 'No servidor: chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys. Verifique com: ls -la ~/.ssh/. Em caso de dúvida, use ssh-copy-id para garantir o formato correto. Debug: ssh -vvv user@server para ver qual chave está sendo tentada.',
+                },
+              ].map(({ title, cause, fix }) => (
+                <details key={title} className="group bg-bg-2 border border-border rounded-xl overflow-hidden">
+                  <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-bg-3 transition-colors list-none">
+                    <span className="font-semibold text-sm text-warn flex items-center gap-2">
+                      <AlertTriangle size={14} className="shrink-0" />
+                      {title}
+                    </span>
+                    <span className="text-text-3 text-xs group-open:rotate-180 transition-transform">▼</span>
+                  </summary>
+                  <div className="px-4 pb-4 space-y-2 border-t border-border">
+                    <p className="text-xs text-text-3 mt-3"><strong className="text-text-2">Causa:</strong> {cause}</p>
+                    <p className="text-xs text-text-3"><strong className="text-text-2">Solução:</strong> {fix}</p>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+
+          {/* Auditoria Rápida */}
+          <section id="auditoria">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-ok/10 flex items-center justify-center text-ok">
+                <Eye size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">Auditoria em 60 Segundos</h2>
+            </div>
+            <p className="text-text-2 mb-6 leading-relaxed">
+              Execute estes comandos em qualquer servidor Linux para verificar rapidamente o status das 3 camadas de hardening. Um resultado verde em todas indica configuração de produção.
+            </p>
+            <CodeBlock lang="bash" code={`# ── Camada 1: SSH ──────────────────────────────────────────
+sshd -T | grep -E 'passwordauth|pubkeyauth|permitrootlogin|protocol'
+# Esperado: passwordauthentication no | pubkeyauthentication yes
+#           permitrootlogin no | protocol 2
+
+# Verificar algoritmos de chave aceitos:
+sshd -T | grep hostkeyalgorithms
+
+# ── Camada 2: sysctl ───────────────────────────────────────
+sysctl kernel.randomize_va_space net.ipv4.tcp_syncookies \\
+       net.ipv4.conf.all.rp_filter net.ipv4.conf.all.accept_redirects
+# Esperado: randomize=2 | syncookies=1 | rp_filter=1 | redirects=0
+
+# ── Camada 3: AppArmor ─────────────────────────────────────
+aa-status | grep -E 'profiles.*loaded|processes.*enforce'
+# Esperado: N profiles in enforce mode
+
+# Ver quais perfis estão ativos:
+aa-status --json 2>/dev/null | python3 -m json.tool | grep -A2 'enforce'
+
+# ── Resumo geral ───────────────────────────────────────────
+echo "=== SSH ===" && sshd -T | grep passwordauth
+echo "=== ASLR ===" && cat /proc/sys/kernel/randomize_va_space
+echo "=== AppArmor ===" && aa-status 2>/dev/null | head -3`} />
+
+            <InfoBox title="💡 Automatizar a auditoria com Ansible">
+              <p className="text-sm text-text-2">
+                Para auditar múltiplos servidores de uma vez, use o módulo Ansible <code>command</code> + <code>assert</code>. Veja o módulo <strong>/ansible</strong> para um playbook completo de auditoria de hardening — ele verifica as 3 camadas e reporta não-conformidades automaticamente.
+              </p>
+            </InfoBox>
+          </section>
+
           </div>
           )}
 
