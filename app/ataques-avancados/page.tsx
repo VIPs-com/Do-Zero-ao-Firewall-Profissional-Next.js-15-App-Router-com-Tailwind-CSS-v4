@@ -299,10 +299,96 @@ export default function AdvancedAttacksPage() {
 
       {/* ── Tab 2: Spoofing & Evasão ── */}
       {activeTab === 'avancados' && (
-        <div className="grid grid-cols-1 gap-10">
-          {attacks.slice(3).map((attack, idx) => (
-            <AttackCard key={attack.id} attack={attack} idx={idx} />
-          ))}
+        <div className="space-y-10">
+
+          {/* Intro contextual */}
+          <section>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <ShieldAlert className="text-err" size={24} />
+              Ataques de Evasão e Spoofing
+            </h2>
+            <p className="text-text-2 mb-6">
+              Enquanto os ataques de reconhecimento e volumétricos são detectáveis por volume,
+              os ataques desta categoria exploram <strong>confiança implícita</strong>: identidade
+              forjada (ARP spoofing), comportamento estatisticamente normal (timing attacks) e
+              lógica de segurança no cliente (DNS rebinding). São os mais difíceis de detectar
+              porque individualmente parecem tráfego legítimo.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+              <div className="bg-bg-2 border border-border rounded-xl p-4 flex flex-col gap-2">
+                <span className="text-2xl">🎭</span>
+                <p className="font-semibold text-sm">ARP Spoofing</p>
+                <p className="text-xs text-text-3">Envenena a tabela ARP para desviar tráfego na camada 2 — invisível para firewalls de camada 3.</p>
+              </div>
+              <div className="bg-bg-2 border border-border rounded-xl p-4 flex flex-col gap-2">
+                <span className="text-2xl">⏱️</span>
+                <p className="font-semibold text-sm">Timing Attack / SPA</p>
+                <p className="text-xs text-text-3">Explora padrões temporais de resposta para inferir segredos ou contornar Port Knocking naïve.</p>
+              </div>
+              <div className="bg-bg-2 border border-border rounded-xl p-4 flex flex-col gap-2">
+                <span className="text-2xl">🌐</span>
+                <p className="font-semibold text-sm">DNS Rebinding</p>
+                <p className="text-xs text-text-3">Força o browser da vítima a se tornar proxy, contornando a Same-Origin Policy.</p>
+              </div>
+            </div>
+          </section>
+
+          <WarnBox title="Uso ético e legal">
+            Todo o conhecimento desta seção destina-se exclusivamente à <strong>defesa</strong> e à
+            compreensão de como proteger sistemas. Executar estes ataques em redes sem autorização
+            explícita é crime (Lei 12.737/2012 — Lei Carolina Dieckmann). Teste apenas em
+            laboratório isolado ou com permissão formal por escrito.
+          </WarnBox>
+
+          {/* Attack cards */}
+          <div className="grid grid-cols-1 gap-10">
+            {attacks.slice(3).map((attack, idx) => (
+              <AttackCard key={attack.id} attack={attack} idx={idx} />
+            ))}
+          </div>
+
+          {/* Defesa em profundidade */}
+          <section>
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <ShieldCheck className="text-ok" size={24} />
+              Defesa em Profundidade — Camadas Anti-Evasão
+            </h2>
+            <InfoBox title="Princípio: nunca confie em uma única camada">
+              Cada ataque de evasão explora uma suposição de confiança diferente. A defesa eficaz
+              combina múltiplas camadas independentes — se uma falhar, as outras absorvem o impacto.
+            </InfoBox>
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-bg-2 border border-border rounded-xl p-4 space-y-2">
+                <p className="font-semibold text-sm flex items-center gap-2">
+                  <span className="text-[var(--color-err)]">●</span> Camada 2 — Anti-ARP
+                </p>
+                <CodeBlock lang="bash" code={`# Entradas ARP estáticas para gateways críticos:
+arp -s 192.168.1.1 aa:bb:cc:dd:ee:ff
+
+# arptables — bloquear ARP replies não solicitados:
+arptables -A INPUT --opcode Reply \\
+  ! --source-mac aa:bb:cc:dd:ee:ff -j DROP
+
+# Dynamic ARP Inspection (switches gerenciados):
+# No Cisco: ip arp inspection vlan 1-100`} />
+              </div>
+              <div className="bg-bg-2 border border-border rounded-xl p-4 space-y-2">
+                <p className="font-semibold text-sm flex items-center gap-2">
+                  <span className="text-[var(--color-warn)]">●</span> Camada DNS — Anti-Rebinding
+                </p>
+                <CodeBlock lang="bash" code={`# Pi-hole / dnsmasq — bloquear IPs privados em domínios externos:
+# /etc/dnsmasq.conf
+rebind-localhost-ok
+# (apenas localhost é exceção)
+# domínios externos não podem resolver para RFC1918
+
+# Verificar configuração:
+dig attacker.com @127.0.0.1
+# Resposta esperada: NXDOMAIN ou REFUSED`} />
+              </div>
+            </div>
+          </section>
+
         </div>
       )}
 
