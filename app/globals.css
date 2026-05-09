@@ -518,6 +518,47 @@ button > svg.text-ok {
     padding: 0 !important;
     margin: 0 !important;
   }
+
+  /* ── Cheat Sheet — todas as abas visíveis na impressão ── */
+
+  /* Mostra abas ocultadas pelo atributo [hidden] */
+  #cheat-sheet-print [hidden] {
+    display: block !important;
+  }
+
+  /* Título de seção impede quebra logo após ele */
+  #cheat-sheet-print h2,
+  #cheat-sheet-print h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Impede quebra de página dentro de um card de comando */
+  #cheat-sheet-print .grid > div,
+  #cheat-sheet-print .bg-bg-2 {
+    break-inside: avoid;
+  }
+
+  /* Ajuste de layout: usar 2 colunas quando houver espaço */
+  #cheat-sheet-print .grid.gap-6 {
+    column-count: 2;
+    column-gap: 1rem;
+    display: block !important;
+  }
+
+  /* Adiciona separador visual entre abas impressas */
+  #cheat-sheet-print > div[hidden],
+  #cheat-sheet-print > section[hidden] {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #ccc;
+  }
+
+  /* print-color-adjust para preservar badges de camada */
+  #cheat-sheet-print * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 /* ============================================================

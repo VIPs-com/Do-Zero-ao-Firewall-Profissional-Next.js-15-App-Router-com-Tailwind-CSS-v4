@@ -295,21 +295,33 @@ export default function CheatSheetPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 module-accent-cheat-sheet">
-      <div className="breadcrumb mb-8 module-hero">
+    <div id="cheat-sheet-print" className="max-w-7xl mx-auto px-4 py-12 module-accent-cheat-sheet">
+      <div className="breadcrumb mb-8 module-hero no-print">
         <Link href="/">Início</Link>
         <span>/</span>
         <span className="text-text-2">Cheat Sheet</span>
       </div>
 
       <div className="section-label">Referência Rápida</div>
-      <h1 className="section-title">Comandos Essenciais</h1>
-      <p className="section-sub">
-        Uma coleção dos comandos mais utilizados durante o workshop, organizados por camada OSI e categoria.
-      </p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="section-title">Comandos Essenciais</h1>
+          <p className="section-sub">
+            Uma coleção dos comandos mais utilizados durante o workshop, organizados por camada OSI e categoria.
+          </p>
+        </div>
+        {/* Botão de impressão — oculto no papel */}
+        <button
+          onClick={() => window.print()}
+          className="no-print shrink-0 mt-2 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-border text-text-2 hover:text-text hover:border-accent/40 transition-colors"
+          aria-label="Imprimir cheat sheet completo"
+        >
+          🖨️ Imprimir
+        </button>
+      </div>
 
-      {/* Tab bar */}
-      <div role="tablist" className="flex gap-1 border-b border-border mb-8 mt-8">
+      {/* Tab bar — oculto na impressão (todas as abas ficam visíveis via CSS) */}
+      <div role="tablist" className="no-print flex gap-1 border-b border-border mb-8 mt-8">
         {([
           { id: 'commands',  label: '⚡ Comandos' },
           { id: 'workflows', label: '🔄 Workflows' },
@@ -338,8 +350,8 @@ export default function CheatSheetPage() {
       {/* SOS Troubleshooting */}
       <TroubleshootingCard steps={SOS_STEPS} />
 
-      {/* Search and Filters */}
-      <div className="space-y-4 mb-12">
+      {/* Search and Filters — ocultos na impressão */}
+      <div className="no-print space-y-4 mb-12">
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={18} />
           <input
@@ -431,7 +443,7 @@ export default function CheatSheetPage() {
                 <button
                   onClick={() => handleCopy(cmd.id, cmd.cmd)}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-2 border rounded-lg text-xs font-bold transition-all shrink-0",
+                    "no-print flex items-center gap-2 px-4 py-2 border rounded-lg text-xs font-bold transition-all shrink-0",
                     copiedId === cmd.id
                       ? "bg-ok/10 border-ok/40 text-ok"
                       : "bg-bg-3 hover:bg-accent hover:text-white border-border"
