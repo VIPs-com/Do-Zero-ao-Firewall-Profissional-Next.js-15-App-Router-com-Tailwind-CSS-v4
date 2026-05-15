@@ -305,6 +305,10 @@ html.light {
   .module-accent-nfs                { --mod: #005f73; }
   /* Sprint VAULT — HashiCorp Vault */
   .module-accent-vault              { --mod: #fbbf24; }
+  /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
+  .module-accent-usuarios           { --mod: #6366f1; }
+  /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */
+  .module-accent-troubleshooting    { --mod: #0ea5e9; }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

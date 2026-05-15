@@ -124,6 +124,8 @@ export const TOPICS: Topic[] = [
   { id: 'f12', num: 'F12', title: 'Processo de Boot: BIOS/UEFI, GRUB2, kernel, initrd e systemd targets — do botão Power ao prompt de login.', layer: 'Fundamentos · Sistema', layerClass: 'l7', href: '/boot', group: 'Fundamentos Linux' },
   { id: 'f13', num: 'F13', title: 'Comandos Avançados: sed, dd, nc (NetCat), links simbólicos e compactação tar/gzip/zip — a caixa de ferramentas do SysAdmin.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/comandos-avancados', group: 'Fundamentos Linux' },
   { id: 'f14', num: 'F14', title: 'Logs Centralizados com Rsyslog: facilities, priorities, servidor central via TCP 514 e logrotate — padrão de produção real.', layer: 'Fundamentos · Administração', layerClass: 'l7', href: '/rsyslog', group: 'Fundamentos Linux' },
+  { id: 'f16', num: 'F16', title: 'Gerenciamento de Usuários e Grupos: adduser, usermod, groupadd, /etc/passwd, /etc/group e sudo — ciclo de vida completo da identidade Linux.', layer: 'Fundamentos · Segurança', layerClass: 'l7', href: '/usuarios', group: 'Fundamentos Linux' },
+  { id: 'f17', num: 'F17', title: 'Troubleshooting de Rede: ping, ip addr/route, ss -tulpn, dig, curl -v, journalctl — metodologia OSI de baixo para cima para diagnosticar qualquer problema.', layer: 'Fundamentos · Diagnóstico', layerClass: 'l4', href: '/troubleshooting', group: 'Fundamentos Linux' },
 
   // ── Servidores e Serviços (v3.0) ──────────────────────────────────────────────
   { id: 's01', num: 'S01', title: 'Servidor DHCP: isc-dhcp-server, subnet declaration, range, reservas por MAC e monitoramento de leases — distribua IPs na LAN automaticamente.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/dhcp', group: 'Servidores e Serviços' },
@@ -195,6 +197,8 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/boot':               { label: 'Processo de Boot',              icon: '🖥️', trail: 'fundamentos' },
   '/comandos-avancados': { label: 'Comandos Avançados (SED/DD/NC)',icon: '🔧', trail: 'fundamentos' },
   '/rsyslog':            { label: 'Logs Centralizados (Rsyslog)',  icon: '📡', trail: 'fundamentos' },
+  '/usuarios':           { label: 'Gerenciamento de Usuários',    icon: '👤', trail: 'fundamentos' },
+  '/troubleshooting':    { label: 'Troubleshooting de Rede',      icon: '🔎', trail: 'fundamentos' },
   // Avançados v3.0–v5.0
   '/dhcp':          { label: 'Servidor DHCP',               icon: '🌐', trail: 'avancados' },
   '/samba':         { label: 'Samba File Sharing',          icon: '🗂️', trail: 'avancados' },
@@ -231,8 +235,9 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
   ],
   fundamentos: [
     '/fhs', '/comandos', '/editores', '/processos', '/permissoes',
-    '/discos', '/logs-basicos', '/backup', '/shell-script', '/cron',
-    '/pacotes', '/boot', '/comandos-avancados', '/rsyslog',
+    '/usuarios', '/discos', '/logs-basicos', '/backup', '/shell-script', '/cron',
+    '/pacotes', '/boot', '/comandos-avancados', '/rsyslog', '/ssh-proxy',
+    '/troubleshooting',
   ],
   avancados: [
     '/dhcp', '/samba', '/apache', '/openvpn', '/traefik',

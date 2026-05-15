@@ -72,8 +72,8 @@ describe('courseOrder — integridade da sequência de módulos', () => {
 
 describe('FUNDAMENTOS_ORDER — integridade da trilha Fundamentos Linux', () => {
 
-  it('tem exatamente 15 módulos', () => {
-    expect(FUNDAMENTOS_ORDER).toHaveLength(15);
+  it('tem exatamente 17 módulos', () => {
+    expect(FUNDAMENTOS_ORDER).toHaveLength(17);
   });
 
   it('não há paths duplicados', () => {
@@ -87,9 +87,9 @@ describe('FUNDAMENTOS_ORDER — integridade da trilha Fundamentos Linux', () => 
     expect(FUNDAMENTOS_ORDER[FUNDAMENTOS_ORDER.length - 1].next).toBeNull();
   });
 
-  it('começa em /fhs e termina em /ssh-proxy', () => {
+  it('começa em /fhs e termina em /troubleshooting', () => {
     expect(FUNDAMENTOS_ORDER[0].path).toBe('/fhs');
-    expect(FUNDAMENTOS_ORDER[FUNDAMENTOS_ORDER.length - 1].path).toBe('/ssh-proxy');
+    expect(FUNDAMENTOS_ORDER[FUNDAMENTOS_ORDER.length - 1].path).toBe('/troubleshooting');
   });
 
   it('todos os valores prev (não-null) apontam para paths existentes', () => {

@@ -271,6 +271,12 @@ export const ROUTE_SEO = {
       'Módulo 05: chmod, chown, useradd, groups e sudo. Entenda rwxr-xr-x e como gerenciar usuários no Linux.',
     keywords: ['chmod', 'chown', 'useradd', 'sudo', 'permissões Linux', 'usuários Linux'],
   },
+  '/usuarios': {
+    title: 'Gerenciamento de Usuários e Grupos no Linux',
+    description:
+      'Módulo F16 da trilha Fundamentos: adduser, usermod, groupadd e sudo. Ciclo de vida de usuários Linux, /etc/passwd, /etc/group e visudo — a base da segurança em identidade.',
+    keywords: ['adduser', 'usermod', 'groupadd', 'sudo', 'visudo', 'usuários Linux', 'grupos Linux', '/etc/passwd', '/etc/group'],
+  },
   '/discos': {
     title: 'Discos e Partições no Linux',
     description:
@@ -323,6 +329,12 @@ export const ROUTE_SEO = {
     description:
       'Configure rsyslog em produção: facilities, priorities, servidor central de logs via TCP 514, logrotate e filtros avançados por programa.',
     keywords: ['rsyslog', 'syslog', 'logs centralizados', 'logrotate', 'facilities', 'journald', 'servidor de logs'],
+  },
+  '/troubleshooting': {
+    title: 'Troubleshooting de Rede | ping · ip · ss · dig · journalctl',
+    description:
+      'Módulo F17 da trilha Fundamentos: metodologia OSI de baixo para cima — diagnóstico de conectividade, portas abertas com ss e causa raiz via journalctl.',
+    keywords: ['troubleshooting Linux', 'ping', 'traceroute', 'ss -tulpn', 'journalctl', 'diagnóstico de rede', 'ip route', 'dig', 'curl -v'],
   },
   '/dhcp': {
     title: 'Servidor DHCP | isc-dhcp-server · reservas MAC · leases',

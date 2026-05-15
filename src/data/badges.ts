@@ -55,7 +55,10 @@ export type BadgeId =
   | 'advanced-master'
   | 'srs-streak-7'
   | 'nfs-master'
-  | 'vault-master';
+  | 'vault-master'
+  | 'usuarios-master'
+  | 'troubleshooting-master'
+  | 'ground-zero';
 
 export interface BadgeDef {
   icon: string;
@@ -123,4 +126,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'srs-streak-7':           { icon: '🔥', title: 'Streak 7 Dias',           desc: '7 dias consecutivos de Treinamento Tático — a repetição espaçada funciona!' },
   'nfs-master':             { icon: '🗂️', title: 'NFS Master',             desc: 'Configurou servidor NFS com /etc/exports, montou cliente e configurou /etc/fstab com opções seguras' },
   'vault-master':           { icon: '🔐', title: 'Vault Sentinel',          desc: 'Dominou gestão de segredos com HashiCorp Vault — Unseal, políticas HCL, AppRole para máquinas e segredos dinâmicos com Database engine' },
+  'usuarios-master':        { icon: '👤', title: 'Gestão de Usuários',       desc: 'Criou usuário, configurou grupos e testou sudo — a base da segurança no Linux começa pela gestão de identidade' },
+  'troubleshooting-master': { icon: '🔎', title: 'Troubleshooting Master',   desc: 'Diagnosticou conectividade, portas e causa raiz via logs — resolve "o site não abre" sem entrar em pânico' },
+  'ground-zero':            { icon: '🏁', title: 'Ground Zero',              desc: 'Completou todos os 17 módulos da Trilha Fundamentos Linux — você não é mais iniciante!' },
 };

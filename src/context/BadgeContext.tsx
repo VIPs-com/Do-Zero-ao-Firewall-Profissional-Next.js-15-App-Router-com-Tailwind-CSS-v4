@@ -112,7 +112,11 @@ export const ALL_CHECKLIST_IDS = [
   'nfs-instalado', 'nfs-share', 'nfs-cliente',
   // Sprint VAULT — HashiCorp Vault (/vault)
   'vault-instalado', 'vault-politicas', 'vault-dinamico',
-]; // 166 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint FOUNDATION — /usuarios (Gerenciamento de Usuários e Grupos)
+  'usuario-criado', 'grupo-criado', 'sudo-configurado',
+  // Sprint FOUNDATION — /troubleshooting (Troubleshooting de Rede)
+  'trouble-conectividade', 'trouble-porta', 'trouble-logs',
+]; // 172 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (49 rotas técnicas — threshold). Base do badge 'deep-diver'.
@@ -163,11 +167,11 @@ export const ALL_CHECKLIST_IDS = [
  * 51. /vault         (Sprint VAULT — HashiCorp Vault)
  * + /fundamentos já era parte dos 48 implicitamente; corrigido na contagem 49
  */
-export const CONTENT_PAGES_COUNT = 51;
+export const CONTENT_PAGES_COUNT = 53;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
-  'course-master', 'advanced-master', 'quiz-master', 'linux-ninja', 'sigma-master', 'certificado',
+  'course-master', 'advanced-master', 'quiz-master', 'linux-ninja', 'sigma-master', 'certificado', 'ground-zero',
 ]);
 
 interface BadgeContextType {
@@ -361,8 +365,27 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Sprint NFS — Network File System (/nfs)
     if (checklist['nfs-instalado'] && checklist['nfs-share'] && checklist['nfs-cliente']) unlockBadge('nfs-master');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (122 de 163 → floor(163*0.75) = 122).
-    if (Object.values(checklist).filter(v => v).length >= 124) unlockBadge('linux-ninja');
+    // Sprint VAULT — HashiCorp Vault
+    if (checklist['vault-instalado'] && checklist['vault-politicas'] && checklist['vault-dinamico']) unlockBadge('vault-master');
+
+    // Sprint FOUNDATION — /usuarios
+    if (checklist['usuario-criado'] && checklist['grupo-criado'] && checklist['sudo-configurado']) unlockBadge('usuarios-master');
+
+    // Sprint FOUNDATION — /troubleshooting
+    if (checklist['trouble-conectividade'] && checklist['trouble-porta'] && checklist['trouble-logs']) unlockBadge('troubleshooting-master');
+
+    // Sprint FOUNDATION — Ground Zero: completou todos os 17 módulos da Trilha Fundamentos
+    if (
+      checklist['fhs-explorado'] && checklist['comandos-praticados'] && checklist['editores-usados'] &&
+      checklist['processos-controlados'] && checklist['permissoes-configuradas'] && checklist['usuario-criado'] &&
+      checklist['discos-mapeados'] && checklist['logs-lidos'] && checklist['backup-criado'] &&
+      checklist['script-escrito'] && checklist['tarefa-agendada'] && checklist['apt-atualizado'] &&
+      checklist['bios-uefi-entendido'] && checklist['sed-dominado'] && checklist['rsyslog-configurado'] &&
+      checklist['ssh-dinamico'] && checklist['trouble-conectividade']
+    ) unlockBadge('ground-zero');
+
+    // Linux Ninja: desbloqueado com 75% do checklist (floor(172*0.75) = 129).
+    if (Object.values(checklist).filter(v => v).length >= 129) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {
