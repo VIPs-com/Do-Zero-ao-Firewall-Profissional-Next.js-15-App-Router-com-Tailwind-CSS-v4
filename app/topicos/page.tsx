@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { TOPICS, MODULE_META, TRAIL_MODULES, TRAIL_CONFIG } from '@/data/topics';
 import type { TrailTab, Topic } from '@/data/topics';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 type IntentMode = 'estudo' | 'incendio';
 type SortFn = (a: Topic, b: Topic) => number;
@@ -98,7 +99,7 @@ const TopicRow = React.memo(function TopicRow({
 });
 
 export default function TopicsPage() {
-  const [activeTrail, setActiveTrail] = useState<TrailTab>('firewall');
+  const { activeTab: activeTrail, setActiveTab: setActiveTrail, tabButtonProps: trailButtonProps } = useTabFilter<TrailTab>('firewall');
 
   const [intentMode, setIntentMode] = useState<IntentMode>(() => {
     if (typeof window === 'undefined') return 'estudo';
@@ -230,9 +231,7 @@ export default function TopicsPage() {
           return (
             <button
               key={id}
-              role="tab"
-              aria-selected={activeTrail === id}
-              onClick={() => setActiveTrail(id)}
+              {...trailButtonProps(id)}
               className={cn(
                 'flex items-center gap-2 px-5 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
                 activeTrail === id ? cfg.activeTab : 'border-transparent text-text-2 hover:text-text'

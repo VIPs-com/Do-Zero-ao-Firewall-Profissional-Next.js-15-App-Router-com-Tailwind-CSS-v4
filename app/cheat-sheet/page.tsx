@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTabFilter } from '@/hooks/useTabFilter';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Terminal, Copy, Check, Search, Filter, BookOpen, Shield, Zap, Globe, Lock, Server } from 'lucide-react';
@@ -247,7 +248,7 @@ export default function CheatSheetPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [copiedId, setCopiedId] = useState<string | null>(null);
   type CheatTab = 'commands' | 'workflows' | 'windows' | 'scripts';
-  const [activeTab, setActiveTab] = useState<CheatTab>('commands');
+  const { activeTab, setActiveTab, isActive: isTabActive, tabButtonProps: cheatTabProps } = useTabFilter<CheatTab>('commands');
   const [activeTrail, setActiveTrail] = useState<'all' | 'firewall' | 'fundamentos' | 'avancados'>('all');
   const [activeWorkflowSection, setActiveWorkflowSection] = useState<string | null>(null);
   const { trackPageVisit } = useBadges();
@@ -331,11 +332,9 @@ export default function CheatSheetPage() {
         ] as const).map(tab => (
           <button
             key={tab.id}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            {...cheatTabProps(tab.id)}
             className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isTabActive(tab.id)
                 ? 'border-accent text-accent'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}

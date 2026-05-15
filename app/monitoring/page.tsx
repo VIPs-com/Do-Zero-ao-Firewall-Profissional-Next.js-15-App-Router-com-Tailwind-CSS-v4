@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Activity, BarChart2, Bell, Database, Server, Layers, Terminal, Shield } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -9,10 +9,13 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
+
+type MonitoringTab = 'conceito' | 'config' | 'referencia';
 
 export default function MonitoringPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<MonitoringTab>('conceito');
 
   useEffect(() => {
     trackPageVisit('/monitoring');
@@ -49,16 +52,16 @@ export default function MonitoringPage() {
       {/* Tabs de navegação */}
       <div className="max-w-4xl mx-auto px-6 border-b border-border">
         <div className="flex gap-2">
-          {[
+          {([
             { id: 'conceito',   label: '📖 Conceito' },
             { id: 'config',     label: '⚙️ Stack & Dashboards' },
             { id: 'referencia', label: '🔔 PromQL & Alertas' },
-          ].map(tab => (
+          ] as const).map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -72,7 +75,7 @@ export default function MonitoringPage() {
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
 
         {/* ── Tab: Conceito ── */}
-        {activeTab === 'conceito' && <div className="space-y-16">
+        {isActive('conceito') && <div className="space-y-16">
 
         {/* Os 3 Pilares da Observabilidade */}
         <section>
@@ -198,7 +201,7 @@ export default function MonitoringPage() {
         </div>}
 
         {/* ── Tab: Stack & Dashboards ── */}
-        {activeTab === 'config' && <div className="space-y-16">
+        {isActive('config') && <div className="space-y-16">
 
         {/* Stack com Docker Compose */}
         <section>
@@ -398,7 +401,7 @@ curl http://localhost:9100/metrics | head -30`} />
         </div>}
 
         {/* ── Tab: PromQL & Alertas ── */}
-        {activeTab === 'referencia' && <div className="space-y-16">
+        {isActive('referencia') && <div className="space-y-16">
 
         {/* PromQL */}
         <section>
