@@ -13,7 +13,7 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run test         # vitest run — 11 suítes · 157 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav, srs, topicos, useTabFilter, quiz, searchItems)
+npm run test         # vitest run — 11 suítes · 157 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav, srs, topicos, useTabFilter, quiz, searchItems)  ← courseOrder agora testa 17 módulos FUNDAMENTOS_ORDER
 npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
@@ -42,7 +42,7 @@ app/                        # App Router — cada pasta = 1 rota pública
   opengraph-image.tsx       # OG image 1200x630 gerada via next/og (edge runtime)
   icon.tsx                  # favicon 32x32 dinâmico via next/og (edge runtime)
   apple-icon.tsx            # apple-touch-icon 180x180 via next/og (edge runtime)
-  [rota]/page.tsx           # 50 rotas — todas 'use client' (25 COURSE_ORDER + 16 trilha Fundamentos + 4 v3.0 + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
+  [rota]/page.tsx           # 53 rotas — todas 'use client' (25 COURSE_ORDER + 17 trilha Fundamentos + /usuarios + /troubleshooting + 4 v3.0 + 5 suporte: /, /dashboard, /topicos, /offline, /web-server)
   [rota]/layout.tsx         # Server Component que exporta metadata via buildMetadata('/rota')
 
 src/
@@ -60,17 +60,17 @@ src/
     quiz/firewall.ts        # 105 questões — trilha firewall
     quiz/fundamentos.ts     # 60 questões — trilha fundamentos
     quiz/avancados.ts       # 92 questões — trilha avancados
-    searchItems.ts          # 229 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 67/67 rotas cobertas
-    badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (58 badges) — re-exportado do BadgeContext para tree-shaking
+    searchItems.ts          # 238 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 69/69 rotas cobertas
+    badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (62 badges) — re-exportado do BadgeContext para tree-shaking
     topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
-    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
+    courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (17 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
     quiz.test.ts            # testes de integridade: 105+60+92 questões, campos, sem duplicatas
-    searchItems.test.ts     # testes de integridade: 229 itens, IDs únicos, hrefs válidos
+    searchItems.test.ts     # testes de integridade: 238 itens, IDs únicos, hrefs válidos
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
-    seo.ts                  # SITE_CONFIG, ROUTE_SEO (47 rotas), buildMetadata()
+    seo.ts                  # SITE_CONFIG, ROUTE_SEO (69 rotas), buildMetadata()
     useFocusTrap.ts         # hook a11y — focus trap, ESC handler, restore focus
 
 e2e/                        # Playwright E2E (Sprint T₂)
@@ -81,7 +81,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   04-global-search.spec.ts  # busca ⌘K → navega → ESC fecha
   05-theme-persistence.spec.ts # toggle dark/light + badge night-owl
   06-export-import-time-traveler.spec.ts # download + setInputFiles + badge
-  07-dashboard-counters.spec.ts # 3/163 checklist + 75% quiz + 0/58 badges
+  07-dashboard-counters.spec.ts # 3/172 checklist + 75% quiz + 0/62 badges
   10-fundamentos-trail.spec.ts  # /fundamentos índice, visita /fhs, checkpoints, badge, ModuleNav (8 casos)
   11-advanced-trail.spec.ts     # /avancados índice, visita /dhcp, badge advanced-master, ModuleNav (6 casos)
   12-treino-srs.spec.ts         # /treino SRS: lobby, questão, Ver Resposta, score 1-5, done, SM-2 localStorage (8 casos)
@@ -119,12 +119,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 50 (Sprint NFS: +/nfs) |
-| `totalTopics` | `app/dashboard/page.tsx` | 86 (Sprint NFS: +S09 NFS) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 163 (Sprint NFS: +3 checkpoints nfs) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 53 (Sprint FOUNDATION: +/usuarios +/troubleshooting) |
+| `totalTopics` | `app/dashboard/page.tsx` | 89 (Sprint FOUNDATION: +F16 usuarios +F17 troubleshooting) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 172 (Sprint FOUNDATION: +6 checkpoints usuarios+troubleshooting) |
 | Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
-| Badges | `src/context/BadgeContext.tsx` | 58 (Sprint SRS-STREAK: +srs-streak-7 · Sprint NFS: +nfs-master) |
-| searchItems | `src/data/searchItems.ts` | 229 (Sprint SEARCH-ROUTES: +5 para /treino e /offline · 67/67 rotas) |
+| Badges | `src/context/BadgeContext.tsx` | 62 (Sprint FOUNDATION: +usuarios-master +troubleshooting-master +ground-zero) |
+| searchItems | `src/data/searchItems.ts` | 238 (Sprint FOUNDATION: +6 para /usuarios e /troubleshooting · 69/69 rotas) |
 
 ---
 
@@ -462,6 +462,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint E2E-TOPICOS (Cobertura Playwright /topicos): `e2e/13-topicos-filters.spec.ts` — 10 casos: trilha Firewall ativa por padrão (aria-selected), clicar Fundamentos/Avançados muda trail + aria-selected, toggle 📚→🔥 MODO OPERACIONAL (aria-pressed=true), persiste 'incendio' em localStorage, seed localStorage → módulos pré-expandidos, busca "SNAT" filtra resultados, busca vazia exibe "Nenhum tópico encontrado", accordion expande/recolhe via aria-expanded; fix: seletores positivos (sem .not.toBeVisible em elementos globais do DOM); 13 specs E2E · 10/10 topicos passando.
 - ✅ Sprint HOOK (useTabFilter): `src/hooks/useTabFilter.ts` — hook genérico `useTabFilter<T extends string>(initial)` com `activeTab`/`setActiveTab`/`isActive`/`tabButtonProps` (injeta `role="tab"` + `aria-selected` + `onClick`); elimina 87+ repetições manuais de props a11y (29 páginas × 3 abas); `src/hooks/useTabFilter.test.ts` (14 testes — estado inicial, isActive, setActiveTab, tabButtonProps, referência estável, navegação sequencial); aplicado em TODAS as 40 páginas com abas (37 via script migrate-usetabfilter.mjs + monitoring/topicos/cheat-sheet proof-of-concept); `tabButtonProps` e `isActive` aceitam `string` para compatibilidade com `.map(tab => tab.id)` sem cast; scripts/migrate-usetabfilter.mjs + scripts/fix-usetabfilter.mjs para referência; 11 suítes · 157 testes ✓.
 - ✅ Sprint SEARCH-ROUTES (100% cobertura de busca): +5 itens em `src/data/searchItems.ts` para as 2 rotas sem cobertura — `/treino` (p-treino: Motor SRS, g-treino-sm2: algoritmo SM-2 easeFactor, g-treino-streak: badge srs-streak-7) e `/offline` (p-offline: terminal de emergência, g-offline-commands: diagnóstico sem internet); **67/67 rotas do ROUTE_SEO agora têm ≥1 item de busca**; searchItems 224→229; searchItems.test.ts atualizado (224→229); lint ✓ · 157 testes ✓.
+- ✅ Sprint FOUNDATION (Foundation First — Iniciantes): F16 `/usuarios` (Gerenciamento de Usuários e Grupos — adduser/usermod/groupadd/sudo/visudo, 3 abas, FluxoCard ciclo de vida, WindowsComparisonBox net user↔adduser) + F17 `/troubleshooting` (Troubleshooting de Rede — metodologia OSI L1→L7, ping/ip/ss/dig/curl/journalctl, FluxoCard 6 camadas, script diagnose.sh, WindowsComparisonBox ipconfig↔ip); badge 👤 usuarios-master + 🔎 troubleshooting-master + 🏁 ground-zero (completou todos os 17 módulos Fundamentos — MILESTONE); /usuarios inserido entre /permissoes e /discos em FUNDAMENTOS_ORDER; vault-master unlock adicionado (estava faltando em BadgeContext); FUNDAMENTOS_ORDER 15→17 módulos; CONTENT_PAGES_COUNT 51→53; checklistItemsCount 166→172; linux-ninja 124→129; totalTopics 87→89; badges 59→62; searchItems 229→238 (69/69 rotas); courseOrder.test.ts atualizado (17 módulos, último=/troubleshooting); lint ✓ · 157 testes ✓ · build 75 rotas ✓.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
