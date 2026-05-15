@@ -42,11 +42,11 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   await expect(page.getByText('75%')).toBeVisible();
 });
 
-test('dashboard exibe 0/57 badges para usuário sem progresso', async ({ page }) => {
+test('dashboard exibe 0/58 badges para usuário sem progresso', async ({ page }) => {
   // Sem seed — estado completamente limpo (fixture já limpou)
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Sem nenhum badge desbloqueado (visitedPages << 5, sem quiz)
+  // Sem nenhum badge desbloqueado (visitedPages << 5, sem quiz) — 58 badges total (Sprint NFS)
   await expect(page.getByText('0/58')).toBeVisible();
 });

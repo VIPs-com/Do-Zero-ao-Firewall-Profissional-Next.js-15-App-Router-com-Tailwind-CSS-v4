@@ -290,9 +290,10 @@ interface BadgeContextType {
   updateQuizScore: (score: number) => void;
   exportProgress: () => void;
   importProgress: (json: string) => { ok: boolean; error?: string };
-  /** Badge de milestone recém-desbloqueada (dispara modal de celebração). Null quando não há. */
-  milestoneBadge: BadgeId | null;
-  clearMilestoneBadge: () => void;
+  // milestoneBadge e clearMilestoneBadge são estado INTERNO do BadgeProvider
+  // (usados pelo modal MilestoneCelebration via prop direta, não via contexto).
+  // Removidos da API pública para que eventos de milestone não disparem re-renders
+  // em todos os 59+ consumers — apenas o Provider re-renderiza ao abrir o modal.
 }
 
 const BadgeContext = createContext<BadgeContextType | undefined>(undefined);
@@ -608,6 +609,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Memoizar o valor do contexto — evita re-renders em cascata nos 59+ consumers
   // quando o Provider re-renderiza por causas externas. Todas as funções já são
   // useCallback estáveis; o useMemo só recria o objeto quando um estado realmente muda.
+  // milestoneBadge/clearMilestoneBadge ficam de fora — são estado interno do Provider.
+  // A abertura do modal não mais causa re-render nos 59+ consumers do contexto.
   const contextValue = useMemo(() => ({
     unlockedBadges,
     unlockBadge,
@@ -624,8 +627,6 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     updateQuizScore,
     exportProgress,
     importProgress,
-    milestoneBadge,
-    clearMilestoneBadge,
   }), [
     unlockedBadges, unlockBadge,
     visitedPages, trackPageVisit,
@@ -634,7 +635,6 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     checklist, updateChecklist, checklistPercentage,
     quizScore, updateQuizScore,
     exportProgress, importProgress,
-    milestoneBadge, clearMilestoneBadge,
   ]);
 
   return (
