@@ -264,6 +264,75 @@ function getModuleBase(href: string): string {
   return '/' + href.split('#')[0].replace(/^\//, '');
 }
 
+// TopicRow memoizado — evita re-render de todos os tópicos ao expandir/fechar outro módulo
+interface TopicRowProps {
+  topic: Topic;
+  idx: number;
+  expandedTooltip: string | null;
+  onToggleTooltip: (id: string | null) => void;
+  intentMode: IntentMode;
+  isVisited: (href: string) => boolean;
+}
+
+const TopicRow = React.memo(function TopicRow({
+  topic, idx, expandedTooltip, onToggleTooltip, intentMode, isVisited,
+}: TopicRowProps) {
+  const visited = isVisited(topic.href);
+  return (
+    <div key={topic.id} className={cn('group', idx > 0 && 'border-t border-border/40')}>
+      <Link
+        href={topic.href}
+        className="relative flex items-start gap-3 px-4 py-3 hover:bg-bg-3 transition-colors"
+      >
+        <span className={cn(
+          'font-mono text-[10px] text-text-3 bg-bg-3 px-1.5 py-0.5 rounded shrink-0 mt-0.5 transition-colors',
+          visited ? 'bg-ok/20 text-ok' : 'group-hover:bg-accent group-hover:text-white'
+        )}>
+          {topic.num}
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className={cn(
+            'text-sm text-text-2 group-hover:text-text transition-colors leading-relaxed',
+            intentMode === 'incendio' && 'truncate'
+          )}>
+            {topic.title}
+          </p>
+          <span className={cn(
+            'layer-badge mt-1.5',
+            topic.layerClass,
+            intentMode === 'incendio' && (topic.layerClass === 'l3' || topic.layerClass === 'l4') && 'text-[var(--color-err)] bg-[rgba(248,81,73,0.1)] border-[rgba(248,81,73,0.3)]'
+          )}>
+            {topic.layer}
+          </span>
+        </div>
+        <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center shrink-0" size={13} />
+        {/* Tooltip desktop — CSS puro, aria-hidden quando invisível */}
+        <div
+          role="tooltip"
+          aria-hidden="true"
+          className="hidden md:block absolute left-full top-0 ml-3 z-50 w-64 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 bg-bg-2 border border-border rounded-lg p-3 shadow-lg"
+        >
+          <p className="text-xs text-text-3">{topic.layer}</p>
+          <p className="text-xs text-text-2 mt-1">{topic.group}</p>
+          <span className="text-[10px] text-accent">→ {topic.href.split('#')[0]}</span>
+        </div>
+      </Link>
+      {/* Expand mobile */}
+      <button
+        className="md:hidden w-full text-left px-4 pb-1 text-[11px] text-text-3 hover:text-accent transition-colors"
+        onClick={() => onToggleTooltip(expandedTooltip === topic.id ? null : topic.id)}
+      >
+        {expandedTooltip === topic.id ? '▲ ocultar' : '▼ detalhes'}
+      </button>
+      {expandedTooltip === topic.id && (
+        <div className="md:hidden px-4 pb-2 text-[11px] text-text-3 bg-bg-3 border-t border-border/40">
+          {topic.layer} · {topic.group} · {topic.href.split('#')[0]}
+        </div>
+      )}
+    </div>
+  );
+});
+
 export default function TopicsPage() {
   const [activeTrail, setActiveTrail] = useState<TrailTab>('firewall');
 
@@ -318,6 +387,11 @@ export default function TopicsPage() {
     }
     return stats;
   }, [isVisited]);
+
+  // Handler estável para tooltip mobile — evita recriação a cada render
+  const handleToggleTooltip = useCallback((id: string | null) => {
+    setExpandedTooltip(id);
+  }, []);
 
   // Abre/fecha accordion de um módulo
   const toggleModule = useCallback((slug: string) => {
@@ -575,57 +649,19 @@ export default function TopicsPage() {
                   )}
                 </button>
 
-                {/* Lista de tópicos (expandida) */}
+                {/* Lista de tópicos (expandida) — TopicRow memoizado */}
                 {isOpen && topics.length > 0 && (
                   <div className="border-t border-border/60">
                     {topics.map((topic, idx) => (
-                      <div key={topic.id} className={cn('group', idx > 0 && 'border-t border-border/40')}>
-                        <Link
-                          href={topic.href}
-                          className="relative flex items-start gap-3 px-4 py-3 hover:bg-bg-3 transition-colors"
-                        >
-                          <span className="font-mono text-[10px] text-text-3 bg-bg-3 px-1.5 py-0.5 rounded shrink-0 mt-0.5 group-hover:bg-accent group-hover:text-white transition-colors">
-                            {topic.num}
-                          </span>
-                          <div className="flex-1 min-w-0">
-                            <p className={cn(
-                              'text-sm text-text-2 group-hover:text-text transition-colors leading-relaxed',
-                              intentMode === 'incendio' && 'truncate'
-                            )}>
-                              {topic.title}
-                            </p>
-                            <span className={cn(
-                              'layer-badge mt-1.5',
-                              topic.layerClass,
-                              intentMode === 'incendio' && (topic.layerClass === 'l3' || topic.layerClass === 'l4') && 'text-[var(--color-err)] bg-[rgba(248,81,73,0.1)] border-[rgba(248,81,73,0.3)]'
-                            )}>
-                              {topic.layer}
-                            </span>
-                          </div>
-                          <ChevronRight className="text-text-3 opacity-0 group-hover:opacity-100 transition-opacity self-center shrink-0" size={13} />
-                          {/* Tooltip desktop — CSS puro */}
-                          <div
-                            role="tooltip"
-                            className="hidden md:block absolute left-full top-0 ml-3 z-50 w-64 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 bg-bg-2 border border-border rounded-lg p-3 shadow-lg"
-                          >
-                            <p className="text-xs text-text-3">{topic.layer}</p>
-                            <p className="text-xs text-text-2 mt-1">{topic.group}</p>
-                            <span className="text-[10px] text-accent">→ {topic.href.split('#')[0]}</span>
-                          </div>
-                        </Link>
-                        {/* Expand mobile */}
-                        <button
-                          className="md:hidden w-full text-left px-4 pb-1 text-[11px] text-text-3 hover:text-accent transition-colors"
-                          onClick={() => setExpandedTooltip(prev => prev === topic.id ? null : topic.id)}
-                        >
-                          {expandedTooltip === topic.id ? '▲ ocultar' : '▼ detalhes'}
-                        </button>
-                        {expandedTooltip === topic.id && (
-                          <div className="md:hidden px-4 pb-2 text-[11px] text-text-3 bg-bg-3 border-t border-border/40">
-                            {topic.layer} · {topic.group} · {topic.href.split('#')[0]}
-                          </div>
-                        )}
-                      </div>
+                      <TopicRow
+                        key={topic.id}
+                        topic={topic}
+                        idx={idx}
+                        expandedTooltip={expandedTooltip}
+                        onToggleTooltip={handleToggleTooltip}
+                        intentMode={intentMode}
+                        isVisited={isVisited}
+                      />
                     ))}
                   </div>
                 )}

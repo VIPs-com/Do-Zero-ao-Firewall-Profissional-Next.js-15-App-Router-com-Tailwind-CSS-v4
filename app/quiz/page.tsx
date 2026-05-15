@@ -107,7 +107,7 @@ export default function QuizPage() {
     }
   }, [trackPageVisit]);
 
-  const handleStart = () => {
+  const handleStart = useCallback(() => {
     let pool = selectedTrail === 'all'
       ? [...QUIZ_QUESTIONS]
       : QUIZ_QUESTIONS.filter(q => q.trail === selectedTrail);
@@ -119,13 +119,13 @@ export default function QuizPage() {
     setAnswers({});
     setShowResult(false);
     setStarted(true);
-  };
+  }, [selectedTrail, selectedModule, sessionSize]);
 
-  const handleAnswer = (optIdx: number) => {
+  const handleAnswer = useCallback((optIdx: number) => {
     if (showResult) return;
     if (answers[currentIdx] !== undefined) return; // lock após primeiro toque
     setAnswers(prev => ({ ...prev, [currentIdx]: optIdx }));
-  };
+  }, [showResult, answers, currentIdx]);
 
   const score = useMemo(() => {
     let correct = 0;
@@ -180,14 +180,14 @@ export default function QuizPage() {
     setSessionHistory(next);
   }, [percentage, score, QUESTIONS, answers, selectedTrail, sessionSize, updateQuizScore]);
 
-  const resetQuiz = () => {
+  const resetQuiz = useCallback(() => {
     setAnswers({});
     setCurrentIdx(0);
     setShowResult(false);
     setStarted(false);
     setQUESTIONS([]);
     // não reseta selectedTrail nem sessionSize — o usuário pode querer repetir a mesma configuração
-  };
+  }, []);
 
   /** QUIZ-v2: inicia sessão de revisão usando apenas as questões erradas da última sessão */
   const handleReview = useCallback(() => {

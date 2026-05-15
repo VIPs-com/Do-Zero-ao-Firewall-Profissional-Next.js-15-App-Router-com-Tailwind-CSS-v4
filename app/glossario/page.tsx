@@ -169,6 +169,30 @@ const GLOSSARY: Term[] = [
   { term: "Deployment Strategy", definition: "Abordagem para atualizar serviços em produção minimizando impacto. Rolling update (padrão K8s): substitui pods gradualmente. Blue/Green: dois ambientes idênticos, switch instantâneo. Canary: tráfego dividido entre versões (Istio VirtualService weight). Recreate: para tudo e recria — com downtime.", category: "DevOps & IaC", icon: <Zap size={14} /> },
 ];
 
+// TermCard memoizado — evita re-renders de cards não afetados ao digitar na busca
+interface TermCardProps { term: Term; index: number; }
+const TermCard = React.memo(function TermCard({ term, index }: TermCardProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: Math.min(index * 0.03, 0.3) }}
+      className="p-6 rounded-xl bg-bg-2 border border-border hover:border-accent/30 transition-all group"
+    >
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-mono font-bold text-accent-2">{term.term}</h3>
+        <div className="px-2 py-1 rounded bg-bg-3 border border-border text-[9px] font-bold uppercase tracking-widest text-text-3 flex items-center gap-1.5">
+          {term.icon}
+          {term.category}
+        </div>
+      </div>
+      <p className="text-sm text-text-2 leading-relaxed group-hover:text-text transition-colors">
+        {term.definition}
+      </p>
+    </motion.div>
+  );
+});
+
 export default function GlossaryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -237,24 +261,7 @@ export default function GlossaryPage() {
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredTerms.map((t, i) => (
-          <motion.div 
-            key={t.term}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            className="p-6 rounded-xl bg-bg-2 border border-border hover:border-accent/30 transition-all group"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-mono font-bold text-accent-2">{t.term}</h3>
-              <div className="px-2 py-1 rounded bg-bg-3 border border-border text-[9px] font-bold uppercase tracking-widest text-text-3 flex items-center gap-1.5">
-                {t.icon}
-                {t.category}
-              </div>
-            </div>
-            <p className="text-sm text-text-2 leading-relaxed group-hover:text-text transition-colors">
-              {t.definition}
-            </p>
-          </motion.div>
+          <TermCard key={t.term} term={t} index={i} />
         ))}
       </div>
 

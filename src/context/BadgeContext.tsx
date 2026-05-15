@@ -605,26 +605,40 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [unlockBadge]);
 
+  // Memoizar o valor do contexto — evita re-renders em cascata nos 59+ consumers
+  // quando o Provider re-renderiza por causas externas. Todas as funções já são
+  // useCallback estáveis; o useMemo só recria o objeto quando um estado realmente muda.
+  const contextValue = useMemo(() => ({
+    unlockedBadges,
+    unlockBadge,
+    visitedPages,
+    trackPageVisit,
+    topologyClicks,
+    trackTopologyClick,
+    clickedRisks,
+    trackRiskClick,
+    checklist,
+    updateChecklist,
+    checklistPercentage,
+    quizScore,
+    updateQuizScore,
+    exportProgress,
+    importProgress,
+    milestoneBadge,
+    clearMilestoneBadge,
+  }), [
+    unlockedBadges, unlockBadge,
+    visitedPages, trackPageVisit,
+    topologyClicks, trackTopologyClick,
+    clickedRisks, trackRiskClick,
+    checklist, updateChecklist, checklistPercentage,
+    quizScore, updateQuizScore,
+    exportProgress, importProgress,
+    milestoneBadge, clearMilestoneBadge,
+  ]);
+
   return (
-    <BadgeContext.Provider value={{
-      unlockedBadges,
-      unlockBadge,
-      visitedPages,
-      trackPageVisit,
-      topologyClicks,
-      trackTopologyClick,
-      clickedRisks,
-      trackRiskClick,
-      checklist,
-      updateChecklist,
-      checklistPercentage,
-      quizScore,
-      updateQuizScore,
-      exportProgress,
-      importProgress,
-      milestoneBadge,
-      clearMilestoneBadge,
-    }}>
+    <BadgeContext.Provider value={contextValue}>
       {children}
       {lastNotification && (
         <div className="fixed bottom-6 right-6 z-50 bg-bg-2 border border-accent/40 rounded-xl px-5 py-4 shadow-lg flex items-center gap-3 animate-in slide-in-from-bottom-4">

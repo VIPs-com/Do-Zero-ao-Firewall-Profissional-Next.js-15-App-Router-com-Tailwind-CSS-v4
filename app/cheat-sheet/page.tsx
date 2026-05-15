@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { Terminal, Copy, Check, Search, Filter, BookOpen, Shield, Zap, Globe, Lock, Server } from 'lucide-react';
@@ -238,6 +238,10 @@ const SOS_STEPS: TroubleshootingStep[] = [
   },
 ];
 
+// Constantes de categorias por trilha — fora do componente para não recriar a cada render
+const DEVOPS_CATEGORIES  = ['Docker', 'Ansible', 'Kubernetes', 'Terraform', 'CI/CD', 'Monitoring', 'eBPF', 'SRE', 'Service Mesh', 'nftables', 'Traefik'];
+const SERVERS_CATEGORIES = ['DHCP', 'Samba', 'Apache', 'LDAP', 'Suricata', 'Pi-hole', 'SSH'];
+
 export default function CheatSheetPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
@@ -279,10 +283,7 @@ export default function CheatSheetPage() {
     return () => observer.disconnect();
   }, [activeTab]);
 
-  const DEVOPS_CATEGORIES   = ['Docker', 'Ansible', 'Kubernetes', 'Terraform', 'CI/CD', 'Monitoring', 'eBPF', 'SRE', 'Service Mesh', 'nftables', 'Traefik'];
-  const SERVERS_CATEGORIES  = ['DHCP', 'Samba', 'Apache', 'LDAP', 'Suricata', 'Pi-hole', 'SSH'];
-
-  const filteredCommands = COMMANDS.filter(cmd => {
+  const filteredCommands = useMemo(() => COMMANDS.filter(cmd => {
     const matchesSearch = cmd.cmd.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          cmd.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          cmd.category.toLowerCase().includes(searchQuery.toLowerCase());
@@ -292,7 +293,7 @@ export default function CheatSheetPage() {
           cmd.layerClass === activeFilter);
     const matchesTrail = activeTrail === 'all' || cmdTrail(cmd) === activeTrail;
     return matchesSearch && matchesFilter && matchesTrail;
-  });
+  }), [searchQuery, activeFilter, activeTrail]);
 
   return (
     <div id="cheat-sheet-print" className="max-w-7xl mx-auto px-4 py-12 module-accent-cheat-sheet">
