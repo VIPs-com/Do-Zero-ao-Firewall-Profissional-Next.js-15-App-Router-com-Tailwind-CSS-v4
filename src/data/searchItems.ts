@@ -238,7 +238,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
 
   // Sprint I.10 — OpenVPN (/openvpn)
   { id: 't-openvpn',   category: 'Tópico',    title: 'OpenVPN — VPN com PKI própria',      description: 'Easy-RSA, certificados CA/servidor/cliente, server.conf, client.ovpn e iptables',  href: '/openvpn', icon: Lock },
-  { id: 'g-easyrsa',   category: 'Glossário', title: 'Easy-RSA — PKI simplificada',        description: 'Wrapper do OpenSSL para criar CA, assinar certificados e gerenciar CRL no OpenVPN', href: '/openvpn', icon: Shield },
+  { id: 'g-easyrsa-pki', category: 'Glossário', title: 'Easy-RSA — PKI simplificada',        description: 'Wrapper do OpenSSL para criar CA, assinar certificados e gerenciar CRL no OpenVPN', href: '/openvpn', icon: Shield },
 
   // Sprint I.11 — Traefik Proxy Reverso (/traefik)
   { id: 't-traefik',   category: 'Tópico',    title: 'Traefik — Proxy Reverso Cloud-Native', description: 'Labels Docker, HTTPS automático ACME, middlewares (redirect, basicauth, rate-limit) e dashboard', href: '/traefik', icon: GitMerge },

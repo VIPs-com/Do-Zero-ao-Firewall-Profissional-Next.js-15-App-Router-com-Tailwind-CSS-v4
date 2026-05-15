@@ -55,10 +55,18 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # perguntas do quiz — 257 perguntas (firewall=105, fundamentos=60, avancados=92; Sprint NFS: +3)
-    searchItems.ts          # 223 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens
+    quizQuestions.ts        # barrel re-exporta QUIZ_QUESTIONS (257 total) de quiz/firewall.ts + quiz/fundamentos.ts + quiz/avancados.ts
+    quiz/types.ts           # QuizTrail + QuizQuestion types
+    quiz/firewall.ts        # 105 questões — trilha firewall
+    quiz/fundamentos.ts     # 60 questões — trilha fundamentos
+    quiz/avancados.ts       # 92 questões — trilha avancados
+    searchItems.ts          # 224 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens
+    badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (58 badges) — re-exportado do BadgeContext para tree-shaking
+    topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
+    quiz.test.ts            # testes de integridade: 105+60+92 questões, campos, sem duplicatas
+    searchItems.test.ts     # testes de integridade: 224 itens, IDs únicos, hrefs válidos
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
@@ -116,7 +124,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 163 (Sprint NFS: +3 checkpoints nfs) |
 | Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
 | Badges | `src/context/BadgeContext.tsx` | 58 (Sprint SRS-STREAK: +srs-streak-7 · Sprint NFS: +nfs-master) |
-| searchItems | `src/data/searchItems.ts` | 223 (Sprint NFS: +3 — nfs-conceito/nfs-exports/nfs-cliente) |
+| searchItems | `src/data/searchItems.ts` | 224 (Sprint CONSOLIDACAO: corrigido duplicate ID g-easyrsa) |
 
 ---
 
@@ -450,6 +458,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint PERF (Performance React): 5 otimizações de alto ROI — (1) `BadgeContext.tsx`: value do Provider envolvido em `useMemo` com todas as 18 dependências → elimina re-renders em cascata nos 59+ consumers quando o Provider re-renderiza por causas externas (−70% re-renders globais); (2) `app/cheat-sheet/page.tsx`: `DEVOPS_CATEGORIES`/`SERVERS_CATEGORIES` movidas para módulo-level + `filteredCommands` envolvida em `useMemo([searchQuery, activeFilter, activeTrail])` → search instantâneo sem jank; (3) `app/topicos/page.tsx`: `TopicRow` extraído como `React.memo` com 6 props + `handleToggleTooltip` useCallback estável + `aria-hidden="true"` na tooltip → re-renders isolados por módulo no modo 🔥; (4) `app/glossario/page.tsx`: `TermCard` extraído como `React.memo` + delay cap `Math.min(i * 0.03, 0.3)` → animações corretas sem delay absurdo em 115 termos; (5) `app/quiz/page.tsx`: `handleStart`, `handleAnswer`, `resetQuiz` convertidos para `useCallback` → funções estáveis passadas como onClick; lint ✓ · 115 testes ✓.
 - ✅ Sprint EVOL-INTERNAL (Context Split + E2E Fix): `BadgeContext.tsx` — `milestoneBadge`/`clearMilestoneBadge` removidos da interface pública `BadgeContextType` e do `contextValue` useMemo (eram internos ao Provider — nenhum consumer externo usava via contexto; `MilestoneCelebration` recebe `badgeId` como prop direta). Reduz a API pública do contexto de 16 para 14 campos e elimina 2 deps desnecessárias do useMemo; `e2e/07-dashboard-counters.spec.ts` título `0/57 badges` corrigido para `0/58 badges` (NFS adicionou o 58º badge no Sprint anterior); lint ✓ · 115 testes ✓.
 - ✅ Sprint QUIZ-SPLIT (Code Organization): `src/data/quizQuestions.ts` (3252 linhas / ~185 KB) dividido em 4 arquivos — `src/data/quiz/types.ts` (tipos `QuizTrail`/`QuizQuestion`), `src/data/quiz/firewall.ts` (105 questões), `src/data/quiz/fundamentos.ts` (60 questões), `src/data/quiz/avancados.ts` (92 questões); `quizQuestions.ts` vira barrel que re-exporta tipos + combina arrays; zero mudanças em consumers (`app/quiz/page.tsx`, `app/dashboard/page.tsx`, `app/treino/page.tsx`); lint ✓ · 115 testes ✓.
+- ✅ Sprint CONSOLIDACAO (Limpeza da Casa & Blindagem): 3 tarefas — (1) `src/data/badges.ts`: extrai `BadgeId`/`BadgeDef`/`BADGE_DEFS` (58 badges) de `BadgeContext.tsx`; BadgeContext re-exporta para compatibilidade retroativa; (2) `src/data/topics.ts`: extrai `TrailTab`/`Topic`/`ModuleMeta`/`TOPICS`/`MODULE_META`/`TRAIL_MODULES`/`TRAIL_CONFIG` (86 tópicos, 59 módulos) de `app/topicos/page.tsx`; page.tsx reduz de ~600→~350 linhas; SORT_STRATEGIES/INTENT_LS_KEY permanecem na page para testabilidade; (3) testes de integridade de dados: `src/data/quiz.test.ts` (17 testes — counts 105/60/92/257, campos, sem duplicatas, correct válido, 4 opções por questão, ordem do barrel) e `src/data/searchItems.test.ts` (5 testes — count 224, IDs únicos, campos obrigatórios, hrefs válidos, sem vazios); fix: `g-easyrsa` duplicado em searchItems.ts renomeado `g-easyrsa-pki`; 10 suítes · 143 testes ✓.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
