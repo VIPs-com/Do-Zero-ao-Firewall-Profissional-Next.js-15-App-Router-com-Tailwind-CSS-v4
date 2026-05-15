@@ -54,7 +54,8 @@ export type BadgeId =
   | 'ssh-proxy-master'
   | 'advanced-master'
   | 'srs-streak-7'
-  | 'nfs-master';
+  | 'nfs-master'
+  | 'vault-master';
 
 export interface BadgeDef {
   icon: string;
@@ -121,4 +122,5 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'advanced-master':        { icon: '🌐', title: 'Advanced Master',         desc: 'Explorou todos os 19 módulos avançados — Servidores (v3.0), Infraestrutura (v4.0) e Cloud & Platform Engineering (v5.0)' },
   'srs-streak-7':           { icon: '🔥', title: 'Streak 7 Dias',           desc: '7 dias consecutivos de Treinamento Tático — a repetição espaçada funciona!' },
   'nfs-master':             { icon: '🗂️', title: 'NFS Master',             desc: 'Configurou servidor NFS com /etc/exports, montou cliente e configurou /etc/fstab com opções seguras' },
+  'vault-master':           { icon: '🔐', title: 'Vault Sentinel',          desc: 'Dominou gestão de segredos com HashiCorp Vault — Unseal, políticas HCL, AppRole para máquinas e segredos dinâmicos com Database engine' },
 };

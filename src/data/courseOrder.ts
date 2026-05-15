@@ -67,6 +67,7 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/ebpf',          title: 'eBPF & XDP' },
   { path: '/service-mesh',  title: 'Service Mesh (Istio)' },
   { path: '/sre',           title: 'SRE & SLOs' },
+  { path: '/vault',         title: 'HashiCorp Vault' },
   // v5.0 — Cloud & Platform Engineering (4 módulos)
   { path: '/cicd',          title: 'CI/CD com GitHub Actions' },
   { path: '/opnsense',      title: 'OPNsense' },

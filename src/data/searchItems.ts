@@ -232,6 +232,11 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'nfs-exports',   title: 'NFS /etc/exports',           description: 'Sintaxe de exports, opções rw/ro/sync/no_subtree_check/root_squash/all_squash e exportfs -ra', category: 'Tópico', href: '/nfs', icon: HardDrive },
   { id: 'nfs-cliente',   title: 'NFS mount e /etc/fstab',     description: 'Mount NFSv4 com -t nfs4, opções _netdev/nofail/soft, persistência no fstab e ID mapping', category: 'Tópico', href: '/nfs', icon: HardDrive },
 
+  // Sprint VAULT — HashiCorp Vault (/vault)
+  { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },
+  { id: 'vault-approle',    title: 'Vault AppRole — Autenticação para Máquinas',   description: 'role-id + secret-id geram token com TTL — o método correto para apps e pipelines CI/CD',                  category: 'Tópico', href: '/vault', icon: Shield },
+  { id: 'vault-dinamico',   title: 'Vault Database Engine — Credenciais Dinâmicas', description: 'Vault cria usuário PostgreSQL sob demanda com TTL — credencial expira e é deletada automaticamente',      category: 'Tópico', href: '/vault', icon: Lock },
+
   // Sprint I.9 — Apache Web Server (/apache)
   { id: 't-apache',    category: 'Tópico',    title: 'Apache Web Server',                  description: 'apache2, VirtualHost, a2ensite/a2dissite, SSL com Certbot e proxy reverso',       href: '/apache', icon: Server },
   { id: 'g-apache',    category: 'Glossário', title: 'Apache vs Nginx',                    description: 'Apache usa threads por conexão; Nginx usa eventos assíncronos. Escolha depende do caso', href: '/apache', icon: Globe },

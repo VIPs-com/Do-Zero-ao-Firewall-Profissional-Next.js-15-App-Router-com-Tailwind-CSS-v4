@@ -144,6 +144,7 @@ export const TOPICS: Topic[] = [
   { id: 'i05', num: 'I05', title: 'Suricata IDS/IPS: modo IDS passivo (af-packet) e IPS inline (NFQUEUE), regras customizadas com EVE JSON, Emerging Threats e integração com nftables.', layer: 'Segurança · IDS/IPS', layerClass: 'l4', href: '/suricata', group: 'Infraestrutura Moderna' },
   { id: 'i06', num: 'I06', title: 'eBPF & XDP: BCC tools (execsnoop, tcpconnect, biolatency), bpftrace scripting, filtros XDP de alta performance, Cilium CNI para Kubernetes e Falco para segurança em runtime.', layer: 'Kernel · Observabilidade', layerClass: 'l3', href: '/ebpf', group: 'Infraestrutura Moderna' },
   { id: 'i07', num: 'I07', title: 'Service Mesh com Istio: sidecar Envoy, mTLS automático (SPIFFE/X.509), VirtualService (canary/A-B), DestinationRule (circuit breaker), AuthorizationPolicy e observabilidade com Kiali/Jaeger.', layer: 'Camada 7 · mTLS', layerClass: 'l7', href: '/service-mesh', group: 'Infraestrutura Moderna' },
+  { id: 'i09', num: 'I09', title: 'HashiCorp Vault: gestão de segredos e identidades dinâmicas — Unseal (Shamir), Secrets Engines (KV, PKI, Database), políticas HCL e AppRole para autenticação de máquinas.', layer: 'Segurança · Secrets', layerClass: 'l6', href: '/vault', group: 'Infraestrutura Moderna' },
   { id: 'i08', num: 'I08', title: 'SRE & SLOs: SLIs/SLOs com Prometheus (recording rules + burn rate), error budget como ferramenta de decisão, alertas por sintoma, runbooks acionáveis e postmortem blameless.', layer: 'Cultura · Confiabilidade', layerClass: 'l7', href: '/sre', group: 'Infraestrutura Moderna' },
 
   // ── Cloud & Platform Engineering (v5.0) ───────────────────────────────────────
@@ -212,6 +213,7 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/ebpf':          { label: 'eBPF & XDP',                  icon: '⚡', trail: 'avancados' },
   '/service-mesh':  { label: 'Service Mesh (Istio)',        icon: '🕸️', trail: 'avancados' },
   '/sre':           { label: 'SRE & SLOs',                  icon: '🎯', trail: 'avancados' },
+  '/vault':         { label: 'HashiCorp Vault',              icon: '🔐', trail: 'avancados' },
   '/cicd':          { label: 'CI/CD GitHub Actions',        icon: '🚀', trail: 'avancados' },
   '/opnsense':      { label: 'OPNsense',                    icon: '🔥', trail: 'avancados' },
   '/nextcloud':     { label: 'Nextcloud',                   icon: '☁️', trail: 'avancados' },
@@ -236,7 +238,7 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/dhcp', '/samba', '/apache', '/openvpn', '/traefik',
     '/ldap', '/pihole', '/ssh-proxy', '/nfs', '/ansible', '/monitoring',
     '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
-    '/sre', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
+    '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
   ],
 };
 

@@ -303,6 +303,8 @@ html.light {
   .module-accent-ssh-proxy          { --mod: #0ea5e9; }
   /* Sprint NFS — Network File System */
   .module-accent-nfs                { --mod: #005f73; }
+  /* Sprint VAULT — HashiCorp Vault */
+  .module-accent-vault              { --mod: #fbbf24; }
 
   /* Qualquer elemento com .module-hero dentro de um `.module-accent-*`
      recebe automaticamente a borda superior colorida + halo difuso.

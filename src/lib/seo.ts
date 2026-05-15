@@ -444,6 +444,12 @@ export const ROUTE_SEO = {
       'Configure Istio no Kubernetes: mTLS automático com SPIFFE, VirtualService para canary deploy, DestinationRule com circuit breaker, AuthorizationPolicy e observabilidade com Kiali, Jaeger e Grafana.',
     keywords: ['Istio', 'Service Mesh', 'mTLS', 'Envoy', 'VirtualService', 'DestinationRule', 'Kiali', 'Jaeger', 'canary deploy', 'circuit breaker', 'SPIFFE'],
   },
+  '/vault': {
+    title: 'HashiCorp Vault | Gestão de Segredos Dinâmicos e PKI Interna',
+    description:
+      'Gerencie segredos com HashiCorp Vault: KV v2, AppRole para máquinas, Database engine para credenciais PostgreSQL dinâmicas com TTL, PKI interna e Transit engine para criptografia como serviço.',
+    keywords: ['HashiCorp Vault', 'gestão de segredos', 'AppRole', 'segredos dinâmicos', 'PKI interna', 'Database engine', 'Transit engine', 'Unseal', 'políticas HCL', 'credenciais dinâmicas'],
+  },
 } as const satisfies Record<string, RouteSEO>;
 
 export type RoutePath = keyof typeof ROUTE_SEO;

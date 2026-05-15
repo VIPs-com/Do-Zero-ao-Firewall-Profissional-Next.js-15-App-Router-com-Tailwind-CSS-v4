@@ -58,15 +58,14 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  // Counter-Sync: TOPICS.length=85 (27b, 47b = sub-entries; s08=SSH Proxy adicionado após Sprint SSH-PROXY)
-  const totalTopics = 86;
+  // Counter-Sync: TOPICS.length=87 (Sprint VAULT: +i09 HashiCorp Vault)
+  const totalTopics = 87;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
-  // Sprint SSH-PROXY: +3 checkpoints ssh-proxy → 151+3 = 154
-  // Sprint CONTENT-ATAQUES: +3 checkpoints ataques → 154+3 = 157
-  // Sprint CONTENT-PIVOTING: +3 checkpoints pivoteamento → 157+3 = 160
-  const checklistItemsCount = 163;
+  // Sprint NFS: +3 checkpoints nfs → 160+3 = 163
+  // Sprint VAULT: +3 checkpoints vault → 163+3 = 166
+  const checklistItemsCount = 166;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 
@@ -112,8 +111,8 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  // linux-ninja threshold = floor(160 * 0.75) = 120
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 120) {
+  // linux-ninja threshold = floor(166 * 0.75) = 124
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 124) {
     nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (120/160 checkpoints)',
       current: checklistCompleted, total: 115, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
   } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 25) {

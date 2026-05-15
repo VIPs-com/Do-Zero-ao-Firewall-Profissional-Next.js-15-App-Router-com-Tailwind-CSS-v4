@@ -110,7 +110,9 @@ export const ALL_CHECKLIST_IDS = [
   'pivote-forward-drop', 'pivote-egress', 'pivote-honeypot',
   // Sprint NFS — Network File System (/nfs)
   'nfs-instalado', 'nfs-share', 'nfs-cliente',
-]; // 163 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint VAULT — HashiCorp Vault (/vault)
+  'vault-instalado', 'vault-politicas', 'vault-dinamico',
+]; // 166 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (49 rotas técnicas — threshold). Base do badge 'deep-diver'.
@@ -158,9 +160,10 @@ export const ALL_CHECKLIST_IDS = [
  * 48. /ssh-proxy
  * 49. /avancados     (índice trilha avançada — Sprint AVANCADOS-INDEX)
  * 50. /nfs           (Sprint NFS — Network File System)
+ * 51. /vault         (Sprint VAULT — HashiCorp Vault)
  * + /fundamentos já era parte dos 48 implicitamente; corrigido na contagem 49
  */
-export const CONTENT_PAGES_COUNT = 50;
+export const CONTENT_PAGES_COUNT = 51;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -359,7 +362,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['nfs-instalado'] && checklist['nfs-share'] && checklist['nfs-cliente']) unlockBadge('nfs-master');
 
     // Linux Ninja: desbloqueado com 75% do checklist (122 de 163 → floor(163*0.75) = 122).
-    if (Object.values(checklist).filter(v => v).length >= 122) unlockBadge('linux-ninja');
+    if (Object.values(checklist).filter(v => v).length >= 124) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {
