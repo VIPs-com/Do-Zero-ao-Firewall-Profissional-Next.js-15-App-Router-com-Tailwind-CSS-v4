@@ -60,13 +60,13 @@ src/
     quiz/firewall.ts        # 105 questões — trilha firewall
     quiz/fundamentos.ts     # 60 questões — trilha fundamentos
     quiz/avancados.ts       # 92 questões — trilha avancados
-    searchItems.ts          # 224 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens
+    searchItems.ts          # 229 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 67/67 rotas cobertas
     badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (58 badges) — re-exportado do BadgeContext para tree-shaking
     topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (15 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
     quiz.test.ts            # testes de integridade: 105+60+92 questões, campos, sem duplicatas
-    searchItems.test.ts     # testes de integridade: 224 itens, IDs únicos, hrefs válidos
+    searchItems.test.ts     # testes de integridade: 229 itens, IDs únicos, hrefs válidos
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
     utils.ts                # re-exporta cn() — clsx + tailwind-merge
@@ -124,7 +124,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 163 (Sprint NFS: +3 checkpoints nfs) |
 | Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
 | Badges | `src/context/BadgeContext.tsx` | 58 (Sprint SRS-STREAK: +srs-streak-7 · Sprint NFS: +nfs-master) |
-| searchItems | `src/data/searchItems.ts` | 224 (Sprint CONSOLIDACAO: corrigido duplicate ID g-easyrsa) |
+| searchItems | `src/data/searchItems.ts` | 229 (Sprint SEARCH-ROUTES: +5 para /treino e /offline · 67/67 rotas) |
 
 ---
 
@@ -461,6 +461,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint CONSOLIDACAO (Limpeza da Casa & Blindagem): 3 tarefas — (1) `src/data/badges.ts`: extrai `BadgeId`/`BadgeDef`/`BADGE_DEFS` (58 badges) de `BadgeContext.tsx`; BadgeContext re-exporta para compatibilidade retroativa; (2) `src/data/topics.ts`: extrai `TrailTab`/`Topic`/`ModuleMeta`/`TOPICS`/`MODULE_META`/`TRAIL_MODULES`/`TRAIL_CONFIG` (86 tópicos, 59 módulos) de `app/topicos/page.tsx`; page.tsx reduz de ~600→~350 linhas; SORT_STRATEGIES/INTENT_LS_KEY permanecem na page para testabilidade; (3) testes de integridade de dados: `src/data/quiz.test.ts` (17 testes — counts 105/60/92/257, campos, sem duplicatas, correct válido, 4 opções por questão, ordem do barrel) e `src/data/searchItems.test.ts` (5 testes — count 224, IDs únicos, campos obrigatórios, hrefs válidos, sem vazios); fix: `g-easyrsa` duplicado em searchItems.ts renomeado `g-easyrsa-pki`; 10 suítes · 143 testes ✓.
 - ✅ Sprint E2E-TOPICOS (Cobertura Playwright /topicos): `e2e/13-topicos-filters.spec.ts` — 10 casos: trilha Firewall ativa por padrão (aria-selected), clicar Fundamentos/Avançados muda trail + aria-selected, toggle 📚→🔥 MODO OPERACIONAL (aria-pressed=true), persiste 'incendio' em localStorage, seed localStorage → módulos pré-expandidos, busca "SNAT" filtra resultados, busca vazia exibe "Nenhum tópico encontrado", accordion expande/recolhe via aria-expanded; fix: seletores positivos (sem .not.toBeVisible em elementos globais do DOM); 13 specs E2E · 10/10 topicos passando.
 - ✅ Sprint HOOK (useTabFilter): `src/hooks/useTabFilter.ts` — hook genérico `useTabFilter<T extends string>(initial)` com `activeTab`/`setActiveTab`/`isActive`/`tabButtonProps` (injeta `role="tab"` + `aria-selected` + `onClick`); elimina 87+ repetições manuais de props a11y (29 páginas × 3 abas); `src/hooks/useTabFilter.test.ts` (14 testes — estado inicial, isActive, setActiveTab, tabButtonProps, referência estável, navegação sequencial); aplicado como proof of concept em `/monitoring` (MonitoringTab), `/topicos` (TrailTab via `trailButtonProps`) e `/cheat-sheet` (CheatTab via `cheatTabProps`); 26 páginas pendentes para migração incremental; 11 suítes · 157 testes ✓.
+- ✅ Sprint SEARCH-ROUTES (100% cobertura de busca): +5 itens em `src/data/searchItems.ts` para as 2 rotas sem cobertura — `/treino` (p-treino: Motor SRS, g-treino-sm2: algoritmo SM-2 easeFactor, g-treino-streak: badge srs-streak-7) e `/offline` (p-offline: terminal de emergência, g-offline-commands: diagnóstico sem internet); **67/67 rotas do ROUTE_SEO agora têm ≥1 item de busca**; searchItems 224→229; searchItems.test.ts atualizado (224→229); lint ✓ · 157 testes ✓.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 
