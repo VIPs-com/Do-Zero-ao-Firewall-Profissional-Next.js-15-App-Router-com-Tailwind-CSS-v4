@@ -11,6 +11,7 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const WG_CHECKLIST = [
   { id: 'wg-keys',   text: 'Chaves pública/privada geradas em servidor e cliente' },
@@ -109,7 +110,7 @@ sysctl -p
 export default function WireGuardPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'diagnostico'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'diagnostico'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/wireguard');
@@ -155,9 +156,9 @@ export default function WireGuardPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -169,7 +170,7 @@ export default function WireGuardPage() {
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div>
-          {activeTab === 'conceito' && (
+          {isActive('conceito') && (
           <div className="space-y-16">
 
           {/* Section 1: Comparativo */}
@@ -257,7 +258,7 @@ export default function WireGuardPage() {
           </div>
           )}
 
-          {activeTab === 'config' && (
+          {isActive('config') && (
           <div className="space-y-16">
           {/* Section 3: Servidor */}
           <section id="servidor">
@@ -371,7 +372,7 @@ systemctl enable wg-quick@wg0  # inicia no boot`}
           </div>
           )}
 
-          {activeTab === 'diagnostico' && (
+          {isActive('diagnostico') && (
           <div className="space-y-16">
           {/* Section 6: Erros Comuns */}
           <section id="erros-comuns">

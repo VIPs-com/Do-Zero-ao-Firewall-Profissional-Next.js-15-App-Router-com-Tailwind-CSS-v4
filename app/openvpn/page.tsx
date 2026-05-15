@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Key, Shield, Server, Network, Globe, Lock } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -9,10 +9,11 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function OpenVPNPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/openvpn');
@@ -55,9 +56,9 @@ export default function OpenVPNPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -83,7 +84,7 @@ export default function OpenVPNPage() {
           ]}
         />
 
-        {activeTab === 'conceito' && (<>
+        {isActive('conceito') && (<>
         {/* Comparação OpenVPN vs WireGuard vs IPSec */}
         <section>
           <h2 className="section-title">OpenVPN vs WireGuard vs IPSec — quando usar cada</h2>
@@ -197,7 +198,7 @@ ls -la pki/issued/ pki/private/`} />
 
         </>)}
 
-        {activeTab === 'config' && (<>
+        {isActive('config') && (<>
         {/* server.conf */}
         <section>
           <h2 className="section-title">server.conf — Configuração do Servidor</h2>
@@ -463,7 +464,7 @@ nmcli connection down empresa`}
 
         </>)}
 
-        {activeTab === 'exercicios' && (<>
+        {isActive('exercicios') && (<>
         {/* Troubleshooting */}
         <section>
           <h2 className="section-title">Troubleshooting</h2>

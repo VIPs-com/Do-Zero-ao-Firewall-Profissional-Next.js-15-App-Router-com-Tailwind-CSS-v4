@@ -56,20 +56,24 @@ export function useTabFilter<T extends string>(initial: T) {
     setActiveTabRaw(tab);
   }, []);
 
-  /** Retorna true se `tab` é a aba atualmente ativa. */
-  const isActive = useCallback((tab: T): boolean => activeTab === tab, [activeTab]);
+  /**
+   * Retorna true se `tab` é a aba atualmente ativa.
+   * Aceita `string` para compatibilidade com `.map(tab => tab.id)` sem cast.
+   */
+  const isActive = useCallback((tab: string): boolean => activeTab === tab, [activeTab]);
 
   /**
    * Props prontos para espalhar no botão de aba.
    * Injeta role="tab", aria-selected e onClick corretamente.
+   * Aceita `string` para compatibilidade com `.map(tab => tab.id)` sem cast.
    *
    * @example
-   * <button {...tabButtonProps('conceito')} className={...}>Conceito</button>
+   * <button {...tabButtonProps(tab.id)} className={...}>...</button>
    */
-  const tabButtonProps = useCallback((tab: T): TabButtonProps => ({
+  const tabButtonProps = useCallback((tab: string): TabButtonProps => ({
     role: 'tab',
     'aria-selected': activeTab === tab,
-    onClick: () => setActiveTab(tab),
+    onClick: () => setActiveTab(tab as T),
   }), [activeTab, setActiveTab]);
 
   return {

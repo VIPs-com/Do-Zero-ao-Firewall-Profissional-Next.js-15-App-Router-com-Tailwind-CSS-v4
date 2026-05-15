@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const checklistItems = [
   {
@@ -57,7 +58,7 @@ type NcTab = 'conceito' | 'config' | 'storage';
 export default function NextcloudPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<NcTab>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<NcTab>('conceito');
 
   useEffect(() => {
     trackPageVisit('/nextcloud');
@@ -106,10 +107,10 @@ export default function NextcloudPage() {
             <button
               key={tab.id}
               role="tab"
-              aria-selected={activeTab === tab.id}
+              aria-selected={isActive(tab.id)}
               onClick={() => setActiveTab(tab.id as NcTab)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -120,7 +121,7 @@ export default function NextcloudPage() {
         </div>
 
         {/* ── TAB: Conceito & Stack ── */}
-        {activeTab === 'conceito' && <div className="space-y-10">
+        {isActive('conceito') && <div className="space-y-10">
 
         {/* 1 — Nextcloud vs alternativas */}
         <section className="space-y-4">
@@ -262,7 +263,7 @@ docker compose logs -f nextcloud
         </div>} {/* end tab conceito */}
 
         {/* ── TAB: Config & Apps ── */}
-        {activeTab === 'config' && <div className="space-y-10">
+        {isActive('config') && <div className="space-y-10">
 
         {/* 3 — Pós-instalação */}
         <section className="space-y-4">
@@ -392,7 +393,7 @@ Email:    mail`} />
         </div>} {/* end tab config */}
 
         {/* ── TAB: Storage & Backup ── */}
-        {activeTab === 'storage' && <div className="space-y-10">
+        {isActive('storage') && <div className="space-y-10">
 
         {/* 6 — Object Storage S3 */}
         <section className="space-y-4">

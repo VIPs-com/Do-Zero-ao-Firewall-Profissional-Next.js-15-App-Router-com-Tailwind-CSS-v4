@@ -12,6 +12,7 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle, CheckCircle2 } from 'lucide-react';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const VPN_CHECKLIST = [
   { id: 'vpn-up', text: 'Túnel IPSec estabelecido (Status: UP)' },
@@ -28,7 +29,7 @@ const TABS: { id: VpnTab; label: string }[] = [
 
 export default function VpnIpsecPage() {
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<VpnTab>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<VpnTab>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -71,12 +72,10 @@ export default function VpnIpsecPage() {
         {TABS.map(t => (
           <button
             key={t.id}
-            role="tab"
-            aria-selected={activeTab === t.id}
-            onClick={() => setActiveTab(t.id)}
+            {...tabButtonProps(t.id)}
             className={cn(
               'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
-              activeTab === t.id
+              isActive(t.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-3 hover:text-text-2',
             )}
@@ -87,7 +86,7 @@ export default function VpnIpsecPage() {
       </div>
 
       {/* ── Tab 1: Conceito & Protocolos ── */}
-      {activeTab === 'conceito' && (
+      {isActive('conceito') && (
         <div className="space-y-16">
           <section id="ipsec">
             <div className="flex items-center gap-3 mb-6">
@@ -176,7 +175,7 @@ export default function VpnIpsecPage() {
       )}
 
       {/* ── Tab 2: StrongSwan & Config ── */}
-      {activeTab === 'config' && (
+      {isActive('config') && (
         <div className="grid lg:grid-cols-[1fr_320px] gap-12">
           <div className="space-y-8">
             <section id="configuracao">
@@ -294,7 +293,7 @@ export default function VpnIpsecPage() {
       )}
 
       {/* ── Tab 3: Diagnóstico & Exercícios ── */}
-      {activeTab === 'diagnostico' && (
+      {isActive('diagnostico') && (
         <div className="space-y-10">
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">

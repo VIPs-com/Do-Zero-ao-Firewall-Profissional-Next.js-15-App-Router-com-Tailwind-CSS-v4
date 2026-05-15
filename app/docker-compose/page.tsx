@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Package, Network, Database, Lock, Terminal, Settings, CheckCircle2, Circle, Layers, ArrowRight, Server } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
@@ -9,6 +9,7 @@ import { WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const CHECKLIST = [
   { id: 'compose-instalado', text: 'Docker Compose v2 instalado e stack básica subiu com docker compose up -d' },
@@ -351,7 +352,7 @@ docker system prune -f`;
 
 export default function DockerComposePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'redes' | 'stack'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'redes' | 'stack'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/docker-compose');
@@ -472,9 +473,9 @@ docker compose down`}
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -484,7 +485,7 @@ docker compose down`}
           ))}
         </div>
 
-        {activeTab === 'conceito' && (
+        {isActive('conceito') && (
         <div className="space-y-14">
 
         {/* ── Anatomia ──────────────────────────────────────────────────────── */}
@@ -550,7 +551,7 @@ docker compose down`}
         </div>
         )}
 
-        {activeTab === 'redes' && (
+        {isActive('redes') && (
         <div className="space-y-14">
 
         {/* ── Redes Declarativas ────────────────────────────────────────────── */}
@@ -662,7 +663,7 @@ docker compose down`}
         </div>
         )}
 
-        {activeTab === 'stack' && (
+        {isActive('stack') && (
         <div className="space-y-14">
 
         {/* ── Stack Completa ────────────────────────────────────────────────── */}

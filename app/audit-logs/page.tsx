@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Terminal, Search, Shield, AlertTriangle, Eye, FileText, Filter, CheckCircle2, Circle, Activity, UserCheck } from 'lucide-react';
 import { StepItem } from '@/components/ui/Steps';
@@ -10,6 +10,7 @@ import { InfoBox, WarnBox, HighlightBox, WindowsComparisonBox } from '@/componen
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const MOCK_LOGS = [
   { t: '10:23:45', p: 'KNOCK-59991', s: '192.168.57.50', d: '192.168.57.250', i: 'enp0s9', type: 'legit' },
@@ -25,7 +26,7 @@ const AUDIT_CHECKLIST = [
 
 export default function AuditLogsPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
-  const [activeTab, setActiveTab] = useState<'anatomia' | 'forense' | 'exercicios'>('anatomia');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'anatomia' | 'forense' | 'exercicios'>('anatomia');
 
   useEffect(() => {
     trackPageVisit('audit-logs');
@@ -61,9 +62,9 @@ export default function AuditLogsPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -75,7 +76,7 @@ export default function AuditLogsPage() {
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div>
-          {activeTab === 'anatomia' && (
+          {isActive('anatomia') && (
           <div className="space-y-16">
           {/* Section 1: Anatomy of a Log */}
           <section id="anatomia">
@@ -256,7 +257,7 @@ export default function AuditLogsPage() {
           </div>
           )}
 
-          {activeTab === 'forense' && (
+          {isActive('forense') && (
           <div className="space-y-16">
           {/* Section 5: Auditoria Forense — Port Knocking */}
           <section id="forense-knock">
@@ -469,7 +470,7 @@ tail -f /var/log/auditoria/knock.log`} />
           </div>
           )}
 
-          {activeTab === 'exercicios' && (
+          {isActive('exercicios') && (
           <div className="space-y-16">
           {/* Section 6: Erros Comuns (renumerado — era 4) */}
           <section id="erros-comuns">

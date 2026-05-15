@@ -11,11 +11,12 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function KubernetesPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/kubernetes');
@@ -59,9 +60,9 @@ export default function KubernetesPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -75,7 +76,7 @@ export default function KubernetesPage() {
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
 
         {/* ── Tab: Conceito ── */}
-        {activeTab === 'conceito' && <div className="space-y-16">
+        {isActive('conceito') && <div className="space-y-16">
 
         {/* Por que Kubernetes */}
         <section>
@@ -281,7 +282,7 @@ kubectl explain deployment.spec          # documentação inline de qualquer cam
         </div>}
 
         {/* ── Tab: Recursos & kubectl ── */}
-        {activeTab === 'config' && <div className="space-y-16">
+        {isActive('config') && <div className="space-y-16">
 
         {/* Manifestos YAML */}
         <section>
@@ -578,7 +579,7 @@ EOF`} />
         </div>}
 
         {/* ── Tab: Avançado ── */}
-        {activeTab === 'referencia' && <div className="space-y-16">
+        {isActive('referencia') && <div className="space-y-16">
 
         {/* NetworkPolicy */}
         <section>

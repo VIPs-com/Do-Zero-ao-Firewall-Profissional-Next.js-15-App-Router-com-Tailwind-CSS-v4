@@ -12,6 +12,7 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle, CheckCircle2 } from 'lucide-react';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const KNOCKING_CHECKLIST = [
   { id: 'port-knocking', text: 'Port Knocking configurado e funcional' },
@@ -21,7 +22,7 @@ const KNOCKING_CHECKLIST = [
 
 export default function PortKnockingPage() {
   const [activeDeepDive, setActiveDeepDive] = React.useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'exercicios'>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -68,9 +69,9 @@ export default function PortKnockingPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -83,7 +84,7 @@ export default function PortKnockingPage() {
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div>
 
-          {activeTab === 'conceito' && (
+          {isActive('conceito') && (
           <div className="space-y-16">
           {/* Section 1: How it works */}
           <section id="conceito">
@@ -301,7 +302,7 @@ export default function PortKnockingPage() {
           </div>
           )}
 
-          {activeTab === 'config' && (
+          {isActive('config') && (
           <div className="space-y-16">
           <section id="implementacao">
             <div className="flex items-center gap-3 mb-6">
@@ -512,7 +513,7 @@ grep "Failed password" /var/log/auth.log | wc -l
           </div>
           )}
 
-          {activeTab === 'exercicios' && (
+          {isActive('exercicios') && (
           <div className="space-y-16">
           {/* Section 7: Erros Comuns (renumerado — era 5) */}
           <section id="erros-comuns">
@@ -635,7 +636,7 @@ grep "Failed password" /var/log/auth.log | wc -l
         onClose={() => setActiveDeepDive(null)}
       />
 
-      {activeTab === 'exercicios' && (<>
+      {isActive('exercicios') && (<>
       {/* Windows Comparison */}
       <div className="mt-12">
         <WindowsComparisonBox

@@ -12,6 +12,7 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { Circle } from 'lucide-react';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const DNS_CHECKLIST = [
   { id: 'dns-recursivo', text: 'DNS resolve nomes externos (Recursão)' },
@@ -29,7 +30,7 @@ const TABS: { id: DnsTab; label: string }[] = [
 
 export default function DnsPage() {
   const [activeDeepDive, setActiveDeepDive] = React.useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = React.useState<DnsTab>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<DnsTab>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -72,12 +73,10 @@ export default function DnsPage() {
         {TABS.map(t => (
           <button
             key={t.id}
-            role="tab"
-            aria-selected={activeTab === t.id}
-            onClick={() => setActiveTab(t.id)}
+            {...tabButtonProps(t.id)}
             className={cn(
               'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
-              activeTab === t.id
+              isActive(t.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-3 hover:text-text-2',
             )}
@@ -88,7 +87,7 @@ export default function DnsPage() {
       </div>
 
       {/* ── Tab 1: Conceito & BIND9 ── */}
-      {activeTab === 'conceito' && (
+      {isActive('conceito') && (
         <div className="space-y-16">
           <section id="bind9">
             <div className="flex items-center gap-3 mb-6">
@@ -148,7 +147,7 @@ export default function DnsPage() {
       )}
 
       {/* ── Tab 2: Zonas & Validação ── */}
-      {activeTab === 'zonas' && (
+      {isActive('zonas') && (
         <div className="grid lg:grid-cols-[1fr_320px] gap-12">
           <div className="space-y-8">
             <CodeBlock
@@ -290,7 +289,7 @@ systemctl reload named`}
       )}
 
       {/* ── Tab 3: Erros & Exercícios ── */}
-      {activeTab === 'diagnostico' && (
+      {isActive('diagnostico') && (
         <div className="space-y-10">
           <section id="erros-comuns">
             <div className="flex items-center gap-3 mb-6">

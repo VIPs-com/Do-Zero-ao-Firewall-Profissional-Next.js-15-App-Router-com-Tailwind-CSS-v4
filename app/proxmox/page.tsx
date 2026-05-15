@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Server, Shield, Database, Zap, CheckCircle, ExternalLink, GitFork } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -9,10 +9,11 @@ import { StepItem } from '@/components/ui/Steps';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function ProxmoxPage() {
   const { trackPageVisit, updateChecklist, checklist, unlockBadge } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('proxmox');
@@ -52,9 +53,9 @@ export default function ProxmoxPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -65,7 +66,7 @@ export default function ProxmoxPage() {
         </div>
       </div>
 
-      {activeTab === 'conceito' && (<>
+      {isActive('conceito') && (<>
 
       {/* ── Por que Proxmox ───────────────────────────────────────────────────── */}
       <section className="mb-16">
@@ -243,7 +244,7 @@ ip addr show vmbr2`}
 
       </>)}
 
-      {activeTab === 'config' && (<>
+      {isActive('config') && (<>
 
       {/* ── Criando VMs ───────────────────────────────────────────────────────── */}
       <section className="mb-16">
@@ -395,7 +396,7 @@ qmrestore /var/lib/vz/dump/vzdump-qemu-100-*.vma.gz 200`}
 
       </>)}
 
-      {activeTab === 'exercicios' && (<>
+      {isActive('exercicios') && (<>
 
       {/* ── Cluster básico ────────────────────────────────────────────────────── */}
       <section id="cluster" className="mb-16">

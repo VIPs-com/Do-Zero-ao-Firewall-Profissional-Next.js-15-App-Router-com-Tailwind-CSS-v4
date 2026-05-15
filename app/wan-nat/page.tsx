@@ -11,6 +11,7 @@ import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/componen
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 // Checklist espelhando os 13 itens da Aula 2 do Professor Vagner
 const FIREWALL_CHECKLIST = [
@@ -31,7 +32,7 @@ const FIREWALL_CHECKLIST = [
 
 export default function WanNatPage() {
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<'fundamentos' | 'servicos' | 'diagnostico'>('fundamentos');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'fundamentos' | 'servicos' | 'diagnostico'>('fundamentos');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -69,9 +70,9 @@ export default function WanNatPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -83,7 +84,7 @@ export default function WanNatPage() {
 
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div>
-          {activeTab === 'fundamentos' && (
+          {isActive('fundamentos') && (
           <div className="space-y-16">
           {/* Section 1: WAN & NAT */}
           <section id="wan-nat">
@@ -241,7 +242,7 @@ export default function WanNatPage() {
           </div>
           )}
 
-          {activeTab === 'servicos' && (
+          {isActive('servicos') && (
           <div className="space-y-16">
           {/* Section 4: Persistence & Automation */}
           <section id="persistence">
@@ -430,7 +431,7 @@ export default function WanNatPage() {
           </div>
           )}
 
-          {activeTab === 'diagnostico' && (
+          {isActive('diagnostico') && (
           <div className="space-y-16">
           {/* Section 7: Diagnóstico Avançado */}
           <section id="diagnostico-avancado">

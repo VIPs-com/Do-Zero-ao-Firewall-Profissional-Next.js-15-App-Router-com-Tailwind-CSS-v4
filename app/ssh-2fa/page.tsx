@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Smartphone, Key, Lock, ShieldCheck, Terminal, AlertTriangle, CheckCircle2, Circle, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
@@ -8,6 +8,7 @@ import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/componen
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const CHECKLIST = [
   { id: 'totp-instalado',  text: 'libpam-google-authenticator instalado e QR code gerado com google-authenticator' },
@@ -132,7 +133,7 @@ sudo systemctl reload ssh`;
 
 export default function Ssh2faPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'teoria' | 'config' | 'exercicios'>('teoria');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'teoria' | 'config' | 'exercicios'>('teoria');
 
   useEffect(() => {
     trackPageVisit('/ssh-2fa');
@@ -168,9 +169,9 @@ export default function Ssh2faPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -181,7 +182,7 @@ export default function Ssh2faPage() {
         </div>
 
         {/* Checklist Progress — Tab 3 */}
-        {activeTab === 'exercicios' && (
+        {isActive('exercicios') && (
         <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-text flex items-center gap-2">
@@ -212,7 +213,7 @@ export default function Ssh2faPage() {
         </div>
         )}
 
-        {activeTab === 'teoria' && (
+        {isActive('teoria') && (
         <div className="space-y-12">
         {/* O que é TOTP */}
         <section className="space-y-6">
@@ -298,7 +299,7 @@ export default function Ssh2faPage() {
         </div>
         )}
 
-        {activeTab === 'config' && (
+        {isActive('config') && (
         <div className="space-y-12">
         {/* PAM Config */}
         <section className="space-y-6">
@@ -526,7 +527,7 @@ sudo fail2ban-client status sshd-2fa`}
         </div>
         )}
 
-        {activeTab === 'exercicios' && (
+        {isActive('exercicios') && (
         <div className="space-y-12">
         {/* Badge hint */}
         <HighlightBox title="📱 Badge: SSH 2FA Master">

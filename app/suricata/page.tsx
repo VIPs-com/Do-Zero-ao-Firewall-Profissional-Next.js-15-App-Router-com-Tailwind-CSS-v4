@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const checklistItems = [
   {
@@ -59,7 +60,7 @@ const erros = [
 export default function SuricataPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/suricata');
@@ -102,9 +103,9 @@ export default function SuricataPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -118,7 +119,7 @@ export default function SuricataPage() {
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-16">
 
         {/* ── Tab: Conceito & Regras ── */}
-        {activeTab === 'conceito' && <div className="space-y-16">
+        {isActive('conceito') && <div className="space-y-16">
 
         {/* IDS vs IPS vs Firewall */}
         <section>
@@ -241,7 +242,7 @@ ls /var/lib/suricata/rules/   # confirmar download`} />
         </div>}
 
         {/* ── Tab: Configuração ── */}
-        {activeTab === 'config' && <div className="space-y-16">
+        {isActive('config') && <div className="space-y-16">
 
         {/* Configuração */}
         <section>
@@ -489,7 +490,7 @@ sudo jq 'select(.event_type=="alert" and (.timestamp > "2026-04-27T13"))' \\
         </div>}
 
         {/* ── Tab: IPS & Integração ── */}
-        {activeTab === 'referencia' && <div className="space-y-16">
+        {isActive('referencia') && <div className="space-y-16">
 
         {/* Modo IPS */}
         <section>

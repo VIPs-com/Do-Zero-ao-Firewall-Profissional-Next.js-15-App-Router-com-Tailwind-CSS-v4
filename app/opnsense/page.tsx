@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const checklistItems = [
   {
@@ -57,7 +58,7 @@ type OpnTab = 'conceito' | 'firewall' | 'ha';
 export default function OPNsensePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<OpnTab>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<OpnTab>('conceito');
 
   useEffect(() => {
     trackPageVisit('/opnsense');
@@ -106,10 +107,10 @@ export default function OPNsensePage() {
             <button
               key={tab.id}
               role="tab"
-              aria-selected={activeTab === tab.id}
+              aria-selected={isActive(tab.id)}
               onClick={() => setActiveTab(tab.id as OpnTab)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -120,7 +121,7 @@ export default function OPNsensePage() {
         </div>
 
         {/* ── TAB: Conceito & Install ── */}
-        {activeTab === 'conceito' && <div className="space-y-10">
+        {isActive('conceito') && <div className="space-y-10">
 
         {/* 1 — OPNsense vs pfSense */}
         <section className="space-y-4">
@@ -234,7 +235,7 @@ export default function OPNsensePage() {
         </div>} {/* end tab conceito */}
 
         {/* ── TAB: Firewall & VPN ── */}
-        {activeTab === 'firewall' && <div className="space-y-10">
+        {isActive('firewall') && <div className="space-y-10">
 
         {/* 4 — Firewall Rules */}
         <section className="space-y-4">
@@ -399,7 +400,7 @@ Services → Intrusion Detection → Stats`} />
         </div>} {/* end tab firewall */}
 
         {/* ── TAB: HA & API ── */}
-        {activeTab === 'ha' && <div className="space-y-10">
+        {isActive('ha') && <div className="space-y-10">
 
         {/* 7 — Alta Disponibilidade */}
         <section className="space-y-4">

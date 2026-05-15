@@ -11,6 +11,7 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const DOCKER_CHECKLIST = [
   { id: 'docker-installed', text: 'Docker instalado, daemon ativo e hello-world executado com sucesso' },
@@ -181,7 +182,7 @@ docker stop web app && docker rm web app`;
 
 export default function DockerPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'redes' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'redes' | 'exercicios'>('conceito');
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
@@ -229,9 +230,9 @@ export default function DockerPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -244,7 +245,7 @@ export default function DockerPage() {
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-16">
 
-          {activeTab === 'conceito' && (
+          {isActive('conceito') && (
             <div className="space-y-16">
               {/* ── Seção 1: Instalação ── */}
               <section id="instalacao">
@@ -328,7 +329,7 @@ export default function DockerPage() {
             </div>
           )}
 
-          {activeTab === 'redes' && (
+          {isActive('redes') && (
             <div className="space-y-16">
               {/* ── Seção 4: Port mapping = DNAT ── */}
               <section id="port-mapping">
@@ -435,7 +436,7 @@ export default function DockerPage() {
             </div>
           )}
 
-          {activeTab === 'exercicios' && (
+          {isActive('exercicios') && (
             <div className="space-y-16">
               {/* Windows Comparison */}
               <div>

@@ -10,11 +10,12 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function NginxSslPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('nginx-ssl');
@@ -57,9 +58,9 @@ export default function NginxSslPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -72,7 +73,7 @@ export default function NginxSslPage() {
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div>
 
-          {activeTab === 'conceito' && (
+          {isActive('conceito') && (
           <div className="space-y-16">
 
           {/* Section 1: Reverse Proxy */}
@@ -170,7 +171,7 @@ export default function NginxSslPage() {
           </div>
           )}
 
-          {activeTab === 'config' && (
+          {isActive('config') && (
           <div className="space-y-16">
           <section id="certbot">
             <div className="flex items-center gap-3 mb-6">
@@ -311,7 +312,7 @@ certbot renew --force-renewal`}
           </div>
           )}
 
-          {activeTab === 'exercicios' && (
+          {isActive('exercicios') && (
           <div className="space-y-16">
           {/* Section 4: Erros Comuns */}
           <section id="erros-comuns">
@@ -405,7 +406,7 @@ certbot renew --force-renewal`}
       </div>
 
       {/* Navegação sequencial */}
-      {activeTab === 'exercicios' && (<>
+      {isActive('exercicios') && (<>
       {/* Windows Comparison */}
       <div className="mt-12">
         <WindowsComparisonBox

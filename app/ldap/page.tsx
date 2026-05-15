@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Users, Shield, Search, Server, Key, Network } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -9,10 +9,11 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function LDAPPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/ldap');
@@ -54,9 +55,9 @@ export default function LDAPPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -83,7 +84,7 @@ export default function LDAPPage() {
         />
 
         {/* ── Tab: Conceito ── */}
-        {activeTab === 'conceito' && <div className="space-y-12">
+        {isActive('conceito') && <div className="space-y-12">
 
         {/* O que é LDAP */}
         <section>
@@ -258,7 +259,7 @@ ldapwhoami -x -H ldap://localhost \\
         </div>}
 
         {/* ── Tab: Instalação & LDIF ── */}
-        {activeTab === 'config' && <div className="space-y-12">
+        {isActive('config') && <div className="space-y-12">
 
         {/* Operações LDAP */}
         <section>
@@ -375,7 +376,7 @@ ldapsearch -x -H ldaps://localhost \\
         </div>}
 
         {/* ── Tab: PAM & Segurança ── */}
-        {activeTab === 'referencia' && <div className="space-y-12">
+        {isActive('referencia') && <div className="space-y-12">
 
         {/* Integração PAM */}
         <section>

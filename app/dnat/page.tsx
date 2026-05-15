@@ -12,6 +12,7 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { useBadges } from '@/context/BadgeContext';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { Circle, CheckCircle2 } from 'lucide-react';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const DNAT_CHECKLIST = [
   { id: 'dnat-web', text: 'DNAT para Web Server (Porta 443)' },
@@ -22,7 +23,7 @@ const DNAT_CHECKLIST = [
 
 export default function DnatPage() {
   const [activeDeepDive, setActiveDeepDive] = React.useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = React.useState<'conceito' | 'config' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'exercicios'>('conceito');
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
   useEffect(() => {
@@ -69,9 +70,9 @@ export default function DnatPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -84,7 +85,7 @@ export default function DnatPage() {
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div>
 
-          {activeTab === 'conceito' && (
+          {isActive('conceito') && (
           <div className="space-y-16">
           {/* Section 1: How it works */}
           <section id="acesso-externo">
@@ -182,7 +183,7 @@ export default function DnatPage() {
           </div>
           )}
 
-          {activeTab === 'config' && (
+          {isActive('config') && (
           <div className="space-y-16">
           <section id="multiplos-servicos">
             <div className="flex items-center gap-3 mb-6">
@@ -334,7 +335,7 @@ curl -k https://192.168.20.200`} />
           </div>
           )}
 
-          {activeTab === 'exercicios' && (
+          {isActive('exercicios') && (
           <div className="space-y-16">
           {/* Section 7: Erros Comuns (renumerado — era 5) */}
           <section id="erros-comuns">
@@ -457,7 +458,7 @@ curl -k https://192.168.20.200`} />
         onClose={() => setActiveDeepDive(null)}
       />
 
-      {activeTab === 'exercicios' && (<>
+      {isActive('exercicios') && (<>
       {/* Windows Comparison */}
       <div className="mt-12">
         <WindowsComparisonBox

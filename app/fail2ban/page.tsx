@@ -11,6 +11,7 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const F2B_CHECKLIST = [
   { id: 'f2b-install', text: 'Fail2ban instalado e serviço ativo' },
@@ -118,7 +119,7 @@ grep "Ban" /var/log/fail2ban.log | \\
 export default function Fail2banPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/fail2ban');
@@ -164,9 +165,9 @@ export default function Fail2banPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -179,7 +180,7 @@ export default function Fail2banPage() {
       <div className="grid lg:grid-cols-[1fr_320px] gap-12">
         <div>
 
-          {activeTab === 'conceito' && (
+          {isActive('conceito') && (
           <div className="space-y-16">
 
           {/* Section 1: Como funciona */}
@@ -279,7 +280,7 @@ fail2ban-client status sshd`}
           </div>
           )}
 
-          {activeTab === 'config' && (
+          {isActive('config') && (
           <div className="space-y-16">
 
           {/* Section 3: Jails para Nginx */}
@@ -354,7 +355,7 @@ fail2ban-client status sshd`}
           </div>
           )}
 
-          {activeTab === 'exercicios' && (
+          {isActive('exercicios') && (
           <div className="space-y-16">
 
           {/* Section 5: Erros Comuns */}
@@ -575,7 +576,7 @@ fail2ban-client status | grep "Jail list" | \\
         </aside>
       </div>
 
-      {activeTab === 'exercicios' && (<>
+      {isActive('exercicios') && (<>
       {/* ── Exercícios Guiados ── */}
       <div className="space-y-4 mb-8">
         <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>

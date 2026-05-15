@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { FileCode, Layers, RefreshCw, Shield, Server, Database, Package, Terminal } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -9,10 +9,11 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function TerraformPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/terraform');
@@ -57,9 +58,9 @@ export default function TerraformPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -73,7 +74,7 @@ export default function TerraformPage() {
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
 
         {/* ── Tab: Conceito ── */}
-        {activeTab === 'conceito' && <div className="space-y-16">
+        {isActive('conceito') && <div className="space-y-16">
 
         {/* O que é Terraform */}
         <section>
@@ -179,7 +180,7 @@ curl -fsSL https://get.opentofu.org/install-opentofu.sh | sudo sh -s - --install
         </div>}
 
         {/* ── Tab: Configuração HCL ── */}
-        {activeTab === 'config' && <div className="space-y-16">
+        {isActive('config') && <div className="space-y-16">
 
         {/* Projeto Inicial — Provider Docker */}
         <section>
@@ -484,7 +485,7 @@ terraform force-unlock LOCK-ID`} />
         </div>}
 
         {/* ── Tab: Módulos & State ── */}
-        {activeTab === 'referencia' && <div className="space-y-16">
+        {isActive('referencia') && <div className="space-y-16">
 
         {/* Módulos */}
         <section>

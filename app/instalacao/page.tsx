@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { CheckCircle2, Terminal, Info, Package, Laptop, Shield, AlertTriangle, Globe, Network } from 'lucide-react';
@@ -12,6 +12,7 @@ import { CodeBlock } from '@/components/ui/CodeBlock';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { RosettaStone } from '@/components/ui/RosettaStone';
 import { ModuleNav } from '@/components/ui/ModuleNav';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const CHECKLIST_ITEMS = [
   // Sprint W — Terminal & Mindset
@@ -40,7 +41,7 @@ const TABS: { id: InstalacaoTab; label: string }[] = [
 
 export default function InstallationPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<InstalacaoTab>('terminal');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<InstalacaoTab>('terminal');
 
   useEffect(() => {
     trackPageVisit('instalacao');
@@ -128,12 +129,10 @@ export default function InstallationPage() {
         {TABS.map(t => (
           <button
             key={t.id}
-            role="tab"
-            aria-selected={activeTab === t.id}
-            onClick={() => setActiveTab(t.id)}
+            {...tabButtonProps(t.id)}
             className={cn(
               'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
-              activeTab === t.id
+              isActive(t.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-3 hover:text-text-2',
             )}
@@ -144,7 +143,7 @@ export default function InstallationPage() {
       </div>
 
       {/* ── Tab 1: Terminal & Mindset ── */}
-      {activeTab === 'terminal' && (
+      {isActive('terminal') && (
         <div className="grid lg:grid-cols-[1fr_320px] gap-12">
           <div className="space-y-12">
             {/* Vim Survival Guide */}
@@ -303,7 +302,7 @@ export default function InstallationPage() {
       )}
 
       {/* ── Tab 2: Lab Setup & Rede ── */}
-      {activeTab === 'lab' && (
+      {isActive('lab') && (
         <div className="grid lg:grid-cols-[1fr_320px] gap-12">
           <div className="space-y-12">
             <section id="rosetta-stone">
@@ -444,7 +443,7 @@ export default function InstallationPage() {
       )}
 
       {/* ── Tab 3: Erros & Exercícios ── */}
-      {activeTab === 'erros' && (
+      {isActive('erros') && (
         <div className="space-y-10">
           <section className="space-y-4">
             <h2 className="text-2xl font-bold flex items-center gap-2">

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { ShieldAlert, Zap, Terminal, Info, AlertTriangle, ShieldCheck, Bug, Clock, Globe, Network, Radio, Circle, CheckCircle2 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const CHECKLIST = [
   { id: 'ataques-recon',   text: 'Entendeu técnicas de reconhecimento: nmap, fragmentação e DNS rebinding' },
@@ -225,7 +226,7 @@ function AttackCard({ attack, idx }: { attack: typeof attacks[0]; idx: number })
 
 export default function AdvancedAttacksPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<AtaquesTab>('recon');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<AtaquesTab>('recon');
 
   useEffect(() => {
     trackPageVisit('ataques-avancados');
@@ -253,12 +254,10 @@ export default function AdvancedAttacksPage() {
         {ATAQUE_TABS.map(t => (
           <button
             key={t.id}
-            role="tab"
-            aria-selected={activeTab === t.id}
-            onClick={() => setActiveTab(t.id)}
+            {...tabButtonProps(t.id)}
             className={cn(
               'flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
-              activeTab === t.id
+              isActive(t.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-3 hover:text-text-2',
             )}
@@ -269,7 +268,7 @@ export default function AdvancedAttacksPage() {
       </div>
 
       {/* ── Tab 1: Reconhecimento & Flood ── */}
-      {activeTab === 'recon' && (
+      {isActive('recon') && (
         <div className="space-y-8">
           <WarnBox title="Uso Ético — Pentest Autorizado">
             Este módulo descreve técnicas de ataque para fins <strong>exclusivamente defensivos e educacionais</strong>.
@@ -298,7 +297,7 @@ export default function AdvancedAttacksPage() {
       )}
 
       {/* ── Tab 2: Spoofing & Evasão ── */}
-      {activeTab === 'avancados' && (
+      {isActive('avancados') && (
         <div className="space-y-10">
 
           {/* Intro contextual */}
@@ -393,7 +392,7 @@ dig attacker.com @127.0.0.1
       )}
 
       {/* ── Tab 3: Análise & Exercícios ── */}
-      {activeTab === 'analise' && (
+      {isActive('analise') && (
         <div className="space-y-10">
           <WindowsComparisonBox
             windowsLabel="Windows Defender ATP / Microsoft Sentinel"

@@ -16,6 +16,7 @@ import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
 import Link from 'next/link';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const checklistItems = [
   {
@@ -64,7 +65,7 @@ export default function EbpfPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<EbpfTab>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<EbpfTab>('conceito');
 
   useEffect(() => {
     trackPageVisit('/ebpf');
@@ -110,10 +111,10 @@ export default function EbpfPage() {
             <button
               key={tab.id}
               role="tab"
-              aria-selected={activeTab === tab.id}
+              aria-selected={isActive(tab.id)}
               onClick={() => setActiveTab(tab.id as EbpfTab)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -124,7 +125,7 @@ export default function EbpfPage() {
         </div>
 
         {/* ── TAB: Conceito & Ferramentas ── */}
-        {activeTab === 'conceito' && <div className="space-y-16">
+        {isActive('conceito') && <div className="space-y-16">
 
         {/* O que é eBPF */}
         <section>
@@ -269,7 +270,7 @@ sudo fileslower-bpfcc 10      # leituras/escritas mais lentas que 10ms`} />
         </div>} {/* end tab conceito */}
 
         {/* ── TAB: bpftrace & XDP ── */}
-        {activeTab === 'tools' && <div className="space-y-16">
+        {isActive('tools') && <div className="space-y-16">
 
         {/* bpftrace */}
         <section>
@@ -438,7 +439,7 @@ sudo xdp-filter status`} />
         </div>} {/* end tab tools */}
 
         {/* ── TAB: Cilium & Segurança ── */}
-        {activeTab === 'cilium' && <div className="space-y-16">
+        {isActive('cilium') && <div className="space-y-16">
 
         {/* Cilium + Kubernetes */}
         <section>

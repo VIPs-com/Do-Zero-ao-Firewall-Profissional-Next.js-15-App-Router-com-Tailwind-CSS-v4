@@ -11,11 +11,12 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function AnsiblePage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'referencia'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'referencia'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/ansible');
@@ -59,9 +60,9 @@ export default function AnsiblePage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -75,7 +76,7 @@ export default function AnsiblePage() {
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
 
         {/* ── Tab: Conceito ── */}
-        {activeTab === 'conceito' && <div className="space-y-16">
+        {isActive('conceito') && <div className="space-y-16">
 
         {/* O que é Ansible */}
         <section>
@@ -269,7 +270,7 @@ ansible web1 -m setup -a "filter=ansible_memtotal_mb"
         </div>}
 
         {/* ── Tab: Playbooks & Roles ── */}
-        {activeTab === 'config' && <div className="space-y-16">
+        {isActive('config') && <div className="space-y-16">
 
         {/* Playbooks */}
         <section>
@@ -657,7 +658,7 @@ nginx_ssl_port: 443`} />
         </div>}
 
         {/* ── Tab: Vault & Galaxy ── */}
-        {activeTab === 'referencia' && <div className="space-y-16">
+        {isActive('referencia') && <div className="space-y-16">
 
         {/* Ansible Galaxy */}
         <section>

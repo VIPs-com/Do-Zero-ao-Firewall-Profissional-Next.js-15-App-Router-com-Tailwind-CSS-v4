@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { ShieldAlert, ShieldCheck, Terminal, Info, AlertTriangle, ArrowRightLeft, Skull, Network, Lock, Eye } from 'lucide-react';
@@ -10,6 +10,7 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const CHECKLIST = [
   { id: 'pivote-forward-drop', text: 'Aplicou regra FORWARD DROP impedindo DMZ → LAN e testou com ping' },
@@ -28,7 +29,7 @@ const ATTACK_CHAIN = [
 
 export default function PivotingPage() {
   const { trackPageVisit, unlockBadge, checklist, updateChecklist } = useBadges();
-  const [activeTab, setActiveTab] = useState<'ataque' | 'defesa' | 'exercicios'>('ataque');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'ataque' | 'defesa' | 'exercicios'>('ataque');
 
   useEffect(() => {
     trackPageVisit('pivoteamento');
@@ -78,9 +79,9 @@ export default function PivotingPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -94,7 +95,7 @@ export default function PivotingPage() {
       <div className="grid lg:grid-cols-[1fr_350px] gap-12 mt-12">
         <div>
 
-          {activeTab === 'ataque' && (<div className="space-y-16">
+          {isActive('ataque') && (<div className="space-y-16">
 
           {/* 1. O Cenário */}
           <section id="cenario">
@@ -195,7 +196,7 @@ iptables -L FORWARD -n -v | grep -E "DROP|ACCEPT"
 
           </div>)}
 
-          {activeTab === 'defesa' && (<div className="space-y-16">
+          {isActive('defesa') && (<div className="space-y-16">
 
           {/* 3. Egress Filtering */}
           <section id="egress">
@@ -339,7 +340,7 @@ auditctl -a always,exit -F arch=b64 -S connect -k net-connect`} />
 
           </div>)}
 
-          {activeTab === 'exercicios' && (<div className="space-y-16">
+          {isActive('exercicios') && (<div className="space-y-16">
 
           {/* 5. Defesa em profundidade */}
           <section id="defesa-profundidade">
@@ -578,7 +579,7 @@ iptables -L FORWARD -n -v --line-numbers`}
         </aside>
       </div>
 
-      {activeTab === 'exercicios' && (<>
+      {isActive('exercicios') && (<>
       {/* ── Erros Comuns ── */}
       <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
         <h2 className="text-2xl font-bold flex items-center gap-2">

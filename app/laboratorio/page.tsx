@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { Server, Cpu, Layers, CheckCircle, ArrowRight, Terminal, Package, Zap } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
@@ -9,10 +9,11 @@ import { StepItem } from '@/components/ui/Steps';
 import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 export default function LaboratorioPage() {
   const { trackPageVisit, updateChecklist, checklist } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'kvm' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'kvm' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('laboratorio');
@@ -59,9 +60,9 @@ export default function LaboratorioPage() {
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+              {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                activeTab === tab.id
+                isActive(tab.id)
                   ? 'border-[var(--mod)] text-[var(--mod)]'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
@@ -72,7 +73,7 @@ export default function LaboratorioPage() {
         </div>
       </div>
 
-      {activeTab === 'conceito' && (<>
+      {isActive('conceito') && (<>
 
       {/* ── Tabela Comparativa ────────────────────────────────────────────────── */}
       <section className="mb-16">
@@ -160,7 +161,7 @@ export default function LaboratorioPage() {
 
       </>)}
 
-      {activeTab === 'kvm' && (<>
+      {isActive('kvm') && (<>
 
       {/* ── KVM / libvirt ─────────────────────────────────────────────────────── */}
       <section id="kvm" className="mb-16">
@@ -363,7 +364,7 @@ virsh snapshot-revert Firewall snap-base`}
 
       </>)}
 
-      {activeTab === 'exercicios' && (<>
+      {isActive('exercicios') && (<>
 
       {/* ── Proxmox ───────────────────────────────────────────────────────────── */}
       <section className="mb-16">

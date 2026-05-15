@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
@@ -9,6 +9,7 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
 import { HardDrive, Server, Shield, Network, AlertTriangle, CheckCircle } from 'lucide-react';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 type NfsTab = 'servidor' | 'cliente' | 'diagnostico';
 
@@ -20,7 +21,7 @@ const CHECKLIST_ITEMS = [
 
 export default function NfsPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<NfsTab>('servidor');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<NfsTab>('servidor');
 
   useEffect(() => {
     trackPageVisit('/nfs');
@@ -73,7 +74,7 @@ export default function NfsPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as NfsTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                  activeTab === tab.id
+                  isActive(tab.id)
                     ? 'border-[var(--mod)] text-[var(--mod)]'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
@@ -85,7 +86,7 @@ export default function NfsPage() {
         </div>
 
         {/* ── TAB 1: Conceito & Servidor ─────────────────────────────────────── */}
-        {activeTab === 'servidor' && (<>
+        {isActive('servidor') && (<>
 
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">1. NFS vs Samba — quando usar cada um</h2>
@@ -250,7 +251,7 @@ showmount -e localhost`} />
         </>)}
 
         {/* ── TAB 2: Cliente & Segurança ─────────────────────────────────────── */}
-        {activeTab === 'cliente' && (<>
+        {isActive('cliente') && (<>
 
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">1. Instalação do cliente NFS</h2>
@@ -419,7 +420,7 @@ sudo mount -t nfs4 192.168.1.1:/srv/nfs/dados /mnt/nfs-dados
         </>)}
 
         {/* ── TAB 3: Diagnóstico & Exercícios ───────────────────────────────── */}
-        {activeTab === 'diagnostico' && (<>
+        {isActive('diagnostico') && (<>
 
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">Erros Comuns e Soluções</h2>

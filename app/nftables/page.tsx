@@ -11,6 +11,7 @@ import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
 import { DeepDiveModal } from '@/components/DeepDiveModal.lazy';
 import { DEEP_DIVES, type DeepDive } from '@/data/deepDives';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const EQUIVALENCIA = [
   {
@@ -52,7 +53,7 @@ const EQUIVALENCIA = [
 
 export default function NftablesPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'equivalencia'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'equivalencia'>('conceito');
   const [activeDeepDive, setActiveDeepDive] = useState<DeepDive | null>(null);
 
   useEffect(() => {
@@ -102,9 +103,9 @@ export default function NftablesPage() {
         ].map(tab => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-accent text-accent-2'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -118,7 +119,7 @@ export default function NftablesPage() {
         <div>
 
           {/* ── Tab: Conceito ── */}
-          {activeTab === 'conceito' && (
+          {isActive('conceito') && (
             <div className="space-y-12">
               <section id="por-que-nftables">
                 <h2 className="text-2xl font-bold mb-6">Por que migrar para nftables?</h2>
@@ -201,7 +202,7 @@ nft list ruleset > /etc/nftables.conf`}
           )}
 
           {/* ── Tab: Configuração ── */}
-          {activeTab === 'config' && (
+          {isActive('config') && (
             <div className="space-y-10">
               <section id="instalacao">
                 <h2 className="text-2xl font-bold mb-6">Instalação e primeiros passos</h2>
@@ -242,7 +243,7 @@ nft list ruleset > /etc/nftables.conf`}
           )}
 
           {/* ── Tab: Equivalência ── */}
-          {activeTab === 'equivalencia' && (
+          {isActive('equivalencia') && (
             <div className="space-y-8">
               <div>
                 <h2 className="text-2xl font-bold mb-3">Tabela de Equivalência</h2>

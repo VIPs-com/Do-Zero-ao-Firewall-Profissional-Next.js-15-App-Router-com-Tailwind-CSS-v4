@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const checklistItems = [
   {
@@ -90,7 +91,7 @@ type EbpfAvTab = 'cilium' | 'policies' | 'tetragon';
 export default function EbpfAvancadoPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const [openError, setOpenError] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<EbpfAvTab>('cilium');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<EbpfAvTab>('cilium');
 
   useEffect(() => {
     trackPageVisit('/ebpf-avancado');
@@ -134,10 +135,10 @@ export default function EbpfAvancadoPage() {
           <button
             key={tab.id}
             role="tab"
-            aria-selected={activeTab === tab.id}
+            aria-selected={isActive(tab.id)}
             onClick={() => setActiveTab(tab.id as EbpfAvTab)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
-              activeTab === tab.id
+              isActive(tab.id)
                 ? 'border-[var(--mod)] text-[var(--mod)]'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
@@ -148,7 +149,7 @@ export default function EbpfAvancadoPage() {
       </div>
 
       {/* ── TAB: Cilium & Hubble ── */}
-      {activeTab === 'cilium' && <div className="space-y-12">
+      {isActive('cilium') && <div className="space-y-12">
 
       {/* ── Por que Cilium? ──────────────────────────────────────────────────── */}
       <section className="mb-12">
@@ -339,7 +340,7 @@ kubectl port-forward -n kube-system svc/hubble-ui 12000:80 &
       </div>} {/* end tab cilium */}
 
       {/* ── TAB: Políticas & LB ── */}
-      {activeTab === 'policies' && <div className="space-y-12">
+      {isActive('policies') && <div className="space-y-12">
 
       {/* ── CiliumNetworkPolicy ─────────────────────────────────────────────── */}
       <section className="mb-12">
@@ -492,7 +493,7 @@ helm upgrade cilium cilium/cilium \\
       </div>} {/* end tab policies */}
 
       {/* ── TAB: Tetragon & Maps ── */}
-      {activeTab === 'tetragon' && <div className="space-y-12">
+      {isActive('tetragon') && <div className="space-y-12">
 
       {/* ── Tetragon ────────────────────────────────────────────────────────── */}
       <section className="mb-12">

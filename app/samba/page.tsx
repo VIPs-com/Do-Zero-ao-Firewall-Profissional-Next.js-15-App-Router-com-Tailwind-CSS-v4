@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
@@ -9,6 +9,7 @@ import { FluxoCard } from '@/components/ui/FluxoCard';
 import { FolderOpen, Users, Shield, Network, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
 const CHECKLIST_ITEMS = [
   { id: 'samba-instalado', label: 'Instalei samba, configurei workgroup e testei com testparm sem erros' },
@@ -18,7 +19,7 @@ const CHECKLIST_ITEMS = [
 
 export default function SambaPage() {
   const { checklist, updateChecklist, trackPageVisit } = useBadges();
-  const [activeTab, setActiveTab] = useState<'conceito' | 'config' | 'exercicios'>('conceito');
+  const { activeTab, setActiveTab, isActive, tabButtonProps } = useTabFilter<'conceito' | 'config' | 'exercicios'>('conceito');
 
   useEffect(() => {
     trackPageVisit('/samba');
@@ -68,9 +69,9 @@ export default function SambaPage() {
             ].map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                {...tabButtonProps(tab.id)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
-                  activeTab === tab.id
+                  isActive(tab.id)
                     ? 'border-[var(--mod)] text-[var(--mod)]'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
@@ -81,7 +82,7 @@ export default function SambaPage() {
           </div>
         </div>
 
-        {activeTab === 'conceito' && (<>
+        {isActive('conceito') && (<>
 
         {/* 1. Instalação */}
         <section className="mb-12">
@@ -217,7 +218,7 @@ sudo ss -ulnp | grep nmbd`} />
 
         </>)}
 
-        {activeTab === 'config' && (<>
+        {isActive('config') && (<>
 
         {/* 4. Firewall */}
         <section className="mb-12">
@@ -386,7 +387,7 @@ ls -la /srv/samba/privado
 
         </>)}
 
-        {activeTab === 'exercicios' && (<>
+        {isActive('exercicios') && (<>
 
         {/* Exercícios */}
         <section className="mb-12">
