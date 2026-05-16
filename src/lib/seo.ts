@@ -93,6 +93,11 @@ export const ROUTE_SEO = {
     description:
       'Gere seu certificado de conclusão do Workshop Linux após completar o quiz (80%+) e o checklist (90%+) do laboratório.',
   },
+  '/certificacoes': {
+    title: 'Trilha de Certificação — LPIC-1 e CompTIA Linux+',
+    description:
+      'Mapa do núcleo comum das provas LPIC-1 (101/102) e CompTIA Linux+ (XK0-005): cada tópico de certificação ligado ao módulo do Workshop que o ensina.',
+  },
   '/ferramentas': {
     title: 'Ferramentas — Calculadora CIDR',
     description:

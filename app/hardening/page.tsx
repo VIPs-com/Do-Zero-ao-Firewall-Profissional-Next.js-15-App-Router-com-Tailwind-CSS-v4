@@ -64,6 +64,24 @@ systemctl reload ssh
 # Verificar status
 systemctl status ssh`;
 
+const SSH_AGENT = `# ── ssh-keygen — gerar e gerenciar chaves ───────────────────────────
+ssh-keygen -t ed25519 -C "ada@laptop"    # gera ~/.ssh/id_ed25519 (+ .pub)
+ssh-keygen -p -f ~/.ssh/id_ed25519       # troca a passphrase de uma chave
+ssh-keygen -l -f ~/.ssh/id_ed25519.pub   # mostra o fingerprint da chave
+
+# ── ssh-agent — digite a passphrase UMA vez por sessão ──────────────
+eval "$(ssh-agent)"                # inicia o agente na sessão atual
+ssh-add ~/.ssh/id_ed25519          # carrega a chave (pede a passphrase)
+ssh-add -l                         # lista as chaves carregadas no agente
+ssh-add -D                         # remove todas as chaves do agente
+
+# ── ~/.ssh/config — apelidos por host ───────────────────────────────
+# Host firewall
+#   HostName 192.168.56.10
+#   User admin
+#   IdentityFile ~/.ssh/id_ed25519
+# → agora basta:  ssh firewall`;
+
 const SYSCTL_CONFIG = `# /etc/sysctl.d/99-hardening.conf — criar este arquivo
 # Aplicar com: sysctl --system  (ou sysctl -p /etc/sysctl.d/99-hardening.conf)
 
@@ -273,6 +291,23 @@ export default function HardeningPage() {
             <div className="mt-6">
               <h3 className="font-bold text-lg mb-3">Configuração do sshd_config</h3>
               <CodeBlock code={SSH_CONFIG} lang="bash" />
+            </div>
+
+            <div className="mt-6">
+              <h3 className="font-bold text-lg mb-3">SSH Agent e Gestão de Chaves</h3>
+              <p className="text-text-2 text-sm mb-3">
+                Uma chave protegida por <em>passphrase</em> pede a senha a cada conexão. O{' '}
+                <code>ssh-agent</code> guarda a chave destravada na memória da sessão — você digita
+                a passphrase uma vez e o <code>ssh-add</code> cuida do resto. O <code>~/.ssh/config</code>{' '}
+                transforma comandos longos em apelidos curtos.
+              </p>
+              <CodeBlock code={SSH_AGENT} lang="bash" />
+              <InfoBox title="Foco na Prova — LPIC-1 / CompTIA Linux+">
+                A chave PRIVADA (<code>id_ed25519</code>) nunca sai da sua máquina; só a PÚBLICA
+                (<code>.pub</code>) vai para o servidor, em <code>~/.ssh/authorized_keys</code>.
+                {' '}<code>ssh-agent</code> + <code>ssh-add</code> evitam redigitar a passphrase sem
+                nunca gravá-la em disco.
+              </InfoBox>
             </div>
           </section>
 

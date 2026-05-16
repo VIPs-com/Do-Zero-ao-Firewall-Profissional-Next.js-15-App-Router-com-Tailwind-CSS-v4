@@ -122,6 +122,35 @@ $ ls /etc \\              # a barra invertida \\ continua na linha seguinte
 # Travou no '>' sem querer? Ctrl+C cancela e devolve o prompt normal.
 export PS2='... '        # personaliza o prompt de continuação`;
 
+const ENV_VARS = `# ── Variáveis de ambiente ────────────────────────────────────────────
+env                       # lista as variáveis de AMBIENTE
+set                       # lista variáveis + funções do shell (mais amplo)
+echo $HOME                # lê o valor de uma variável
+
+# Criar e exportar
+NOME="Ada"                # variável de SHELL — só na sessão atual
+export NOME               # promove a variável de AMBIENTE (herdada por subprocessos)
+export EDITOR=vim         # criar + exportar em uma única linha
+
+# Remover
+unset NOME                # apaga a variável
+
+# Persistir — adicionar ao ~/.bashrc (vale para os próximos logins)
+echo 'export EDITOR=vim' >> ~/.bashrc`;
+
+const REDIRECIONA = `# ── Redirecionamento de saída ────────────────────────────────────────
+comando > arquivo         # stdout → arquivo (SOBRESCREVE o conteúdo)
+comando >> arquivo        # stdout → arquivo (ANEXA ao final)
+comando 2> erros.log      # stderr (canal de erro) → arquivo
+comando > tudo.log 2>&1   # stdout E stderr → o mesmo arquivo
+comando &> tudo.log       # atalho moderno equivalente a "> ... 2>&1"
+comando 2>/dev/null       # descarta os erros (o "buraco negro" do Linux)
+
+# ── Pipe e tee ───────────────────────────────────────────────────────
+comando | outro           # a saída de um vira a entrada do outro
+comando | tee arquivo     # mostra na tela E salva no arquivo ao mesmo tempo
+comando | tee -a arquivo  # idem, anexando em vez de sobrescrever`;
+
 export default function ComandosPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
@@ -319,10 +348,76 @@ which comando                   # localiza o executável`}
           />
         </section>
 
+        {/* ── Redirecionamentos e Pipes ── */}
+        <section id="redirecionamentos">
+          <div className="section-label">Foco em Certificação · LPIC-1 / CompTIA Linux+</div>
+          <h2 className="text-2xl font-bold mb-2">Redirecionamentos e Pipes</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Todo processo Linux nasce com três canais padrão. Redirecionar é mandar esses
+            canais para arquivos em vez da tela — a base de scripts, logs e automação.
+          </p>
+          <div className="overflow-x-auto mb-4">
+            <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+              <thead>
+                <tr className="bg-bg-3 text-text-3 text-[10px] uppercase tracking-widest">
+                  <th className="text-left p-3">Descritor</th>
+                  <th className="text-left p-3">Canal</th>
+                  <th className="text-left p-3">Redireciona com</th>
+                </tr>
+              </thead>
+              <tbody className="text-text-2">
+                <tr className="border-t border-border">
+                  <td className="p-3 font-mono">0</td>
+                  <td className="p-3">stdin — entrada</td>
+                  <td className="p-3"><code>&lt;</code></td>
+                </tr>
+                <tr className="border-t border-border">
+                  <td className="p-3 font-mono">1</td>
+                  <td className="p-3">stdout — saída padrão</td>
+                  <td className="p-3"><code>&gt;</code> &nbsp; <code>&gt;&gt;</code></td>
+                </tr>
+                <tr className="border-t border-border">
+                  <td className="p-3 font-mono">2</td>
+                  <td className="p-3">stderr — saída de erro</td>
+                  <td className="p-3"><code>2&gt;</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <CodeBlock code={REDIRECIONA} lang="bash" title="Redirecionamento, pipe e tee" />
+          <InfoBox className="mt-4" title="Foco na Prova — o pulo do gato">
+            <p className="text-sm text-text-2">
+              <code>&gt;</code> sobrescreve, <code>&gt;&gt;</code> anexa. <code>2&gt;&amp;1</code> manda
+              o erro para o MESMO destino do stdout — e a ordem importa:
+              {' '}<code>&gt; log 2&gt;&amp;1</code> funciona, <code>2&gt;&amp;1 &gt; log</code> não.
+              {' '}<code>tee</code> é a única forma de ver na tela E salvar ao mesmo tempo.
+            </p>
+          </InfoBox>
+        </section>
+
+        {/* ── Variáveis de Ambiente ── */}
+        <section id="variaveis-ambiente">
+          <div className="section-label">Foco em Certificação · LPIC-1 / CompTIA Linux+</div>
+          <h2 className="text-2xl font-bold mb-2">Variáveis de Ambiente</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Variáveis configuram o comportamento do shell e dos programas. A distinção
+            entre variável de <strong>shell</strong> e de <strong>ambiente</strong> cai direto na LPIC-1.
+          </p>
+          <CodeBlock code={ENV_VARS} lang="bash" title="export · env · set · unset" />
+          <InfoBox className="mt-4" title="Foco na Prova — shell vs ambiente">
+            <p className="text-sm text-text-2">
+              <code>NOME=valor</code> cria uma variável só do shell atual — um subprocesso
+              (script, novo comando) NÃO a enxerga. <code>export NOME</code> a promove a variável
+              de <strong>ambiente</strong>, herdada por todos os processos-filho. <code>env</code>{' '}
+              lista só as de ambiente; <code>set</code> lista tudo (variáveis + funções); <code>unset</code>{' '}
+              remove.
+            </p>
+          </InfoBox>
+        </section>
+
         {/* ── HighlightBox expansão futura ── */}
         <HighlightBox title="🔜 Próxima versão deste módulo">
           <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
-            <li>Redirecionamento <code>{'>'}</code> e <code>{'>>'}</code> — salvar saída em arquivos</li>
             <li><code>awk</code> e <code>sed</code> — processamento avançado de texto</li>
             <li><code>xargs</code> — passar saída como argumentos</li>
             <li>Aliases e funções no <code>~/.bashrc</code></li>

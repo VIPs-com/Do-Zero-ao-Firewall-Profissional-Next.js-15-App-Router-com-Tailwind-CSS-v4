@@ -52,6 +52,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'p-cert',       title: 'Certificado',   description: 'Gere seu certificado de conclusão do workshop',   category: 'Página', href: '/certificado', icon: Award },
   { id: 'p-evolucao',   title: 'Evolução',      description: 'Roadmap tecnológico e linha do tempo do projeto', category: 'Página', href: '/evolucao',    icon: TrendingUp },
   { id: 'p-ferramentas', title: 'Ferramentas',  description: 'Calculadora de sub-redes CIDR — rede, broadcast, hosts e máscara', category: 'Página', href: '/ferramentas', icon: Network },
+  { id: 'p-certificacoes', title: 'Trilha de Certificação', description: 'Mapa LPIC-1 e CompTIA Linux+ — tópico de prova ligado ao módulo do Workshop', category: 'Página', href: '/certificacoes', icon: Award },
   { id: 't-roadmap-evolucao', title: 'Roadmap Completo — v1.0 ao v5.0', description: '5 trilhas completas: Firewall (v1.0), Fundamentos (v2.0), Servidores (v3.0), Infra Moderna (v4.0) e Cloud/Platform Engineering (v5.0).', category: 'Tópico', href: '/evolucao#roadmap-evolucao', icon: TrendingUp },
 
   // ─── Tópicos (módulos técnicos) ─────────────────────────────────────────────
