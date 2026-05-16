@@ -267,7 +267,7 @@ nft list ruleset > /etc/nftables.conf
 
 ---
 
-## Trilha v2.0 — Fundamentos Linux (14 módulos em `/fundamentos`)
+## Trilha v2.0 — Fundamentos Linux (17 módulos em `/fundamentos`)
 
 *Para iniciantes vindos do Windows ou sem experiência Linux prévia.*
 
@@ -312,6 +312,15 @@ BIOS/UEFI → GRUB2 → kernel/initrd → systemd PID 1 → targets. `systemd-an
 
 ### F14 — Logs Centralizados com Rsyslog · `/rsyslog`
 `rsyslog.conf` (facilities × priorities), servidor central (imtcp porta 514), cliente remoto (`@@servidor:514`), `logrotate` com compress/delaycompress. Imprescindível para compliance e forense.
+
+### F15 — SSH como Proxy SOCKS · `/ssh-proxy`
+SOCKS5 dinâmico (`ssh -D`), port forwarding local (`-L`) e remoto (`-R`), Jump Host (`-J`/ProxyJump), túneis persistentes com `autossh` + systemd, `~/.ssh/config` (ControlMaster). SSH como canivete suíço de rede.
+
+### F16 — Gerenciamento de Usuários e Grupos · `/usuarios`
+`adduser` vs `useradd`, `usermod -aG`, `groupadd`, ciclo de vida da conta, `/etc/passwd` vs `/etc/shadow`, `sudo` e `visudo`. A base da segurança no Linux começa pela gestão de identidade.
+
+### F17 — Troubleshooting de Rede · `/troubleshooting`
+Metodologia OSI L1→L7, `ping`/`ip`/`ss`/`dig`/`curl`/`journalctl`, isolamento de camada, script `diagnose.sh`. Resolve "o site não abre" sem entrar em pânico.
 
 ---
 

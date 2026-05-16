@@ -3,14 +3,14 @@
 ## Arquivo central: `src/context/BadgeContext.tsx`
 
 Gerencia quatro dimensões de progresso:
-- **Badges** — 56 conquistas desbloqueáveis (5 são milestones com modal de celebração)
+- **Badges** — 62 conquistas desbloqueáveis (7 são milestones com modal de celebração)
 - **Páginas visitadas** — para badges de exploração e course-master
-- **Checkpoints** — 160 validações técnicas concluídas (ALL_CHECKLIST_IDS)
+- **Checkpoints** — 172 validações técnicas concluídas (ALL_CHECKLIST_IDS)
 - **Quiz score** — 0–100, persiste em localStorage
 
 ---
 
-## Tabela de badges (56 total)
+## Tabela de badges (62 total)
 
 | Ícone | Título | ID | Como desbloquear |
 |---|---|---|---|
@@ -18,7 +18,7 @@ Gerencia quatro dimensões de progresso:
 | 🥇 | Expert | `quiz-expert` | Score ≥ 80% no quiz |
 | **🏆** | **Mestre** | **`quiz-master`** | **Score 100% no quiz** ★ milestone |
 | 🗺️ | Explorador | `explorer` | Visitar 5+ páginas |
-| 🤿 | Mergulhador | `deep-diver` | Visitar todas as 49 páginas de conteúdo |
+| 🤿 | Mergulhador | `deep-diver` | Visitar todas as 53 páginas de conteúdo |
 | 🦉 | Coruja Noturna | `night-owl` | Ativar o dark mode |
 | 🔍 | Investigador | `searcher` | Usar a busca global (⌘K / Ctrl+K) |
 | 🖧 | Topólogo | `topology-pro` | Clicar em 5+ elementos da topologia interativa |
@@ -29,7 +29,7 @@ Gerencia quatro dimensões de progresso:
 | 🚪 | Proxy Master | `proxy-master` | proxy-funciona + proxy-bloqueio |
 | 🔑 | Knocking Master | `knocking-master` | port-knocking |
 | **🎓** | **Graduado** | **`certificado`** | **Gerar o certificado de conclusão** ★ milestone |
-| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 120 checkpoints (75% dos 160)** ★ milestone |
+| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 129 checkpoints (75% dos 172)** ★ milestone |
 | 💀 | Pivoting Master | `pivoting-master` | pivoting-risk |
 | 🛡️ | Defensor da Topologia | `defensor-topologia` | Clicar em 3+ riscos da topologia |
 | ⏳ | Viajante do Tempo | `time-traveler` | Importar progresso via JSON |
@@ -42,7 +42,7 @@ Gerencia quatro dimensões de progresso:
 | **🎯** | **Mestre do Curso** | **`course-master`** | **Visitar todos os 25 módulos do COURSE_ORDER** ★ milestone |
 | 🔐 | Hardening Master | `hardening-master` | ssh-hardened + sysctl-secured + apparmor-enabled |
 | 🐳 | Docker Master | `docker-master` | docker-installed + docker-bridge + docker-iptables |
-| 🐧 | Fundamentos Master | `fundamentos-master` | 14 checkpoints da Trilha Fundamentos Linux |
+| 🐧 | Fundamentos Master | `fundamentos-master` | 15 checkpoints da Trilha Fundamentos Linux |
 | 📱 | SSH 2FA Master | `ssh-2fa-master` | totp-instalado + pam-configurado + ssh-2fa-testado |
 | 🐙 | Compose Master | `compose-master` | compose-instalado + compose-stack + compose-networks |
 | 📦 | Package Master | `pacotes-master` | apt-atualizado + pacote-instalado + repo-adicionado |
@@ -69,7 +69,13 @@ Gerencia quatro dimensões de progresso:
 | ☁️ | Nextcloud Master | `nextcloud-master` | nextcloud-instalado + nextcloud-ssl + nextcloud-apps |
 | 🧬 | eBPF Avançado Master | `ebpf-avancado-master` | cilium-instalado + hubble-habilitado + tetragon-seguranca |
 | 🚇 | SSH Tunnel Master | `ssh-proxy-master` | ssh-dinamico + ssh-local + ssh-jump |
-| 🌐 | Advanced Master | `advanced-master` | Visitar todos os 19 módulos do ADVANCED_ORDER |
+| 🌐 | Advanced Master | `advanced-master` | Visitar todos os 21 módulos do ADVANCED_ORDER |
+| 🔥 | Streak 7 Dias | `srs-streak-7` | 7 dias consecutivos de Treinamento Tático (/treino) |
+| 🗂️ | NFS Master | `nfs-master` | nfs-instalado + nfs-share + nfs-cliente |
+| 🔐 | Vault Sentinel | `vault-master` | vault-instalado + vault-politicas + vault-dinamico |
+| 👤 | Gestão de Usuários | `usuarios-master` | usuario-criado + grupo-criado + sudo-configurado |
+| 🔎 | Troubleshooting Master | `troubleshooting-master` | trouble-conectividade + trouble-porta + trouble-logs |
+| **🏁** | **Ground Zero** | **`ground-zero`** | **Completar os 17 módulos da Trilha Fundamentos Linux** ★ milestone |
 
 > ★ **Milestone badges** disparam o `MilestoneCelebration` modal em vez do toast de 4s.
 > `course-master` e `quiz-master` disparam também confetti (canvas-confetti, lazy-loaded).
@@ -80,13 +86,14 @@ Gerencia quatro dimensões de progresso:
 
 | Tier | Badges | Feedback |
 |------|--------|----------|
-| **Comum** | 51 badges | Toast slide-in 4s (canto inferior direito, z-50) |
-| **Milestone** | 5 badges | Modal centralizado full-screen (z-200) + confetti para os 2 maiores |
+| **Comum** | 55 badges | Toast slide-in 4s (canto inferior direito, z-50) |
+| **Milestone** | 7 badges | Modal centralizado full-screen (z-200) + confetti para os 2 maiores |
 
 ```typescript
 // src/context/BadgeContext.tsx
 const MILESTONE_BADGES = new Set<BadgeId>([
-  'course-master', 'quiz-master', 'linux-ninja', 'sigma-master', 'certificado',
+  'course-master', 'advanced-master', 'quiz-master', 'linux-ninja',
+  'sigma-master', 'certificado', 'ground-zero',
 ]);
 // → unlockBadge() detecta milestone → setMilestoneBadge(id)
 // → BadgeProvider renderiza <MilestoneCelebration> via Suspense (lazy)
@@ -118,7 +125,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
 
 ---
 
-## Checkpoints de validação (151 IDs — ALL_CHECKLIST_IDS)
+## Checkpoints de validação (172 IDs — ALL_CHECKLIST_IDS)
 
 ```typescript
 // src/context/BadgeContext.tsx
@@ -216,8 +223,20 @@ const MILESTONE_BADGES = new Set<BadgeId>([
   'cilium-instalado', 'hubble-habilitado', 'tetragon-seguranca',
   // Sprint SSH-PROXY — SSH como Proxy SOCKS (3)
   'ssh-dinamico', 'ssh-local', 'ssh-jump',
+  // Sprint CONTENT-ATAQUES — Ataques Avançados (3)
+  'ataques-recon', 'ataques-syn', 'ataques-arp',
+  // Sprint CONTENT-PIVOTING — Pivoteamento (3)
+  'pivote-forward-drop', 'pivote-egress', 'pivote-honeypot',
+  // Sprint NFS — Network File System (3)
+  'nfs-instalado', 'nfs-share', 'nfs-cliente',
+  // Sprint Vault — HashiCorp Vault (3)
+  'vault-instalado', 'vault-politicas', 'vault-dinamico',
+  // Sprint FOUNDATION — Gerenciamento de Usuários (3)
+  'usuario-criado', 'grupo-criado', 'sudo-configurado',
+  // Sprint FOUNDATION — Troubleshooting de Rede (3)
+  'trouble-conectividade', 'trouble-porta', 'trouble-logs',
 ]
-// Total: 160 checkpoints
+// Total: 172 checkpoints
 ```
 
 ---
@@ -246,8 +265,8 @@ button > svg.text-ok {
 ## Linux Ninja — Threshold
 
 ```typescript
-// 75% de 160 checkpoints = 120 (floor)
-if (Object.values(checklist).filter(v => v).length >= 120) unlockBadge('linux-ninja');
+// 75% de 172 checkpoints = 129 (floor)
+if (Object.values(checklist).filter(v => v).length >= 129) unlockBadge('linux-ninja');
 ```
 
 ---

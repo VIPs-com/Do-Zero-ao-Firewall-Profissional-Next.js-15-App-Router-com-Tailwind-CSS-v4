@@ -28,7 +28,7 @@
 
 ## Quantidade de itens
 
-220 itens indexados (Sprint SEARCH-COMPLETE) — todos os módulos com ≥3 itens de busca.
+238 itens indexados (Sprint FOUNDATION) — todos os módulos com ≥3 itens de busca · 69/69 rotas cobertas.
 
 ## Deep Dives — Modais avançados (16 total)
 

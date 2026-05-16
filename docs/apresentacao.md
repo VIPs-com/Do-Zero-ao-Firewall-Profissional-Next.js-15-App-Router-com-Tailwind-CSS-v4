@@ -8,14 +8,14 @@
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
 - **Stack:** Next.js 16, Tailwind CSS v4, TypeScript 5.8, React 19
 - **Missao:** Democratizar infraestrutura Linux com experiencia gamificada e imersiva
-- **Escopo:** 74 tópicos, 47 rotas, 46 badges, 127 checkpoints de validação
+- **Escopo:** 89 tópicos, 75 rotas, 62 badges, 172 checkpoints de validação
 
 ---
 
 **Slide 2 — Arquitetura**
 - **Frontend:** Client + Server Components hibridos (estado reativo + metadata SEO)
 - **Persistencia:** `localStorage` como fonte unica (Backend descartado — escopo educacional)
-- **Build:** Turbopack · 52/52 paginas · proxy.ts torna tudo dynamic (trade-off CSP)
+- **Build:** Turbopack · 75 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
 - **Infraestrutura:** Nginx como Proxy Reverso + PM2 para alta disponibilidade
 
 ---
@@ -29,7 +29,7 @@
 ---
 
 **Slide 4 — SEO & Performance (Sprint B)**
-- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (47 rotas) e `buildMetadata()`
+- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (71 rotas) e `buildMetadata()`
 - **Geracao automatica:** sitemap, robots, OG image, favicon, apple-icon, manifest — todos via `next/og` edge
 - **Fontes:** `next/font` self-hospedado (zero CLS, LGPD-safe)
 - **JSON-LD:** `LearningResource` no root layout
@@ -38,7 +38,7 @@
 
 **Slide 5 — Trilhas de Conteudo (4 versoes)**
 - **v1.0 ✅** Zero ao Firewall — 25 módulos (iptables, NAT, DNS, VPN, Docker, Hardening...)
-- **v2.0 ✅** Fundamentos Linux — 14 módulos (FHS, Shell Script, Boot, Rsyslog, Pacotes...)
+- **v2.0 ✅** Fundamentos Linux — 17 módulos (FHS, Shell Script, Boot, Rsyslog, Usuários, Troubleshooting...)
 - **v3.0 ✅** Servidores e Serviços — 9 módulos (DHCP, Samba, Apache, OpenVPN, Traefik, LDAP, Pi-hole...)
 - **v4.0 ✅** Infraestrutura Moderna — 4 módulos (Ansible, Prometheus+Grafana, Kubernetes/K3s, Terraform)
 - **v5.0 🔭** Cloud & Platform Engineering — CI/CD, Service Mesh, SRE (visão de longo prazo)
@@ -46,9 +46,9 @@
 ---
 
 **Slide 6 — Gamificacao**
-- **46 badges** desbloqueáveis (41 comuns + 5 milestones com modal + confetti)
-- **127 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
-- **Linux Ninja** 🥷 → completar 75% dos checkpoints (95/127)
+- **62 badges** desbloqueáveis (55 comuns + 7 milestones com modal + confetti)
+- **172 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
+- **Linux Ninja** 🥷 → completar 75% dos checkpoints (129/172)
 - **Mestre do Curso** 🎯 → visitar todos os 25 módulos da trilha principal
 - **MilestoneCelebration** modal + canvas-confetti (lazy-loaded, 3KB gzip)
 
