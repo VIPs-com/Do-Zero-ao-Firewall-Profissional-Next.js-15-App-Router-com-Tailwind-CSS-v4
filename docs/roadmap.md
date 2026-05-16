@@ -973,6 +973,118 @@ Sprint CHEAT-v4 ✅ Cheat Sheet Interativo (app/cheat-sheet/page.tsx)
   ├── Fix: ID duplicado nft-list renomeado para nft-list-fw (categoria Firewall)
   └── lint ✓ · 57 testes ✓ · zero mudanças em constantes de badge/checkpoint
 
+Sprint UX-TABS-4 ✅ Navegação por 3 abas nas 4 páginas finais (100% cobertura)
+  └── /dns, /vpn-ipsec, /ataques-avancados (AttackCard extraído), /instalacao
+      (StickyChecklist preservada) — UX-TABS → UX-TABS-4 concluídos
+
+Sprint SRS-E2E ✅ Cobertura Playwright do motor SRS (e2e/12-treino-srs.spec.ts)
+  ├── 8 casos: lobby vazio/pendentes, question→Ver Resposta, 5 score buttons,
+  │   score→done, SM-2 localStorage, link Dashboard, Encerrar
+  └── fixtures.ts estendido com workshop-srs-v1/streak/quiz-history/etc · 113 testes
+
+Sprint SRS-STREAK ✅ Badge 🔥 srs-streak-7 (7 dias consecutivos de treino)
+  ├── Motor de streak em src/lib/srs.ts (SRSStreak, getDateString UTC,
+  │   getSRSStreak/saveSRSStreak defensivos, recordTrainingSession idempotente)
+  ├── /treino dispara unlockBadge ao completar 7 dias · +11 testes de streak
+  └── badges 56→57 · nova chave localStorage workshop-srs-streak
+
+Sprint NFS ✅ Network File System (/nfs) — v3.0 Módulo 8
+  ├── NFS vs Samba · NFSv3/v4/v4.2 · /etc/exports (root_squash/all_squash)
+  ├── mount NFSv4 · /etc/fstab (_netdev/nofail/soft) · iptables 2049 · idmapd.conf
+  ├── Badge 🗂️ nfs-master (58º) · 3 checkpoints · module-accent #005f73
+  └── CONTENT_PAGES_COUNT 49→50 · checklistItemsCount 160→163 · totalTopics 85→86
+      ADVANCED_ORDER 19→20 · quiz 254→257 · 113 testes
+
+Sprint QUIZ-MODULO ✅ Filtro por módulo no quiz
+  ├── selectedModule state · moduleOptions useMemo (badges únicos da trilha)
+  ├── URL param ?modulo=BADGE pré-seleciona · chips colapsáveis aria-expanded
+  └── histórico de sessão inclui módulo · 115 testes
+
+Sprint QUIZ-CTA ✅ Botão "🎯 Quiz deste módulo" no ModuleNav
+  ├── PATH_TO_QUIZ_BADGE — 60 rotas mapeadas (Firewall/Fundamentos/Avançados)
+  ├── link /quiz?modulo=BADGE · rotas sem badge não exibem o botão
+  └── +2 testes ModuleNav · 115 testes
+
+Sprint PRINT-CHEAT ✅ Modo de impressão para /cheat-sheet
+  ├── Botão 🖨️ Imprimir (window.print) · no-print em breadcrumb/tabs/search/copy
+  └── @media print: todas as abas visíveis, column-count 2, print-color-adjust
+
+Sprint SPARSE-TABS-FIX ✅ Enriquecimento de abas esparsas
+  ├── /hardening "Exercícios & Ref." — Erros Comuns (4 cards) + Auditoria 60s
+  └── /ataques-avancados "Spoofing & Evasão" — intro + WarnBox ético + Defesa
+
+Sprint PERF ✅ Performance React (5 otimizações de alto ROI)
+  ├── BadgeContext: value do Provider em useMemo — −70% re-renders globais
+  ├── cheat-sheet: filteredCommands em useMemo (search sem jank)
+  ├── topicos: TopicRow React.memo · glossario: TermCard React.memo + delay cap
+  └── quiz: handleStart/handleAnswer/resetQuiz em useCallback · 115 testes
+
+Sprint EVOL-INTERNAL ✅ Context split + E2E fix
+  ├── BadgeContext: milestoneBadge/clearMilestoneBadge removidos da API pública
+  │   (eram internos ao Provider) — 16→14 campos no contextValue
+  └── e2e/07: 0/57→0/58 badges (NFS) · 115 testes
+
+Sprint QUIZ-SPLIT ✅ quizQuestions.ts dividido por trilha
+  ├── 3252 linhas → quiz/types.ts + firewall.ts (105) + fundamentos.ts (60)
+  │   + avancados.ts (92) · quizQuestions.ts vira barrel
+  └── zero mudanças em consumers · 115 testes
+
+Sprint CONSOLIDACAO ✅ Limpeza da Casa & Blindagem
+  ├── src/data/badges.ts — extrai BadgeId/BadgeDef/BADGE_DEFS de BadgeContext
+  ├── src/data/topics.ts — extrai Topic/TOPICS/MODULE_META de /topicos (page −250 linhas)
+  ├── quiz.test.ts (17 testes) + searchItems.test.ts (5 testes) de integridade
+  └── fix g-easyrsa duplicado · 10 suítes · 143 testes
+
+Sprint E2E-TOPICOS ✅ Cobertura Playwright de /topicos (e2e/13-topicos-filters.spec.ts)
+  ├── 10 casos: trilha ativa, toggle 📚/🔥, persistência localStorage,
+  │   módulos pré-expandidos, busca, accordion aria-expanded
+  └── 13 specs E2E
+
+Sprint HOOK ✅ useTabFilter — hook genérico de abas
+  ├── src/hooks/useTabFilter.ts — activeTab/setActiveTab/isActive/tabButtonProps
+  │   (injeta role="tab" + aria-selected + onClick) — elimina 87+ repetições a11y
+  ├── src/hooks/useTabFilter.test.ts (14 testes) · aplicado em 40 páginas com abas
+  └── 11 suítes · 157 testes
+
+Sprint SEARCH-ROUTES ✅ 100% de cobertura de busca
+  ├── +5 itens para /treino (SRS, SM-2, srs-streak-7) e /offline
+  └── 67/67 rotas do ROUTE_SEO com ≥1 item · searchItems 224→229
+
+Sprint FOUNDATION ✅ Foundation First — Iniciantes (F16 + F17)
+  ├── /usuarios — adduser/usermod/groupadd/sudo/visudo · FluxoCard ciclo de vida
+  ├── /troubleshooting — metodologia OSI L1→L7 · ping/ip/ss/dig/journalctl · diagnose.sh
+  ├── Badges 👤 usuarios-master + 🔎 troubleshooting-master + 🏁 ground-zero (MILESTONE)
+  ├── /usuarios entre /permissoes e /discos · vault-master unlock (faltava)
+  └── FUNDAMENTOS_ORDER 15→17 · CONTENT_PAGES_COUNT 51→53 · checklistItemsCount 166→172
+      linux-ninja 124→129 · totalTopics 87→89 · badges 59→62 · searchItems 229→238
+
+Sprint E2E-FOUNDATION ✅ Specs Playwright para F16/F17 (e2e/14-foundation-modules.spec.ts)
+  ├── 11 casos: renderização 3 abas, trackPageVisit, contadores dashboard,
+  │   badges seeded, ModuleNav, desbloqueio ground-zero via 17 checkpoints
+  └── fix 10-fundamentos-trail: 15→17 módulos, contador 1/172, /ssh-proxy→/troubleshooting
+
+Sprint E2E-FULL ✅ Smoke test de todas as rotas (e2e/15-routes-smoke.spec.ts)
+  ├── Varre as 71 rotas do ROUTE_SEO — HTTP<400, error boundary não acionado,
+  │   <h1> visível, zero exceções JS
+  └── Bug capturado: /offline sem <h1> — corrigido com heading estilo terminal
+
+Sprint QUIZ-GROUND-ZERO ✅ Hub de Quiz da Trilha Fundamentos
+  ├── +8 questões F16/F17 (👤 Usuários, 🔎 Troubleshooting) estilo LPIC-1/Linux+
+  │   fundamentos 60→68 · QUIZ_QUESTIONS 257→265
+  ├── /fundamentos: corrige bug do Sprint FOUNDATION (MODULES tinha 15 entradas)
+  │   → 17 módulos + seção "Hub de Quiz" (simulado completo + quiz por módulo)
+  ├── /quiz lê ?trail= da URL · ModuleNav PATH_TO_QUIZ_BADGE +2 rotas
+  └── fix: /ssh-proxy renderizava ModuleNav duplicado · 157 testes
+
+Sprint LAYOUT-SYNC ✅ Stats do rodapé sincronizadas
+  └── 59→63 módulos · 254→265 questões · 56→62 conquistas · 160→172 checkpoints
+
+Sprint E2E-HARDENING ✅ Locators de ModuleNav robustos (specs 08 e 11)
+  ├── aria-label preciso (/^módulo anterior:/ e /^próximo módulo:/) —
+  │   elimina strict-mode violation com links homônimos
+  ├── 08-module-nav ganhou verificação de href
+  └── fix ALL_ADVANCED_PATHS — faltava /vault (ADVANCED_ORDER tem 21 módulos)
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
