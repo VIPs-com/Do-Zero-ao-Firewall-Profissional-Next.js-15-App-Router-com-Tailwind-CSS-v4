@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { Search, X, Command, CornerDownLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SEARCH_ITEMS, SearchItem } from '@/data/searchItems';
+import { INCIDENT_ITEMS } from '@/data/incidents';
 
 interface GlobalSearchProps {
   isOpen: boolean;
@@ -36,11 +37,19 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
   const filteredItems = useMemo(() => {
     if (!query.trim()) return SEARCH_ITEMS.slice(0, 5); // Show some defaults
     const q = query.toLowerCase();
-    return SEARCH_ITEMS.filter(item => 
-      item.title.toLowerCase().includes(q) || 
+    // Busca preditiva de incidentes — matching bidirecional nas keywords
+    // ("disco" casa "disco cheio"; "disco cheio" casa "disco"). Vão no topo.
+    const matchedIncidents = INCIDENT_ITEMS.filter(inc =>
+      inc.title.toLowerCase().includes(q) ||
+      inc.description.toLowerCase().includes(q) ||
+      (inc.keywords ?? []).some(k => k.includes(q) || q.includes(k)),
+    );
+    const matchedItems = SEARCH_ITEMS.filter(item =>
+      item.title.toLowerCase().includes(q) ||
       item.description.toLowerCase().includes(q) ||
       item.category.toLowerCase().includes(q)
-    ).slice(0, 8);
+    );
+    return [...matchedIncidents, ...matchedItems].slice(0, 8);
   }, [query]);
 
   useEffect(() => {
@@ -192,6 +201,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                               <span className="font-bold text-sm text-text truncate">{item.title}</span>
                               <span className={cn(
                                 "text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded border",
+                                item.category === 'Incidente' ? "bg-err/10 border-err/20 text-err" :
                                 item.category === 'Comando' ? "bg-info/10 border-info/20 text-info" :
                                 item.category === 'Tópico' ? "bg-accent/10 border-accent/20 text-accent" :
                                 item.category === 'Glossário' ? "bg-warn/10 border-warn/20 text-warn" :

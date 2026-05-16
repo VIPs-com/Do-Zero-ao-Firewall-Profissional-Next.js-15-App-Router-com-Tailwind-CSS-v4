@@ -53,6 +53,25 @@ test('Ctrl+K abre busca, digitar filtra, Enter navega e fecha o dialog', async (
   expect(badges).toContain('searcher');
 });
 
+test('busca preditiva — "disco cheio" surge o playbook de incidente', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
+
+  await page.keyboard.press('Control+k');
+  const dialog = page.locator('[role="dialog"]').filter({ hasText: 'Busca global' });
+  await expect(dialog).toBeVisible({ timeout: 5_000 });
+
+  const input = dialog.locator('[role="combobox"]');
+  await input.focus();
+  await input.fill('disco cheio');
+
+  // O playbook de incidente aparece com o badge "Incidente" e o fluxo de comandos
+  const incident = dialog.getByRole('option').filter({ hasText: /Disco cheio/i });
+  await expect(incident.first()).toBeVisible({ timeout: 3_000 });
+  await expect(incident.first()).toContainText('Incidente');
+  await expect(incident.first()).toContainText('df -h');
+});
+
 test('ESC fecha a busca global', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');

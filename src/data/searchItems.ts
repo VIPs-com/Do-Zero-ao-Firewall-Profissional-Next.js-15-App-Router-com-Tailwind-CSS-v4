@@ -32,9 +32,11 @@ export interface SearchItem {
   id: string;
   title: string;
   description: string;
-  category: 'Tópico' | 'Glossário' | 'Página' | 'Comando';
+  category: 'Tópico' | 'Glossário' | 'Página' | 'Comando' | 'Incidente';
   href: string;
   icon: React.ElementType;
+  /** Termos extras de matching (sintomas, frases coloquiais). Usado por incidentes. */
+  keywords?: string[];
 }
 
 export const SEARCH_ITEMS: SearchItem[] = [
