@@ -16,8 +16,10 @@ import {
   Layout,
   Download,
   Upload,
+  Trash2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ClearDataDialog } from '@/components/ui/ClearDataDialog';
 import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
 import { COURSE_ORDER, FUNDAMENTOS_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
 import { getSRSData, getTotalDue } from '@/lib/srs';
@@ -547,6 +549,19 @@ export default function DashboardPage() {
                 {importStatus.msg}
               </p>
             )}
+          </div>
+
+          {/* Privacidade — LGPD */}
+          <div className="bg-bg-2 border border-err/20 rounded-xl p-6 space-y-3">
+            <h3 className="font-bold text-sm mb-1 flex items-center gap-2">
+              <Trash2 className="text-err" size={16} />
+              Privacidade
+            </h3>
+            <p className="text-[10px] text-text-3 leading-relaxed">
+              Seu progresso fica apenas neste navegador (localStorage) — nada é enviado
+              a servidores. Você pode expurgar todos os seus dados a qualquer momento.
+            </p>
+            <ClearDataDialog />
           </div>
 
           {/* Certificate Status */}

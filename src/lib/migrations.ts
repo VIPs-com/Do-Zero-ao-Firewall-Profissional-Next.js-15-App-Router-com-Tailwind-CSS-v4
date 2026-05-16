@@ -52,6 +52,32 @@ const MIGRATIONS: Migration[] = [
   },
 ];
 
+/**
+ * LGPD — apaga TODOS os dados do aluno guardados no localStorage.
+ *
+ * Remove qualquer chave com o prefixo `workshop-` (badges, checkpoints, quiz,
+ * SRS, nome do certificado, preferências e a própria versão de schema), de
+ * forma que o app re-hidrate do zero no próximo carregamento. Pega chaves
+ * futuras automaticamente — não depende de uma lista fixa.
+ *
+ * Retorna a quantidade de chaves removidas.
+ */
+export function clearAllWorkshopData(): number {
+  try {
+    if (typeof window === 'undefined') return 0;
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('workshop-')) keys.push(k);
+    }
+    keys.forEach((k) => localStorage.removeItem(k));
+    return keys.length;
+  } catch (err) {
+    console.error('[migrations] Falha ao apagar os dados do aluno:', err);
+    return 0;
+  }
+}
+
 /** Lê a versão de schema guardada. Ausente ou corrompida → 0 (pré-versionamento). */
 export function getStorageVersion(): number {
   try {

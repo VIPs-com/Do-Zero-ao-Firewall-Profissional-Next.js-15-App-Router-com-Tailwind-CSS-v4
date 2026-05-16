@@ -6,6 +6,7 @@ import { describe, it, expect } from 'vitest';
 import {
   runStorageMigrations,
   getStorageVersion,
+  clearAllWorkshopData,
   STORAGE_SCHEMA_VERSION,
 } from './migrations';
 
@@ -89,5 +90,37 @@ describe('runStorageMigrations', () => {
     const result = runStorageMigrations();
     expect(result.from).toBe(0);
     expect(result.to).toBe(STORAGE_SCHEMA_VERSION);
+  });
+});
+
+describe('clearAllWorkshopData (LGPD)', () => {
+  it('remove todas as chaves com prefixo workshop-', () => {
+    localStorage.setItem('workshop-badges', '["explorer"]');
+    localStorage.setItem('workshop-quiz-score', '80');
+    localStorage.setItem('workshop-schema-version', '1');
+    localStorage.setItem('workshop-student-name', 'Ada');
+
+    const removed = clearAllWorkshopData();
+
+    expect(removed).toBe(4);
+    expect(localStorage.getItem('workshop-badges')).toBeNull();
+    expect(localStorage.getItem('workshop-quiz-score')).toBeNull();
+    expect(localStorage.getItem('workshop-schema-version')).toBeNull();
+    expect(localStorage.getItem('workshop-student-name')).toBeNull();
+  });
+
+  it('NÃO remove chaves de outras aplicações', () => {
+    localStorage.setItem('workshop-badges', '[]');
+    localStorage.setItem('outra-app-config', 'preservar');
+    localStorage.setItem('tema-global', 'dark');
+
+    clearAllWorkshopData();
+
+    expect(localStorage.getItem('outra-app-config')).toBe('preservar');
+    expect(localStorage.getItem('tema-global')).toBe('dark');
+  });
+
+  it('retorna 0 quando não há dados do workshop', () => {
+    expect(clearAllWorkshopData()).toBe(0);
   });
 });
