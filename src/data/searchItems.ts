@@ -51,6 +51,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'p-quiz',       title: 'Quiz',          description: 'Teste seus conhecimentos e desbloqueie badges',   category: 'Página', href: '/quiz',         icon: Award },
   { id: 'p-cert',       title: 'Certificado',   description: 'Gere seu certificado de conclusão do workshop',   category: 'Página', href: '/certificado', icon: Award },
   { id: 'p-evolucao',   title: 'Evolução',      description: 'Roadmap tecnológico e linha do tempo do projeto', category: 'Página', href: '/evolucao',    icon: TrendingUp },
+  { id: 'p-ferramentas', title: 'Ferramentas',  description: 'Calculadora de sub-redes CIDR — rede, broadcast, hosts e máscara', category: 'Página', href: '/ferramentas', icon: Network },
   { id: 't-roadmap-evolucao', title: 'Roadmap Completo — v1.0 ao v5.0', description: '5 trilhas completas: Firewall (v1.0), Fundamentos (v2.0), Servidores (v3.0), Infra Moderna (v4.0) e Cloud/Platform Engineering (v5.0).', category: 'Tópico', href: '/evolucao#roadmap-evolucao', icon: TrendingUp },
 
   // ─── Tópicos (módulos técnicos) ─────────────────────────────────────────────

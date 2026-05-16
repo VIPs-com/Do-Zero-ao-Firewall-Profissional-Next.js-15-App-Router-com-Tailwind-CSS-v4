@@ -28,6 +28,7 @@ const NAV_LINKS = [
   { href: '/quiz',         label: 'Quiz',        icon: '🧠' },
   { href: '/treino',       label: 'Treino',      icon: '🎯' },
   { href: '/cheat-sheet',  label: 'Cheat Sheet', icon: '⚡' },
+  { href: '/ferramentas',  label: 'Ferramentas', icon: '🧮' },
   { href: '/certificado',  label: 'Certificado', icon: '🎓' },
 ];
 

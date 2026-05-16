@@ -93,6 +93,11 @@ export const ROUTE_SEO = {
     description:
       'Gere seu certificado de conclusão do Workshop Linux após completar o quiz (80%+) e o checklist (90%+) do laboratório.',
   },
+  '/ferramentas': {
+    title: 'Ferramentas — Calculadora CIDR',
+    description:
+      'Calculadora de sub-redes CIDR no navegador: rede, broadcast, faixa de hosts, máscara e wildcard a partir de um endereço IP/prefixo.',
+  },
   '/instalacao': {
     title: 'Instalação e Fundação do Laboratório',
     description:

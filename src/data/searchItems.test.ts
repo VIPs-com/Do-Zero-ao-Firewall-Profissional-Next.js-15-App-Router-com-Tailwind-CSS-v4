@@ -7,8 +7,8 @@ import { describe, it, expect } from 'vitest';
 import { SEARCH_ITEMS } from './searchItems';
 
 describe('SEARCH_ITEMS', () => {
-  it('tem exatamente 238 itens', () => {
-    expect(SEARCH_ITEMS).toHaveLength(238);
+  it('tem exatamente 239 itens', () => {
+    expect(SEARCH_ITEMS).toHaveLength(239);
   });
 
   it('nenhum id duplicado', () => {
