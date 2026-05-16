@@ -5,7 +5,7 @@ import { useBadges } from '@/context/BadgeContext';
 import { FUNDAMENTOS_ORDER } from '@/data/courseOrder';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, HorizonteBox } from '@/components/ui/Boxes';
 import { WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { Server, FileText, Radio, RotateCcw, AlertTriangle, CheckCircle } from 'lucide-react';
@@ -405,6 +405,71 @@ module(load="omfwd")
     port="12201"
     protocol="tcp"
     template="RSYSLOG_SyslogProtocol23Format")`} />
+          </InfoBox>
+        </section>
+
+        {/* Horizonte Tecnológico — Grafana Loki */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-3">🔭 Horizonte Tecnológico — do rsyslog ao Grafana Loki</h2>
+          <p className="text-text-2 mb-4">
+            O rsyslog é a <strong>fundação</strong>: todo servidor Linux já tem, e dominá-lo
+            ensina facilities, priorities e o conceito de servidor central. Não há nada para
+            substituir — há um <strong>próximo degrau</strong> quando você cresce. Para uma
+            frota de servidores ou máquinas efêmeras na nuvem, o padrão moderno é o{' '}
+            <strong>Grafana Loki</strong>. É uma evolução natural — você escolhe quando percorrê-la.
+          </p>
+
+          <HorizonteBox
+            classicoLabel="rsyslog — a fundação que todo Linux já tem"
+            modernoLabel="Grafana Loki — observabilidade de logs consultável"
+            classico={
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Presente em qualquer servidor — <code>facilities</code>, <code>priorities</code>, <code>/etc/rsyslog.conf</code></li>
+                <li>Centralização clássica: cliente → servidor na porta 514</li>
+                <li>Arquivos de texto plano + <code>logrotate</code> para o tamanho</li>
+                <li>Perfeito para 1 servidor e para o sysadmin iniciante — sem stack extra</li>
+              </ul>
+            }
+            moderno={
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Indexa por <strong>labels</strong> (não full-text) — leve e barato em disco</li>
+                <li>Consulta com <code>LogQL</code> e visualização no Grafana junto das métricas</li>
+                <li>Coletor moderno (<code>Promtail</code> / <code>Vector</code>) envia logs estruturados em JSON</li>
+                <li>Pensado para frotas e servidores efêmeros na nuvem</li>
+              </ul>
+            }
+            ganho="Não é substituir, é evoluir no seu tempo. O rsyslog continua perfeito para um servidor único e ensina os fundamentos. Ao gerenciar uma frota ou máquinas efêmeras, o Loki é o próximo degrau natural — a mesma ideia de centralizar logs, agora consultável e visual. O conceito não muda; muda a escala."
+          />
+
+          <p className="text-text-2 text-sm mt-4 mb-2">
+            A mecânica do Loki em poucos passos — um coletor (<code>Promtail</code>) lê os logs
+            e envia ao Loki; o Grafana consulta com <code>LogQL</code>:
+          </p>
+          <CodeBlock lang="yaml" code={`# docker-compose.yml — stack mínima de logs
+services:
+  loki:
+    image: grafana/loki:latest
+    ports: ["3100:3100"]
+  promtail:
+    image: grafana/promtail:latest
+    volumes:
+      - /var/log:/var/log:ro            # lê os logs do host
+      - ./promtail.yml:/etc/promtail/config.yml
+  grafana:
+    image: grafana/grafana:latest
+    ports: ["3000:3000"]`} />
+          <CodeBlock lang="bash" code={`# Consultas LogQL no Grafana — filtra por LABEL, não por full-text:
+{job="varlogs"} |= "Failed password"      # erros de SSH
+{job="varlogs"} | json | level="error"    # logs estruturados em JSON
+rate({job="varlogs"}[5m])                 # taxa de linhas de log por segundo`} />
+
+          <InfoBox title="A trilha — escolha o seu nível">
+            <p className="text-sm text-text-2">
+              <strong>Iniciante:</strong> domine o rsyslog — ele resolve um servidor e ensina os
+              fundamentos. <strong>Intermediário / Avançado:</strong> ao gerenciar frotas, suba o
+              Loki e ganhe consulta com LogQL + visualização junto das métricas no Grafana. O
+              conceito — centralizar logs — é o mesmo; muda a escala.
+            </p>
           </InfoBox>
         </section>
 
