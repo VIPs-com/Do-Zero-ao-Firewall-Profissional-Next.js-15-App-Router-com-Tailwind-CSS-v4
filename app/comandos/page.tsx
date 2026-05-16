@@ -66,6 +66,62 @@ df -h | grep "/$"                   # Espaço livre na partição raiz
 ls /etc/*.conf | wc -l              # Quantos .conf em /etc?
 grep -r "PermitRoot" /etc/ssh/ | wc -l  # Quantas linhas têm PermitRoot?`;
 
+const PWD_ANATOMY = `# ── pwd — Print Working Directory ────────────────────────────────────
+pwd              # diretório atual (builtin do shell — embutido no Bash)
+type pwd         # → "pwd is a shell builtin"
+/bin/pwd         # o binário FÍSICO do sistema — mesma saída, processo separado
+pwd -P           # resolve links simbólicos → caminho físico real
+echo $PWD        # o shell mantém o diretório atual nesta variável de ambiente
+
+# Diferença de certificação: o Bash tem 'pwd' embutido (builtin), mas existe
+# também /bin/pwd. O builtin é usado por padrão — é mais rápido (sem fork).`;
+
+const PATH_ANATOMY = `# ── $PATH — o mapa do tesouro ────────────────────────────────────────
+echo $PATH       # diretórios onde o shell procura executáveis, separados por :
+# /usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+# Quando você digita 'ls', o shell NÃO adivinha — ele varre cada diretório
+# do $PATH em ordem e usa o primeiro 'ls' que encontrar.
+which ls         # mostra QUAL /bin/ls o shell escolheu
+type -a ls       # mostra TODOS os caminhos + se é builtin/alias/arquivo
+
+# ✅ Expandir o PATH com SEGURANÇA — append preserva o que já existe:
+export PATH="$PATH:/opt/meuapp/bin"
+
+# ❌ ERRO CLÁSSICO DE PROVA — sobrescreve tudo: ls, cd, grep param de funcionar
+export PATH="/opt/meuapp/bin"
+
+# Permanente — adicionar ao final do ~/.bashrc (vale para os próximos logins):
+echo 'export PATH="$PATH:/opt/meuapp/bin"' >> ~/.bashrc`;
+
+const PS1_ANATOMY = `# ── PS1 — o Prompt Principal ─────────────────────────────────────────
+echo "$PS1"      # exibe a definição atual do prompt
+
+# Caracteres de escape mais cobrados em prova:
+#   \\u  usuário atual            \\h  hostname (até o primeiro ponto)
+#   \\w  caminho completo         \\W  apenas o nome da pasta atual
+#   \\$  exibe # se for root, $ se for usuário comum  ← pilar de segurança
+#   \\t  hora HH:MM:SS            \\n  quebra de linha
+
+export PS1='\\u@\\h:\\w\\$ '       # → joao@servidor:/etc/ssh$
+export PS1='[\\t] \\W \\$ '        # → [14:23:01] ssh $
+
+# \\$ é crítico: num servidor, ver '#' avisa imediatamente que você é root.`;
+
+const PS2_ANATOMY = `# ── PS2 — o Prompt Secundário (o temido '>') ─────────────────────────
+# O '>' aparece quando o Bash detecta um comando INCOMPLETO e espera você
+# terminar a sintaxe — NÃO é um erro, é o shell pedinte de continuação.
+
+$ echo "primeira linha
+> segunda linha          # ← o '>' é o PS2: a aspa " não foi fechada
+> "                      # ao fechar a aspa, o comando finalmente executa
+
+$ ls /etc \\              # a barra invertida \\ continua na linha seguinte
+> /var                   # PS2 de novo, esperando o resto do comando
+
+# Travou no '>' sem querer? Ctrl+C cancela e devolve o prompt normal.
+export PS2='... '        # personaliza o prompt de continuação`;
+
 export default function ComandosPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
@@ -186,6 +242,81 @@ export default function ComandosPage() {
               <CodeBlock code={`mkdir -p ~/lab/firewall\ntouch ~/lab/firewall/regras.txt\necho "# Minhas regras iptables" > ~/lab/firewall/regras.txt\ncat ~/lab/firewall/regras.txt`} lang="bash" />
             </div>
           </div>
+        </section>
+
+        {/* ── Anatomia do Shell ── */}
+        <section id="anatomia-shell">
+          <div className="section-label">Foco em Certificação · LPIC-1 / CompTIA Linux+</div>
+          <h2 className="text-2xl font-bold mb-2">🔬 Anatomia do Shell — Prompt e Variáveis</h2>
+          <p className="text-text-2 text-sm mb-6">
+            O prompt não é texto estático: é uma interface dinâmica controlada por variáveis de
+            ambiente. Entender <code>PS1</code>, <code>PS2</code>, <code>$PATH</code> e <code>pwd</code> é
+            o que separa quem &ldquo;bate no teclado&rdquo; de quem entende o que o shell está fazendo —
+            e cai com frequência nas provas de certificação.
+          </p>
+
+          <h3 className="font-bold text-lg mb-2 mt-2">📍 <code>pwd</code> — Onde Estou?</h3>
+          <CodeBlock code={PWD_ANATOMY} lang="bash" title="pwd — builtin vs binário" />
+
+          <h3 className="font-bold text-lg mb-2 mt-8">🗺️ <code>$PATH</code> — Como o Bash Acha os Comandos</h3>
+          <p className="text-text-2 text-sm mb-4">
+            Ao digitar <code>ls</code>, o shell varre em ordem os diretórios listados em
+            <code> $PATH</code> (separados por <code>:</code>) e executa o primeiro que encontrar.
+          </p>
+          <CodeBlock code={PATH_ANATOMY} lang="bash" title="$PATH — expansão segura" />
+          <WarnBox className="mt-4" title="A pegadinha do $PATH">
+            <p className="text-sm text-text-2">
+              <code>export PATH=&quot;/opt/bin&quot;</code> <strong>sobrescreve</strong> o PATH inteiro —
+              o shell perde <code>/usr/bin</code> e <code>/bin</code>, e comandos como <code>ls</code> e
+              <code> cd</code> retornam <code>command not found</code>. Sempre faça <em>append</em>:
+              <code> export PATH=&quot;$PATH:/opt/bin&quot;</code> — incluindo o <code>$PATH</code> anterior.
+            </p>
+          </WarnBox>
+
+          <h3 className="font-bold text-lg mb-2 mt-8">🎨 <code>PS1</code> — O Prompt Principal</h3>
+          <CodeBlock code={PS1_ANATOMY} lang="bash" title="PS1 — caracteres de escape" />
+
+          <h3 className="font-bold text-lg mb-2 mt-8">⏳ <code>PS2</code> — O Prompt Secundário</h3>
+          <CodeBlock code={PS2_ANATOMY} lang="bash" title="PS2 — o sinal de continuação" />
+
+          <InfoBox className="mt-4" title="Foco na Prova — pegadinhas recorrentes">
+            <ul className="text-sm text-text-2 space-y-1.5 list-disc list-inside">
+              <li>
+                O <code>&gt;</code> ao pressionar Enter <strong>não é erro</strong> — é o <code>PS2</code>,
+                indicando aspa/comando multi-linha não fechado. <code>Ctrl+C</code> cancela.
+              </li>
+              <li>
+                Por segurança, o diretório atual (<code>.</code>) <strong>não está no <code>$PATH</code></strong>.
+                Para rodar um script local: <code>./meu-script.sh</code> (caminho relativo explícito).
+              </li>
+              <li>
+                <code>export PATH=...</code> sem incluir <code>$PATH</code> quebra os comandos nativos —
+                sempre faça <em>append</em>.
+              </li>
+              <li>
+                <code>\\$</code> no <code>PS1</code> mostra <code>#</code> para root e <code>$</code> para
+                usuário comum — pista visual de privilégio.
+              </li>
+            </ul>
+          </InfoBox>
+
+          <WindowsComparisonBox
+            className="mt-4"
+            windowsLabel="Windows CMD / PowerShell"
+            linuxLabel="Linux Bash"
+            windowsCode={`REM Prompt e variáveis no Windows
+prompt $P$G            REM personaliza o prompt (CMD)
+echo %PATH%            REM exibe o PATH
+set PATH=%PATH%;C:\\bin  REM append no PATH (sessão)
+echo %CD%              REM diretório atual
+where comando          REM localiza o executável`}
+            linuxCode={`# Prompt e variáveis no Linux
+export PS1='\\u@\\h:\\w\\$ '       # personaliza o prompt
+echo $PATH                      # exibe o PATH
+export PATH="$PATH:/opt/bin"    # append no PATH (sessão)
+pwd                             # diretório atual
+which comando                   # localiza o executável`}
+          />
         </section>
 
         {/* ── HighlightBox expansão futura ── */}
