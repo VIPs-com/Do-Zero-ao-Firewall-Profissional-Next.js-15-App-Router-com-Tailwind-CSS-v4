@@ -1,15 +1,15 @@
 import { test, expect } from './fixtures';
 
 /**
- * Sprint Advanced-E2E — E2E da Trilha Avançada (20 módulos v3.0→v5.0)
+ * Sprint Advanced-E2E — E2E da Trilha Avançada (21 módulos v3.0→v5.0)
  *
  * Espelha 10-fundamentos-trail.spec.ts para a trilha avançada.
  *
  * ADVANCED_ORDER (src/data/courseOrder.ts):
  *   v3.0 Servidores (8): /dhcp → /samba → /apache → /openvpn →
  *                        /traefik → /ldap → /pihole → /nfs
- *   v4.0 Infraestrutura (8): /ansible → /monitoring → /kubernetes → /terraform →
- *                             /suricata → /ebpf → /service-mesh → /sre
+ *   v4.0 Infraestrutura (9): /ansible → /monitoring → /kubernetes → /terraform →
+ *                             /suricata → /ebpf → /service-mesh → /sre → /vault
  *   v5.0 Cloud (4): /cicd → /opnsense → /nextcloud → /ebpf-avancado
  *
  * Casos testados:
@@ -18,14 +18,14 @@ import { test, expect } from './fixtures';
  *   3. Badge advanced-master seeded aparece no dashboard
  *   4. ModuleNav em /dhcp: sem Anterior (1º da trilha), Próximo → /samba
  *   5. ModuleNav em /ebpf-avancado: Anterior → /nextcloud, sem Próximo (último)
- *   6. advanced-master desbloqueado ao visitar todos os 20 módulos
+ *   6. advanced-master desbloqueado ao visitar todos os 21 módulos
  */
 
-/** Todos os paths da ADVANCED_ORDER */
+/** Todos os paths da ADVANCED_ORDER (21 módulos) */
 const ALL_ADVANCED_PATHS = [
   '/dhcp', '/samba', '/apache', '/openvpn', '/traefik', '/ldap', '/pihole', '/nfs',
   '/ansible', '/monitoring', '/kubernetes', '/terraform', '/suricata', '/ebpf',
-  '/service-mesh', '/sre', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
+  '/service-mesh', '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
 ];
 
 // ── 1. Índice /avancados ──────────────────────────────────────────────────
@@ -86,11 +86,12 @@ test('ModuleNav em /dhcp: sem Anterior, Próximo aponta para /samba', async ({ p
   await page.goto('/dhcp');
   await page.waitForLoadState('networkidle');
 
+  // ModuleNav usa aria-label estável — locator preciso evita strict-mode violation
   // Primeiro módulo da trilha avançada: sem botão Anterior
-  await expect(page.getByRole('link', { name: /anterior/i })).not.toBeVisible();
+  await expect(page.getByRole('link', { name: /^módulo anterior:/i })).not.toBeVisible();
 
   // Próximo deve apontar para /samba
-  const next = page.getByRole('link', { name: /samba|próximo/i });
+  const next = page.getByRole('link', { name: /^próximo módulo:/i });
   await expect(next).toBeVisible();
   await expect(next).toHaveAttribute('href', '/samba');
 });
@@ -102,18 +103,18 @@ test('ModuleNav em /ebpf-avancado: Anterior aponta para /nextcloud, sem Próximo
   await page.waitForLoadState('networkidle');
 
   // Anterior aponta para /nextcloud (penúltimo)
-  const prev = page.getByRole('link', { name: /nextcloud|anterior/i });
+  const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
   await expect(prev).toHaveAttribute('href', '/nextcloud');
 
   // Último módulo da trilha: sem botão Próximo
-  await expect(page.getByRole('link', { name: /próximo/i })).not.toBeVisible();
+  await expect(page.getByRole('link', { name: /^próximo módulo:/i })).not.toBeVisible();
 });
 
-// ── 6. Desbloqueio real do badge ao visitar todos os 20 módulos ──────────
+// ── 6. Desbloqueio real do badge ao visitar todos os 21 módulos ──────────
 
-test('advanced-master é desbloqueado ao visitar todos os 20 módulos', async ({ page }) => {
-  // Seed: todos os 20 paths visitados, sem pré-seedar o badge
+test('advanced-master é desbloqueado ao visitar todos os 21 módulos', async ({ page }) => {
+  // Seed: todos os 21 paths visitados, sem pré-seedar o badge
   await page.evaluate((paths) => {
     localStorage.removeItem('workshop-badges');
     localStorage.setItem('workshop-visited-pages', JSON.stringify(paths));
