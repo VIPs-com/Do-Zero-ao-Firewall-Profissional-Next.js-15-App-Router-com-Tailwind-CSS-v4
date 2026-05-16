@@ -184,7 +184,10 @@ test('botão Dashboard na tela done navega para /dashboard', async ({ page }) =>
 
   await page.getByText('Sessão concluída').waitFor({ timeout: 5_000 });
 
-  await page.getByRole('link', { name: /Dashboard/ }).click();
+  // Locator preciso — escopo #main-content + exact evita os links homônimos
+  // do header ("Dashboard") e do rodapé ("Dashboard →").
+  await page.locator('#main-content')
+    .getByRole('link', { name: 'Dashboard', exact: true }).click();
   await expect(page).toHaveURL('/dashboard');
 });
 
@@ -207,4 +210,63 @@ test('botão Encerrar durante sessão retorna ao lobby', async ({ page }) => {
   // Volta ao lobby — título "Treinamento Tático" e botão Iniciar novamente
   await expect(page.getByRole('heading', { name: 'Treinamento Tático' })).toBeVisible({ timeout: 5_000 });
   await expect(page.getByRole('button', { name: /Iniciar Missão/ })).toBeVisible();
+});
+
+// ─── 9. Streak — badge srs-streak-7 ao completar 7 dias consecutivos ───────
+
+test('completar sessão com streak de 6 dias desbloqueia o badge srs-streak-7', async ({ page }) => {
+  // Seed: streak de 6 dias com última sessão ONTEM → completar hoje vira 7.
+  const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+  await page.evaluate(
+    ({ store, streak }) => {
+      localStorage.setItem('workshop-srs-v1', JSON.stringify(store));
+      localStorage.setItem('workshop-srs-streak', JSON.stringify(streak));
+    },
+    { store: makeSRSStore(1), streak: { lastSessionDate: yesterday, currentStreak: 6 } },
+  );
+
+  await page.goto('/treino');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /Iniciar Missão/ }).click();
+  await page.getByRole('button', { name: 'Ver Resposta' }).click();
+  await page.getByRole('button', { name: /Score 5:/ }).click();
+  await page.getByText('Sessão concluída').waitFor({ timeout: 5_000 });
+
+  // streak 6 → 7 → badge srs-streak-7 desbloqueado
+  await page.waitForFunction(
+    () => {
+      try {
+        return (JSON.parse(localStorage.getItem('workshop-badges') ?? '[]') as string[])
+          .includes('srs-streak-7');
+      } catch { return false; }
+    },
+    { timeout: 5_000 },
+  );
+
+  const streak = await page.evaluate(() => localStorage.getItem('workshop-srs-streak'));
+  expect(JSON.parse(streak!).currentStreak).toBe(7);
+});
+
+// ─── 10. Streak — sessão sem histórico NÃO desbloqueia o badge ─────────────
+
+test('completar sessão sem streak prévio NÃO desbloqueia srs-streak-7', async ({ page }) => {
+  await page.evaluate((store) => {
+    localStorage.setItem('workshop-srs-v1', JSON.stringify(store));
+  }, makeSRSStore(1));
+
+  await page.goto('/treino');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /Iniciar Missão/ }).click();
+  await page.getByRole('button', { name: 'Ver Resposta' }).click();
+  await page.getByRole('button', { name: /Score 5:/ }).click();
+  await page.getByText('Sessão concluída').waitFor({ timeout: 5_000 });
+
+  // Primeira sessão: streak = 1, badge NÃO desbloqueado
+  const streak = await page.evaluate(() => localStorage.getItem('workshop-srs-streak'));
+  expect(JSON.parse(streak!).currentStreak).toBe(1);
+
+  const badges = await page.evaluate(() => localStorage.getItem('workshop-badges'));
+  expect(badges ?? '[]').not.toContain('srs-streak-7');
 });
