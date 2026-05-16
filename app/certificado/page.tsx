@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { Award, Download, Share2, CheckCircle2, AlertCircle, Printer, Terminal, Shield } from 'lucide-react';
+import { Award, Download, Share2, CheckCircle2, AlertCircle, Printer, Terminal, Shield, ImageDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { ModuleNav } from '@/components/ui/ModuleNav';
@@ -21,9 +21,122 @@ const COMPETENCIAS = [
   { icon: '⚡', text: 'Detecção e mitigação de ataques: scan, pivoting, brute-force' },
 ];
 
+/**
+ * Desenha o certificado em um canvas 2000×1414 (A4 paisagem, alta resolução)
+ * usando apenas a Canvas 2D API — zero dependências (sem html2canvas).
+ * Fontes do sistema (Georgia/Arial/monospace) garantem renderização imediata.
+ */
+function drawCertificate(
+  canvas: HTMLCanvasElement,
+  data: { name: string; date: string; hash: string },
+) {
+  const W = 2000;
+  const H = 1414;
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  // Fundo branco
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, W, H);
+
+  // Moldura dupla
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(56, 56, W - 112, H - 112);
+  ctx.lineWidth = 1;
+  ctx.strokeRect(78, 78, W - 156, H - 156);
+
+  ctx.textAlign = 'center';
+
+  // Cabeçalho
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 28px Arial, sans-serif';
+  ctx.fillText('CERTIFICADO OFICIAL', W / 2, 205);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 46px Arial, sans-serif';
+  ctx.fillText('WORKSHOP LINUX 2026', W / 2, 268);
+
+  // Linha de destaque (accent laranja)
+  ctx.fillStyle = '#e05a2b';
+  ctx.fillRect(W / 2 - 90, 300, 180, 5);
+
+  // Subtítulo
+  ctx.fillStyle = '#64748b';
+  ctx.font = 'bold 30px Arial, sans-serif';
+  ctx.fillText('CERTIFICADO DE CONCLUSÃO', W / 2, 410);
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'italic 38px Georgia, serif';
+  ctx.fillText('Certificamos solenemente que', W / 2, 500);
+
+  // Nome — auto-ajuste de tamanho para nomes longos
+  let nameSize = 132;
+  ctx.fillStyle = '#0f172a';
+  do {
+    ctx.font = `${nameSize}px Georgia, "Times New Roman", serif`;
+    nameSize -= 6;
+  } while (ctx.measureText(data.name).width > W - 380 && nameSize > 48);
+  ctx.fillText(data.name, W / 2, 680);
+
+  // Divisória
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(W / 2 - 420, 742);
+  ctx.lineTo(W / 2 + 420, 742);
+  ctx.stroke();
+
+  // Corpo
+  ctx.fillStyle = '#475569';
+  ctx.font = '36px Georgia, serif';
+  ctx.fillText('concluiu com distinção o treinamento intensivo', W / 2, 850);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 44px Arial, sans-serif';
+  ctx.fillText('DO ZERO AO FIREWALL PROFISSIONAL', W / 2, 922);
+
+  // Selo central
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.arc(W / 2, 1145, 78, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = '#cbd5e1';
+  ctx.font = '72px Arial, sans-serif';
+  ctx.fillText('★', W / 2, 1172);
+
+  // Rodapé — data à esquerda, hash à direita
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 24px Arial, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('DATA DE EMISSÃO', 230, 1128);
+  ctx.fillStyle = '#1e293b';
+  ctx.font = 'bold 34px Arial, sans-serif';
+  ctx.fillText(data.date, 230, 1180);
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 24px Arial, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('CÓDIGO DE AUTENTICIDADE', W - 230, 1128);
+  ctx.fillStyle = '#1e293b';
+  ctx.font = 'bold 32px monospace';
+  ctx.fillText(data.hash, W - 230, 1180);
+}
+
+/** Slug seguro para o nome do arquivo (remove acentos e caracteres especiais). */
+function fileSlug(name: string) {
+  return (name.trim() || 'estudante')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 export default function CertificatePage() {
   const [name, setName] = useState('');
   const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { checklistPercentage, quizScore, unlockBadge, trackPageVisit } = useBadges();
 
   useEffect(() => {
@@ -57,6 +170,29 @@ export default function CertificatePage() {
   const handlePrint = () => {
     unlockBadge('certificado');
     window.print();
+  };
+
+  /**
+   * Sprint CERT-SHARE — gera o certificado como PNG de alta resolução e baixa.
+   *
+   * Usa `toDataURL` (síncrono) em vez de `toBlob` (assíncrono): o download via
+   * `a.click()` precisa acontecer DENTRO do gesto do usuário. Um `a.click()`
+   * dentro do callback assíncrono de `toBlob` perde a ativação transitória e
+   * o navegador bloqueia o download.
+   */
+  const handleDownloadPNG = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    drawCertificate(canvas, { name: name.trim() || 'Estudante', date, hash: certHash });
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = `certificado-workshop-linux-${fileSlug(name)}.png`;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    unlockBadge('certificado');
   };
 
   const handleShare = async () => {
@@ -160,8 +296,12 @@ export default function CertificatePage() {
             />
           </div>
 
-          <div className="flex justify-center gap-4 no-print">
-            <button onClick={handlePrint} className="btn-primary px-8 py-3">
+          <div className="flex flex-wrap justify-center gap-4 no-print">
+            <button onClick={handleDownloadPNG} className="btn-primary px-8 py-3">
+              <ImageDown size={18} />
+              Baixar PNG
+            </button>
+            <button onClick={handlePrint} className="btn-outline px-8 py-3">
               <Printer size={18} />
               Imprimir / Salvar PDF
             </button>
@@ -178,6 +318,14 @@ export default function CertificatePage() {
               )}
             </button>
           </div>
+
+          {/* Canvas oculto — usado por handleDownloadPNG para gerar o PNG */}
+          <canvas ref={canvasRef} className="hidden" aria-hidden="true" />
+
+          <p className="text-center text-xs text-text-3 -mt-6 no-print">
+            💡 O <strong className="text-text-2">PNG</strong> é ideal para compartilhar no LinkedIn ·
+            o <strong className="text-text-2">PDF</strong> (via impressão) para anexar a currículos.
+          </p>
 
           {/* Certificate Design */}
           <div className="relative bg-white text-slate-900 p-12 md:p-20 rounded-sm shadow-2xl overflow-hidden border-[20px] border-slate-50 aspect-[1.414/1] flex flex-col items-center justify-between text-center group">
