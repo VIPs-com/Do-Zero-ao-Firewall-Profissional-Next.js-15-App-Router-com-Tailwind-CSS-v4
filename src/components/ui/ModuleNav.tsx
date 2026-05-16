@@ -61,7 +61,7 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/traefik':           '🔀 Traefik',
   '/ldap':              '👥 LDAP',
   '/pihole':            '🕳️ Pi-hole',
-  '/nfs':               'NFS',
+  '/nfs':               '🗂️ NFS',
   // Trilha Avançados v4.0
   '/ansible':           '⚙️ Ansible',
   '/monitoring':        '📊 Monitoring',
@@ -71,6 +71,7 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/ebpf':              '⚡ eBPF',
   '/service-mesh':      '🕸️ Service Mesh',
   '/sre':               '🎯 SRE',
+  '/vault':             '🔐 Vault',
   // Trilha Avançados v5.0
   '/cicd':              '🚀 CI/CD',
   '/opnsense':          '🔥 OPNsense',

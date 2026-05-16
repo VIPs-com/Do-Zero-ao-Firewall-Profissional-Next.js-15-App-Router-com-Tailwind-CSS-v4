@@ -55,17 +55,17 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # barrel re-exporta QUIZ_QUESTIONS (265 total) de quiz/firewall.ts + quiz/fundamentos.ts + quiz/avancados.ts
+    quizQuestions.ts        # barrel re-exporta QUIZ_QUESTIONS (268 total) de quiz/firewall.ts + quiz/fundamentos.ts + quiz/avancados.ts
     quiz/types.ts           # QuizTrail + QuizQuestion types
     quiz/firewall.ts        # 105 questões — trilha firewall
     quiz/fundamentos.ts     # 68 questões — trilha fundamentos (17 módulos · +👤 Usuários +🔎 Troubleshooting)
-    quiz/avancados.ts       # 92 questões — trilha avancados
+    quiz/avancados.ts       # 95 questões — trilha avancados (21 módulos · todos com ≥3 questões)
     searchItems.ts          # 238 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 69/69 rotas cobertas
     badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (62 badges) — re-exportado do BadgeContext para tree-shaking
     topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (17 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
-    quiz.test.ts            # testes de integridade: 105+68+92 questões, campos, sem duplicatas
+    quiz.test.ts            # testes de integridade: 105+68+95 questões, campos, sem duplicatas
     searchItems.test.ts     # testes de integridade: 238 itens, IDs únicos, hrefs válidos
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
@@ -474,6 +474,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint STORAGE-MIGRATIONS: `src/lib/migrations.ts` — motor de migração versionada do localStorage (puro, zero imports React, SSR-safe, idempotente, defensivo); chave `workshop-schema-version` + lista ordenada `MIGRATIONS`; `runStorageMigrations()` executa só as migrações pendentes e para com segurança em caso de falha; migração v1 renomeia a chave legada `workshop-checklist` → `workshop-checklist-v2` sem sobrescrever progresso atual; chamado no topo do effect de hidratação do `BadgeContext` (antes das leituras); `src/lib/migrations.test.ts` — 11 testes (versão fresca/atual/corrompida, idempotência, migração v1, preservação de v2 existente); `workshop-schema-version` adicionado à fixture E2E; 12 suítes · 168 testes.
 - ✅ Sprint LGPD: `src/components/ui/ClearDataDialog.tsx` — botão "Apagar todos os meus dados" + modal de confirmação acessível (role=dialog, aria-modal, useFocusTrap, ESC, foco restaurado); `clearAllWorkshopData()` em `migrations.ts` remove todas as chaves `workshop-*` (pega chaves futuras automaticamente) e retorna a contagem; card "Privacidade" no Dashboard (ao lado de Portabilidade) explica que o progresso vive só no navegador; confirmar → limpa + `window.location.reload()`; `src/lib/migrations.test.ts` +3 testes (remove workshop-*, preserva chaves de outras apps, 0 em storage vazio); `e2e/17-lgpd-clear-data.spec.ts` — 3 casos (cancelar preserva, ESC fecha, confirmar apaga + recarrega); 12 suítes · 171 testes · 17 specs E2E.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
+- ✅ Sprint Quiz Coverage Audit: auditoria de cobertura do quiz (`scripts/quiz-audit.ts` — contagem por módulo nas 3 trilhas); achados corrigidos — (1) `/vault` tinha **zero questões** → +3 questões `🔐 Vault` (Unseal/Shamir, policies HCL menor privilégio, AppRole vs token estático); (2) badge duplicado `☸️ K8s` + `☸️ Kubernetes` para o mesmo módulo → unificado em `☸️ Kubernetes` (7 questões); (3) badge `NFS` sem emoji → `🗂️ NFS` (consistência); `ModuleNav` PATH_TO_QUIZ_BADGE +`/vault` e `/nfs` corrigido; avancados 92→95, QUIZ_QUESTIONS 265→268; `quiz.test.ts` atualizado (95 / 268 / índices 173..267); **todos os 60 módulos das 3 trilhas têm ≥3 questões**.
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ⏸️ Simulador de Prompt PS1 (componente interativo de preview de PS1 ao vivo): AVALIAR DEPOIS — complexidade desproporcional ao caso de uso; o conteúdo PS1/PS2 já está coberto no Sprint Anatomia do Shell em /comandos.
 

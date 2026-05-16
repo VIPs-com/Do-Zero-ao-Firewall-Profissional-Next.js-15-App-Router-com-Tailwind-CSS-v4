@@ -889,7 +889,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
     },
   {
       text: 'No Kubernetes, o que é um `PodDisruptionBudget` (PDB) e por que é crítico em produção?',
-      badge: '☸️ K8s',
+      badge: '☸️ Kubernetes',
       options: [
         'Uma política que limita o uso de CPU/memória dos Pods para evitar OOMKill',
         'Um objeto que define quantos Pods de um deployment podem ficar indisponíveis simultaneamente — garante disponibilidade mínima durante manutenções (drain de nó, upgrades de cluster)',
@@ -1032,7 +1032,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
     },
   {
       text: 'CENÁRIO: Um Pod no Kubernetes está em CrashLoopBackOff. `kubectl logs pod-xyz` mostra "connection refused" ao tentar conectar ao banco de dados. `kubectl get svc postgres` mostra o Service. O que investigar?',
-      badge: '☸️ K8s',
+      badge: '☸️ Kubernetes',
       options: [
         'O Pod precisa ser deletado e recriado manualmente',
         'Verificar se o banco de dados está realmente rodando (`kubectl get pods -l app=postgres`), se o Service tem Endpoints (`kubectl get endpoints postgres`), e se o Pod consegue resolver o DNS (`kubectl exec pod-xyz -- nslookup postgres`)',
@@ -1045,7 +1045,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
     },
   {
       text: 'No Kubernetes, o que diferencia um `Deployment` de um `StatefulSet` e quando usar cada um?',
-      badge: '☸️ K8s',
+      badge: '☸️ Kubernetes',
       options: [
         'Deployment é mais rápido; StatefulSet é mais seguro — sempre use StatefulSet em produção',
         'Deployment gerencia Pods stateless com identidade aleatória; StatefulSet garante identidade estável (nome, DNS, storage) — ideal para bancos de dados, Kafka e ZooKeeper que precisam de storage persistente por instância',
@@ -1097,7 +1097,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
     },
   {
       text: 'Qual porta TCP é usada exclusivamente pelo NFSv4, eliminando a necessidade do rpcbind externo?',
-      badge: 'NFS',
+      badge: '🗂️ NFS',
       options: ['111', '2049', '20048', '445'],
       correct: 1,
       trail: 'avancados',
@@ -1105,7 +1105,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
     },
   {
       text: 'No /etc/exports, qual opção IMPEDE que o usuário root do cliente tenha privilégios root no servidor NFS?',
-      badge: 'NFS',
+      badge: '🗂️ NFS',
       options: ['no_subtree_check', 'root_squash', 'sync', 'all_squash'],
       correct: 1,
       trail: 'avancados',
@@ -1113,7 +1113,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
     },
   {
       text: 'Qual opção do /etc/fstab garante que a montagem NFS aguarde a rede estar disponível antes de montar (evitando falha no boot)?',
-      badge: 'NFS',
+      badge: '🗂️ NFS',
       options: ['nofail', '_netdev', 'soft', 'defaults'],
       correct: 1,
       trail: 'avancados',
@@ -1130,6 +1130,46 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       ],
       correct: 1,
       explanation: 'Cálculo: 0.2% de indisponibilidade × 43200 min/mês ≈ 86 min gastos (ops, mais que o budget!). Na prática: 100% - 99.8% = 0.2%, budget mensal = 43.2 min, 0.2% × 43200 = 86.4 min — o budget já foi extrapolado! Com budget negativo, a decisão SRE é freeze de deploys arriscados e foco em confiabilidade. O deploy deve esperar o próximo período ou ser validado em staging por um período igual ao tempo máximo de rollback.',
+      trail: 'avancados',
+    },
+  // ── HashiCorp Vault (Sprint Quiz Coverage Audit — /vault tinha 0 questões) ──
+  {
+      text: 'Após reiniciar, o servidor Vault rejeita todas as operações com "Vault is sealed". O que isso significa?',
+      badge: '🔐 Vault',
+      options: [
+        'O Vault foi corrompido e precisa ser reinstalado do zero',
+        'O Vault sempre inicia "lacrado" (sealed) — a chave-mestra fica criptografada e ele não lê nenhum segredo até ser destravado com `vault operator unseal` usando o quórum de unseal keys (Shamir Secret Sharing)',
+        'A licença comercial do Vault expirou',
+        'Falta apenas executar `vault login` com o token de root',
+      ],
+      correct: 1,
+      explanation: 'O Vault sobe sempre selado: a chave-mestra está criptografada e ele não consegue descriptografar os segredos. O unseal reconstrói a chave-mestra a partir de um quórum de unseal keys (ex.: 3 de 5) via Shamir Secret Sharing. Em produção usa-se auto-unseal com um KMS na nuvem, eliminando o passo manual.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Qual a função de uma policy do Vault escrita em HCL como `path "secret/data/app/*" { capabilities = ["read"] }`?',
+      badge: '🔐 Vault',
+      options: [
+        'Cria automaticamente os segredos no caminho especificado',
+        'Define autorização — concede apenas a capability `read` aos segredos sob `secret/data/app/*`; um token com essa policy não pode escrever nem apagar (princípio do menor privilégio)',
+        'Criptografa aquele caminho com uma chave adicional dedicada',
+        'Agenda um backup periódico dos segredos daquele path',
+      ],
+      correct: 1,
+      explanation: 'Policies do Vault são deny-by-default: um token só faz o que suas policies explicitamente permitem. A HCL associa paths a capabilities (read/create/update/delete/list). É a base do menor privilégio — cada aplicação recebe uma policy mínima para o seu próprio caminho de segredos.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Por que o método de autenticação AppRole é preferível a um token estático para uma aplicação acessar o Vault?',
+      badge: '🔐 Vault',
+      options: [
+        'AppRole responde mais rápido que a autenticação por token',
+        'AppRole separa a identidade em RoleID (público, embutido na app) e SecretID (efêmero, entregue de forma segura) — evita um token de longa duração no código e permite rotação automática',
+        'AppRole dispensa qualquer forma de autenticação',
+        'AppRole criptografa o tráfego de rede, enquanto tokens trafegam em texto puro',
+      ],
+      correct: 1,
+      explanation: 'Um token estático no código é um segredo de longa duração — se vazar, compromete tudo. O AppRole divide a credencial: o RoleID identifica a aplicação e o SecretID é efêmero (TTL curto, uso único). Combinado com secret engines dinâmicos (ex.: Database — o Vault gera usuários de banco sob demanda, com expiração), elimina credenciais estáticas.',
       trail: 'avancados',
     },
 ];
