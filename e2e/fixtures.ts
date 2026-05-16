@@ -19,6 +19,7 @@ const WORKSHOP_LS_KEYS = [
   'workshop-quiz-history',
   'workshop-quiz-wrong-ids',
   'workshop-intent-mode',
+  'workshop-schema-version',
 ];
 
 /**

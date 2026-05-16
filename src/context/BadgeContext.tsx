@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import { COURSE_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
 import { BADGE_DEFS } from '@/data/badges';
 import type { BadgeId, BadgeDef } from '@/data/badges';
+import { runStorageMigrations } from '@/lib/migrations';
 
 // Re-exporta para compatibilidade com imports existentes
 export type { BadgeId, BadgeDef };
@@ -212,6 +213,10 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // se o JSON estiver corrompido (manipulação manual, versão antiga, etc.),
   // logamos o erro e descartamos a chave em vez de quebrar a árvore React.
   useEffect(() => {
+    // Sprint STORAGE-MIGRATIONS — roda as migrações de schema ANTES de ler
+    // as chaves, garantindo que dados de alunos antigos estejam no formato atual.
+    runStorageMigrations();
+
     const safeParseArray = <T,>(key: string): T[] | null => {
       try {
         const raw = localStorage.getItem(key);

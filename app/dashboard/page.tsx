@@ -111,10 +111,10 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  // linux-ninja threshold = floor(166 * 0.75) = 124
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 124) {
-    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (120/160 checkpoints)',
-      current: checklistCompleted, total: 115, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  // linux-ninja threshold = floor(172 * 0.75) = 129
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 129) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (129/172 checkpoints)',
+      current: checklistCompleted, total: 129, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
   } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 25) {
     nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 25 módulos do curso',
       current: visitedModulesCount, total: 25,

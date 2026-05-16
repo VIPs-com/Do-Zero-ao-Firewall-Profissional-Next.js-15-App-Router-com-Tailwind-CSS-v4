@@ -13,7 +13,7 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run test         # vitest run — 11 suítes · 157 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav, srs, topicos, useTabFilter, quiz, searchItems)  ← courseOrder agora testa 17 módulos FUNDAMENTOS_ORDER
+npm run test         # vitest run — 12 suítes · 168 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav, srs, topicos, useTabFilter, quiz, searchItems, migrations)
 npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
@@ -109,6 +109,7 @@ Todo o progresso do usuário vive no `BadgeContext` (React Context) e persiste e
 | `workshop-srs-v1` | `SRSStore` versionado — motor SM-2 Lite (Sprint SRS) |
 | `workshop-srs-streak` | `SRSStreak` — streak de dias consecutivos de treino |
 | `workshop-intent-mode` | `"study"` ou `"fire"` — modo 📚/🔥 da página /topicos |
+| `workshop-schema-version` | Versão de schema do localStorage — motor de migração (Sprint STORAGE-MIGRATIONS) |
 | `workshop-theme` | "light" ou ausente (dark e o padrao) |
 
 ---
@@ -470,6 +471,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint E2E-HARDENING: locators de ModuleNav em `e2e/08-module-nav.spec.ts` e `e2e/11-advanced-trail.spec.ts` passam a usar `aria-label` preciso (`/^módulo anterior:/i` e `/^próximo módulo:/i`) — elimina o padrão largo demais que causava strict-mode violation com links homônimos; 08 ganhou verificação de `href`; fix `ALL_ADVANCED_PATHS` desatualizado (faltava `/vault` — ADVANCED_ORDER tem 21 módulos, não 20).
 - ✅ Sprint CERT-SHARE: download do certificado em PNG de alta resolução (2000×1414) via Canvas 2D API nativa em `app/certificado/page.tsx` — zero dependências (sem html2canvas, coerente com a filosofia "sem dependências pesadas"); `drawCertificate()` desenha moldura, cabeçalho, nome com auto-ajuste de fonte, selo e rodapé com data/hash; `handleDownloadPNG()` usa `canvas.toBlob()` + `URL.createObjectURL` para baixar; `fileSlug()` normaliza o nome (remove acentos) para o nome do arquivo; botão "Baixar PNG" (btn-primary) ao lado de Imprimir/Compartilhar; desbloqueia o badge `certificado`; `e2e/16-certificado-png.spec.ts` — 4 casos (requisitos pendentes bloqueiam, botões visíveis quando liberado, download dispara + badge, slug com acentos).
 - ✅ Sprint Anatomia do Shell: nova seção `#anatomia-shell` em `/comandos` — `pwd` (builtin vs `/bin/pwd`, `pwd -P`, `$PWD`), `$PATH` (como o Bash resolve comandos, append seguro vs sobrescrita destrutiva, `~/.bashrc`), `PS1` (escapes `\u \h \w \W \$ \t \n`), `PS2` (prompt secundário `>`, comando multi-linha incompleto); WarnBox "pegadinha do $PATH", InfoBox "Foco na Prova" (PS2 não é erro, `.` fora do PATH → `./script.sh`, append obrigatório), WindowsComparisonBox (prompt/PATH CMD↔Bash); conteúdo alinhado a LPIC-1 / CompTIA Linux+; zero mudança de constante (enriquecimento de conteúdo puro).
+- ✅ Sprint STORAGE-MIGRATIONS: `src/lib/migrations.ts` — motor de migração versionada do localStorage (puro, zero imports React, SSR-safe, idempotente, defensivo); chave `workshop-schema-version` + lista ordenada `MIGRATIONS`; `runStorageMigrations()` executa só as migrações pendentes e para com segurança em caso de falha; migração v1 renomeia a chave legada `workshop-checklist` → `workshop-checklist-v2` sem sobrescrever progresso atual; chamado no topo do effect de hidratação do `BadgeContext` (antes das leituras); `src/lib/migrations.test.ts` — 11 testes (versão fresca/atual/corrompida, idempotência, migração v1, preservação de v2 existente); `workshop-schema-version` adicionado à fixture E2E; 12 suítes · 168 testes.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

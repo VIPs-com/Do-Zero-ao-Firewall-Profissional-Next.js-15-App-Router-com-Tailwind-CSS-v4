@@ -38,8 +38,8 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   // Labs Concluídos: 3/172 (seed exato — não muda com o load)
   await expect(page.getByText('3/172')).toBeVisible();
 
-  // Melhor Quiz: 75%
-  await expect(page.getByText('75%')).toBeVisible();
+  // Melhor Quiz: 75% — exact evita colidir com "Complete 75% do checklist (...)"
+  await expect(page.getByText('75%', { exact: true })).toBeVisible();
 });
 
 test('dashboard exibe 0/62 badges para usuário sem progresso', async ({ page }) => {
