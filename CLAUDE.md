@@ -475,5 +475,6 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint LGPD: `src/components/ui/ClearDataDialog.tsx` — botão "Apagar todos os meus dados" + modal de confirmação acessível (role=dialog, aria-modal, useFocusTrap, ESC, foco restaurado); `clearAllWorkshopData()` em `migrations.ts` remove todas as chaves `workshop-*` (pega chaves futuras automaticamente) e retorna a contagem; card "Privacidade" no Dashboard (ao lado de Portabilidade) explica que o progresso vive só no navegador; confirmar → limpa + `window.location.reload()`; `src/lib/migrations.test.ts` +3 testes (remove workshop-*, preserva chaves de outras apps, 0 em storage vazio); `e2e/17-lgpd-clear-data.spec.ts` — 3 casos (cancelar preserva, ESC fecha, confirmar apaga + recarrega); 12 suítes · 171 testes · 17 specs E2E.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
+- ⏸️ Simulador de Prompt PS1 (componente interativo de preview de PS1 ao vivo): AVALIAR DEPOIS — complexidade desproporcional ao caso de uso; o conteúdo PS1/PS2 já está coberto no Sprint Anatomia do Shell em /comandos.
 
 Para detalhes completos: docs/ (índice em docs/README.md) · QUICKSTART.md · README.md
