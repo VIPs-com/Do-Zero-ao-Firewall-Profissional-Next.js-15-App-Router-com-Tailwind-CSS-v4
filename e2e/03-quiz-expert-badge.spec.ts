@@ -18,9 +18,11 @@ test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é d
   // Aguarda o primeiro botão de opção aparecer
   await page.locator('button[aria-pressed]').first().waitFor({ state: 'visible', timeout: 5_000 });
 
-  // Determina total de questões
-  const counterText = await page.locator('text=/\\d+\\/\\d+/').first().textContent();
-  const totalQuestions = parseInt(counterText?.split('/')[1] ?? '33', 10);
+  // Determina total de questões — lê o contador da questão (.text-accent, "1/20"),
+  // o MESMO elemento usado no waitForFunction abaixo. NÃO usar um seletor genérico
+  // de "\d+/\d+": o badge do ProgressDropdown no header ("1/63") apareceria primeiro.
+  const counterText = await page.locator('.text-accent').first().textContent();
+  const totalQuestions = parseInt(counterText?.split('/')[1] ?? '20', 10);
 
   for (let i = 0; i < totalQuestions; i++) {
     // Aguarda o indicador mostrar a questão i+1 (animação completa)

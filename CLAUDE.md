@@ -55,17 +55,17 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # barrel re-exporta QUIZ_QUESTIONS (257 total) de quiz/firewall.ts + quiz/fundamentos.ts + quiz/avancados.ts
+    quizQuestions.ts        # barrel re-exporta QUIZ_QUESTIONS (265 total) de quiz/firewall.ts + quiz/fundamentos.ts + quiz/avancados.ts
     quiz/types.ts           # QuizTrail + QuizQuestion types
     quiz/firewall.ts        # 105 questões — trilha firewall
-    quiz/fundamentos.ts     # 60 questões — trilha fundamentos
+    quiz/fundamentos.ts     # 68 questões — trilha fundamentos (17 módulos · +👤 Usuários +🔎 Troubleshooting)
     quiz/avancados.ts       # 92 questões — trilha avancados
     searchItems.ts          # 238 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 69/69 rotas cobertas
     badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (62 badges) — re-exportado do BadgeContext para tree-shaking
     topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (17 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
-    quiz.test.ts            # testes de integridade: 105+60+92 questões, campos, sem duplicatas
+    quiz.test.ts            # testes de integridade: 105+68+92 questões, campos, sem duplicatas
     searchItems.test.ts     # testes de integridade: 238 itens, IDs únicos, hrefs válidos
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
@@ -463,6 +463,9 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint HOOK (useTabFilter): `src/hooks/useTabFilter.ts` — hook genérico `useTabFilter<T extends string>(initial)` com `activeTab`/`setActiveTab`/`isActive`/`tabButtonProps` (injeta `role="tab"` + `aria-selected` + `onClick`); elimina 87+ repetições manuais de props a11y (29 páginas × 3 abas); `src/hooks/useTabFilter.test.ts` (14 testes — estado inicial, isActive, setActiveTab, tabButtonProps, referência estável, navegação sequencial); aplicado em TODAS as 40 páginas com abas (37 via script migrate-usetabfilter.mjs + monitoring/topicos/cheat-sheet proof-of-concept); `tabButtonProps` e `isActive` aceitam `string` para compatibilidade com `.map(tab => tab.id)` sem cast; scripts/migrate-usetabfilter.mjs + scripts/fix-usetabfilter.mjs para referência; 11 suítes · 157 testes ✓.
 - ✅ Sprint SEARCH-ROUTES (100% cobertura de busca): +5 itens em `src/data/searchItems.ts` para as 2 rotas sem cobertura — `/treino` (p-treino: Motor SRS, g-treino-sm2: algoritmo SM-2 easeFactor, g-treino-streak: badge srs-streak-7) e `/offline` (p-offline: terminal de emergência, g-offline-commands: diagnóstico sem internet); **67/67 rotas do ROUTE_SEO agora têm ≥1 item de busca**; searchItems 224→229; searchItems.test.ts atualizado (224→229); lint ✓ · 157 testes ✓.
 - ✅ Sprint FOUNDATION (Foundation First — Iniciantes): F16 `/usuarios` (Gerenciamento de Usuários e Grupos — adduser/usermod/groupadd/sudo/visudo, 3 abas, FluxoCard ciclo de vida, WindowsComparisonBox net user↔adduser) + F17 `/troubleshooting` (Troubleshooting de Rede — metodologia OSI L1→L7, ping/ip/ss/dig/curl/journalctl, FluxoCard 6 camadas, script diagnose.sh, WindowsComparisonBox ipconfig↔ip); badge 👤 usuarios-master + 🔎 troubleshooting-master + 🏁 ground-zero (completou todos os 17 módulos Fundamentos — MILESTONE); /usuarios inserido entre /permissoes e /discos em FUNDAMENTOS_ORDER; vault-master unlock adicionado (estava faltando em BadgeContext); FUNDAMENTOS_ORDER 15→17 módulos; CONTENT_PAGES_COUNT 51→53; checklistItemsCount 166→172; linux-ninja 124→129; totalTopics 87→89; badges 59→62; searchItems 229→238 (69/69 rotas); courseOrder.test.ts atualizado (17 módulos, último=/troubleshooting); lint ✓ · 157 testes ✓ · build 75 rotas ✓.
+- ✅ Sprint E2E-FOUNDATION: `e2e/14-foundation-modules.spec.ts` — 11 casos Playwright para os módulos F16/F17 (renderização 3 abas, trackPageVisit, contadores dashboard, badges usuarios-master/troubleshooting-master seeded, ModuleNav, desbloqueio real do badge ground-zero via 17 checkpoints); fix `10-fundamentos-trail.spec.ts` desatualizado (15→17 módulos, contador 1/160→1/172, /ssh-proxy Próximo→/troubleshooting).
+- ✅ Sprint E2E-FULL: `e2e/15-routes-smoke.spec.ts` — smoke test parametrizado das 71 rotas do `ROUTE_SEO` (importado direto de seo.ts — só `import type`, seguro no contexto Node); cada rota valida HTTP<400, error boundary não acionado, `<h1>` visível, zero exceções JS; bug capturado: `/offline` renderizava sem `<h1>` — corrigido com heading visível estilo terminal.
+- ✅ Sprint QUIZ-GROUND-ZERO (Hub de Quiz da Trilha Fundamentos): +8 questões em `src/data/quiz/fundamentos.ts` cobrindo F16 `/usuarios` (👤 Usuários — adduser×useradd, /etc/shadow, usermod -aG, visudo) e F17 `/troubleshooting` (🔎 Troubleshooting — isolamento de camada OSI, ss -tulpn, journalctl -xeu, rota default) no estilo LPIC-1/CompTIA Linux+; fundamentos 60→68 questões, QUIZ_QUESTIONS 257→265; `quiz.test.ts` atualizado (68 / 265 / índices 105..172 e 173..264); `ModuleNav` PATH_TO_QUIZ_BADGE +2 entradas; `/quiz` passa a ler `?trail=` da URL; `/fundamentos` page corrigida (bug do Sprint FOUNDATION — MODULES array tinha só 15 entradas, hero "15 Módulos") agora com 17 módulos + campo `quizBadge`; nova seção "Hub de Quiz — Teste a Fundação" em `/fundamentos`: CTA Simulado Completo (`/quiz?trail=fundamentos`), estado Ground Zero desbloqueado, grid dos 17 módulos com quiz individual (`/quiz?modulo=X`) e contagem de questões; lint ✓ · eslint ✓ · 157 testes ✓ · build 75 rotas ✓.
 - ❌ Backend/Supabase: DESCARTADO — localStorage atende ao escopo educacional. Portabilidade via export/import JSON implementada (Sprint J).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 

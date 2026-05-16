@@ -122,15 +122,18 @@ test('badge fundamentos-master seeded aparece no dashboard', async ({ page }) =>
 
 // ── 5-7. ModuleNav da Trilha Fundamentos ──────────────────────────────────
 
+// ModuleNav: prev e next usam aria-label estável ("Módulo anterior:" / "Próximo módulo:")
+// — locators precisos evitam strict-mode violation com links homônimos da página.
+
 test('ModuleNav em /fhs: sem Anterior, Próximo aponta para /comandos', async ({ page }) => {
   await page.goto('/fhs');
   await page.waitForLoadState('networkidle');
 
   // Primeiro módulo: sem botão Anterior
-  await expect(page.getByRole('link', { name: /anterior/i })).not.toBeVisible();
+  await expect(page.getByRole('link', { name: /^módulo anterior:/i })).not.toBeVisible();
 
-  // Próximo deve conter "Comandos" (2º módulo da trilha Fundamentos)
-  const next = page.getByRole('link', { name: /comandos|próximo/i });
+  // Próximo é o 2º módulo da trilha Fundamentos (/comandos)
+  const next = page.getByRole('link', { name: /^próximo módulo:/i });
   await expect(next).toBeVisible();
   await expect(next).toHaveAttribute('href', '/comandos');
 });
@@ -140,12 +143,12 @@ test('ModuleNav em /comandos: tem Anterior (FHS) e Próximo (Editores)', async (
   await page.waitForLoadState('networkidle');
 
   // Anterior aponta para /fhs
-  const prev = page.getByRole('link', { name: /fhs|estrutura|anterior/i });
+  const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
   await expect(prev).toHaveAttribute('href', '/fhs');
 
   // Próximo aponta para /editores
-  const next = page.getByRole('link', { name: /editores|próximo/i });
+  const next = page.getByRole('link', { name: /^próximo módulo:/i });
   await expect(next).toBeVisible();
   await expect(next).toHaveAttribute('href', '/editores');
 });
@@ -155,12 +158,12 @@ test('ModuleNav em /ssh-proxy: Anterior (Rsyslog), Próximo aponta para /trouble
   await page.waitForLoadState('networkidle');
 
   // Anterior aponta para /rsyslog (F14)
-  const prev = page.getByRole('link', { name: /rsyslog|logs centralizados|anterior/i });
+  const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
   await expect(prev).toHaveAttribute('href', '/rsyslog');
 
   // Sprint FOUNDATION: /ssh-proxy agora é F15 (penúltimo) — Próximo → /troubleshooting
-  const next = page.getByRole('link', { name: /troubleshooting|próximo/i });
+  const next = page.getByRole('link', { name: /^próximo módulo:/i });
   await expect(next).toBeVisible();
   await expect(next).toHaveAttribute('href', '/troubleshooting');
 });

@@ -41,6 +41,7 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/editores':          '📝 Editores',
   '/processos':         '⚙️ Processos',
   '/permissoes':        '🔑 Permissões',
+  '/usuarios':          '👤 Usuários',
   '/discos':            '💾 Discos',
   '/logs-basicos':      '📋 Logs',
   '/backup':            '💾 Backup',
@@ -51,6 +52,7 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/comandos-avancados':'🔧 Cmd Avançados',
   '/rsyslog':           '📡 Rsyslog',
   '/ssh-proxy':         '🚇 SSH Tunneling',
+  '/troubleshooting':   '🔎 Troubleshooting',
   // Trilha Avançados v3.0
   '/dhcp':              '🌐 DHCP',
   '/samba':             '🗂️ Samba',

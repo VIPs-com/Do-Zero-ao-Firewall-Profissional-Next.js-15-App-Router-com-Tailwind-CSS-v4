@@ -115,13 +115,14 @@ test('ModuleNav em /usuarios: Anterior aponta para /permissoes e Próximo para /
   await page.goto('/usuarios');
   await page.waitForLoadState('networkidle');
 
+  // ModuleNav usa aria-label estável — locator preciso evita strict-mode violation
   // Anterior aponta para /permissoes (F05)
-  const prev = page.getByRole('link', { name: /permissões|anterior/i });
+  const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
   await expect(prev).toHaveAttribute('href', '/permissoes');
 
   // Próximo aponta para /discos (F06)
-  const next = page.getByRole('link', { name: /discos|próximo/i });
+  const next = page.getByRole('link', { name: /^próximo módulo:/i });
   await expect(next).toBeVisible();
   await expect(next).toHaveAttribute('href', '/discos');
 });
@@ -208,12 +209,12 @@ test('ModuleNav em /troubleshooting: Anterior aponta para /ssh-proxy, sem Próxi
   await page.waitForLoadState('networkidle');
 
   // Anterior aponta para /ssh-proxy (F15)
-  const prev = page.getByRole('link', { name: /ssh.*proxy|proxy socks|anterior/i });
+  const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
   await expect(prev).toHaveAttribute('href', '/ssh-proxy');
 
   // Último módulo da trilha Fundamentos: sem botão Próximo
-  await expect(page.getByRole('link', { name: /próximo/i })).not.toBeVisible();
+  await expect(page.getByRole('link', { name: /^próximo módulo:/i })).not.toBeVisible();
 });
 
 // ── 11. Badge ground-zero — desbloqueio real via 17 checkpoints ───────────────

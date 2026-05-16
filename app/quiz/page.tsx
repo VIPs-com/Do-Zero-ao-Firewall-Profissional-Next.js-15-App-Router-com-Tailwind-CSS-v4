@@ -98,8 +98,12 @@ export default function QuizPage() {
     // Carrega histórico e contagem de erros do localStorage
     setSessionHistory(safeReadLS<SessionRecord[]>(LS_HISTORY, []));
     setWrongCount((safeReadLS<number[]>(LS_WRONG, [])).length);
-    // URL param ?modulo=NFS — pré-seleciona módulo
+    // URL params: ?trail=fundamentos pré-seleciona a trilha · ?modulo=NFS o módulo
     const params = new URLSearchParams(window.location.search);
+    const trail = params.get('trail');
+    if (trail === 'firewall' || trail === 'fundamentos' || trail === 'avancados') {
+      setSelectedTrail(trail);
+    }
     const mod = params.get('modulo');
     if (mod) {
       setSelectedModule(mod);

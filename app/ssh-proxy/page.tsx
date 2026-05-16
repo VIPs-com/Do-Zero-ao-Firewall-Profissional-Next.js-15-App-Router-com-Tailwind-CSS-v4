@@ -65,9 +65,6 @@ export default function SshProxyPage() {
   return (
     <div className="module-accent-ssh-proxy max-w-4xl mx-auto px-4 py-10 space-y-10">
 
-      {/* Navegação Anterior / Próximo */}
-      <ModuleNav currentPath="/ssh-proxy" order={FUNDAMENTOS_ORDER} />
-
       {/* Hero */}
       <section className="module-hero pb-2">
         <div className="flex items-center gap-3 mb-4">
