@@ -4,13 +4,13 @@ import { test, expect } from './fixtures';
  * Sprint T-Fund — E2E da Trilha Fundamentos Linux
  *
  * Cobre os principais comportamentos observáveis:
- *   1. /fundamentos renderiza o índice com os 15 módulos listados
+ *   1. /fundamentos renderiza o índice com os 17 módulos listados
  *   2. Visitar /fhs registra a visita no localStorage
  *   3. Checkpoint de um módulo Fundamentos é contabilizado no dashboard
  *   4. Badge fundamentos-master seeded aparece no dashboard
  *   5. ModuleNav em /fhs: sem Anterior, Próximo aponta para /comandos
  *   6. ModuleNav em /comandos: Anterior (FHS) + Próximo (Editores)
- *   7. ModuleNav em /ssh-proxy: tem Anterior (Rsyslog), sem Próximo (F15 = último)
+ *   7. ModuleNav em /ssh-proxy: Anterior (Rsyslog), Próximo aponta para /troubleshooting (F16→F17)
  *   8. Badge fundamentos-master desbloqueado ao completar os 15 checkpoints exigidos
  *
  * Os checkpoints exigidos para o badge fundamentos-master (15 IDs — 1 por módulo):
@@ -43,7 +43,7 @@ const ALL_FUNDAMENTOS_CHECKPOINTS: Record<string, boolean> = {
 
 // ── 1. Índice /fundamentos ─────────────────────────────────────────────────
 
-test('/fundamentos renderiza o índice com os 15 módulos', async ({ page }) => {
+test('/fundamentos renderiza o índice com os 17 módulos', async ({ page }) => {
   await page.goto('/fundamentos');
   await page.waitForLoadState('networkidle');
 
@@ -51,10 +51,12 @@ test('/fundamentos renderiza o índice com os 15 módulos', async ({ page }) => 
   await expect(page.getByRole('heading', { name: /fundamentos linux/i })).toBeVisible();
 
   // Amostra de módulos que devem estar listados
-  await expect(page.getByText(/Estrutura do Sistema/i).first()).toBeVisible(); // F01
-  await expect(page.getByText(/Comandos Essenciais/i).first()).toBeVisible();  // F02
-  await expect(page.getByText(/Agendamento de Tarefas/i).first()).toBeVisible(); // F10
-  await expect(page.getByText(/SSH como Proxy/i).first()).toBeVisible();       // F15
+  await expect(page.getByText(/Estrutura do Sistema/i).first()).toBeVisible();    // F01
+  await expect(page.getByText(/Comandos Essenciais/i).first()).toBeVisible();     // F02
+  await expect(page.getByText(/Agendamento de Tarefas/i).first()).toBeVisible();  // F10
+  await expect(page.getByText(/SSH como Proxy/i).first()).toBeVisible();          // F15
+  await expect(page.getByText(/Gerenciamento de Usuários/i).first()).toBeVisible(); // F16
+  await expect(page.getByText(/Troubleshooting/i).first()).toBeVisible();         // F17
 });
 
 // ── 2. Rastreamento de visita ──────────────────────────────────────────────
@@ -90,8 +92,8 @@ test('checkpoint de módulo Fundamentos é contabilizado no dashboard', async ({
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos deve mostrar 1/160 (checklistItemsCount atual)
-  await expect(page.getByText('1/160')).toBeVisible();
+  // Labs Concluídos deve mostrar 1/172 (checklistItemsCount Sprint FOUNDATION)
+  await expect(page.getByText('1/172')).toBeVisible();
 });
 
 // ── 4. Badge fundamentos-master seeded aparece no dashboard ───────────────
@@ -148,7 +150,7 @@ test('ModuleNav em /comandos: tem Anterior (FHS) e Próximo (Editores)', async (
   await expect(next).toHaveAttribute('href', '/editores');
 });
 
-test('ModuleNav em /ssh-proxy: tem Anterior (Rsyslog), sem Próximo (F15 = último)', async ({ page }) => {
+test('ModuleNav em /ssh-proxy: Anterior (Rsyslog), Próximo aponta para /troubleshooting (F17)', async ({ page }) => {
   await page.goto('/ssh-proxy');
   await page.waitForLoadState('networkidle');
 
@@ -157,8 +159,10 @@ test('ModuleNav em /ssh-proxy: tem Anterior (Rsyslog), sem Próximo (F15 = últi
   await expect(prev).toBeVisible();
   await expect(prev).toHaveAttribute('href', '/rsyslog');
 
-  // Último módulo da trilha: sem botão Próximo
-  await expect(page.getByRole('link', { name: /próximo/i })).not.toBeVisible();
+  // Sprint FOUNDATION: /ssh-proxy agora é F15 (penúltimo) — Próximo → /troubleshooting
+  const next = page.getByRole('link', { name: /troubleshooting|próximo/i });
+  await expect(next).toBeVisible();
+  await expect(next).toHaveAttribute('href', '/troubleshooting');
 });
 
 // ── 8. Desbloqueio real do badge via checkpoints ───────────────────────────
