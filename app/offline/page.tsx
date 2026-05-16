@@ -33,6 +33,9 @@ export default function OfflinePage() {
           role="main"
           aria-label="Simulação de terminal offline"
         >
+          <h1 className="text-warn text-xs uppercase tracking-widest mb-3">
+            Modo Offline — Sem Conexão de Rede
+          </h1>
           <p className="text-text-2">$ ping 8.8.8.8</p>
           <p className="text-err">
             ping: connect: Network is unreachable
