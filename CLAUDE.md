@@ -59,13 +59,13 @@ src/
     quiz/types.ts           # QuizTrail + QuizQuestion types
     quiz/firewall.ts        # 105 questões — trilha firewall
     quiz/fundamentos.ts     # 68 questões — trilha fundamentos (17 módulos · +👤 Usuários +🔎 Troubleshooting)
-    quiz/avancados.ts       # 95 questões — trilha avancados (21 módulos · todos com ≥3 questões)
+    quiz/avancados.ts       # 98 questões — trilha avancados (22 módulos · todos com ≥3 questões)
     searchItems.ts          # 238 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 69/69 rotas cobertas
     badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (62 badges) — re-exportado do BadgeContext para tree-shaking
     topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (17 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
-    quiz.test.ts            # testes de integridade: 105+68+95 questões, campos, sem duplicatas
+    quiz.test.ts            # testes de integridade: 105+68+98 questões, campos, sem duplicatas
     searchItems.test.ts     # testes de integridade: 238 itens, IDs únicos, hrefs válidos
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
@@ -120,12 +120,12 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 53 (Sprint FOUNDATION: +/usuarios +/troubleshooting) |
-| `totalTopics` | `app/dashboard/page.tsx` | 89 (Sprint FOUNDATION: +F16 usuarios +F17 troubleshooting) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 172 (Sprint FOUNDATION: +6 checkpoints usuarios+troubleshooting) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 54 (Sprint HAPROXY: +/haproxy) |
+| `totalTopics` | `app/dashboard/page.tsx` | 90 (Sprint HAPROXY: +S10 haproxy) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 175 (Sprint HAPROXY: +3 checkpoints haproxy) |
 | Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
-| Badges | `src/context/BadgeContext.tsx` | 62 (Sprint FOUNDATION: +usuarios-master +troubleshooting-master +ground-zero) |
-| searchItems | `src/data/searchItems.ts` | 238 (Sprint FOUNDATION: +6 para /usuarios e /troubleshooting · 69/69 rotas) |
+| Badges | `src/context/BadgeContext.tsx` | 63 (Sprint HAPROXY: +haproxy-master) |
+| searchItems | `src/data/searchItems.ts` | 243 (Sprint HAPROXY: +3 haproxy) |
 
 ---
 
@@ -479,6 +479,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Busca Preditiva de Incidentes: `src/data/incidents.ts` — 7 playbooks de resposta a incidentes (disco cheio, sem internet, site não abre, serviço não inicia, porta em uso, permissão negada, CPU/memória alta); cada `INCIDENT_ITEM` é um `SearchItem` com `category: 'Incidente'`, `description` = fluxo de comandos de mitigação e `keywords[]` com frases coloquiais; `SearchItem` ganhou `keywords?: string[]` e a categoria `'Incidente'`; `GlobalSearch` faz matching bidirecional nas keywords (`k.includes(q) || q.includes(k)`) e exibe os incidentes no topo dos resultados com badge vermelho; `src/data/incidents.test.ts` — 7 testes; `e2e/04-global-search.spec.ts` +1 caso ("disco cheio" surge o playbook); 13 suítes · 178 testes.
 - ✅ Sprint Ferramentas Portáteis (Calculadora CIDR): `src/lib/cidr.ts` — calculadora de sub-redes IPv4 pura (zero deps/React, aritmética 32 bits `>>> 0`) — `parseCidr()` retorna rede, broadcast, faixa de hosts, máscara, wildcard, classe e escopo (privado/público/loopback/link-local/multicast/reservado); casos especiais `/31` (RFC 3021) e `/32`; `src/lib/cidr.test.ts` — 22 testes; nova rota `/ferramentas` (`app/ferramentas/page.tsx` + layout) — input ao vivo + prefixos rápidos + grid de resultados, tudo client-side; `ROUTE_SEO` +`/ferramentas`, nav link 🧮 Ferramentas, searchItems 238→239; `e2e/18-ferramentas-cidr.spec.ts` (3 casos) + smoke 71→72 rotas; 14 suítes · 200 testes.
 - ✅ Sprint CERTIFICACOES (Trilha de Certificação): hub `/certificacoes` — mapeia o núcleo comum das provas LPIC-1 (101/102) e CompTIA Linux+ (XK0-005) para os módulos do Workshop; `CERT_MAP` com 6 domínios (Boot/Init, Linha de Comando, Usuários/Permissões, FHS/Armazenamento, Pacotes/Processos/Redes, Logs/Segurança) — cada linha liga tópico de prova → comandos → módulo(s); card extra de diagnóstico (strace/ltrace/lsof); CTAs para simulado e certificado; `/comandos` enriquecido com 2 seções (Variáveis de Ambiente — export/env/set/unset; Redirecionamentos e Pipes — tabela de descritores 0/1/2 + `>`/`>>`/`2>`/tee); `/hardening` enriquecido com seção SSH Agent e Gestão de Chaves (ssh-keygen/ssh-agent/ssh-add/~/.ssh/config); `ROUTE_SEO` +`/certificacoes`, searchItems 239→240; `e2e/19-certificacoes.spec.ts` (2 casos) + smoke 72→73 rotas; 14 suítes · 200 testes.
+- ✅ Sprint HAPROXY (v3.0 Módulo 9 — Load Balancer): `/haproxy` — load balancer L4/L7; o que é LB (escalabilidade + alta disponibilidade), HAProxy vs Nginx vs Traefik, modo TCP (L4) vs HTTP (L7), instalação + `haproxy -c` (dry-run de validação), anatomia do `haproxy.cfg` (global/defaults/frontend/backend), algoritmos (roundrobin/leastconn/source/uri + weight), health checks (`option httpchk`, `fall`/`rise`), modo TCP para bancos, terminação SSL (`bind ssl crt`), página de stats (`listen stats`, porta 8404), stick-tables (rate limit 429), WindowsComparisonBox (NLB/ARR ↔ HAProxy), 4 erros comuns, 3 exercícios (balanceador básico, health check + failover, rate limit); badge ⚖️ haproxy-master (63º); 3 checkpoints (haproxy-instalado, haproxy-backend, haproxy-stats); module-accent-haproxy #1f9d8a; ADVANCED_ORDER 21→22 (v3.0 com 9 módulos), CONTENT_PAGES_COUNT 53→54, checklistItemsCount 172→175, totalTopics 89→90, badges 62→63, linux-ninja 129→131, searchItems 240→243, quiz avancados 95→98 (QUIZ_QUESTIONS 271); tópico S10 em /topicos; e2e 15 smoke 73→74, e2e 07 (3/175 · 0/63), e2e 11 (22 módulos); 14 suítes · 200 testes · build 79 rotas.
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ⏸️ Simulador de Prompt PS1 (componente interativo de preview de PS1 ao vivo): AVALIAR DEPOIS — complexidade desproporcional ao caso de uso; o conteúdo PS1/PS2 já está coberto no Sprint Anatomia do Shell em /comandos.
 

@@ -168,6 +168,11 @@ export const ROUTE_SEO = {
     description: 'Configure um servidor NFS no Linux: /etc/exports, NFSv4, mount persistente com /etc/fstab, iptables e ID mapping — compartilhamento de arquivos Linux-nativo de alta performance.',
     keywords: ['NFS', 'NFSv4', '/etc/exports', 'nfs-kernel-server', 'mount nfs4', 'fstab _netdev', 'compartilhamento arquivos Linux'],
   },
+  '/haproxy': {
+    title: 'HAProxy — Load Balancer L4/L7',
+    description: 'Monte um balanceador de carga HAProxy: frontend/backend, algoritmos (roundrobin, leastconn), health checks, terminação SSL, stick-tables e página de estatísticas.',
+    keywords: ['HAProxy', 'load balancer', 'balanceador de carga', 'frontend backend', 'roundrobin', 'leastconn', 'health check', 'alta disponibilidade'],
+  },
   '/nftables': {
     title: 'nftables — Substituto Moderno do iptables',
     description:

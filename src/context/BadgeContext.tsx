@@ -117,7 +117,9 @@ export const ALL_CHECKLIST_IDS = [
   'usuario-criado', 'grupo-criado', 'sudo-configurado',
   // Sprint FOUNDATION — /troubleshooting (Troubleshooting de Rede)
   'trouble-conectividade', 'trouble-porta', 'trouble-logs',
-]; // 172 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint HAPROXY — /haproxy (Load Balancer L4/L7)
+  'haproxy-instalado', 'haproxy-backend', 'haproxy-stats',
+]; // 175 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (49 rotas técnicas — threshold). Base do badge 'deep-diver'.
@@ -168,7 +170,7 @@ export const ALL_CHECKLIST_IDS = [
  * 51. /vault         (Sprint VAULT — HashiCorp Vault)
  * + /fundamentos já era parte dos 48 implicitamente; corrigido na contagem 49
  */
-export const CONTENT_PAGES_COUNT = 53;
+export const CONTENT_PAGES_COUNT = 54;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -338,6 +340,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['opnsense-instalado'] && checklist['opnsense-regras'] && checklist['opnsense-vpn']) unlockBadge('opnsense-master');
     if (checklist['nextcloud-instalado'] && checklist['nextcloud-ssl'] && checklist['nextcloud-apps']) unlockBadge('nextcloud-master');
     if (checklist['cilium-instalado'] && checklist['hubble-habilitado'] && checklist['tetragon-seguranca']) unlockBadge('ebpf-avancado-master');
+    if (checklist['haproxy-instalado'] && checklist['haproxy-backend'] && checklist['haproxy-stats']) unlockBadge('haproxy-master');
     // Sprint SSH-PROXY — SSH como Proxy SOCKS
     if (checklist['ssh-dinamico'] && checklist['ssh-local'] && checklist['ssh-jump']) unlockBadge('ssh-proxy-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
@@ -390,7 +393,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     ) unlockBadge('ground-zero');
 
     // Linux Ninja: desbloqueado com 75% do checklist (floor(172*0.75) = 129).
-    if (Object.values(checklist).filter(v => v).length >= 129) unlockBadge('linux-ninja');
+    if (Object.values(checklist).filter(v => v).length >= 131) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

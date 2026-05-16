@@ -137,6 +137,7 @@ export const TOPICS: Topic[] = [
   { id: 's07', num: 'S07', title: 'Pi-hole: DNS sinkhole com blocklists gravity, whitelist/blacklist, integração DHCP, iptables DNS redirect e Unbound resolver local para toda a rede.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/pihole', group: 'Servidores e Serviços' },
   { id: 's08', num: 'S08', title: 'SSH como Proxy SOCKS: ssh -D (SOCKS5 dinâmico), -L port forwarding local, -R remoto, Jump Host com -J, autossh persistente e ~/.ssh/config para produção.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/ssh-proxy', group: 'Servidores e Serviços' },
   { id: 's09', num: 'S09', title: 'NFS — Network File System: NFSv4 /etc/exports, mount -t nfs4, /etc/fstab com _netdev — compartilhamento de arquivos Linux nativo de alta performance na porta 2049/TCP.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/nfs', group: 'Servidores e Serviços' },
+  { id: 's10', num: 'S10', title: 'HAProxy — Load Balancer L4/L7: frontend/backend, algoritmos (roundrobin, leastconn), health checks, terminação SSL, stick-tables e página de estatísticas.', layer: 'Camada 4 · Transporte', layerClass: 'l4', href: '/haproxy', group: 'Servidores e Serviços' },
 
   // ── Infraestrutura Moderna (v4.0) ─────────────────────────────────────────────
   { id: 'i01', num: 'I01', title: 'Ansible para SysAdmins: inventário, comandos ad-hoc, playbooks YAML com tasks/handlers/templates, roles reutilizáveis, Ansible Galaxy e Vault para segredos.', layer: 'Infraestrutura · IaC', layerClass: 'l3', href: '/ansible', group: 'Infraestrutura Moderna' },
@@ -209,6 +210,7 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/pihole':        { label: 'Pi-hole DNS Sinkhole',        icon: '🕳️', trail: 'avancados' },
   '/ssh-proxy':     { label: 'SSH como Proxy SOCKS',        icon: '🚇', trail: 'avancados' },
   '/nfs':           { label: 'NFS — Network File System',  icon: '🗂️', trail: 'avancados' },
+  '/haproxy':       { label: 'HAProxy — Load Balancer',    icon: '⚖️', trail: 'avancados' },
   '/ansible':       { label: 'Ansible',                     icon: '⚙️', trail: 'avancados' },
   '/monitoring':    { label: 'Prometheus + Grafana',        icon: '📊', trail: 'avancados' },
   '/kubernetes':    { label: 'Kubernetes / K3s',            icon: '☸️', trail: 'avancados' },
@@ -241,7 +243,7 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
   ],
   avancados: [
     '/dhcp', '/samba', '/apache', '/openvpn', '/traefik',
-    '/ldap', '/pihole', '/ssh-proxy', '/nfs', '/ansible', '/monitoring',
+    '/ldap', '/pihole', '/ssh-proxy', '/nfs', '/haproxy', '/ansible', '/monitoring',
     '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
     '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
   ],

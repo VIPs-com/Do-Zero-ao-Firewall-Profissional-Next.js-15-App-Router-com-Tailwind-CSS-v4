@@ -62,6 +62,7 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/ldap':              '👥 LDAP',
   '/pihole':            '🕳️ Pi-hole',
   '/nfs':               '🗂️ NFS',
+  '/haproxy':           '⚖️ HAProxy',
   // Trilha Avançados v4.0
   '/ansible':           '⚙️ Ansible',
   '/monitoring':        '📊 Monitoring',

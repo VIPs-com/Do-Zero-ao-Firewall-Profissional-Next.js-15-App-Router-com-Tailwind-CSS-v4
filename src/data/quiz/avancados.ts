@@ -1172,4 +1172,44 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       explanation: 'Um token estático no código é um segredo de longa duração — se vazar, compromete tudo. O AppRole divide a credencial: o RoleID identifica a aplicação e o SecretID é efêmero (TTL curto, uso único). Combinado com secret engines dinâmicos (ex.: Database — o Vault gera usuários de banco sob demanda, com expiração), elimina credenciais estáticas.',
       trail: 'avancados',
     },
+  // ── HAProxy (Sprint HAPROXY — Load Balancer L4/L7) ──────────────────────────
+  {
+      text: 'No HAProxy, qual a diferença entre `mode tcp` e `mode http`?',
+      badge: '⚖️ HAProxy',
+      options: [
+        '`mode tcp` é mais seguro; `mode http` é mais rápido',
+        '`mode tcp` (L4) só enxerga IP e porta — balanceia qualquer protocolo TCP; `mode http` (L7) inspeciona cabeçalhos, URL e cookies, permitindo roteamento por path e ACLs',
+        '`mode tcp` serve para IPv4 e `mode http` para IPv6',
+        'São sinônimos — a diferença é apenas o nome da diretiva',
+      ],
+      correct: 1,
+      explanation: '`mode tcp` opera na camada 4: o HAProxy só vê o fluxo TCP (IP/porta) — ideal para balancear bancos, SMTP, qualquer protocolo. `mode http` opera na camada 7: lê a requisição HTTP e pode rotear por host/path/header, reescrever e inspecionar cookies, ao custo de um leve overhead de parsing.',
+      trail: 'avancados',
+    },
+  {
+      text: 'O que a flag `check` faz em uma linha `server` do backend HAProxy?',
+      badge: '⚖️ HAProxy',
+      options: [
+        'Criptografa a conexão com aquele servidor',
+        'Ativa o health check — o HAProxy testa o servidor periodicamente e para de enviar tráfego se ele falhar (`fall`), retomando quando volta a responder (`rise`)',
+        'Marca o servidor como `backup`',
+        'Habilita logs detalhados apenas para aquele servidor',
+      ],
+      correct: 1,
+      explanation: '`check` liga a verificação de saúde. Com `option httpchk` o teste é um GET HTTP; sem ela, é apenas um TCP connect. Após `fall` falhas consecutivas o servidor é marcado DOWN e sai de rotação; após `rise` sucessos volta a UP. É o que garante o failover automático sem erro para o cliente.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Para balancear conexões de longa duração (WebSocket, banco de dados), qual algoritmo do HAProxy é mais adequado?',
+      badge: '⚖️ HAProxy',
+      options: [
+        '`roundrobin` — distribui em ciclo igual entre os servidores',
+        '`leastconn` — envia para o servidor com menos conexões ativas, evitando que um acumule sessões longas enquanto outro fica ocioso',
+        '`source` — sempre o mesmo servidor por IP de origem',
+        '`static-rr` — round-robin sem ajuste de peso',
+      ],
+      correct: 1,
+      explanation: '`roundrobin` distribui igualmente, mas com sessões longas um servidor pode acumular muitas conexões abertas enquanto outro, que recebeu conexões curtas já encerradas, fica ocioso. `leastconn` corrige isso enviando a nova conexão para quem tem menos conexões ativas no momento — ideal para WebSocket, bancos e qualquer sessão persistente.',
+      trail: 'avancados',
+    },
 ];

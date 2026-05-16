@@ -1,13 +1,13 @@
 import { test, expect } from './fixtures';
 
 /**
- * Sprint Advanced-E2E — E2E da Trilha Avançada (21 módulos v3.0→v5.0)
+ * Sprint Advanced-E2E — E2E da Trilha Avançada (22 módulos v3.0→v5.0)
  *
  * Espelha 10-fundamentos-trail.spec.ts para a trilha avançada.
  *
  * ADVANCED_ORDER (src/data/courseOrder.ts):
- *   v3.0 Servidores (8): /dhcp → /samba → /apache → /openvpn →
- *                        /traefik → /ldap → /pihole → /nfs
+ *   v3.0 Servidores (9): /dhcp → /samba → /apache → /openvpn → /traefik →
+ *                        /ldap → /pihole → /nfs → /haproxy
  *   v4.0 Infraestrutura (9): /ansible → /monitoring → /kubernetes → /terraform →
  *                             /suricata → /ebpf → /service-mesh → /sre → /vault
  *   v5.0 Cloud (4): /cicd → /opnsense → /nextcloud → /ebpf-avancado
@@ -18,13 +18,13 @@ import { test, expect } from './fixtures';
  *   3. Badge advanced-master seeded aparece no dashboard
  *   4. ModuleNav em /dhcp: sem Anterior (1º da trilha), Próximo → /samba
  *   5. ModuleNav em /ebpf-avancado: Anterior → /nextcloud, sem Próximo (último)
- *   6. advanced-master desbloqueado ao visitar todos os 21 módulos
+ *   6. advanced-master desbloqueado ao visitar todos os 22 módulos
  */
 
-/** Todos os paths da ADVANCED_ORDER (21 módulos) */
+/** Todos os paths da ADVANCED_ORDER (22 módulos) */
 const ALL_ADVANCED_PATHS = [
   '/dhcp', '/samba', '/apache', '/openvpn', '/traefik', '/ldap', '/pihole', '/nfs',
-  '/ansible', '/monitoring', '/kubernetes', '/terraform', '/suricata', '/ebpf',
+  '/haproxy', '/ansible', '/monitoring', '/kubernetes', '/terraform', '/suricata', '/ebpf',
   '/service-mesh', '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
 ];
 
@@ -111,12 +111,13 @@ test('ModuleNav em /ebpf-avancado: Anterior aponta para /nextcloud, sem Próximo
   await expect(page.getByRole('link', { name: /^próximo módulo:/i })).not.toBeVisible();
 });
 
-// ── 6. Desbloqueio real do badge ao visitar todos os 21 módulos ──────────
+// ── 6. Desbloqueio real do badge ao visitar todos os 22 módulos ──────────
 
-test('advanced-master é desbloqueado ao visitar todos os 21 módulos', async ({ page }) => {
-  // Seed: todos os 21 paths visitados, sem pré-seedar o badge
-  await page.evaluate((paths) => {
-    localStorage.removeItem('workshop-badges');
+test('advanced-master é desbloqueado ao visitar todos os 22 módulos', async ({ page }) => {
+  // Seed via addInitScript — injeta o localStorage ANTES dos scripts da página,
+  // evitando a corrida de hidratação do BadgeContext (o save effect inicial
+  // sobrescreveria um seed feito via page.evaluate).
+  await page.addInitScript((paths) => {
     localStorage.setItem('workshop-visited-pages', JSON.stringify(paths));
   }, ALL_ADVANCED_PATHS);
 

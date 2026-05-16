@@ -58,7 +58,8 @@ export type BadgeId =
   | 'vault-master'
   | 'usuarios-master'
   | 'troubleshooting-master'
-  | 'ground-zero';
+  | 'ground-zero'
+  | 'haproxy-master';
 
 export interface BadgeDef {
   icon: string;
@@ -129,4 +130,5 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'usuarios-master':        { icon: '👤', title: 'Gestão de Usuários',       desc: 'Criou usuário, configurou grupos e testou sudo — a base da segurança no Linux começa pela gestão de identidade' },
   'troubleshooting-master': { icon: '🔎', title: 'Troubleshooting Master',   desc: 'Diagnosticou conectividade, portas e causa raiz via logs — resolve "o site não abre" sem entrar em pânico' },
   'ground-zero':            { icon: '🏁', title: 'Ground Zero',              desc: 'Completou todos os 17 módulos da Trilha Fundamentos Linux — você não é mais iniciante!' },
+  'haproxy-master':         { icon: '⚖️', title: 'HAProxy Master',           desc: 'Configurou um balanceador de carga HAProxy com frontend/backend, health checks e página de estatísticas' },
 };

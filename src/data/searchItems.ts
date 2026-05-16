@@ -235,6 +235,9 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'nfs-conceito',  title: 'NFS — Network File System', description: 'Compartilhamento de arquivos Linux nativo de alta performance — NFSv4 usa apenas porta 2049/TCP', category: 'Tópico', href: '/nfs', icon: HardDrive },
   { id: 'nfs-exports',   title: 'NFS /etc/exports',           description: 'Sintaxe de exports, opções rw/ro/sync/no_subtree_check/root_squash/all_squash e exportfs -ra', category: 'Tópico', href: '/nfs', icon: HardDrive },
   { id: 'nfs-cliente',   title: 'NFS mount e /etc/fstab',     description: 'Mount NFSv4 com -t nfs4, opções _netdev/nofail/soft, persistência no fstab e ID mapping', category: 'Tópico', href: '/nfs', icon: HardDrive },
+  { id: 'haproxy-conceito', title: 'HAProxy — Load Balancer', description: 'Balanceador de carga L4 (TCP) e L7 (HTTP) — frontend, backend, alta disponibilidade e escalabilidade', category: 'Tópico', href: '/haproxy', icon: Network },
+  { id: 'haproxy-balance',  title: 'HAProxy — algoritmos e health checks', description: 'balance roundrobin/leastconn/source, option httpchk, server check, failover automático e weight', category: 'Tópico', href: '/haproxy', icon: Network },
+  { id: 'haproxy-stats',    title: 'HAProxy — stats e stick-tables', description: 'Página de estatísticas em /stats, terminação SSL com bind ssl crt e rate limit com stick-table', category: 'Tópico', href: '/haproxy', icon: Network },
 
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },

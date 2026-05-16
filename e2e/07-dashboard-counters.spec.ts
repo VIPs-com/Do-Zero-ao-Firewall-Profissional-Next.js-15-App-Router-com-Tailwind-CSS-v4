@@ -4,9 +4,9 @@ import { test, expect } from './fixtures';
  * Testa se o Dashboard exibe os contadores corretos a partir de estado pré-injetado.
  *
  * Constantes em app/dashboard/page.tsx:
- *   totalTopics = 89          (Sprint FOUNDATION: +f16 usuarios, +f17 troubleshooting)
- *   checklistItemsCount = 172 (Sprint FOUNDATION: +6 checkpoints usuarios+troubleshooting)
- *   BADGE_DEFS tem 62 chaves  (Sprint FOUNDATION: +usuarios-master, troubleshooting-master, ground-zero)
+ *   totalTopics = 90          (Sprint HAPROXY: +S10 haproxy)
+ *   checklistItemsCount = 175 (Sprint HAPROXY: +3 checkpoints haproxy)
+ *   BADGE_DEFS tem 63 chaves  (Sprint HAPROXY: +haproxy-master)
  *
  * ATENÇÃO — visitedPages tracking é inconsistente no código:
  *   ClientLayout chama trackPageVisit('/dashboard')  — com barra
@@ -35,18 +35,18 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos: 3/172 (seed exato — não muda com o load)
-  await expect(page.getByText('3/172')).toBeVisible();
+  // Labs Concluídos: 3/175 (seed exato — não muda com o load)
+  await expect(page.getByText('3/175')).toBeVisible();
 
   // Melhor Quiz: 75% — exact evita colidir com "Complete 75% do checklist (...)"
   await expect(page.getByText('75%', { exact: true })).toBeVisible();
 });
 
-test('dashboard exibe 0/62 badges para usuário sem progresso', async ({ page }) => {
+test('dashboard exibe 0/63 badges para usuário sem progresso', async ({ page }) => {
   // Sem seed — estado completamente limpo (fixture já limpou)
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Sem nenhum badge desbloqueado — 62 badges total (Sprint FOUNDATION: +usuarios-master, troubleshooting-master, ground-zero)
-  await expect(page.getByText('0/62')).toBeVisible();
+  // Sem nenhum badge desbloqueado — 63 badges total (Sprint HAPROXY: +haproxy-master)
+  await expect(page.getByText('0/63')).toBeVisible();
 });
