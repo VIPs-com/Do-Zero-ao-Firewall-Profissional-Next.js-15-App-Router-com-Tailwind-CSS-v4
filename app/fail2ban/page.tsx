@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Shield, Eye, FileText, Ban, ArrowRight, CheckCircle2, Circle, AlertTriangle, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox, HorizonteBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -275,6 +275,73 @@ fail2ban-client status sshd`}
                 </p>
               </HighlightBox>
             </div>
+          </section>
+
+          {/* Section: Horizonte Tecnológico — CrowdSec */}
+          <section id="horizonte-crowdsec">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+                <Shield size={24} />
+              </div>
+              <h2 className="text-2xl font-bold">Horizonte Tecnológico — do Fail2ban ao CrowdSec</h2>
+            </div>
+
+            <p className="text-text-2 text-sm mb-4">
+              O Fail2ban te ensina a <strong>fundação</strong> de um IPS local: ler logs,
+              escrever regex e cuspir bloqueios no Netfilter. O padrão atual da indústria
+              para essa função é o <strong>CrowdSec</strong> — e você só entende por que ele
+              é genial depois de ter configurado uma jail clássica.
+            </p>
+
+            <HorizonteBox
+              classicoLabel="Fail2ban — IPS local baseado em regex"
+              modernoLabel="CrowdSec — threat intelligence colaborativa"
+              classico={
+                <ul className="space-y-1 list-disc list-inside">
+                  <li>Lê logs locais (<code>auth.log</code>) com <code>failregex</code></li>
+                  <li>Bane IPs no iptables/nftables da própria máquina</li>
+                  <li>Configuração estática em <code>jail.local</code> — cada servidor é uma ilha</li>
+                  <li>Detecção puramente por padrão de texto</li>
+                </ul>
+              }
+              moderno={
+                <ul className="space-y-1 list-disc list-inside">
+                  <li>Detecção por <strong>comportamento</strong> (cenários), não só regex</li>
+                  <li>Arquitetura desacoplada: o agente detecta, os <em>bouncers</em> aplicam</li>
+                  <li>Inteligência coletiva — um IP que ataca qualquer servidor do mundo é compartilhado e bloqueado por toda a rede CrowdSec</li>
+                  <li>Escrito em Go, API-first — integra com firewall, Nginx, Cloudflare</li>
+                </ul>
+              }
+              ganho="Você aprende a anatomia de um log e de um IPS local com o Fail2ban; com o CrowdSec o mesmo conceito escala para defesa coletiva em nuvem. A jail clássica é o degrau mecânico que faz o estalo mental."
+            />
+
+            <p className="text-text-2 text-sm mt-4 mb-2">
+              Um gostinho do CrowdSec na prática — a mecânica é a mesma (detectar → bloquear),
+              mas a interface é o <code>cscli</code> e o bloqueio fica a cargo de um <em>bouncer</em>:
+            </p>
+            <CodeBlock lang="bash" code={`# Instalação (repositório oficial)
+curl -s https://install.crowdsec.net | sudo sh
+sudo apt install crowdsec
+
+# O bouncer aplica os bloqueios no firewall:
+sudo apt install crowdsec-firewall-bouncer-iptables
+
+# Ver decisões ativas (IPs banidos) e alertas:
+sudo cscli decisions list
+sudo cscli alerts list
+
+# Inscrever-se em coleções de cenários (ex.: brute force SSH):
+sudo cscli collections install crowdsecurity/sshd
+sudo systemctl reload crowdsec`} />
+
+            <InfoBox className="mt-4" title="Quando migrar">
+              <p className="text-sm text-text-2">
+                Para um servidor pessoal, o Fail2ban resolve. Em frotas de servidores ou
+                exposição séria à internet, o CrowdSec vence pela inteligência compartilhada
+                e pela separação agente/bouncer. O que a prova e o mercado cobram são os dois
+                <em> conceitos</em> — não a memorização de uma única ferramenta.
+              </p>
+            </InfoBox>
           </section>
 
           </div>
