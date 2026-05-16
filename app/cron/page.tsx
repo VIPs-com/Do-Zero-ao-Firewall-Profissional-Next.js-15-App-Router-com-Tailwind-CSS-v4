@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { CheckCircle2, Circle, Edit3, List, Clock, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { InfoBox, HighlightBox, WarnBox, WindowsComparisonBox, HorizonteBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { useBadges } from '@/context/BadgeContext';
@@ -180,9 +180,76 @@ sudo grep CRON /var/log/syslog  # ver log`}
           <CodeBlock code={BOAS_PRATICAS} lang="bash" title="Boas práticas com cron" />
         </section>
 
+        {/* Horizonte Tecnológico — systemd timers */}
+        <section id="horizonte-systemd-timers">
+          <h2 className="text-2xl font-bold mb-2">🔭 Horizonte Tecnológico — do crontab aos systemd timers</h2>
+          <p className="text-text-2 text-sm mb-4">
+            O <code>crontab</code> é a <strong>fundação</strong> do agendamento — sua sintaxe
+            está em todo servidor Linux e dominá-la é obrigatório. O passo seguinte são os{' '}
+            <strong>systemd timers</strong>, hoje o padrão para tarefas de sistema nas distros
+            modernas (RHEL, Ubuntu). Você escolhe quando dar esse passo.
+          </p>
+
+          <HorizonteBox
+            classicoLabel="crontab — agendamento clássico do Unix"
+            modernoLabel="systemd timers — agendamento integrado ao systemd"
+            classico={
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Sintaxe <code>* * * * *</code> consagrada — está em todo Linux</li>
+                <li>Simples e direto para tarefas periódicas de um servidor</li>
+                <li>Saída vai por e-mail (<code>MAILTO</code>) — sem logging estruturado</li>
+                <li>Sem controle de dependências nem de execuções sobrepostas</li>
+              </ul>
+            }
+            moderno={
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Par <code>.timer</code> + <code>.service</code> — logs nativos no <code>journalctl</code></li>
+                <li><code>OnCalendar</code> legível + agendamento relativo (<code>OnBootSec</code>)</li>
+                <li><code>Persistent=true</code> recupera execuções perdidas (máquina desligada)</li>
+                <li>Herda do systemd: dependências, isolamento e limites de recursos</li>
+              </ul>
+            }
+            ganho="O crontab te ensina o conceito de agendamento e a sintaxe que você encontra em qualquer servidor — domine-o. Os systemd timers são o degrau seguinte: o mesmo agendamento, agora com logs no journalctl, recuperação de execuções perdidas e integração com o resto do sistema."
+          />
+
+          <p className="text-text-2 text-sm mt-4 mb-2">
+            Um timer são dois arquivos — a tarefa (<code>.service</code>) e o gatilho (<code>.timer</code>):
+          </p>
+          <CodeBlock lang="ini" title="/etc/systemd/system/backup.service + backup.timer" code={`# /etc/systemd/system/backup.service — a tarefa
+[Unit]
+Description=Backup diário dos dados
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/backup.sh
+
+# /etc/systemd/system/backup.timer — o gatilho
+[Unit]
+Description=Dispara o backup todo dia às 2h
+
+[Timer]
+OnCalendar=*-*-* 02:00:00
+Persistent=true          # recupera se a máquina estava desligada
+
+[Install]
+WantedBy=timers.target`} />
+          <CodeBlock lang="bash" code={`# Ativar e inspecionar:
+sudo systemctl enable --now backup.timer
+systemctl list-timers                 # próximas execuções de todos os timers
+journalctl -u backup.service          # logs da tarefa — nativo, sem MAILTO`} />
+
+          <InfoBox title="Quando usar cada um">
+            <p className="text-sm text-text-2">
+              <strong>crontab:</strong> tarefas rápidas de usuário, scripts pessoais, qualquer
+              servidor. <strong>systemd timers:</strong> tarefas de sistema que precisam de log
+              auditável, recuperação de execuções perdidas ou dependência de outros serviços.
+              Os dois conceitos — não a memorização de uma sintaxe — é o que o mercado cobra.
+            </p>
+          </InfoBox>
+        </section>
+
         <HighlightBox title="🔜 Próxima versão deste módulo">
           <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
-            <li>systemd timers — mais flexíveis e com logging nativo via journalctl</li>
             <li>at — agendar tarefa única para executar uma vez</li>
             <li>anacron — para máquinas que nem sempre estão ligadas</li>
             <li>cron com variáveis de ambiente e PATH explícito</li>
