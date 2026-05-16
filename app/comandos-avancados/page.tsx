@@ -6,7 +6,7 @@ import { useBadges } from '@/context/BadgeContext';
 import { FUNDAMENTOS_ORDER } from '@/data/courseOrder';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox, HighlightBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, HighlightBox, HorizonteBox } from '@/components/ui/Boxes';
 import { WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { Terminal, Link2, Archive, Radio, HardDrive, Wrench, FileEdit, Copy, AlertTriangle, CheckCircle } from 'lucide-react';
@@ -440,6 +440,67 @@ ls /tmp/teste-restore/etc/nginx/
 # 5. Limpar
 rm -rf /tmp/teste-restore`} />
           </div>
+        </section>
+
+        {/* Horizonte Tecnológico — jq */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-3">🔭 Horizonte Tecnológico — de awk/sed para jq</h2>
+          <p className="text-text-2 mb-4">
+            <code>awk</code> e <code>sed</code> são a <strong>fundação</strong> do processamento
+            de texto — e continuam insubstituíveis para logs e arquivos de configuração. Mas a
+            infraestrutura moderna (Docker, Kubernetes, AWS, APIs) fala <strong>JSON</strong>, e
+            parsear JSON com awk é frágil. O próximo degrau natural é o <code>jq</code>.
+          </p>
+
+          <HorizonteBox
+            classicoLabel="awk / sed — processamento de texto posicional"
+            modernoLabel="jq — consulta e transformação de JSON"
+            classico={
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Operam sobre <strong>texto</strong> em linhas e colunas (campos por posição)</li>
+                <li><code>sed</code>: edição de fluxo · <code>awk</code>: colunas, somas, relatórios</li>
+                <li>Insubstituíveis para logs, <code>/etc/passwd</code>, saídas tabulares</li>
+                <li>A base do pensamento &ldquo;pipe + filtro&rdquo; do Unix</li>
+              </ul>
+            }
+            moderno={
+              <ul className="space-y-1 list-disc list-inside">
+                <li>Opera sobre a <strong>estrutura</strong> do dado (objetos, arrays, chaves)</li>
+                <li>Filtra, mapeia e remodela JSON sem quebrar com espaços ou aspas</li>
+                <li><code>docker inspect</code>, <code>kubectl -o json</code>, <code>aws</code>/<code>gh</code> CLI — tudo cospe JSON</li>
+                <li>&ldquo;jq é o novo awk&rdquo; para o ecossistema de infraestrutura moderno</li>
+              </ul>
+            }
+            ganho="awk e sed continuam essenciais — todo log e arquivo de config é texto. Mas parsear JSON com awk é frágil e perigoso. jq é o próximo degrau: o mesmo pensamento de pipe + filtro, agora sobre dados estruturados. A regra: escolha a ferramenta pelo FORMATO do dado — texto plano → awk/sed; JSON → jq."
+          />
+
+          <p className="text-text-2 text-sm mt-4 mb-2">
+            Um gostinho do <code>jq</code> — a mesma filosofia de pipe + filtro, agora navegando
+            a estrutura do JSON em vez de contar colunas:
+          </p>
+          <CodeBlock lang="bash" code={`# Toda CLI de infra moderna devolve JSON — jq consulta a estrutura:
+docker inspect nginx | jq '.[0].State.Status'           # status do container
+kubectl get pods -o json | jq '.items[].metadata.name'  # nomes dos pods
+curl -s https://api.exemplo.com/users | jq '.[].email'  # email de cada usuário
+
+# Filtrar, mapear e remodelar:
+echo '{"a":1,"b":2}' | jq '.a'                # → 1
+jq '.users | map(.name)' dados.json           # extrai um array de nomes
+jq '.[] | select(.active == true)' x.json     # filtra por condição
+
+# Mesmo raciocínio, ferramentas diferentes pelo formato do dado:
+# awk (texto):  ps aux | awk '$3 > 5 {print $11}'
+# jq  (JSON):   ... | jq '.[] | select(.cpu > 5) | .name'`} />
+
+          <InfoBox title="Qual ferramenta usar">
+            <p className="text-sm text-text-2">
+              <strong>Texto plano</strong> (logs, /etc/*, saídas de comando tabulares) →{' '}
+              <code>grep</code>, <code>awk</code>, <code>sed</code>. <strong>JSON</strong> (APIs,
+              <code> docker</code>, <code>kubectl</code>, <code>aws</code>) → <code>jq</code>.
+              Instale com <code>sudo apt install jq</code>. Não é trocar de ferramenta — é ter as
+              duas e saber quando cada uma se aplica.
+            </p>
+          </InfoBox>
         </section>
 
         {/* Checkpoints */}
