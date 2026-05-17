@@ -50,3 +50,16 @@ test('dashboard exibe 0/63 badges para usuário sem progresso', async ({ page })
   // Sem nenhum badge desbloqueado — 63 badges total (Sprint HAPROXY: +haproxy-master)
   await expect(page.getByText('0/63')).toBeVisible();
 });
+
+test('dashboard exibe o card de Ferramentas com link para /ferramentas', async ({ page }) => {
+  await page.goto('/dashboard');
+  await page.waitForLoadState('networkidle');
+
+  const toolsLink = page.getByRole('link', { name: /abrir ferramentas/i });
+  await expect(toolsLink).toBeVisible();
+  await expect(toolsLink).toHaveAttribute('href', '/ferramentas');
+
+  await toolsLink.click();
+  await expect(page).toHaveURL(/\/ferramentas$/);
+  await expect(page.getByRole('heading', { name: /ferramentas do sysadmin/i })).toBeVisible();
+});

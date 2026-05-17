@@ -17,6 +17,7 @@ import {
   Download,
   Upload,
   Trash2,
+  Wrench,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ClearDataDialog } from '@/components/ui/ClearDataDialog';
@@ -504,6 +505,30 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Ferramentas do SysAdmin */}
+          <div className="bg-bg-2 border border-border rounded-xl p-6 space-y-3">
+            <h3 className="font-bold text-sm mb-1 flex items-center gap-2">
+              <Wrench className="text-accent" size={16} />
+              Ferramentas
+            </h3>
+            <p className="text-[10px] text-text-3 leading-relaxed">
+              Utilitários portáteis que rodam 100% no navegador — acesso rápido sem sair do curso.
+            </p>
+            <ul className="text-[11px] text-text-2 space-y-1">
+              <li className="flex items-center gap-2"><span aria-hidden="true">🧮</span> Calculadora de sub-redes CIDR</li>
+              <li className="flex items-center gap-2"><span aria-hidden="true">🔍</span> Validador de Regex</li>
+              <li className="flex items-center gap-2"><span aria-hidden="true">🔥</span> Gerador de regras iptables</li>
+              <li className="flex items-center gap-2"><span aria-hidden="true">🖥️</span> Simulador de prompt PS1</li>
+            </ul>
+            <Link
+              href="/ferramentas"
+              className="btn-outline w-full py-2 text-xs flex items-center justify-center gap-2"
+            >
+              <Wrench size={14} aria-hidden="true" />
+              Abrir Ferramentas
+            </Link>
           </div>
 
           {/* Portabilidade do Progresso */}
