@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Network, Regex, Shield, AlertCircle } from 'lucide-react';
+import { Network, Regex, Shield, AlertCircle, Copy, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { parseCidr } from '@/lib/cidr';
 import { testRegex, type RegexMatch } from '@/lib/regex';
@@ -39,6 +39,37 @@ function highlightMatches(text: string, matches: RegexMatch[]): React.ReactNode[
   });
   if (pos < text.length) out.push(text.slice(pos));
   return out;
+}
+
+/** Botão de copiar com feedback temporário "Copiado!". */
+function CopyButton({ text, label, className }: { text: string; label?: string; className?: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      /* clipboard indisponível — silencia */
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      aria-label={copied ? 'Copiado' : `Copiar ${label || 'para a área de transferência'}`}
+      className={cn(
+        'inline-flex items-center gap-1.5 text-xs font-medium rounded-lg border px-2.5 py-1.5 transition-colors',
+        copied
+          ? 'border-ok/40 bg-ok/10 text-ok'
+          : 'border-border text-text-2 hover:border-accent/50 hover:text-text',
+        className,
+      )}
+    >
+      {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+      {copied ? 'Copiado!' : label === '' ? null : (label ?? 'Copiar')}
+    </button>
+  );
 }
 
 const selectCls =
@@ -187,9 +218,16 @@ export default function FerramentasPage() {
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 {cidrRows.map((row) => (
-                  <div key={row.label} className="bg-bg-2 border border-border rounded-xl px-4 py-3 flex items-center justify-between gap-4">
-                    <span className="text-xs text-text-3">{row.label}</span>
-                    <span className={cn('text-sm font-bold text-text', row.mono && 'font-mono')}>{row.value}</span>
+                  <div key={row.label} className="group bg-bg-2 border border-border rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                    <span className="text-xs text-text-3 shrink-0">{row.label}</span>
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span className={cn('text-sm font-bold text-text truncate', row.mono && 'font-mono')}>{row.value}</span>
+                      <CopyButton
+                        text={row.value}
+                        label=""
+                        className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 shrink-0 px-1.5"
+                      />
+                    </span>
                   </div>
                 ))}
               </div>
@@ -270,9 +308,12 @@ export default function FerramentasPage() {
 
           {regexResult.ok ? (
             <div className="mt-6">
-              <p className="text-sm font-bold text-text mb-3">
-                {regexResult.count} {regexResult.count === 1 ? 'match' : 'matches'}
-              </p>
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <p className="text-sm font-bold text-text">
+                  {regexResult.count} {regexResult.count === 1 ? 'match' : 'matches'}
+                </p>
+                <CopyButton text={`/${pattern}/${flagStr}`} label="regex" />
+              </div>
               <pre className="bg-bg-2 border border-border rounded-xl p-4 text-xs font-mono whitespace-pre-wrap break-words leading-relaxed">
                 {highlightMatches(regexText, regexResult.matches)}
               </pre>
@@ -360,7 +401,10 @@ export default function FerramentasPage() {
           </div>
 
           <div className="mt-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-text-3 mb-2">Comando gerado</p>
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-text-3">Comando gerado</p>
+              <CopyButton text={iptablesCmd} label="comando" />
+            </div>
             <pre className="bg-bg-2 border-2 border-accent/40 rounded-xl p-4 text-sm font-mono text-accent overflow-x-auto">{iptablesCmd}</pre>
           </div>
 

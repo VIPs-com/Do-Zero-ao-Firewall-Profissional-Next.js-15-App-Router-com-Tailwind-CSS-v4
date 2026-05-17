@@ -66,3 +66,14 @@ test('iptables: a aba gera o comando a partir do formulário', async ({ page }) 
   await page.getByLabel(/ação/i).selectOption('DROP');
   await expect(page.getByText('iptables -A INPUT -p tcp --dport 22 -j DROP')).toBeVisible();
 });
+
+test('iptables: o botão Copiar dá feedback "Copiado!"', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-write', 'clipboard-read']);
+  await page.goto('/ferramentas');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /gerador de iptables/i }).click();
+  await page.getByRole('button', { name: /copiar comando/i }).click();
+
+  await expect(page.getByRole('button', { name: /^copiado$/i })).toBeVisible();
+});
