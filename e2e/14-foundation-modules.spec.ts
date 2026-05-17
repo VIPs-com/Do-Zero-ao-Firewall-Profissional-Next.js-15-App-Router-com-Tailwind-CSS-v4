@@ -82,7 +82,7 @@ test('visitar /usuarios registra a visita no localStorage', async ({ page }) => 
 // ── 3. Checkpoint /usuarios refletido no dashboard ────────────────────────────
 
 test('checkpoint usuario-criado é contabilizado no dashboard (1/175)', async ({ page }) => {
-  await page.evaluate(() => {
+  await page.addInitScript(() => {
     localStorage.setItem('workshop-checklist-v2', JSON.stringify({ 'usuario-criado': true }));
   });
 
@@ -168,7 +168,7 @@ test('visitar /troubleshooting registra a visita no localStorage', async ({ page
 // ── 8. Checkpoint /troubleshooting refletido no dashboard ─────────────────────
 
 test('checkpoint trouble-conectividade é contabilizado no dashboard', async ({ page }) => {
-  await page.evaluate(() => {
+  await page.addInitScript(() => {
     localStorage.setItem(
       'workshop-checklist-v2',
       JSON.stringify({ 'usuario-criado': true, 'trouble-conectividade': true }),

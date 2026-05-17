@@ -84,8 +84,8 @@ test('visitar /fhs registra a visita no localStorage', async ({ page }) => {
 // ── 3. Checkpoint Fundamentos reflete no dashboard ─────────────────────────
 
 test('checkpoint de módulo Fundamentos é contabilizado no dashboard', async ({ page }) => {
-  // Seed: apenas 1 checkpoint Fundamentos
-  await page.evaluate(() => {
+  // Seed: apenas 1 checkpoint Fundamentos — via addInitScript (determinístico)
+  await page.addInitScript(() => {
     localStorage.setItem('workshop-checklist-v2', JSON.stringify({ 'fhs-explorado': true }));
   });
 

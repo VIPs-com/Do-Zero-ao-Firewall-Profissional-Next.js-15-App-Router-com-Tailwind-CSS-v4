@@ -65,7 +65,7 @@ test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é d
  * Mais rápido e determinístico que clicar em todas as questões.
  */
 test('seed de score 100 no localStorage → badges quiz-expert e quiz-master visíveis no dashboard', async ({ page }) => {
-  await page.evaluate(() => {
+  await page.addInitScript(() => {
     localStorage.setItem('workshop-quiz-score', '100');
     localStorage.setItem('workshop-badges', JSON.stringify(['quiz-beginner', 'quiz-expert', 'quiz-master']));
   });
