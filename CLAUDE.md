@@ -87,6 +87,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   12-treino-srs.spec.ts         # /treino SRS: lobby, questão, Ver Resposta, score 1-5, done, SM-2 localStorage (8 casos)
   20-cheat-sheet.spec.ts        # /cheat-sheet: 4 abas, busca + estado vazio, filtro OSI, copiar (5 casos)
   21-quiz-config.spec.ts        # /quiz tela inicial: seletores trilha/sessão, preview, ?trail= param (4 casos)
+  22-glossario.spec.ts          # /glossario: busca + estado vazio, filtro por categoria (3 casos)
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
 
@@ -494,6 +495,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Dashboard-Ferramentas: card "Ferramentas" no aside do `/dashboard` (ícone `Wrench`, lista os 4 utilitários — CIDR, Regex, iptables, PS1 — e botão "Abrir Ferramentas" → `/ferramentas`); melhora a descoberta do hub portátil; `e2e/07` +1 caso (card visível, href correto, navegação); lint ✓ · eslint ✓ · 232 testes · build 79 rotas · E2E 07 (3/3).
 - ✅ Sprint Auditoria de Qualidade: varredura com `scripts/check-constants.ts` (7 reconciliações ✓) + `scripts/quiz-audit.ts` + auditoria de cobertura de busca; achados corrigidos — (1) quiz: 3 módulos da trilha Avançados estavam no mínimo de 3 questões (NFS/Vault/HAProxy) → +1 cada (exportfs -ra, secret engine dinâmico, haproxy -c dry-run); **todos os 61 módulos das 3 trilhas agora têm ≥4 questões**; avancados 98→101, QUIZ_QUESTIONS 271→274; (2) busca: `/certificacoes` (1 item) e `/offline` (2 itens) abaixo do alvo de 3 → +3 itens (LPIC-1, CompTIA Linux+, Recuperação de Conectividade); searchItems 246→249; `quiz.test.ts` e `searchItems.test.ts` atualizados; lint ✓ · eslint ✓ · 232 testes · build 79 rotas.
 - ✅ Sprint E2E-Cobertura: 2 specs Playwright novos para páginas interativas sem cobertura dedicada — `e2e/20-cheat-sheet.spec.ts` (5 casos: 4 abas + aria-selected, busca ao vivo + estado vazio, troca de aba, filtro de camada OSI, feedback "Copiado!" com `grantPermissions`) e `e2e/21-quiz-config.spec.ts` (4 casos: seletores de trilha/sessão, preview de contagem ao trocar para "Completo", `?trail=fundamentos` pré-seleciona a trilha, troca de trilha atualiza o radio); total 21 specs E2E.
+- ✅ Sprint E2E-Glossário: `e2e/22-glossario.spec.ts` — 3 casos para `/glossario` (render com busca + botões de categoria, busca filtra termos + estado vazio "Nenhum termo encontrado", filtro por categoria VPN restringe a lista); total 22 specs E2E.
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ✅ Simulador de Prompt PS1: ENTREGUE no Sprint Ferramentas-PS1 — aba interativa de preview ao vivo em `/ferramentas` (motor puro `src/lib/ps1.ts`), complementa o conteúdo PS1/PS2 do Sprint Anatomia do Shell em `/comandos`.
 
