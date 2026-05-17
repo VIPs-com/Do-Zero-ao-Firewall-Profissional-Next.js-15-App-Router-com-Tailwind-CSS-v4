@@ -14,9 +14,9 @@
 
 ## Funcionalidades
 
-- [Gamificacao & Badges](gamificacao.md) — 62 badges · 172 checkpoints · 7 milestones · como adicionar
-- [Busca Global](busca-global.md) — CMD+K, searchItems (238 itens), deep dives
-- [SEO — Fonte Unica](seo.md) — ROUTE_SEO (71 rotas), buildMetadata(), sitemap, OG image, JSON-LD
+- [Gamificacao & Badges](gamificacao.md) — 63 badges · 175 checkpoints · 7 milestones · como adicionar
+- [Busca Global](busca-global.md) — CMD+K, searchItems (243 itens), deep dives
+- [SEO — Fonte Unica](seo.md) — ROUTE_SEO (74 rotas), buildMetadata(), sitemap, OG image, JSON-LD
 - [Acessibilidade — WCAG 2.1 AA](acessibilidade.md) — modais, focus trap, reduced motion, ESLint jsx-a11y
 - [PWA Lite & Boundaries](pwa-boundaries.md) — manifest.ts, error/not-found/loading boundaries
 
@@ -32,7 +32,7 @@
 
 ## Referencia
 
-- [Roadmap Tecnico](roadmap.md) — histórico completo de sprints (A → E2E-HARDENING)
+- [Roadmap Tecnico](roadmap.md) — histórico completo de sprints (A → HORIZONTE-TIMERS)
 - [Glossario Tecnico](glossario.md) — termos de infraestrutura, Next.js e seguranca
 - [Apresentacao Executiva](apresentacao.md) — slide deck atualizado para apresentacoes rapidas
 
@@ -42,16 +42,16 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Rotas no build | 75 (53 páginas de conteúdo + suporte + sitemap/robots/OG/icons/manifest) |
-| ROUTE_SEO | 71 rotas |
-| Tópicos | 89 |
-| Badges | 62 (7 milestones) |
-| Checkpoints | 172 |
-| Quiz (perguntas) | 265 |
+| Rotas no build | 79 (54 páginas de conteúdo + suporte + sitemap/robots/OG/icons/manifest) |
+| ROUTE_SEO | 74 rotas |
+| Tópicos | 90 |
+| Badges | 63 (7 milestones) |
+| Checkpoints | 175 |
+| Quiz (perguntas) | 271 |
 | v1.0 Firewall | 25 módulos ✅ |
 | v2.0 Fundamentos | 17 módulos ✅ |
-| v3.0 Servidores | 10 módulos ✅ |
-| v4.0 Infra Moderna | 8 módulos ✅ |
+| v3.0 Servidores | 9 módulos ✅ |
+| v4.0 Infra Moderna | 9 módulos ✅ |
 | v5.0 Cloud & Platform | 4 módulos ✅ |
-| Testes vitest | 11 suítes · 157 testes |
-| Testes E2E | 15 specs Playwright |
+| Testes vitest | 14 suítes · 200 testes |
+| Testes E2E | 19 specs Playwright |

@@ -65,8 +65,8 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 cheat-sheet/              ← Referência rápida de comandos
 │   ├── 📁 wireguard/                ← Módulo 10: WireGuard VPN (Sprint I.1)
 │   ├── 📁 fail2ban/                 ← Módulo 11: Fail2ban (Sprint I.2)
-│   ├── 📁 topicos/                  ← Índice dos 89 tópicos práticos
-│   ├── 📁 quiz/                     ← Avaliação gamificada (50 perguntas)
+│   ├── 📁 topicos/                  ← Índice dos 90 tópicos práticos
+│   ├── 📁 quiz/                     ← Avaliação gamificada (271 perguntas)
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   ├── 📁 certificado/              ← Certificado de conclusão
 │   │
@@ -97,7 +97,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 04-global-search.spec.ts     ← ⌘K abre, navega, ESC fecha
 │   ├── 05-theme-persistence.spec.ts ← Toggle dark/light + badge night-owl
 │   ├── 06-export-import-time-traveler.spec.ts ← Download + upload + badge
-│   ├── 07-dashboard-counters.spec.ts ← 3/172 checklist, 75% quiz, 0/62 badges
+│   ├── 07-dashboard-counters.spec.ts ← 3/175 checklist, 75% quiz, 0/63 badges
 │   ├── 08-module-nav.spec.ts         ← Navegação sequencial Anterior/Próximo
 │   └── 09-milestone-celebration.spec.ts ← Modal de conquista + confetti
 │
@@ -126,8 +126,8 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │
     ├── 📁 data/
     │   ├── quizQuestions.ts         ← 50 perguntas do quiz (Sprint F + Polish-I)
-    │   ├── searchItems.ts           ← Índice da busca global (121 itens)
-    │   ├── courseOrder.ts           ← COURSE_ORDER (25 módulos) + FUNDAMENTOS_ORDER (14)
+    │   ├── searchItems.ts           ← Índice da busca global (243 itens)
+    │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (22)
     │   └── deepDives.tsx            ← Conteúdo dos 6 modais avançados
     │
     └── 📁 lib/

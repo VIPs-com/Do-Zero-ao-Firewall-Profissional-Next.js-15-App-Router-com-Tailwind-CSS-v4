@@ -1085,6 +1085,87 @@ Sprint E2E-HARDENING ✅ Locators de ModuleNav robustos (specs 08 e 11)
   ├── 08-module-nav ganhou verificação de href
   └── fix ALL_ADVANCED_PATHS — faltava /vault (ADVANCED_ORDER tem 21 módulos)
 
+Sprint CERT-SHARE ✅ Download do certificado em PNG (Canvas)
+  ├── drawCertificate() renderiza o certificado em canvas 2000×1414 via
+  │   Canvas 2D API nativa — zero dependências (sem html2canvas)
+  ├── handleDownloadPNG() com toDataURL síncrono (preserva user-gesture)
+  └── botão "Baixar PNG" + e2e/16-certificado-png.spec.ts (4 casos)
+
+Sprint Anatomia do Shell ✅ PS1/PS2/$PATH/pwd em /comandos
+  ├── seção #anatomia-shell — pwd (builtin vs /bin/pwd), $PATH (append seguro
+  │   vs sobrescrita), PS1 (escapes \\u \\h \\w \\$), PS2 (prompt secundário)
+  └── alinhado a LPIC-1 / CompTIA Linux+ · zero mudança de constante
+
+Sprint STORAGE-MIGRATIONS ✅ Migração versionada do localStorage
+  ├── src/lib/migrations.ts — motor puro, SSR-safe, idempotente; chave
+  │   workshop-schema-version + lista MIGRATIONS; runStorageMigrations()
+  ├── migração v1: workshop-checklist (legado) → workshop-checklist-v2
+  └── src/lib/migrations.test.ts (11 testes) · chamado no BadgeContext
+
+Sprint LGPD ✅ Apagar todos os dados do aluno
+  ├── clearAllWorkshopData() remove todas as chaves workshop-*
+  ├── ClearDataDialog.tsx — botão + modal acessível (focus trap, ESC)
+  └── card "Privacidade" no Dashboard · e2e/17-lgpd-clear-data (3 casos)
+
+Sprint Quiz Coverage Audit ✅ Cobertura completa das 3 trilhas
+  ├── scripts/quiz-audit.ts — contagem por módulo
+  ├── /vault tinha 0 questões → +3 (🔐 Vault); badge duplicado ☸️ K8s +
+  │   ☸️ Kubernetes unificado; NFS → 🗂️ NFS (emoji)
+  └── todos os 60 módulos com ≥3 questões · QUIZ_QUESTIONS 265→268
+
+Sprint E2E-STREAK ✅ Cobertura do badge srs-streak-7
+  └── e2e/12-treino-srs +2 casos (streak 6→7 desbloqueia; sem histórico não)
+
+Sprint Busca Preditiva de Incidentes ✅ Playbooks no ⌘K
+  ├── src/data/incidents.ts — 7 playbooks (disco cheio, sem internet,
+  │   serviço não inicia, porta em uso, permissão negada, CPU alta...)
+  ├── SearchItem +category 'Incidente' +keywords[]; matching bidirecional
+  └── GlobalSearch exibe incidentes no topo · incidents.test.ts (7 testes)
+
+Sprint Ferramentas Portáteis ✅ Calculadora de sub-redes CIDR
+  ├── src/lib/cidr.ts — parseCidr() puro IPv4 (rede/broadcast/hosts/máscara/
+  │   wildcard/classe/escopo); casos especiais /31 (RFC 3021) e /32
+  ├── nova rota /ferramentas — input ao vivo + prefixos rápidos + grid
+  └── cidr.test.ts (22 testes) · e2e/18-ferramentas-cidr (3 casos)
+
+Sprint CERTIFICACOES ✅ Trilha de Certificação (hub /certificacoes)
+  ├── CERT_MAP — 6 domínios do núcleo comum LPIC-1 / CompTIA Linux+,
+  │   cada tópico de prova ligado ao módulo do Workshop + comandos
+  ├── card strace/ltrace/lsof; /comandos +Variáveis de Ambiente +
+  │   Redirecionamentos e Pipes; /hardening +SSH Agent e Chaves
+  └── e2e/19-certificacoes (2 casos)
+
+Sprint HAPROXY ✅ Load Balancer L4/L7 (/haproxy) — v3.0 #9
+  ├── frontend/backend, algoritmos (roundrobin/leastconn/source/uri),
+  │   health checks, modo TCP, terminação SSL, stats, stick-tables
+  ├── badge ⚖️ haproxy-master (63º) · 3 checkpoints · module-accent #1f9d8a
+  └── ADVANCED_ORDER 21→22 · checklistItemsCount 172→175 · totalTopics 89→90
+      · quiz 268→271 · searchItems 240→243 · linux-ninja 129→131
+
+Sprint HORIZONTE-TECNOLÓGICO ✅ Componente HorizonteBox + estreia CrowdSec
+  ├── HorizonteBox em Boxes.tsx — padrão "Contraste Geracional" (a Fundação
+  │   ↔ o Horizonte) com painel duplo + rodapé "ganho didático"
+  └── /fail2ban: contraste Fail2ban (regex local) ↔ CrowdSec (threat intel
+      colaborativa, bouncers, cenários, Go/API-first)
+
+Sprint HORIZONTE-LOKI ✅ HorizonteBox em /rsyslog
+  └── contraste rsyslog (fundação, 1 servidor) ↔ Grafana Loki (labels,
+      LogQL, Promtail/Vector, frotas) — filosofia "informar, não substituir"
+
+Sprint HORIZONTE-JQ ✅ HorizonteBox em /comandos-avancados
+  └── contraste awk/sed (texto posicional) ↔ jq (JSON — docker/kubectl/aws)
+      — escolha a ferramenta pelo formato do dado
+
+Sprint HORIZONTE-TIMERS ✅ HorizonteBox em /cron
+  └── contraste crontab ↔ systemd timers (.timer+.service, journalctl,
+      OnCalendar/Persistent) — fecha a Auditoria de Legados (4 módulos)
+
+Sprint Docs Sync + Reconciliação ✅ scripts/check-constants.ts
+  ├── valida contadores hardcoded contra os arrays reais (checklist,
+  │   topics, badges, quiz, searchItems, rotas) — exit 1 em divergência
+  └── docs/ sincronizados: 63 badges · 175 checkpoints · 90 tópicos ·
+      243 searchItems · 74 rotas · 271 questões · 200 testes vitest
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).

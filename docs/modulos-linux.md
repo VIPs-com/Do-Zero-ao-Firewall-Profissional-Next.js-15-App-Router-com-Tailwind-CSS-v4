@@ -324,7 +324,7 @@ Metodologia OSI L1→L7, `ping`/`ip`/`ss`/`dig`/`curl`/`journalctl`, isolamento 
 
 ---
 
-## Trilha v3.0 — Servidores e Serviços (10 módulos)
+## Trilha v3.0 — Servidores e Serviços (12 módulos)
 
 *Serviços de infraestrutura que completam o laboratório.*
 
@@ -358,9 +358,15 @@ DNS sinkhole com blocklists gravity, Docker Compose macvlan (IP fixo na LAN), ip
 ### S10 — SSH como Proxy SOCKS · `/ssh-proxy`
 SSH como canivete de rede: SOCKS5 dinâmico com `-D` (proxychains, browser seguro), port forwarding local `-L` (acesso a DB interno via localhost), remoto `-R` (expor serviço local via servidor público), Jump Host `-J`/ProxyJump (saltos encadeados sem VPN), autossh com systemd para túneis persistentes, `~/.ssh/config` com ControlMaster.
 
+### S11 — NFS — Network File System · `/nfs`
+NFSv4 com `/etc/exports` (rw/ro/sync/root_squash/all_squash), mount `-t nfs4` (porta única 2049/TCP, firewall-friendly), `/etc/fstab` com `_netdev`/`nofail`/`soft`, ID mapping via `idmapd.conf`. Compartilhamento de arquivos Linux-nativo de alta performance.
+
+### S12 — HAProxy — Load Balancer L4/L7 · `/haproxy`
+Balanceador de carga dedicado: `frontend`/`backend`, algoritmos (roundrobin/leastconn/source/uri), health checks (`option httpchk`, fall/rise), modo TCP (L4) vs HTTP (L7), terminação SSL, stick-tables (rate limit) e página de estatísticas. Escalabilidade + alta disponibilidade.
+
 ---
 
-## Trilha v4.0 — Infraestrutura Moderna (8 módulos)
+## Trilha v4.0 — Infraestrutura Moderna (9 módulos)
 
 *Ferramentas que o mercado corporativo exige hoje.*
 
@@ -387,6 +393,9 @@ Istio vs Linkerd vs Consul (tabela 7 critérios), arquitetura: istiod (control p
 
 ### I08 — SRE & SLOs · `/sre`
 SLI/SLO/SLA hierarquia (regra fundamental: SLA < SLO), error budget com tabela dos 9s (99.9%=8.7h/ano, 99.99%=52min/ano), grid de decisão (budget restante → acelerar ou congelar deploys). PromQL para SLIs: recording rules de disponibilidade + latência P99 + burn rates (1h/6h). Alertas de burn rate: crítico 14.4× (1h) + warning 6× (6h). On-call saudável: anti-padrões (alert fatigue), runbook template markdown. Postmortem blameless: Just Culture, template 5 seções, grid blame vs sistêmico. Toil: identificar e eliminar.
+
+### I09 — HashiCorp Vault · `/vault`
+Gestão de segredos: Unseal com Shamir Secret Sharing, secret engines (KV e Database dinâmico), políticas HCL de menor privilégio, autenticação AppRole (RoleID público + SecretID efêmero) para máquinas. Elimina credenciais estáticas no código.
 
 ---
 
