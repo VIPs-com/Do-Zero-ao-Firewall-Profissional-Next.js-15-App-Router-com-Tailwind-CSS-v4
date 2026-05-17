@@ -1212,4 +1212,34 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       explanation: '`roundrobin` distribui igualmente, mas com sessões longas um servidor pode acumular muitas conexões abertas enquanto outro, que recebeu conexões curtas já encerradas, fica ocioso. `leastconn` corrige isso enviando a nova conexão para quem tem menos conexões ativas no momento — ideal para WebSocket, bancos e qualquer sessão persistente.',
       trail: 'avancados',
     },
+  // ── Sprint Auditoria de Qualidade — eleva NFS/Vault/HAProxy a 4 questões ─────
+  {
+      text: 'Você editou o /etc/exports para adicionar um novo compartilhamento. Qual comando aplica a mudança sem reiniciar o serviço NFS?',
+      badge: '🗂️ NFS',
+      options: ['systemctl restart nfs-kernel-server', 'exportfs -ra', 'mount -a', 'nfsstat --reload'],
+      correct: 1,
+      explanation: '`exportfs -ra` relê o /etc/exports e reexporta tudo (`-r` = re-export, `-a` = todos) sem derrubar montagens existentes nem reiniciar o daemon. Reiniciar o serviço também funciona, mas interrompe brevemente os clientes conectados.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Qual a principal vantagem de um secret engine dinâmico do Vault (ex.: o engine `database`) sobre guardar uma senha fixa?',
+      badge: '🔐 Vault',
+      options: [
+        'Ocupa menos espaço em disco no servidor Vault',
+        'O Vault gera credenciais sob demanda com TTL curto (lease) e as revoga automaticamente ao expirar — não existe senha de longa duração para vazar',
+        'Dispensa qualquer policy de autorização',
+        'Funciona sem precisar destravar (unseal) o Vault',
+      ],
+      correct: 1,
+      explanation: 'Com o engine `database`, o Vault cria um usuário real no banco no momento do pedido, entrega-o com um lease (TTL) e, ao expirar, executa o `DROP USER` automaticamente. Credenciais efêmeras eliminam o segredo estático: mesmo que vazem, expiram sozinhas em minutos.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Antes de recarregar o HAProxy em produção, qual comando valida a sintaxe do haproxy.cfg sem aplicar nada?',
+      badge: '⚖️ HAProxy',
+      options: ['haproxy -c -f /etc/haproxy/haproxy.cfg', 'haproxy --test', 'systemctl reload haproxy', 'haproxy -v'],
+      correct: 0,
+      explanation: '`haproxy -c -f <arquivo>` faz um dry-run: analisa o arquivo de configuração, reporta erros de sintaxe e sai sem tocar no serviço em execução. É a checagem obrigatória antes de qualquer `reload` — um `reload` com config inválida pode derrubar o balanceador.',
+      trail: 'avancados',
+    },
 ];

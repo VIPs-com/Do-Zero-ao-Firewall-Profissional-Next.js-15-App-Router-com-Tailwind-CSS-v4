@@ -55,17 +55,17 @@ src/
   test/
     setup.ts                # setup global: jest-dom, localStorage.clear(), RTL cleanup
   data/
-    quizQuestions.ts        # barrel re-exporta QUIZ_QUESTIONS (268 total) de quiz/firewall.ts + quiz/fundamentos.ts + quiz/avancados.ts
+    quizQuestions.ts        # barrel re-exporta QUIZ_QUESTIONS (274 total) de quiz/firewall.ts + quiz/fundamentos.ts + quiz/avancados.ts
     quiz/types.ts           # QuizTrail + QuizQuestion types
     quiz/firewall.ts        # 105 questões — trilha firewall
     quiz/fundamentos.ts     # 68 questões — trilha fundamentos (17 módulos · +👤 Usuários +🔎 Troubleshooting)
-    quiz/avancados.ts       # 98 questões — trilha avancados (22 módulos · todos com ≥3 questões)
+    quiz/avancados.ts       # 101 questões — trilha avancados (22 módulos · todos com ≥4 questões)
     searchItems.ts          # 238 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 69/69 rotas cobertas
     badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (62 badges) — re-exportado do BadgeContext para tree-shaking
     topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (17 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
     deepDives.tsx           # conteúdo dos modais de aprofundamento (6 deep dives)
-    quiz.test.ts            # testes de integridade: 105+68+98 questões, campos, sem duplicatas
+    quiz.test.ts            # testes de integridade: 105+68+101 questões, campos, sem duplicatas
     searchItems.test.ts     # testes de integridade: 238 itens, IDs únicos, hrefs válidos
   components/ui/            # primitivos: CodeBlock, Steps, Boxes, FluxoCard, LayerBadge, ModuleNav
   lib/
@@ -125,7 +125,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 175 (Sprint HAPROXY: +3 checkpoints haproxy) |
 | Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
 | Badges | `src/context/BadgeContext.tsx` | 63 (Sprint HAPROXY: +haproxy-master) |
-| searchItems | `src/data/searchItems.ts` | 246 (Sprint Ferramentas v3: +1 simulador PS1) |
+| searchItems | `src/data/searchItems.ts` | 249 (Sprint Auditoria: +3 certificacoes/offline) |
 
 ---
 
@@ -490,6 +490,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint Ferramentas-Script: gerador de iptables com múltiplas regras — `buildIptablesScript(rules)` em `iptables.ts` (junta regras uma por linha, lista vazia → `''`) + 3 testes; UI da aba iptables ganhou botão "➕ Adicionar à lista", lista de regras acumuladas com remoção individual (`X`) e botão "Limpar", bloco "Script — N regras" com `CopyButton` para copiar o script completo; `e2e/18` +1 caso (adicionar/remover regras); lint ✓ · eslint ✓ · 219 testes · build 79 rotas · E2E 18 (7/7).
 - ✅ Sprint Ferramentas-PS1 (Simulador de Prompt): `src/lib/ps1.ts` — motor puro `renderPs1(template, ctx)` que expande os escapes do PS1 (`\u \h \H \w \W \$ \s \v \d \t \A \n \\`), ignora os marcadores de não-impressão `\[ \]` e converte sequências ANSI (`\e[..m` e `\033[..m`) em segmentos coloridos (paleta One Dark, negrito via código 1); `expandPs1()` retorna o texto puro; `ps1.test.ts` — 13 testes; nova aba "🖥️ Simulador de PS1" em `/ferramentas` — input do template, 4 presets (Clássico/Colorido/Minimalista/Alerta root), checkbox "simular como root", preview ao vivo num bloco estilo terminal e `CopyButton` que copia `PS1='...'` pronto para o `~/.bashrc`; `searchItems` 245→246; `e2e/18` +1 caso (preview + presets + root); lint ✓ · eslint ✓ · 17 suítes · 232 testes · build 79 rotas · E2E 18 (8/8).
 - ✅ Sprint Dashboard-Ferramentas: card "Ferramentas" no aside do `/dashboard` (ícone `Wrench`, lista os 4 utilitários — CIDR, Regex, iptables, PS1 — e botão "Abrir Ferramentas" → `/ferramentas`); melhora a descoberta do hub portátil; `e2e/07` +1 caso (card visível, href correto, navegação); lint ✓ · eslint ✓ · 232 testes · build 79 rotas · E2E 07 (3/3).
+- ✅ Sprint Auditoria de Qualidade: varredura com `scripts/check-constants.ts` (7 reconciliações ✓) + `scripts/quiz-audit.ts` + auditoria de cobertura de busca; achados corrigidos — (1) quiz: 3 módulos da trilha Avançados estavam no mínimo de 3 questões (NFS/Vault/HAProxy) → +1 cada (exportfs -ra, secret engine dinâmico, haproxy -c dry-run); **todos os 61 módulos das 3 trilhas agora têm ≥4 questões**; avancados 98→101, QUIZ_QUESTIONS 271→274; (2) busca: `/certificacoes` (1 item) e `/offline` (2 itens) abaixo do alvo de 3 → +3 itens (LPIC-1, CompTIA Linux+, Recuperação de Conectividade); searchItems 246→249; `quiz.test.ts` e `searchItems.test.ts` atualizados; lint ✓ · eslint ✓ · 232 testes · build 79 rotas.
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ✅ Simulador de Prompt PS1: ENTREGUE no Sprint Ferramentas-PS1 — aba interativa de preview ao vivo em `/ferramentas` (motor puro `src/lib/ps1.ts`), complementa o conteúdo PS1/PS2 do Sprint Anatomia do Shell em `/comandos`.
 

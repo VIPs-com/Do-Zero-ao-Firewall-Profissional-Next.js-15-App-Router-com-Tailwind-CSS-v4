@@ -56,6 +56,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'g-ferramentas-iptables', title: 'Gerador de Regras iptables', description: 'Monta o comando iptables a partir de tabela, chain, protocolo, porta, origem e ação', category: 'Glossário', href: '/ferramentas', icon: Network },
   { id: 'g-ferramentas-ps1', title: 'Simulador de Prompt PS1', description: 'Monta o prompt do Bash com preview ao vivo — escapes \\u \\h \\w \\$ e cores ANSI para o ~/.bashrc', category: 'Glossário', href: '/ferramentas', icon: Network },
   { id: 'p-certificacoes', title: 'Trilha de Certificação', description: 'Mapa LPIC-1 e CompTIA Linux+ — tópico de prova ligado ao módulo do Workshop', category: 'Página', href: '/certificacoes', icon: Award },
+  { id: 'g-cert-lpic', title: 'LPIC-1 (101/102)', description: 'Certificação Linux Professional Institute — boot/init, linha de comando, FHS, pacotes, redes e segurança mapeados aos módulos', category: 'Glossário', href: '/certificacoes', icon: Award },
+  { id: 'g-cert-comptia', title: 'CompTIA Linux+ (XK0-005)', description: 'Certificação vendor-neutral — núcleo comum com a LPIC-1: usuários, permissões, processos, armazenamento e logs', category: 'Glossário', href: '/certificacoes', icon: Award },
   { id: 't-roadmap-evolucao', title: 'Roadmap Completo — v1.0 ao v5.0', description: '5 trilhas completas: Firewall (v1.0), Fundamentos (v2.0), Servidores (v3.0), Infra Moderna (v4.0) e Cloud/Platform Engineering (v5.0).', category: 'Tópico', href: '/evolucao#roadmap-evolucao', icon: TrendingUp },
 
   // ─── Tópicos (módulos técnicos) ─────────────────────────────────────────────
@@ -426,6 +428,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // ─── Offline ────────────────────────────────────────────────────────────────
   { id: 'p-offline',           category: 'Página',    title: 'Modo Offline — Terminal de Emergência',                    description: 'Página de fallback com comandos essenciais disponíveis sem conexão à internet. Interface estilo terminal com tokens de tema dark/light', href: '/offline', icon: Terminal },
   { id: 'g-offline-commands',  category: 'Tópico',    title: 'Comandos de Emergência — Diagnóstico de Rede sem Internet', description: 'ip addr, ip route, ping, traceroute, ss -tlnp, iptables -L -n -v, nmap, dig, curl, journalctl — referência rápida para quando a conexão cai e você ainda precisa diagnosticar o firewall', href: '/offline', icon: Wrench },
+  { id: 'g-offline-recovery',  category: 'Glossário',  title: 'Recuperação de Conectividade', description: 'Sequência de diagnóstico quando a rede cai: verificar interface, rota default, DNS e regras de firewall antes de pedir suporte', href: '/offline', icon: Wrench },
 
   // ─── Módulo F16 — Usuários e Grupos ─────────────────────────────────────────
   { id: 'p-usuarios',         category: 'Página',  title: 'Gerenciamento de Usuários e Grupos no Linux',              description: 'F16 da Trilha Fundamentos: adduser, usermod, groupadd, sudo e visudo. Ciclo de vida completo da identidade Linux com boas práticas de segurança', href: '/usuarios', icon: Users },

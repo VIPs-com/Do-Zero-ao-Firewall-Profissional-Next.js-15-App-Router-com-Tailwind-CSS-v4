@@ -62,7 +62,7 @@ describe('FUNDAMENTOS_QUESTIONS', () => {
 
 // ── AVANCADOS ─────────────────────────────────────────────────────────────
 describe('AVANCADOS_QUESTIONS', () => {
-  it('tem exatamente 98 questões', () => { expect(AVANCADOS_QUESTIONS).toHaveLength(98); });
+  it('tem exatamente 101 questões', () => { expect(AVANCADOS_QUESTIONS).toHaveLength(101); });
   it("todas têm trail: 'avancados'", () => {
     AVANCADOS_QUESTIONS.forEach((q, i) => expect(q.trail, `questão ${i}`).toBe('avancados'));
   });
@@ -71,7 +71,7 @@ describe('AVANCADOS_QUESTIONS', () => {
 
 // ── BARREL ────────────────────────────────────────────────────────────────
 describe('QUIZ_QUESTIONS (barrel)', () => {
-  it('total = 271 (105 + 68 + 98)', () => { expect(QUIZ_QUESTIONS).toHaveLength(271); });
+  it('total = 274 (105 + 68 + 101)', () => { expect(QUIZ_QUESTIONS).toHaveLength(274); });
 
   it('nenhuma text duplicada em todo o array', () => {
     const texts = QUIZ_QUESTIONS.map(q => q.text);
@@ -90,7 +90,7 @@ describe('QUIZ_QUESTIONS (barrel)', () => {
   });
 
   it('ordem: terceiro bloco é avancados (índices 173..270)', () => {
-    for (let i = 173; i < 271; i++)
+    for (let i = 173; i < 274; i++)
       expect(QUIZ_QUESTIONS[i].trail, `[${i}]`).toBe('avancados');
   });
 });
