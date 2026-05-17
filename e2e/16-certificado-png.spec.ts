@@ -6,13 +6,13 @@ import { test, expect } from './fixtures';
  * O certificado só é liberado quando `isReady`:
  *   checklistPercentage >= 90  &&  quizScore >= 80
  *
- * checklistPercentage = round(valores true no checklist / 172 * 100) — conta
+ * checklistPercentage = round(valores true no checklist / 175 * 100) — conta
  * QUALQUER valor true (BadgeContext.checklistPercentage), então seedar 160
- * chaves true resulta em 93%.
+ * chaves true resulta em ~91%.
  */
 
 /**
- * Seed que satisfaz isReady (160/172 ≈ 93% + quiz score).
+ * Seed que satisfaz isReady (160/175 ≈ 91% + quiz score).
  *
  * Usa `addInitScript` em vez de `evaluate`: o BadgeContext tem um save effect
  * que grava o checklist no mount — semear via `evaluate` antes do `goto` é

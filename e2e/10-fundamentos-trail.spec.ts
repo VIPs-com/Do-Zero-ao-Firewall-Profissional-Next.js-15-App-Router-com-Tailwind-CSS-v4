@@ -92,8 +92,9 @@ test('checkpoint de módulo Fundamentos é contabilizado no dashboard', async ({
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos deve mostrar 1/172 (checklistItemsCount Sprint FOUNDATION)
-  await expect(page.getByText('1/172')).toBeVisible();
+  // Labs Concluídos deve mostrar 1/175 (checklistItemsCount — Sprint HAPROXY)
+  // exact: true — "1/175" como substring casa outros contadores do dashboard
+  await expect(page.getByText('1/175', { exact: true })).toBeVisible();
 });
 
 // ── 4. Badge fundamentos-master seeded aparece no dashboard ───────────────
