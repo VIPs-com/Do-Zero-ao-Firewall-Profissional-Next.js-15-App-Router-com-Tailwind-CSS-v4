@@ -2,11 +2,11 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Network, Regex, Shield, AlertCircle, Copy, Check } from 'lucide-react';
+import { Network, Regex, Shield, AlertCircle, Copy, Check, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { parseCidr } from '@/lib/cidr';
 import { testRegex, type RegexMatch } from '@/lib/regex';
-import { buildIptablesRule, EMPTY_RULE, type IptablesRule } from '@/lib/iptables';
+import { buildIptablesRule, buildIptablesScript, EMPTY_RULE, type IptablesRule } from '@/lib/iptables';
 import { useBadges } from '@/context/BadgeContext';
 import { useTabFilter } from '@/hooks/useTabFilter';
 
@@ -122,6 +122,10 @@ export default function FerramentasPage() {
   const updRule = <K extends keyof IptablesRule>(k: K, v: IptablesRule[K]) =>
     setRule((r) => ({ ...r, [k]: v }));
   const iptablesCmd = useMemo(() => buildIptablesRule(rule), [rule]);
+  const [rules, setRules] = useState<IptablesRule[]>([]);
+  const addRule = () => setRules((rs) => [...rs, rule]);
+  const removeRule = (i: number) => setRules((rs) => rs.filter((_, idx) => idx !== i));
+  const iptablesScript = useMemo(() => buildIptablesScript(rules), [rules]);
 
   const TABS: Array<{ id: ToolTab; label: string }> = [
     { id: 'cidr', label: '🧮 Calculadora CIDR' },
@@ -403,10 +407,54 @@ export default function FerramentasPage() {
           <div className="mt-6">
             <div className="flex items-center justify-between gap-3 mb-2">
               <p className="text-xs font-bold uppercase tracking-widest text-text-3">Comando gerado</p>
-              <CopyButton text={iptablesCmd} label="comando" />
+              <div className="flex items-center gap-2">
+                <CopyButton text={iptablesCmd} label="comando" />
+                <button
+                  type="button"
+                  onClick={addRule}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium rounded-lg border border-accent/40 bg-accent/10 text-accent px-2.5 py-1.5 hover:bg-accent/20 transition-colors"
+                >
+                  <Plus size={14} aria-hidden="true" /> Adicionar à lista
+                </button>
+              </div>
             </div>
             <pre className="bg-bg-2 border-2 border-accent/40 rounded-xl p-4 text-sm font-mono text-accent overflow-x-auto">{iptablesCmd}</pre>
           </div>
+
+          {rules.length > 0 && (
+            <div className="mt-6">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <p className="text-xs font-bold uppercase tracking-widest text-text-3">
+                  Script — {rules.length} {rules.length === 1 ? 'regra' : 'regras'}
+                </p>
+                <div className="flex items-center gap-2">
+                  <CopyButton text={iptablesScript} label="script" />
+                  <button
+                    type="button"
+                    onClick={() => setRules([])}
+                    className="inline-flex items-center gap-1.5 text-xs font-medium rounded-lg border border-border text-text-2 px-2.5 py-1.5 hover:border-err/50 hover:text-err transition-colors"
+                  >
+                    Limpar
+                  </button>
+                </div>
+              </div>
+              <ul className="space-y-1.5">
+                {rules.map((r, i) => (
+                  <li key={i} className="flex items-center gap-2 bg-bg-2 border border-border rounded-lg pl-3 pr-1.5 py-1.5">
+                    <code className="flex-1 min-w-0 text-xs font-mono text-text-2 overflow-x-auto whitespace-nowrap">{buildIptablesRule(r)}</code>
+                    <button
+                      type="button"
+                      onClick={() => removeRule(i)}
+                      aria-label={`Remover regra ${i + 1}`}
+                      className="shrink-0 p-1 rounded-md text-text-3 hover:text-err hover:bg-err/10 transition-colors"
+                    >
+                      <X size={14} aria-hidden="true" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="mt-8 p-4 rounded-xl bg-info/5 border border-info/20 text-xs text-text-3 leading-relaxed">
             <strong className="text-text-2">Lembre-se:</strong> a ordem das regras importa — o

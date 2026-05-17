@@ -77,3 +77,23 @@ test('iptables: o botão Copiar dá feedback "Copiado!"', async ({ page, context
 
   await expect(page.getByRole('button', { name: /^copiado$/i })).toBeVisible();
 });
+
+test('iptables: adicionar e remover regras da lista de script', async ({ page }) => {
+  await page.goto('/ferramentas');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /gerador de iptables/i }).click();
+
+  // Adiciona a regra padrão (porta 22)
+  await page.getByRole('button', { name: /adicionar à lista/i }).click();
+  await expect(page.getByText(/script — 1 regra/i)).toBeVisible();
+
+  // Muda a porta e adiciona uma segunda regra
+  await page.getByLabel(/porta destino/i).fill('443');
+  await page.getByRole('button', { name: /adicionar à lista/i }).click();
+  await expect(page.getByText(/script — 2 regras/i)).toBeVisible();
+
+  // Remove a primeira regra
+  await page.getByRole('button', { name: /remover regra 1/i }).click();
+  await expect(page.getByText(/script — 1 regra/i)).toBeVisible();
+});

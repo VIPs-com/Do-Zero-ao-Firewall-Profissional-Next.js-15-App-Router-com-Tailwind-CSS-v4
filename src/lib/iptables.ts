@@ -61,3 +61,11 @@ export function buildIptablesRule(r: IptablesRule): string {
 
   return parts.join(' ');
 }
+
+/**
+ * Constrói um script com várias regras `iptables`, uma por linha — pronto para
+ * colar num arquivo `.sh` ou executar em sequência. Lista vazia → string vazia.
+ */
+export function buildIptablesScript(rules: IptablesRule[]): string {
+  return rules.map(buildIptablesRule).join('\n');
+}

@@ -2,7 +2,7 @@
  * Testes do gerador de regras iptables (Sprint Ferramentas v2). Lógica pura.
  */
 import { describe, it, expect } from 'vitest';
-import { buildIptablesRule, EMPTY_RULE, type IptablesRule } from './iptables';
+import { buildIptablesRule, buildIptablesScript, EMPTY_RULE, type IptablesRule } from './iptables';
 
 const rule = (over: Partial<IptablesRule>): IptablesRule => ({ ...EMPTY_RULE, ...over });
 
@@ -47,5 +47,29 @@ describe('buildIptablesRule', () => {
   it('campos com espaços em branco são ignorados', () => {
     expect(buildIptablesRule(rule({ dport: '  ', source: '   ', inInterface: '  ' })))
       .toBe('iptables -A INPUT -p tcp -j ACCEPT');
+  });
+});
+
+describe('buildIptablesScript', () => {
+  it('lista vazia retorna string vazia', () => {
+    expect(buildIptablesScript([])).toBe('');
+  });
+
+  it('uma regra equivale a buildIptablesRule', () => {
+    const r = rule({ dport: '22' });
+    expect(buildIptablesScript([r])).toBe(buildIptablesRule(r));
+  });
+
+  it('várias regras vêm uma por linha, na ordem informada', () => {
+    const script = buildIptablesScript([
+      rule({ dport: '22' }),
+      rule({ dport: '443' }),
+      rule({ protocol: 'all', dport: '', source: '203.0.113.0/24', action: 'DROP' }),
+    ]);
+    expect(script).toBe(
+      'iptables -A INPUT -p tcp --dport 22 -j ACCEPT\n' +
+      'iptables -A INPUT -p tcp --dport 443 -j ACCEPT\n' +
+      'iptables -A INPUT -s 203.0.113.0/24 -j DROP',
+    );
   });
 });
