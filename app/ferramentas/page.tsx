@@ -2,15 +2,18 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Network, AlertCircle } from 'lucide-react';
+import { Network, Regex, Shield, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { parseCidr } from '@/lib/cidr';
+import { testRegex, type RegexMatch } from '@/lib/regex';
+import { buildIptablesRule, EMPTY_RULE, type IptablesRule } from '@/lib/iptables';
 import { useBadges } from '@/context/BadgeContext';
+import { useTabFilter } from '@/hooks/useTabFilter';
 
-/** Prefixos comuns para seleção rápida. */
+type ToolTab = 'cidr' | 'regex' | 'iptables';
+
 const QUICK_PREFIXES = [8, 16, 24, 25, 26, 28, 30];
 
-/** Escopo → cor do badge. */
 const SCOPE_STYLE: Record<string, string> = {
   'privado': 'bg-ok/10 border-ok/30 text-ok',
   'público': 'bg-info/10 border-info/30 text-info',
@@ -20,34 +23,80 @@ const SCOPE_STYLE: Record<string, string> = {
   'reservado': 'bg-err/10 border-err/30 text-err',
 };
 
+/** Quebra o texto em segmentos, destacando os trechos casados pelo regex. */
+function highlightMatches(text: string, matches: RegexMatch[]): React.ReactNode[] {
+  if (matches.length === 0) return [text];
+  const out: React.ReactNode[] = [];
+  let pos = 0;
+  matches.forEach((m, i) => {
+    if (m.index > pos) out.push(text.slice(pos, m.index));
+    if (m.text !== '') {
+      out.push(
+        <mark key={i} className="bg-accent/30 text-text rounded-sm">{m.text}</mark>,
+      );
+    }
+    pos = m.index + m.text.length;
+  });
+  if (pos < text.length) out.push(text.slice(pos));
+  return out;
+}
+
+const selectCls =
+  'bg-bg-3 border border-border rounded-lg px-3 py-2 text-sm focus:border-accent outline-none transition-colors';
+const inputCls =
+  'bg-bg-3 border border-border rounded-lg px-3 py-2 text-sm font-mono focus:border-accent outline-none transition-colors';
+
 export default function FerramentasPage() {
   const { trackPageVisit } = useBadges();
-  const [input, setInput] = useState('192.168.1.0/24');
+  const { isActive, setActiveTab } = useTabFilter<ToolTab>('cidr');
 
   useEffect(() => { trackPageVisit('/ferramentas'); }, [trackPageVisit]);
 
-  const result = useMemo(() => parseCidr(input), [input]);
-
-  /** Troca apenas o prefixo, preservando o IP digitado. */
+  // ── CIDR ───────────────────────────────────────────────────────────────────
+  const [cidrInput, setCidrInput] = useState('192.168.1.0/24');
+  const cidr = useMemo(() => parseCidr(cidrInput), [cidrInput]);
   const setPrefix = (p: number) => {
-    const ipPart = input.trim().split('/')[0] || '192.168.1.0';
-    setInput(`${ipPart}/${p}`);
+    const ipPart = cidrInput.trim().split('/')[0] || '192.168.1.0';
+    setCidrInput(`${ipPart}/${p}`);
   };
-
-  const rows: Array<{ label: string; value: string; mono?: boolean }> = result
+  const cidrRows: Array<{ label: string; value: string; mono?: boolean }> = cidr
     ? [
-        { label: 'Endereço de rede',     value: result.network,   mono: true },
-        { label: 'Broadcast',            value: result.broadcast, mono: true },
-        { label: 'Primeiro host',        value: result.firstHost, mono: true },
-        { label: 'Último host',          value: result.lastHost,  mono: true },
-        { label: 'Máscara de sub-rede',  value: result.netmask,   mono: true },
-        { label: 'Wildcard',             value: result.wildcard,  mono: true },
-        { label: 'Hosts utilizáveis',    value: result.usableHosts.toLocaleString('pt-BR') },
-        { label: 'Total de endereços',   value: result.totalAddresses.toLocaleString('pt-BR') },
-        { label: 'Classe',               value: result.ipClass },
-        { label: 'Prefixo',              value: `/${result.prefix}` },
+        { label: 'Endereço de rede',    value: cidr.network,   mono: true },
+        { label: 'Broadcast',           value: cidr.broadcast, mono: true },
+        { label: 'Primeiro host',       value: cidr.firstHost, mono: true },
+        { label: 'Último host',         value: cidr.lastHost,  mono: true },
+        { label: 'Máscara de sub-rede', value: cidr.netmask,   mono: true },
+        { label: 'Wildcard',            value: cidr.wildcard,  mono: true },
+        { label: 'Hosts utilizáveis',   value: cidr.usableHosts.toLocaleString('pt-BR') },
+        { label: 'Total de endereços',  value: cidr.totalAddresses.toLocaleString('pt-BR') },
+        { label: 'Classe',              value: cidr.ipClass },
+        { label: 'Prefixo',             value: `/${cidr.prefix}` },
       ]
     : [];
+
+  // ── Regex ──────────────────────────────────────────────────────────────────
+  const [pattern, setPattern] = useState('\\d+\\.\\d+\\.\\d+\\.\\d+');
+  const [flags, setFlags] = useState({ i: false, m: false, s: false });
+  const [regexText, setRegexText] = useState(
+    'Failed password for admin from 203.0.113.7 port 5512\nAccepted password for ubuntu from 192.168.1.50 port 22',
+  );
+  const flagStr = (flags.i ? 'i' : '') + (flags.m ? 'm' : '') + (flags.s ? 's' : '');
+  const regexResult = useMemo(
+    () => testRegex(pattern, flagStr, regexText),
+    [pattern, flagStr, regexText],
+  );
+
+  // ── iptables ───────────────────────────────────────────────────────────────
+  const [rule, setRule] = useState<IptablesRule>({ ...EMPTY_RULE, dport: '22' });
+  const updRule = <K extends keyof IptablesRule>(k: K, v: IptablesRule[K]) =>
+    setRule((r) => ({ ...r, [k]: v }));
+  const iptablesCmd = useMemo(() => buildIptablesRule(rule), [rule]);
+
+  const TABS: Array<{ id: ToolTab; label: string }> = [
+    { id: 'cidr', label: '🧮 Calculadora CIDR' },
+    { id: 'regex', label: '🔍 Validador de Regex' },
+    { id: 'iptables', label: '🔥 Gerador de iptables' },
+  ];
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
@@ -58,97 +107,270 @@ export default function FerramentasPage() {
       </div>
 
       <div className="section-label">Ferramentas Portáteis</div>
-      <h1 className="section-title">🧮 Calculadora de Sub-redes CIDR</h1>
+      <h1 className="section-title">🧰 Ferramentas do SysAdmin</h1>
       <p className="section-sub">
-        Digite um endereço no formato <code>IP/prefixo</code> e veja na hora a rede,
-        o broadcast, a faixa de hosts e a máscara. Tudo roda no seu navegador —
-        nenhuma informação é enviada a servidores.
+        Utilitários de acesso rápido — calculadora de sub-redes, validador de regex e gerador
+        de regras iptables. Tudo roda no seu navegador, nada é enviado a servidores.
       </p>
 
-      {/* Entrada */}
-      <div className="mt-8 bg-bg-2 border border-border rounded-2xl p-6">
-        <label htmlFor="cidr-input" className="block text-xs font-bold uppercase tracking-widest text-text-3 mb-2">
-          Endereço CIDR
-        </label>
-        <div className="relative">
-          <Network className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={20} aria-hidden="true" />
-          <input
-            id="cidr-input"
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="192.168.1.0/24"
-            spellCheck={false}
-            autoComplete="off"
-            aria-invalid={input.trim() !== '' && !result}
-            className="w-full bg-bg-3 border-2 border-border rounded-xl py-3.5 pl-12 pr-4 font-mono text-lg focus:border-accent outline-none transition-colors"
-          />
-        </div>
-
-        {/* Prefixos rápidos */}
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-text-3 mr-1">Prefixo:</span>
-          {QUICK_PREFIXES.map((p) => (
+      {/* Tabs */}
+      <div className="border-b border-border mt-8 mb-8">
+        <div className="flex gap-2 flex-wrap">
+          {TABS.map((tab) => (
             <button
-              key={p}
-              type="button"
-              onClick={() => setPrefix(p)}
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
               className={cn(
-                'px-3 py-1 rounded-full text-xs font-bold font-mono border transition-colors',
-                result?.prefix === p
-                  ? 'bg-accent border-accent text-bg'
-                  : 'border-border text-text-2 hover:border-accent/50',
+                'px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px',
+                isActive(tab.id)
+                  ? 'border-accent text-accent'
+                  : 'border-transparent text-text-2 hover:text-text',
               )}
             >
-              /{p}
+              {tab.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Resultado */}
-      {result ? (
-        <div className="mt-6">
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <span className="font-mono text-lg font-bold text-text">
-              {result.ip}/{result.prefix}
-            </span>
-            <span className={cn(
-              'text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border',
-              SCOPE_STYLE[result.scope] ?? 'bg-bg-3 border-border text-text-3',
-            )}>
-              {result.scope}
-            </span>
+      {/* ── Calculadora CIDR ─────────────────────────────────────────────────── */}
+      {isActive('cidr') && (
+        <div>
+          <div className="bg-bg-2 border border-border rounded-2xl p-6">
+            <label htmlFor="cidr-input" className="block text-xs font-bold uppercase tracking-widest text-text-3 mb-2">
+              Endereço CIDR
+            </label>
+            <div className="relative">
+              <Network className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={20} aria-hidden="true" />
+              <input
+                id="cidr-input"
+                type="text"
+                value={cidrInput}
+                onChange={(e) => setCidrInput(e.target.value)}
+                placeholder="192.168.1.0/24"
+                spellCheck={false}
+                autoComplete="off"
+                aria-invalid={cidrInput.trim() !== '' && !cidr}
+                className="w-full bg-bg-3 border-2 border-border rounded-xl py-3.5 pl-12 pr-4 font-mono text-lg focus:border-accent outline-none transition-colors"
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-text-3 mr-1">Prefixo:</span>
+              {QUICK_PREFIXES.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPrefix(p)}
+                  className={cn(
+                    'px-3 py-1 rounded-full text-xs font-bold font-mono border transition-colors',
+                    cidr?.prefix === p
+                      ? 'bg-accent border-accent text-bg'
+                      : 'border-border text-text-2 hover:border-accent/50',
+                  )}
+                >
+                  /{p}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 gap-3">
-            {rows.map((row) => (
-              <div key={row.label} className="bg-bg-2 border border-border rounded-xl px-4 py-3 flex items-center justify-between gap-4">
-                <span className="text-xs text-text-3">{row.label}</span>
-                <span className={cn('text-sm font-bold text-text', row.mono && 'font-mono')}>
-                  {row.value}
+
+          {cidr ? (
+            <div className="mt-6">
+              <div className="flex flex-wrap items-center gap-3 mb-4">
+                <span className="font-mono text-lg font-bold text-text">{cidr.ip}/{cidr.prefix}</span>
+                <span className={cn(
+                  'text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded border',
+                  SCOPE_STYLE[cidr.scope] ?? 'bg-bg-3 border-border text-text-3',
+                )}>
+                  {cidr.scope}
                 </span>
               </div>
-            ))}
+              <div className="grid sm:grid-cols-2 gap-3">
+                {cidrRows.map((row) => (
+                  <div key={row.label} className="bg-bg-2 border border-border rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+                    <span className="text-xs text-text-3">{row.label}</span>
+                    <span className={cn('text-sm font-bold text-text', row.mono && 'font-mono')}>{row.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : cidrInput.trim() !== '' ? (
+            <div className="mt-6 flex items-center gap-3 p-4 rounded-xl border border-err/30 bg-err/5 text-sm text-text-2">
+              <AlertCircle size={18} className="text-err shrink-0" aria-hidden="true" />
+              <span>
+                Endereço inválido. Use <code className="font-mono">IP/prefixo</code> —
+                ex.: <code className="font-mono">10.0.0.0/8</code> · octetos 0–255 · prefixo 0–32.
+              </span>
+            </div>
+          ) : null}
+
+          <div className="mt-8 p-4 rounded-xl bg-info/5 border border-info/20 text-xs text-text-3 leading-relaxed">
+            <strong className="text-text-2">Casos especiais:</strong> <code>/31</code> é enlace
+            ponto-a-ponto (RFC 3021, 2 hosts) e <code>/32</code> é um host único. Útil para
+            planejar VLANs, regras de firewall e rotas.
           </div>
         </div>
-      ) : input.trim() !== '' ? (
-        <div className="mt-6 flex items-center gap-3 p-4 rounded-xl border border-err/30 bg-err/5 text-sm text-text-2">
-          <AlertCircle size={18} className="text-err shrink-0" aria-hidden="true" />
-          <span>
-            Endereço inválido. Use o formato <code className="font-mono">IP/prefixo</code> —
-            ex.: <code className="font-mono">10.0.0.0/8</code> · octetos 0–255 · prefixo 0–32.
-          </span>
-        </div>
-      ) : null}
+      )}
 
-      {/* Nota didática */}
-      <div className="mt-8 p-4 rounded-xl bg-info/5 border border-info/20 text-xs text-text-3 leading-relaxed">
-        <strong className="text-text-2">Por que isso importa:</strong> calcular sub-redes
-        de cabeça é lento e propenso a erro. Esta ferramenta confere o seu raciocínio na
-        hora de planejar VLANs, regras de firewall (<code>iptables -s 10.0.0.0/8</code>) ou
-        rotas. Casos especiais: <code>/31</code> é enlace ponto-a-ponto (RFC 3021, 2 hosts)
-        e <code>/32</code> é um host único.
-      </div>
+      {/* ── Validador de Regex ───────────────────────────────────────────────── */}
+      {isActive('regex') && (
+        <div>
+          <div className="bg-bg-2 border border-border rounded-2xl p-6 space-y-4">
+            <div>
+              <label htmlFor="regex-pattern" className="block text-xs font-bold uppercase tracking-widest text-text-3 mb-2">
+                Padrão
+              </label>
+              <div className="relative">
+                <Regex className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={20} aria-hidden="true" />
+                <input
+                  id="regex-pattern"
+                  type="text"
+                  value={pattern}
+                  onChange={(e) => setPattern(e.target.value)}
+                  placeholder="\d+\.\d+\.\d+\.\d+"
+                  spellCheck={false}
+                  autoComplete="off"
+                  aria-invalid={!regexResult.ok}
+                  className="w-full bg-bg-3 border-2 border-border rounded-xl py-3 pl-12 pr-4 font-mono text-sm focus:border-accent outline-none transition-colors"
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Flags:</span>
+              {([
+                { k: 'i' as const, label: 'i — ignore case' },
+                { k: 'm' as const, label: 'm — multiline' },
+                { k: 's' as const, label: 's — dotAll' },
+              ]).map(({ k, label }) => (
+                <label key={k} className="flex items-center gap-1.5 text-xs text-text-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={flags[k]}
+                    onChange={(e) => setFlags((f) => ({ ...f, [k]: e.target.checked }))}
+                    className="accent-[var(--color-accent)]"
+                  />
+                  <code>{label}</code>
+                </label>
+              ))}
+            </div>
+            <div>
+              <label htmlFor="regex-text" className="block text-xs font-bold uppercase tracking-widest text-text-3 mb-2">
+                Texto de teste
+              </label>
+              <textarea
+                id="regex-text"
+                value={regexText}
+                onChange={(e) => setRegexText(e.target.value)}
+                rows={4}
+                spellCheck={false}
+                className="w-full bg-bg-3 border border-border rounded-lg px-3 py-2 font-mono text-xs focus:border-accent outline-none transition-colors resize-y"
+              />
+            </div>
+          </div>
+
+          {regexResult.ok ? (
+            <div className="mt-6">
+              <p className="text-sm font-bold text-text mb-3">
+                {regexResult.count} {regexResult.count === 1 ? 'match' : 'matches'}
+              </p>
+              <pre className="bg-bg-2 border border-border rounded-xl p-4 text-xs font-mono whitespace-pre-wrap break-words leading-relaxed">
+                {highlightMatches(regexText, regexResult.matches)}
+              </pre>
+            </div>
+          ) : (
+            <div className="mt-6 flex items-center gap-3 p-4 rounded-xl border border-err/30 bg-err/5 text-sm text-text-2">
+              <AlertCircle size={18} className="text-err shrink-0" aria-hidden="true" />
+              <span>Regex inválido: <code className="font-mono">{regexResult.error}</code></span>
+            </div>
+          )}
+
+          <div className="mt-8 p-4 rounded-xl bg-info/5 border border-info/20 text-xs text-text-3 leading-relaxed">
+            <strong className="text-text-2">Onde isso ajuda:</strong> validar o padrão antes de
+            usar em <code>grep -E</code>, <code>sed</code> ou no <code>failregex</code> de uma
+            jail do Fail2ban. A flag <code>g</code> é aplicada automaticamente para mostrar todos
+            os matches.
+          </div>
+        </div>
+      )}
+
+      {/* ── Gerador de iptables ──────────────────────────────────────────────── */}
+      {isActive('iptables') && (
+        <div>
+          <div className="bg-bg-2 border border-border rounded-2xl p-6">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Tabela</span>
+                <select value={rule.table} onChange={(e) => updRule('table', e.target.value as IptablesRule['table'])} className={selectCls}>
+                  <option value="filter">filter</option>
+                  <option value="nat">nat</option>
+                </select>
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Chain</span>
+                <select value={rule.chain} onChange={(e) => updRule('chain', e.target.value)} className={selectCls}>
+                  {['INPUT', 'OUTPUT', 'FORWARD', 'PREROUTING', 'POSTROUTING'].map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Protocolo</span>
+                <select value={rule.protocol} onChange={(e) => updRule('protocol', e.target.value as IptablesRule['protocol'])} className={selectCls}>
+                  {['tcp', 'udp', 'icmp', 'all'].map((p) => <option key={p} value={p}>{p}</option>)}
+                </select>
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Ação (-j)</span>
+                <select value={rule.action} onChange={(e) => updRule('action', e.target.value)} className={selectCls}>
+                  {['ACCEPT', 'DROP', 'REJECT', 'LOG', 'MASQUERADE'].map((a) => <option key={a} value={a}>{a}</option>)}
+                </select>
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Porta destino (--dport)</span>
+                <input
+                  type="text" value={rule.dport} onChange={(e) => updRule('dport', e.target.value)}
+                  placeholder="22" spellCheck={false} className={inputCls}
+                  disabled={rule.protocol !== 'tcp' && rule.protocol !== 'udp'}
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Origem (-s)</span>
+                <input
+                  type="text" value={rule.source} onChange={(e) => updRule('source', e.target.value)}
+                  placeholder="192.168.1.0/24" spellCheck={false} className={inputCls}
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Interface (-i)</span>
+                <input
+                  type="text" value={rule.inInterface} onChange={(e) => updRule('inInterface', e.target.value)}
+                  placeholder="eth0" spellCheck={false} className={inputCls}
+                />
+              </label>
+              <label className="flex flex-col gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-text-3">Estado (conntrack)</span>
+                <select value={rule.ctstate} onChange={(e) => updRule('ctstate', e.target.value)} className={selectCls}>
+                  <option value="">— nenhum —</option>
+                  <option value="NEW">NEW</option>
+                  <option value="ESTABLISHED,RELATED">ESTABLISHED,RELATED</option>
+                  <option value="NEW,ESTABLISHED">NEW,ESTABLISHED</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <p className="text-xs font-bold uppercase tracking-widest text-text-3 mb-2">Comando gerado</p>
+            <pre className="bg-bg-2 border-2 border-accent/40 rounded-xl p-4 text-sm font-mono text-accent overflow-x-auto">{iptablesCmd}</pre>
+          </div>
+
+          <div className="mt-8 p-4 rounded-xl bg-info/5 border border-info/20 text-xs text-text-3 leading-relaxed">
+            <strong className="text-text-2">Lembre-se:</strong> a ordem das regras importa — o
+            iptables avalia de cima para baixo e para na primeira que casa. Para persistir após
+            o reboot use <code>iptables-save</code> / <code>netfilter-persistent</code>.
+          </div>
+        </div>
+      )}
     </div>
   );
 }

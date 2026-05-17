@@ -1,20 +1,20 @@
 import { test, expect } from './fixtures';
 
 /**
- * Sprint Ferramentas Portáteis — calculadora de sub-redes CIDR (/ferramentas).
+ * Sprint Ferramentas Portáteis v2 — /ferramentas com 3 abas:
+ * Calculadora CIDR, Validador de Regex e Gerador de iptables.
  *
- * A página tem um input `#cidr-input` e exibe os resultados ao vivo
- * (parseCidr em useMemo). A lógica de cálculo é coberta por src/lib/cidr.test.ts;
- * aqui validamos a renderização e o wiring reativo.
+ * A lógica pura é coberta por src/lib/{cidr,regex,iptables}.test.ts;
+ * aqui validamos a renderização, a troca de abas e o wiring reativo.
  */
 
-test('CIDR: exibe os resultados do bloco padrão 192.168.1.0/24', async ({ page }) => {
+test('Ferramentas: página renderiza com a aba CIDR ativa por padrão', async ({ page }) => {
   await page.goto('/ferramentas');
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByRole('heading', { name: /calculadora de sub-redes cidr/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /ferramentas do sysadmin/i })).toBeVisible();
 
-  // Resultados do /24 padrão
+  // CIDR é a aba padrão — resultados do /24 já visíveis
   await expect(page.getByText('192.168.1.255')).toBeVisible();        // broadcast
   await expect(page.getByText('254', { exact: true })).toBeVisible(); // hosts utilizáveis
 });
@@ -37,4 +37,32 @@ test('CIDR: entrada inválida mostra mensagem de erro', async ({ page }) => {
   await page.getByLabel(/endereço cidr/i).fill('999.1.1.1/24');
 
   await expect(page.getByText(/endereço inválido/i)).toBeVisible();
+});
+
+test('Regex: a aba valida o padrão e conta os matches', async ({ page }) => {
+  await page.goto('/ferramentas');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /validador de regex/i }).click();
+
+  // Padrão de IP padrão contra texto com 2 IPs → 2 matches
+  await expect(page.getByText(/2 matches/i)).toBeVisible();
+
+  // Padrão inválido exibe erro
+  await page.getByLabel(/padrão/i).fill('(abc');
+  await expect(page.getByText(/regex inválido/i)).toBeVisible();
+});
+
+test('iptables: a aba gera o comando a partir do formulário', async ({ page }) => {
+  await page.goto('/ferramentas');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /gerador de iptables/i }).click();
+
+  // Estado inicial: porta 22, ACCEPT
+  await expect(page.getByText('iptables -A INPUT -p tcp --dport 22 -j ACCEPT')).toBeVisible();
+
+  // Mudar a ação para DROP reflete no comando gerado
+  await page.getByLabel(/ação/i).selectOption('DROP');
+  await expect(page.getByText('iptables -A INPUT -p tcp --dport 22 -j DROP')).toBeVisible();
 });
