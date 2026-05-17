@@ -129,7 +129,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 175 (Sprint HAPROXY: +3 checkpoints haproxy) |
 | Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
 | Badges | `src/context/BadgeContext.tsx` | 63 (Sprint HAPROXY: +haproxy-master) |
-| searchItems | `src/data/searchItems.ts` | 249 (Sprint Auditoria: +3 certificacoes/offline) |
+| searchItems | `src/data/searchItems.ts` | 250 (Sprint NANO: +1 guia nano) |
 
 ---
 
@@ -498,6 +498,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint E2E-Cobertura: 2 specs Playwright novos para páginas interativas sem cobertura dedicada — `e2e/20-cheat-sheet.spec.ts` (5 casos: 4 abas + aria-selected, busca ao vivo + estado vazio, troca de aba, filtro de camada OSI, feedback "Copiado!" com `grantPermissions`) e `e2e/21-quiz-config.spec.ts` (4 casos: seletores de trilha/sessão, preview de contagem ao trocar para "Completo", `?trail=fundamentos` pré-seleciona a trilha, troca de trilha atualiza o radio); total 21 specs E2E.
 - ✅ Sprint E2E-Glossário: `e2e/22-glossario.spec.ts` — 3 casos para `/glossario` (render com busca + botões de categoria, busca filtra termos + estado vazio "Nenhum termo encontrado", filtro por categoria VPN restringe a lista); total 22 specs E2E.
 - ✅ Sprint E2E-Progress: `e2e/23-progress-dropdown.spec.ts` — 3 casos para o `ProgressDropdown` do header (abre o dialog e atualiza `aria-expanded`, alterna entre as 3 abas de trilha com `aria-selected`, ESC fecha o painel); total 23 specs E2E.
+- ✅ Sprint NANO (Editor para Iniciantes): aba "📜 Scripts & VIM" do `/cheat-sheet` renomeada para "📜 Scripts & Editores" e ganhou um **Guia nano** acima do Guia VIM — nano apresentado como editor recomendado para iniciantes (atalhos `Ctrl+O/X/K/U/W`, `Alt+U/E`, sempre visíveis no rodapé), VIM rebaixado a "Nível avançado"; `e2e/20` tab continua casando por `/scripts/i`; +1 searchItem `g-nano-guide` (searchItems 249→250); auditoria confirmou que o módulo `/editores` já trata nano como editor primário ("Use nano enquanto aprende"); lint ✓ · eslint ✓ · 232 testes · build 79 rotas · E2E 20 (5/5).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ✅ Simulador de Prompt PS1: ENTREGUE no Sprint Ferramentas-PS1 — aba interativa de preview ao vivo em `/ferramentas` (motor puro `src/lib/ps1.ts`), complementa o conteúdo PS1/PS2 do Sprint Anatomia do Shell em `/comandos`.
 

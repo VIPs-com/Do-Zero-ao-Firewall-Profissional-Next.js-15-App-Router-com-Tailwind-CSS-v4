@@ -328,7 +328,7 @@ export default function CheatSheetPage() {
           { id: 'commands',  label: '⚡ Comandos' },
           { id: 'workflows', label: '🔄 Workflows' },
           { id: 'windows',   label: '🪟 Windows↔Linux' },
-          { id: 'scripts',   label: '📜 Scripts & VIM' },
+          { id: 'scripts',   label: '📜 Scripts & Editores' },
         ] as const).map(tab => (
           <button
             key={tab.id}
@@ -472,17 +472,42 @@ export default function CheatSheetPage() {
 
       </div>{/* /Tab: Comandos */}
 
-      {/* ── Tab: Scripts & VIM ── */}
+      {/* ── Tab: Scripts & Editores ── */}
       <div hidden={activeTab !== 'scripts'}>
 
-      {/* VIM Guide */}
-      <div className="mt-4 p-6 rounded-xl bg-bg-2 border border-border">
+      {/* NANO Guide — editor recomendado para iniciantes */}
+      <div className="mt-4 p-6 rounded-xl bg-bg-2 border border-ok/30">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <Terminal size={20} className="text-accent" aria-hidden="true" />
-          Sobrevivência no Terminal — Guia VIM
+          <Terminal size={20} className="text-ok" aria-hidden="true" />
+          Comece por aqui — Guia nano
         </h2>
         <p className="text-sm text-text-2 mb-6">
-          VIM é o editor padrão em servidores Linux. Conheça os comandos mínimos para não ficar preso.
+          O <strong>nano</strong> é o editor mais simples do Linux — os atalhos ficam sempre
+          visíveis no rodapé da tela. É a melhor escolha enquanto você aprende; o VIM (abaixo)
+          é mais poderoso, porém avançado. O símbolo <code>^</code> significa a tecla <strong>Ctrl</strong>.
+        </p>
+        <CodeBlock
+          lang="bash"
+          code={`# Abrir um arquivo\nnano arquivo.conf\nsudo nano /etc/ssh/sshd_config   # arquivos do sistema precisam de sudo\n\n# Salvar e sair\nCtrl+O     → gravar (Output) — confirme o nome com Enter\nCtrl+X     → sair (pergunta se quer salvar se houver mudanças)\n\n# Editar\nCtrl+K     → recortar a linha atual\nCtrl+U     → colar a linha recortada\nAlt+U      → desfazer (undo)\nAlt+E      → refazer (redo)\n\n# Navegação e busca\nCtrl+W     → buscar texto (Where Is)\nCtrl+\\\\     → buscar e substituir\nCtrl+_     → ir para um número de linha\nCtrl+G     → abrir a ajuda completa`}
+        />
+        <InfoBox title="Por que nano primeiro?">
+          <p className="text-sm text-text-2">
+            No nano os comandos estão sempre na tela — não existe &quot;ficar preso&quot;.
+            Já vem instalado no Ubuntu Server. Se faltar: <code>sudo apt install nano -y</code>.
+            Aprenda o VIM depois, quando estiver confortável no terminal.
+          </p>
+        </InfoBox>
+      </div>
+
+      {/* VIM Guide */}
+      <div className="mt-6 p-6 rounded-xl bg-bg-2 border border-border">
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Terminal size={20} className="text-accent" aria-hidden="true" />
+          Nível avançado — Guia VIM
+        </h2>
+        <p className="text-sm text-text-2 mb-6">
+          VIM está presente em qualquer servidor Linux e é muito eficiente depois de dominado.
+          Conheça os comandos mínimos para não ficar preso.
         </p>
         <CodeBlock
           lang="bash"
@@ -496,7 +521,7 @@ export default function CheatSheetPage() {
         </InfoBox>
       </div>
 
-      </div>{/* /Tab: Scripts & VIM (parte 1 — VIM guide) */}
+      </div>{/* /Tab: Scripts & Editores (parte 1 — guias nano + VIM) */}
 
       {/* ── Tab: Windows↔Linux ── */}
       <div hidden={activeTab !== 'windows'}>

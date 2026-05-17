@@ -177,6 +177,10 @@ export const SEARCH_ITEMS: SearchItem[] = [
     description: 'Botão de Pânico: limpa iptables, garante SSH, ativa ip_forward. Download direto.',
     category: 'Comando', href: '/cheat-sheet#scripts', icon: Shield },
 
+  { id: 'g-nano-guide', category: 'Tópico', title: 'nano — Editor recomendado para iniciantes',
+    description: 'Ctrl+O grava, Ctrl+X sai, Ctrl+K recorta, Ctrl+W busca — atalhos sempre visíveis no rodapé. Comece pelo nano antes do VIM.',
+    href: '/cheat-sheet#scripts', icon: FileText },
+
   // Sprint F1-F3 — Trilha Fundamentos Linux (v2.0)
   { id: 'p-fundamentos',   title: 'Fundamentos Linux — Trilha para Iniciantes',
     description: '15 módulos do zero: FHS, comandos, editores, processos, permissões, discos, boot, rsyslog, SSH proxy e mais.',
