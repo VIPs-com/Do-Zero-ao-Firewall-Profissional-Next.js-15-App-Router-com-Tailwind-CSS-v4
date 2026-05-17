@@ -97,3 +97,22 @@ test('iptables: adicionar e remover regras da lista de script', async ({ page })
   await page.getByRole('button', { name: /remover regra 1/i }).click();
   await expect(page.getByText(/script — 1 regra/i)).toBeVisible();
 });
+
+test('PS1: a aba renderiza o preview e responde aos presets', async ({ page }) => {
+  await page.goto('/ferramentas');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /simulador de ps1/i }).click();
+
+  // Template clássico padrão → preview com usuário@host
+  const preview = page.locator('pre').filter({ hasText: 'aluno@servidor' });
+  await expect(preview).toBeVisible();
+
+  // Preset minimalista muda o preview
+  await page.getByRole('button', { name: 'Minimalista', exact: true }).click();
+  await expect(page.locator('#ps1-input')).toHaveValue(/\\W/);
+
+  // Checkbox root troca o $ por #
+  await page.getByLabel(/simular como/i).check();
+  await expect(page.locator('pre').filter({ hasText: '#' })).toBeVisible();
+});

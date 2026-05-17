@@ -2,15 +2,24 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Network, Regex, Shield, AlertCircle, Copy, Check, Plus, X } from 'lucide-react';
+import { Network, Regex, Shield, AlertCircle, Copy, Check, Plus, X, Terminal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { parseCidr } from '@/lib/cidr';
 import { testRegex, type RegexMatch } from '@/lib/regex';
 import { buildIptablesRule, buildIptablesScript, EMPTY_RULE, type IptablesRule } from '@/lib/iptables';
+import { renderPs1, DEFAULT_PS1_CONTEXT } from '@/lib/ps1';
 import { useBadges } from '@/context/BadgeContext';
 import { useTabFilter } from '@/hooks/useTabFilter';
 
-type ToolTab = 'cidr' | 'regex' | 'iptables';
+type ToolTab = 'cidr' | 'regex' | 'iptables' | 'ps1';
+
+/** Presets de PS1 prontos para experimentar. */
+const PS1_PRESETS: Array<{ label: string; value: string }> = [
+  { label: 'Clássico', value: '\\u@\\h:\\w\\$ ' },
+  { label: 'Colorido', value: '\\[\\e[1;32m\\]\\u@\\h\\[\\e[0m\\]:\\[\\e[1;34m\\]\\w\\[\\e[0m\\]\\$ ' },
+  { label: 'Minimalista', value: '\\[\\e[36m\\]\\W\\[\\e[0m\\] \\$ ' },
+  { label: 'Alerta root', value: '\\[\\e[1;31m\\]\\u@\\h\\[\\e[0m\\]:\\w\\$ ' },
+];
 
 const QUICK_PREFIXES = [8, 16, 24, 25, 26, 28, 30];
 
@@ -127,10 +136,19 @@ export default function FerramentasPage() {
   const removeRule = (i: number) => setRules((rs) => rs.filter((_, idx) => idx !== i));
   const iptablesScript = useMemo(() => buildIptablesScript(rules), [rules]);
 
+  // ── PS1 ────────────────────────────────────────────────────────────────────
+  const [ps1, setPs1] = useState('\\u@\\h:\\w\\$ ');
+  const [ps1Root, setPs1Root] = useState(false);
+  const ps1Segments = useMemo(
+    () => renderPs1(ps1, { ...DEFAULT_PS1_CONTEXT, isRoot: ps1Root }),
+    [ps1, ps1Root],
+  );
+
   const TABS: Array<{ id: ToolTab; label: string }> = [
     { id: 'cidr', label: '🧮 Calculadora CIDR' },
     { id: 'regex', label: '🔍 Validador de Regex' },
     { id: 'iptables', label: '🔥 Gerador de iptables' },
+    { id: 'ps1', label: '🖥️ Simulador de PS1' },
   ];
 
   return (
@@ -460,6 +478,81 @@ export default function FerramentasPage() {
             <strong className="text-text-2">Lembre-se:</strong> a ordem das regras importa — o
             iptables avalia de cima para baixo e para na primeira que casa. Para persistir após
             o reboot use <code>iptables-save</code> / <code>netfilter-persistent</code>.
+          </div>
+        </div>
+      )}
+
+      {/* ── Simulador de PS1 ─────────────────────────────────────────────────── */}
+      {isActive('ps1') && (
+        <div>
+          <div className="bg-bg-2 border border-border rounded-2xl p-6 space-y-4">
+            <div>
+              <label htmlFor="ps1-input" className="block text-xs font-bold uppercase tracking-widest text-text-3 mb-2">
+                Template PS1
+              </label>
+              <div className="relative">
+                <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 text-text-3" size={20} aria-hidden="true" />
+                <input
+                  id="ps1-input"
+                  type="text"
+                  value={ps1}
+                  onChange={(e) => setPs1(e.target.value)}
+                  placeholder="\u@\h:\w\$ "
+                  spellCheck={false}
+                  autoComplete="off"
+                  className="w-full bg-bg-3 border-2 border-border rounded-xl py-3 pl-12 pr-4 font-mono text-sm focus:border-accent outline-none transition-colors"
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-text-3 mr-1">Presets:</span>
+              {PS1_PRESETS.map((p) => (
+                <button
+                  key={p.label}
+                  type="button"
+                  onClick={() => setPs1(p.value)}
+                  className={cn(
+                    'px-3 py-1 rounded-full text-xs font-bold border transition-colors',
+                    ps1 === p.value
+                      ? 'bg-accent border-accent text-bg'
+                      : 'border-border text-text-2 hover:border-accent/50',
+                  )}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            <label className="flex items-center gap-1.5 text-xs text-text-2 cursor-pointer w-fit">
+              <input
+                type="checkbox"
+                checked={ps1Root}
+                onChange={(e) => setPs1Root(e.target.checked)}
+                className="accent-[var(--color-accent)]"
+              />
+              Simular como <code>root</code> (<code>\$</code> vira <code>#</code>)
+            </label>
+          </div>
+
+          <div className="mt-6">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <p className="text-xs font-bold uppercase tracking-widest text-text-3">Preview do terminal</p>
+              <CopyButton text={`PS1='${ps1}'`} label="PS1" />
+            </div>
+            <pre className="bg-[#1e2127] border border-border rounded-xl p-4 text-sm font-mono whitespace-pre-wrap break-words leading-relaxed">
+              {ps1Segments.map((s, i) => (
+                <span key={i} style={{ color: s.color ?? '#abb2bf', fontWeight: s.bold ? 700 : 400 }}>
+                  {s.text}
+                </span>
+              ))}
+              <span className="text-[#abb2bf]">ls -la</span>
+            </pre>
+          </div>
+
+          <div className="mt-8 p-4 rounded-xl bg-info/5 border border-info/20 text-xs text-text-3 leading-relaxed">
+            <strong className="text-text-2">Como usar:</strong> ajuste o template até gostar do
+            preview e adicione <code>PS1=&apos;...&apos;</code> ao seu <code>~/.bashrc</code>.
+            Escapes: <code>\u</code> usuário · <code>\h</code> host · <code>\w</code> caminho ·
+            <code>\W</code> pasta atual · <code>\$</code> #/$ · <code>\e[..m</code> cor ANSI.
           </div>
         </div>
       )}

@@ -54,6 +54,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'p-ferramentas', title: 'Ferramentas',  description: 'Calculadora CIDR, validador de Regex e gerador de regras iptables', category: 'Página', href: '/ferramentas', icon: Network },
   { id: 'g-ferramentas-regex', title: 'Validador de Regex', description: 'Testa um padrão regex ao vivo contra um texto — flags i/m/s, destaca os matches. Útil para failregex do Fail2ban', category: 'Glossário', href: '/ferramentas', icon: Network },
   { id: 'g-ferramentas-iptables', title: 'Gerador de Regras iptables', description: 'Monta o comando iptables a partir de tabela, chain, protocolo, porta, origem e ação', category: 'Glossário', href: '/ferramentas', icon: Network },
+  { id: 'g-ferramentas-ps1', title: 'Simulador de Prompt PS1', description: 'Monta o prompt do Bash com preview ao vivo — escapes \\u \\h \\w \\$ e cores ANSI para o ~/.bashrc', category: 'Glossário', href: '/ferramentas', icon: Network },
   { id: 'p-certificacoes', title: 'Trilha de Certificação', description: 'Mapa LPIC-1 e CompTIA Linux+ — tópico de prova ligado ao módulo do Workshop', category: 'Página', href: '/certificacoes', icon: Award },
   { id: 't-roadmap-evolucao', title: 'Roadmap Completo — v1.0 ao v5.0', description: '5 trilhas completas: Firewall (v1.0), Fundamentos (v2.0), Servidores (v3.0), Infra Moderna (v4.0) e Cloud/Platform Engineering (v5.0).', category: 'Tópico', href: '/evolucao#roadmap-evolucao', icon: TrendingUp },
 
