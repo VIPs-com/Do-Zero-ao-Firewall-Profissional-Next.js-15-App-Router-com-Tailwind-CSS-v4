@@ -2,7 +2,7 @@
 
 Plataforma educacional interativa em português que ensina segurança de redes Linux (iptables, NAT, DNS, SSL, VPN, etc.) de forma gamificada. Laboratório real com três zonas: WAN, DMZ e LAN.
 
-**Next.js 16.2.3** · **React 19** · **TypeScript 5.8** · **Tailwind CSS v4** · **Turbopack**
+**Next.js 16.2.6** · **React 19** · **TypeScript 5.8** · **Tailwind CSS v4** · **Turbopack**
 
 ---
 
@@ -500,6 +500,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint E2E-Progress: `e2e/23-progress-dropdown.spec.ts` — 3 casos para o `ProgressDropdown` do header (abre o dialog e atualiza `aria-expanded`, alterna entre as 3 abas de trilha com `aria-selected`, ESC fecha o painel); total 23 specs E2E.
 - ✅ Sprint NANO (Editor para Iniciantes): aba "📜 Scripts & VIM" do `/cheat-sheet` renomeada para "📜 Scripts & Editores" e ganhou um **Guia nano** acima do Guia VIM — nano apresentado como editor recomendado para iniciantes (atalhos `Ctrl+O/X/K/U/W`, `Alt+U/E`, sempre visíveis no rodapé), VIM rebaixado a "Nível avançado"; `e2e/20` tab continua casando por `/scripts/i`; +1 searchItem `g-nano-guide` (searchItems 249→250); auditoria confirmou que o módulo `/editores` já trata nano como editor primário ("Use nano enquanto aprende"); lint ✓ · eslint ✓ · 232 testes · build 79 rotas · E2E 20 (5/5).
 - ✅ Sprint CI (Integração Contínua): `.github/workflows/ci.yml` — workflow GitHub Actions que roda em todo push/PR para a `main`, espelhando o "Checklist Antes de Qualquer Commit"; job `validate` (Node 22, `npm ci`, `tsc --noEmit`, `eslint`, `vitest`, `next build`) + job `e2e` (depende de `validate`, instala chromium do Playwright, roda `playwright test` com build+start e publica o `playwright-report` como artifact por 7 dias); `concurrency` cancela execuções antigas do mesmo ref; primeira recomendação da Auditoria Técnica (alto impacto, baixo esforço) — blinda a `main` contra regressões.
+- ✅ Sprint SECURITY (Dependências): segunda recomendação da Auditoria Técnica — `npm audit` reportava 2 vulnerabilidades (1 alta, 1 moderada); `npm audit fix` atualizou `next` 16.2.3 → **16.2.6**, fechando 13 advisories da Next.js — incluindo dois diretamente relevantes a este projeto: XSS em App Router com **CSP nonces** (GHSA-ffhc-5mcf-pf4q, usado no `proxy.ts`) e bypasses de **Middleware/Proxy**; a moderada restante (postcss XSS no CSS stringify) foi resolvida com `"overrides": { "postcss": "^8.5.10" }` no `package.json`, forçando a versão segura inclusive na cópia aninhada do `next`; resultado: `npm audit` → **0 vulnerabilidades**; lint ✓ · eslint ✓ · 232 testes · build 79 rotas.
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ✅ Simulador de Prompt PS1: ENTREGUE no Sprint Ferramentas-PS1 — aba interativa de preview ao vivo em `/ferramentas` (motor puro `src/lib/ps1.ts`), complementa o conteúdo PS1/PS2 do Sprint Anatomia do Shell em `/comandos`.
 
