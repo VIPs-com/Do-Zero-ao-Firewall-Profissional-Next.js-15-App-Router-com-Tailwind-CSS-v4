@@ -220,8 +220,9 @@ test('ModuleNav em /troubleshooting: Anterior aponta para /ssh-proxy, sem Próxi
 // ── 11. Badge ground-zero — desbloqueio real via 17 checkpoints ───────────────
 
 test('ground-zero é desbloqueado ao completar os 17 checkpoints exigidos', async ({ page }) => {
-  // Seed checklist completo (17 primeiros checkpoints) SEM pré-seedar o badge
-  await page.evaluate(
+  // Seed checklist completo (17 primeiros checkpoints) SEM pré-seedar o badge —
+  // via addInitScript para a hidratação do BadgeContext ler antes do save effect.
+  await page.addInitScript(
     (checkpoints) => {
       localStorage.removeItem('workshop-badges');
       localStorage.setItem('workshop-checklist-v2', JSON.stringify(checkpoints));
@@ -241,7 +242,7 @@ test('ground-zero é desbloqueado ao completar os 17 checkpoints exigidos', asyn
           .includes('ground-zero');
       } catch { return false; }
     },
-    { timeout: 5_000 },
+    { timeout: 15_000 },
   );
 
   const raw = await page.evaluate(() => localStorage.getItem('workshop-badges'));

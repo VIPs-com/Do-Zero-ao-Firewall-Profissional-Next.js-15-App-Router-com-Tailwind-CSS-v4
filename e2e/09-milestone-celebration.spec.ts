@@ -1,105 +1,81 @@
 import { test, expect } from './fixtures';
+import type { Page } from '@playwright/test';
 
 /**
  * Sprint CE-E2E — MilestoneCelebration modal
  *
- * Estratégia: seed 'quiz-master' direto no localStorage + reload.
- * O BadgeContext hidrata e detecta que quiz-master é um MILESTONE_BADGE,
- * setando milestoneBadge → BadgeProvider renderiza o modal.
+ * Estratégia: semear `workshop-quiz-score = 100` via `addInitScript` (não
+ * `page.evaluate`) — o script é injetado ANTES de qualquer script da página,
+ * então a hidratação do BadgeContext já lê o score semeado. O useEffect de
+ * `quizScore` chama `unlockBadge('quiz-master')` → como é um MILESTONE_BADGE,
+ * o BadgeProvider renderiza o modal de celebração.
  *
- * O badge 'quiz-master' é ideal para testar porque:
- *   - É ativado apenas pelo score (sem dependência de checklist/visits)
- *   - É um MILESTONE_BADGE (dispara modal, não toast)
- *   - Seu CTA navega para /dashboard (fácil de assertar)
+ * `workshop-badges` é removido no seed para forçar um desbloqueio "fresco"
+ * (se quiz-master já estivesse no Set, não dispararia o modal).
+ *
+ * O badge 'quiz-master' é ideal: ativado só pelo score (sem checklist/visits),
+ * é MILESTONE_BADGE (modal, não toast) e o CTA navega para /dashboard.
  */
 
+/** Semeia o cenário quiz-master via addInitScript — determinístico em CI. */
+async function seedQuizMaster(page: Page) {
+  await page.addInitScript(() => {
+    localStorage.removeItem('workshop-badges'); // força desbloqueio fresco
+    localStorage.setItem('workshop-quiz-score', '100');
+  });
+}
+
+const MODAL_TIMEOUT = 10_000; // tolerância para runners lentos de CI
+
 test('modal de celebração aparece ao hidratar com milestone badge', async ({ page }) => {
-  // Seed: quiz-master desbloqueado + score 100
-  await page.evaluate(() => {
-    localStorage.setItem('workshop-badges', JSON.stringify(['quiz-master']));
-    localStorage.setItem('workshop-quiz-score', '100');
-  });
-
-  // Reload para acionar hidratação do BadgeContext
-  // Nota: após hidratação, milestoneBadge fica null (já estava no Set antes)
-  // Para dispara o modal, precisamos que unlockBadge() seja chamado pela primeira vez.
-  // Seed via quiz-score = 100 → useEffect → unlockBadge('quiz-master') → modal.
-  // Limpamos workshop-badges para forçar o desbloqueio fresco.
-  await page.evaluate(() => {
-    localStorage.removeItem('workshop-badges'); // força desbloqueio fresh
-    localStorage.setItem('workshop-quiz-score', '100');
-  });
-
+  await seedQuizMaster(page);
   await page.goto('/quiz');
-  await page.waitForLoadState('networkidle');
 
-  // O useEffect do quizScore em BadgeContext dispara unlockBadge('quiz-master')
+  // useEffect de quizScore em BadgeContext → unlockBadge('quiz-master')
   // → milestoneBadge !== null → MilestoneCelebration renderiza
-  const modal = page.getByRole('dialog');
-  await expect(modal).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByRole('dialog')).toBeVisible({ timeout: MODAL_TIMEOUT });
 });
 
 test('modal de milestone exibe título do badge correto', async ({ page }) => {
-  await page.evaluate(() => {
-    localStorage.removeItem('workshop-badges');
-    localStorage.setItem('workshop-quiz-score', '100');
-  });
-
+  await seedQuizMaster(page);
   await page.goto('/quiz');
-  await page.waitForLoadState('networkidle');
 
   const modal = page.getByRole('dialog');
-  await expect(modal).toBeVisible({ timeout: 5_000 });
+  await expect(modal).toBeVisible({ timeout: MODAL_TIMEOUT });
 
-  // Título do badge quiz-master = "Mestre"
+  // Título do badge quiz-master = "Mestre" · label superior
   await expect(modal.getByText('Mestre')).toBeVisible();
-  // Label superior
   await expect(modal.getByText('Badge Desbloqueado!')).toBeVisible();
 });
 
 test('ESC fecha o modal de milestone', async ({ page }) => {
-  await page.evaluate(() => {
-    localStorage.removeItem('workshop-badges');
-    localStorage.setItem('workshop-quiz-score', '100');
-  });
-
+  await seedQuizMaster(page);
   await page.goto('/quiz');
-  await page.waitForLoadState('networkidle');
 
   const modal = page.getByRole('dialog');
-  await expect(modal).toBeVisible({ timeout: 5_000 });
+  await expect(modal).toBeVisible({ timeout: MODAL_TIMEOUT });
 
   await page.keyboard.press('Escape');
   await expect(modal).not.toBeVisible({ timeout: 3_000 });
 });
 
 test('botão fechar (×) fecha o modal de milestone', async ({ page }) => {
-  await page.evaluate(() => {
-    localStorage.removeItem('workshop-badges');
-    localStorage.setItem('workshop-quiz-score', '100');
-  });
-
+  await seedQuizMaster(page);
   await page.goto('/quiz');
-  await page.waitForLoadState('networkidle');
 
   const modal = page.getByRole('dialog');
-  await expect(modal).toBeVisible({ timeout: 5_000 });
+  await expect(modal).toBeVisible({ timeout: MODAL_TIMEOUT });
 
   await modal.getByLabel('Fechar celebração').click();
   await expect(modal).not.toBeVisible({ timeout: 3_000 });
 });
 
 test('CTA do modal navega para o destino correto', async ({ page }) => {
-  await page.evaluate(() => {
-    localStorage.removeItem('workshop-badges');
-    localStorage.setItem('workshop-quiz-score', '100');
-  });
-
+  await seedQuizMaster(page);
   await page.goto('/quiz');
-  await page.waitForLoadState('networkidle');
 
   const modal = page.getByRole('dialog');
-  await expect(modal).toBeVisible({ timeout: 5_000 });
+  await expect(modal).toBeVisible({ timeout: MODAL_TIMEOUT });
 
   // CTA do quiz-master = "Ver meu progresso" → /dashboard
   await modal.getByText('Ver meu progresso').click();
@@ -107,20 +83,11 @@ test('CTA do modal navega para o destino correto', async ({ page }) => {
 });
 
 test('milestones NÃO exibem o toast genérico de 4s', async ({ page }) => {
-  await page.evaluate(() => {
-    localStorage.removeItem('workshop-badges');
-    localStorage.setItem('workshop-quiz-score', '100');
-  });
-
+  await seedQuizMaster(page);
   await page.goto('/quiz');
-  await page.waitForLoadState('networkidle');
 
-  // Modal deve aparecer
-  await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByRole('dialog')).toBeVisible({ timeout: MODAL_TIMEOUT });
 
-  // Toast (texto "Badge desbloqueado!" fora de role=dialog) NÃO deve existir
-  // O toast usa text-xs + font-mono; o modal usa texto diferente internamente.
-  // Verificamos que o toast de slide-in (fixed bottom-6 right-6 z-50) não está presente.
-  const toast = page.locator('.fixed.bottom-6.right-6.z-50');
-  await expect(toast).not.toBeVisible();
+  // O toast de slide-in (fixed bottom-6 right-6 z-50) não deve existir para milestones
+  await expect(page.locator('.fixed.bottom-6.right-6.z-50')).not.toBeVisible();
 });

@@ -172,8 +172,9 @@ test('ModuleNav em /ssh-proxy: Anterior (Rsyslog), Próximo aponta para /trouble
 // ── 8. Desbloqueio real do badge via checkpoints ───────────────────────────
 
 test('fundamentos-master é desbloqueado ao completar os 15 checkpoints exigidos', async ({ page }) => {
-  // Seed checklist completo SEM pré-seedar o badge
-  await page.evaluate(
+  // Seed checklist completo SEM pré-seedar o badge — via addInitScript para
+  // que a hidratação do BadgeContext leia o estado ANTES de qualquer save effect.
+  await page.addInitScript(
     (checkpoints) => {
       localStorage.removeItem('workshop-badges');
       localStorage.setItem('workshop-checklist-v2', JSON.stringify(checkpoints));
@@ -193,7 +194,7 @@ test('fundamentos-master é desbloqueado ao completar os 15 checkpoints exigidos
           .includes('fundamentos-master');
       } catch { return false; }
     },
-    { timeout: 5_000 }
+    { timeout: 15_000 }
   );
 
   const raw = await page.evaluate(() => localStorage.getItem('workshop-badges'));

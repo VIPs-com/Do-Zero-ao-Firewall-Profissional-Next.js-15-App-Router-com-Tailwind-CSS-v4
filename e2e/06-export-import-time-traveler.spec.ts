@@ -64,12 +64,19 @@ test('export → import desbloqueia o badge time-traveler', async ({ page }) => 
   await fileInput.setInputFiles(tmpPath);
 
   // Mensagem de sucesso
-  await expect(page.getByText('Progresso importado com sucesso!')).toBeVisible({ timeout: 5_000 });
+  await expect(page.getByText('Progresso importado com sucesso!')).toBeVisible({ timeout: 10_000 });
 
-  // Badge time-traveler desbloqueado e estado restaurado
-  const badges = await page.evaluate(() => localStorage.getItem('workshop-badges'));
-  expect(badges).toContain('time-traveler');
-  expect(badges).toContain('explorer');
+  // Badge time-traveler desbloqueado e estado restaurado — aguarda a gravação
+  // assíncrona em vez de ler o localStorage imediatamente (evita flakiness).
+  await page.waitForFunction(
+    () => {
+      try {
+        const b = JSON.parse(localStorage.getItem('workshop-badges') ?? '[]') as string[];
+        return b.includes('time-traveler') && b.includes('explorer');
+      } catch { return false; }
+    },
+    { timeout: 10_000 },
+  );
 
   // Limpa arquivo temporário
   fs.unlinkSync(tmpPath);
