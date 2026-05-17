@@ -1,0 +1,74 @@
+name: CI
+
+# Roda as validações obrigatórias do projeto em todo push/PR para a main.
+# Espelha o "Checklist Antes de Qualquer Commit" do CLAUDE.md:
+#   lint (tsc) · lint:eslint (a11y) · test (vitest) · build · E2E (Playwright)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancela execuções antigas do mesmo ref quando um novo push chega.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint · Testes · Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Typecheck (tsc --noEmit)
+        run: npm run lint
+
+      - name: ESLint + jsx-a11y
+        run: npm run lint:eslint
+
+      - name: Testes unitários (Vitest)
+        run: npm test
+
+      - name: Build de produção
+        run: npm run build
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Instalar browser do Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Rodar E2E (build prod + start)
+        run: npm run test:e2e
+
+      - name: Publicar relatório do Playwright
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
