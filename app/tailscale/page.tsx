@@ -306,6 +306,57 @@ sudo tailscale up        # login SSO, e pronto
           </label>
         </section>
 
+        <section id="tor-hidden-service" className="mb-12 scroll-mt-24">
+          <h2 className="text-2xl font-bold mb-6">8. Horizonte — Tor Hidden Service</h2>
+          <p className="text-text-2 mb-4">
+            A tailnet te dá acesso <em>privado</em> sem abrir portas. O <strong>Tor Hidden
+            Service</strong> resolve um problema diferente: publicar um serviço de forma{' '}
+            <strong>anônima e resistente a censura</strong> — acessível a qualquer um, mas sem
+            revelar o IP do servidor nem abrir porta no firewall de borda. O serviço ganha um
+            endereço <code>.onion</code> e só responde pela rede Tor.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-4 mb-4">
+            <div className="p-4 rounded-lg bg-bg-2 border border-info/30">
+              <p className="font-bold text-info mb-2 text-sm">🔗 Tailscale</p>
+              <p className="text-sm text-text-2">Acesso <strong>privado</strong> — só quem está na sua tailnet entra. Identidade conhecida, baixa latência.</p>
+            </div>
+            <div className="p-4 rounded-lg bg-bg-2 border border-accent/30">
+              <p className="font-bold text-accent mb-2 text-sm">🧅 Tor Hidden Service</p>
+              <p className="text-sm text-text-2">Acesso <strong>público e anônimo</strong> — qualquer um com o <code>.onion</code> acessa, sem saber seu IP. Resistente a censura, mais lento.</p>
+            </div>
+          </div>
+          <p className="text-text-2 mb-3">
+            Publicar um serviço local (ex.: um site na porta 80) como hidden service:
+          </p>
+          <CodeBlock lang="bash" code={`# Instalar o Tor
+sudo apt install tor -y
+
+# Declarar o hidden service em /etc/tor/torrc
+sudo tee -a /etc/tor/torrc << 'EOF'
+HiddenServiceDir /var/lib/tor/meu_site/
+HiddenServicePort 80 127.0.0.1:80
+EOF
+
+sudo systemctl restart tor
+
+# O Tor gera o endereço .onion na primeira execução:
+sudo cat /var/lib/tor/meu_site/hostname
+# → algo como: abcd1234...xyz.onion  (acesse pelo Tor Browser)`} />
+          <InfoBox title="Como o .onion não precisa de porta aberta" className="mt-4">
+            O serviço nunca recebe conexões de entrada da internet. O daemon Tor, rodando no
+            servidor, abre conexões <em>de saída</em> para a rede Tor e atua como ponte. O
+            tráfego é criptografado fim a fim e o IP real do servidor nunca é exposto — o
+            mesmo princípio de &quot;não dar o que escanear&quot; da tailnet, levado ao extremo.
+          </InfoBox>
+          <WarnBox title="Uso legítimo" className="mt-4">
+            Hidden services existem para <strong>privacidade e resistência a censura</strong> —
+            jornalismo, denúncia segura, acesso em redes hostis, publicar um serviço sem expor
+            infraestrutura. Use para fins legítimos. Para a maioria dos homelabs, a tailnet
+            (acesso privado) já basta; o <code>.onion</code> entra quando você precisa de
+            acesso <em>público</em> sem revelar o servidor.
+          </WarnBox>
+        </section>
+
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">Erros Comuns</h2>
           <div className="space-y-3">

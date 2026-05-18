@@ -822,6 +822,50 @@ done`} />
 chmod +x /usr/local/bin/alerta-telegram.sh
 echo '*/15 * * * * root /usr/local/bin/alerta-telegram.sh' \\
   | sudo tee /etc/cron.d/alerta-telegram`} />
+
+          <h3 className="text-lg font-bold mt-8 mb-2">Versão em Python — monitor estruturado</h3>
+          <p className="text-text-2 mb-3">
+            O script Bash resolve o básico. Quando você quer mais — várias métricas, formatação
+            rica, lógica de &quot;só avisar quando o estado muda&quot; para não spammar — um{' '}
+            <strong>monitor em Python</strong> fica mais limpo e fácil de evoluir. Mesma ideia,
+            estrutura melhor:
+          </p>
+          <CodeBlock lang="python" code={`#!/usr/bin/env python3
+# telegram-monitor.py — monitor de saúde do host com alertas no Telegram
+import os, shutil, subprocess, urllib.parse, urllib.request
+
+TOKEN   = os.environ["TG_TOKEN"]
+CHAT_ID = os.environ["TG_CHAT_ID"]
+
+def notifica(msg: str) -> None:
+    url  = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    data = urllib.parse.urlencode({"chat_id": CHAT_ID, "text": msg}).encode()
+    urllib.request.urlopen(url, data=data, timeout=10)
+
+def check_disco(limite: int = 85) -> None:
+    uso = shutil.disk_usage("/")
+    pct = round(uso.used / uso.total * 100)
+    if pct >= limite:
+        notifica(f"⚠️ Disco em {pct}% no host")
+
+def check_servicos(servicos: list[str]) -> None:
+    for s in servicos:
+        ativo = subprocess.run(
+            ["systemctl", "is-active", "--quiet", s]
+        ).returncode == 0
+        if not ativo:
+            notifica(f"🔴 Serviço {s} caiu")
+
+if __name__ == "__main__":
+    check_disco()
+    check_servicos(["sshd", "nginx", "crowdsec"])
+    # Agende no cron como o .sh, exportando TG_TOKEN e TG_CHAT_ID.`} />
+          <InfoBox title="Bash ou Python — escolha pela complexidade" className="mt-4">
+            Uma ou duas checagens: o <code>.sh</code> basta. Várias métricas, estado entre
+            execuções, formatação, testes: o <code>.py</code> escala melhor — funções
+            nomeadas, tipos, e a biblioteca padrão já traz tudo (<code>urllib</code>,
+            <code> shutil</code>, <code>subprocess</code>) sem instalar nada.
+          </InfoBox>
         </section>
 
         </div>}
