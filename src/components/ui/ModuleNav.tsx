@@ -79,6 +79,9 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/nextcloud':         '☁️ Nextcloud',
   '/ebpf-avancado':     '🧬 eBPF Avançado',
   '/resposta-incidentes': '🚨 Resposta a Incidentes',
+  '/crowdsec':            '🛰️ CrowdSec',
+  '/tailscale':           '🔗 Tailscale',
+  '/proxmox-backup-server': '💾 PBS',
 };
 
 type AnyModule = CourseModule | SimpleModule;

@@ -21,12 +21,12 @@ import { test, expect } from './fixtures';
  *   6. advanced-master desbloqueado ao visitar todos os 22 módulos
  */
 
-/** Todos os paths da ADVANCED_ORDER (23 módulos) */
+/** Todos os paths da ADVANCED_ORDER (26 módulos) */
 const ALL_ADVANCED_PATHS = [
   '/dhcp', '/samba', '/apache', '/openvpn', '/traefik', '/ldap', '/pihole', '/nfs',
   '/haproxy', '/ansible', '/monitoring', '/kubernetes', '/terraform', '/suricata', '/ebpf',
   '/service-mesh', '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
-  '/resposta-incidentes',
+  '/crowdsec', '/tailscale', '/proxmox-backup-server', '/resposta-incidentes',
 ];
 
 // ── 1. Índice /avancados ──────────────────────────────────────────────────
@@ -103,10 +103,10 @@ test('ModuleNav em /resposta-incidentes: Anterior aponta para /ebpf-avancado, se
   await page.goto('/resposta-incidentes');
   await page.waitForLoadState('networkidle');
 
-  // Anterior aponta para /ebpf-avancado (penúltimo)
+  // Anterior aponta para /proxmox-backup-server (penúltimo)
   const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
-  await expect(prev).toHaveAttribute('href', '/ebpf-avancado');
+  await expect(prev).toHaveAttribute('href', '/proxmox-backup-server');
 
   // Último módulo da trilha: sem botão Próximo
   await expect(page.getByRole('link', { name: /^próximo módulo:/i })).not.toBeVisible();

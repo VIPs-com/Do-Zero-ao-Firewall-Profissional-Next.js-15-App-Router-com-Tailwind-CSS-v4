@@ -74,6 +74,10 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/opnsense',      title: 'OPNsense' },
   { path: '/nextcloud',     title: 'Nextcloud' },
   { path: '/ebpf-avancado', title: 'eBPF Avançado + Cilium' },
+  // Sprint FORTALEZA — hardening de host Proxmox (CrowdSec, Tailscale, PBS)
+  { path: '/crowdsec',              title: 'CrowdSec — IPS Colaborativo' },
+  { path: '/tailscale',             title: 'Tailscale — VPN Mesh Zero-Port' },
+  { path: '/proxmox-backup-server', title: 'Proxmox Backup Server' },
   // Capstone — Resposta a Incidentes (Sprint CÓDICE)
   { path: '/resposta-incidentes', title: 'Resposta a Incidentes (DFIR)' },
 ];

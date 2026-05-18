@@ -446,6 +446,24 @@ export const ROUTE_SEO = {
       'Use SSH como proxy SOCKS5 com -D, port forwarding local e remoto com -L/-R, Jump Host com -J, autossh para túneis persistentes e ~/.ssh/config para produtividade máxima.',
     keywords: ['SSH', 'SOCKS5', 'proxy', 'port forwarding', 'SSH tunnel', 'jump host', 'autossh', 'ssh -D', 'ssh -L', 'ssh -R', 'ProxyJump', 'SSH config'],
   },
+  '/crowdsec': {
+    title: 'CrowdSec | IPS Colaborativo com Threat Intelligence',
+    description:
+      'CrowdSec — o IPS open-source que vai além do Fail2ban: cenários comportamentais em vez de regex estática, collections do Hub, bouncer nftables e blocklist colaborativa da comunidade. Defesa coletiva contra IPs maliciosos.',
+    keywords: ['CrowdSec', 'IPS', 'IDS', 'threat intelligence', 'Fail2ban alternativa', 'bouncer', 'nftables', 'cscli', 'segurança Linux', 'blocklist colaborativa'],
+  },
+  '/tailscale': {
+    title: 'Tailscale | VPN Mesh Zero-Port com NAT Traversal',
+    description:
+      'Tailscale — VPN mesh sobre o protocolo WireGuard sem abrir uma porta sequer: NAT traversal automático, login SSO identidade-first, MagicDNS, ACLs da tailnet, subnet router e exit node para acesso remoto seguro ao homelab.',
+    keywords: ['Tailscale', 'VPN mesh', 'WireGuard', 'NAT traversal', 'zero-port', 'acesso remoto', 'tailnet', 'subnet router', 'exit node', 'MagicDNS', 'homelab'],
+  },
+  '/proxmox-backup-server': {
+    title: 'Proxmox Backup Server | Backup Incremental Deduplicado de VMs',
+    description:
+      'Proxmox Backup Server (PBS): backup incremental e deduplicado de VMs e containers — datastore, namespaces, jobs agendados, retenção com prune e garbage collection, verify de integridade e restore file-level ou de VM completa.',
+    keywords: ['Proxmox Backup Server', 'PBS', 'backup VM', 'deduplicação', 'vzdump', 'datastore', 'restore', 'garbage collection', 'regra 3-2-1', 'homelab'],
+  },
   '/resposta-incidentes': {
     title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
     description:

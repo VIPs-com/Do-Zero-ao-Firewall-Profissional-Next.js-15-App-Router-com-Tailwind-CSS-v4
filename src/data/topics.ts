@@ -156,6 +156,9 @@ export const TOPICS: Topic[] = [
   { id: 'c03', num: 'C03', title: 'Nextcloud self-hosted: Docker Compose (Nextcloud+MariaDB+Redis+Traefik), CalDAV/CardDAV, integração LDAP, object storage MinIO, backup 3-2-1 automatizado e apps Calendar/Contacts/Talk.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/nextcloud', group: 'Cloud & Platform Engineering' },
   { id: 'c04', num: 'C04', title: 'eBPF Avançado + Cilium: CNI nativo eBPF substituindo kube-proxy e flannel, Hubble para observabilidade de fluxos L7 em tempo real, CiliumNetworkPolicy HTTP path e DNS (toFQDNs), Tetragon TracingPolicy para runtime security.', layer: 'eBPF · CNI', layerClass: 'l3', href: '/ebpf-avancado', group: 'Cloud & Platform Engineering' },
   { id: 'c05', num: 'C05', title: 'Resposta a Incidentes (DFIR): o ciclo NIST SP 800-61 — detecção de comprometimento, contenção sem destruir evidências, preservação volátil, timeline forense, erradicação, recuperação validada e pós-incidente.', layer: 'Segurança · DFIR', layerClass: 'l3', href: '/resposta-incidentes', group: 'Cloud & Platform Engineering' },
+  { id: 'c06', num: 'C06', title: 'CrowdSec: IPS colaborativo com threat intelligence — agent + LAPI + bouncers, cenários comportamentais (vs regex estática do Fail2ban), collections do Hub, bouncer nftables e community blocklist.', layer: 'Segurança · IPS', layerClass: 'l3', href: '/crowdsec', group: 'Cloud & Platform Engineering' },
+  { id: 'c07', num: 'C07', title: 'Tailscale: VPN mesh zero-port — protocolo WireGuard + NAT traversal (DERP), login SSO identidade-first, MagicDNS, ACLs da tailnet, subnet router e exit node sem abrir uma porta.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/tailscale', group: 'Cloud & Platform Engineering' },
+  { id: 'c08', num: 'C08', title: 'Proxmox Backup Server: backup incremental deduplicado de VMs/CTs — datastore, namespaces, jobs agendados, prune + garbage collection, verify de integridade e restore file-level ou VM completa.', layer: 'Infra · Backup', layerClass: 'l6', href: '/proxmox-backup-server', group: 'Cloud & Platform Engineering' },
 ];
 
 // ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
@@ -226,6 +229,9 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/nextcloud':     { label: 'Nextcloud',                   icon: '☁️', trail: 'avancados' },
   '/ebpf-avancado': { label: 'eBPF Avançado + Cilium',      icon: '🧬', trail: 'avancados' },
   '/resposta-incidentes': { label: 'Resposta a Incidentes', icon: '🚨', trail: 'avancados' },
+  '/crowdsec':              { label: 'CrowdSec — IPS Colaborativo', icon: '🛰️', trail: 'avancados' },
+  '/tailscale':             { label: 'Tailscale — VPN Mesh',        icon: '🔗', trail: 'avancados' },
+  '/proxmox-backup-server': { label: 'Proxmox Backup Server',       icon: '💾', trail: 'avancados' },
 };
 
 // Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
@@ -248,7 +254,7 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/ldap', '/pihole', '/ssh-proxy', '/nfs', '/haproxy', '/ansible', '/monitoring',
     '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
     '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
-    '/resposta-incidentes',
+    '/crowdsec', '/tailscale', '/proxmox-backup-server', '/resposta-incidentes',
   ],
 };
 

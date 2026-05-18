@@ -65,6 +65,9 @@ const SECTIONS: Section[] = [
       { path: '/nextcloud',     num: 'C03', title: 'Nextcloud Self-Hosted',       icon: '☁️', checkpoint: 'nextcloud-instalado',     desc: 'Docker Compose, MariaDB+Redis+Traefik, apps, backup 3-2-1' },
       { path: '/ebpf-avancado', num: 'C04', title: 'eBPF Avançado + Cilium',      icon: '🧬', checkpoint: 'cilium-instalado',        desc: 'Cilium CNI, Hubble L7, CiliumNetworkPolicy, Tetragon' },
       { path: '/resposta-incidentes', num: 'C05', title: 'Resposta a Incidentes (DFIR)', icon: '🚨', checkpoint: 'ir-deteccao',     desc: 'Ciclo NIST: detecção, contenção, forense, erradicação, pós-incidente' },
+      { path: '/crowdsec',              num: 'C06', title: 'CrowdSec — IPS Colaborativo',  icon: '🛰️', checkpoint: 'crowdsec-instalado', desc: 'Cenários comportamentais, collections, bouncer nftables, blocklist comunitária' },
+      { path: '/tailscale',             num: 'C07', title: 'Tailscale — VPN Mesh',         icon: '🔗', checkpoint: 'tailscale-instalado', desc: 'Mesh zero-port, NAT traversal, ACLs, subnet router e exit node' },
+      { path: '/proxmox-backup-server', num: 'C08', title: 'Proxmox Backup Server',        icon: '💾', checkpoint: 'pbs-datastore',     desc: 'Backup incremental deduplicado, datastore, prune/GC, verify e restore' },
     ],
   },
 ];

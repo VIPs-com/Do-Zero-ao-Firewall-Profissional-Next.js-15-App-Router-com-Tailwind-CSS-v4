@@ -309,6 +309,10 @@ html.light {
   .module-accent-haproxy            { --mod: #1f9d8a; }
   /* Sprint CÓDICE — Resposta a Incidentes (DFIR) */
   .module-accent-resposta-incidentes { --mod: #e11d48; }
+  /* Sprint FORTALEZA — CrowdSec, Tailscale, Proxmox Backup Server */
+  .module-accent-crowdsec              { --mod: #1a8cff; }
+  .module-accent-tailscale             { --mod: #6b5bd6; }
+  .module-accent-proxmox-backup-server { --mod: #5b9bd5; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
   .module-accent-usuarios           { --mod: #6366f1; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */

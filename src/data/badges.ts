@@ -60,7 +60,10 @@ export type BadgeId =
   | 'troubleshooting-master'
   | 'ground-zero'
   | 'haproxy-master'
-  | 'incident-master';
+  | 'incident-master'
+  | 'crowdsec-master'
+  | 'tailscale-master'
+  | 'pbs-master';
 
 export interface BadgeDef {
   icon: string;
@@ -133,4 +136,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'ground-zero':            { icon: '🏁', title: 'Ground Zero',              desc: 'Completou todos os 17 módulos da Trilha Fundamentos Linux — você não é mais iniciante!' },
   'haproxy-master':         { icon: '⚖️', title: 'HAProxy Master',           desc: 'Configurou um balanceador de carga HAProxy com frontend/backend, health checks e página de estatísticas' },
   'incident-master':        { icon: '🚨', title: 'Incident Responder',       desc: 'Dominou o ciclo de Resposta a Incidentes do NIST — detecção, contenção, preservação de evidências e pós-incidente' },
+  'crowdsec-master':        { icon: '🛰️', title: 'CrowdSec Master',           desc: 'Configurou o CrowdSec — collections, cenários comportamentais e bouncer nftables para defesa colaborativa' },
+  'tailscale-master':       { icon: '🔗', title: 'Tailscale Master',          desc: 'Montou uma tailnet com Tailscale — mesh zero-port, ACLs, subnet router e exit node' },
+  'pbs-master':             { icon: '💾', title: 'PBS Master',                desc: 'Operou o Proxmox Backup Server — datastore, jobs incrementais deduplicados, verify e restore' },
 };
