@@ -492,7 +492,7 @@ export default function CertificatePage() {
           <p className="font-bold text-sm text-info">🚀 Próxima Trilha — Avançada</p>
           <p className="text-xs text-text-2 leading-relaxed">
             Expanda suas habilidades: DHCP, Samba, Apache, OpenVPN, Traefik, Kubernetes,
-            Ansible, Prometheus, Terraform, eBPF e muito mais — 19 módulos.
+            Ansible, Prometheus, Terraform, eBPF e muito mais — 22 módulos.
           </p>
           <Link href="/avancados" className="mt-auto inline-flex items-center gap-1.5 text-xs font-bold text-info hover:underline">
             Ver Trilha Avançada →

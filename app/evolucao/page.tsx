@@ -136,7 +136,7 @@ export default function EvolutionPage() {
             href="/avancados"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-accent-2 transition-colors"
           >
-            🚀 Explorar Trilha Avançada (19 módulos)
+            🚀 Explorar Trilha Avançada (22 módulos)
           </Link>
         </div>
         <Rocket className="absolute -bottom-10 -right-10 text-accent/5 w-64 h-64 rotate-12" />

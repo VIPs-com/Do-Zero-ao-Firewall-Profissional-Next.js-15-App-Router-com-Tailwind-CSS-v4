@@ -7,7 +7,7 @@ import { CheckCircle2, Circle, ArrowRight, Server, Award } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
 
-/* Sprint AVANCADOS-INDEX — índice da trilha avançada (v3.0→v5.0, 19 módulos).
+/* Sprint AVANCADOS-INDEX — índice da trilha avançada (v3.0→v5.0, 22 módulos).
    Espelha a estrutura de /fundamentos. */
 
 type Section = {
@@ -97,7 +97,7 @@ export default function AvancadosPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(14,165,233,0.1)] border border-[rgba(14,165,233,0.3)] text-info text-[10px] font-bold uppercase tracking-wider mb-4">
             <Server size={11} />
-            Trilha v3.0 → v5.0 · 19 Módulos
+            Trilha v3.0 → v5.0 · 22 Módulos
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             🚀 Trilha Avançada
@@ -226,7 +226,7 @@ export default function AvancadosPage() {
         <div className="p-5 rounded-xl bg-bg-2 border border-border">
           <p className="text-sm font-bold mb-2">🐧 Novo no Linux?</p>
           <p className="text-xs text-text-3 mb-3">
-            Comece pela Trilha Fundamentos — 15 módulos do zero ao SysAdmin.
+            Comece pela Trilha Fundamentos — 17 módulos do zero ao SysAdmin.
           </p>
           <Link href="/fundamentos" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6366f1] hover:underline">
             Ir para Fundamentos <ArrowRight size={12} />
