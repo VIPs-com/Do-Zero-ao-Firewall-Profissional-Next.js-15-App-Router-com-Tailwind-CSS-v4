@@ -63,13 +63,13 @@ export default function DashboardPage() {
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
   // Counter-Sync: TOPICS.length=87 (Sprint VAULT: +i09 HashiCorp Vault)
-  const totalTopics = 94;
+  const totalTopics = 95;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
   // Sprint NFS: +3 checkpoints nfs → 160+3 = 163
   // Sprint VAULT: +3 checkpoints vault → 163+3 = 166
-  const checklistItemsCount = 187;
+  const checklistItemsCount = 190;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 

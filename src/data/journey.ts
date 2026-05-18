@@ -111,6 +111,7 @@ const JOURNEY_META: Record<string, JourneyMetaEntry> = {
   '/crowdsec':              { difficulty: 'avancado', estMin: 40 },
   '/tailscale':             { difficulty: 'avancado', estMin: 40 },
   '/proxmox-backup-server': { difficulty: 'avancado', estMin: 45 },
+  '/gpg':                   { difficulty: 'avancado', estMin: 45 },
   '/resposta-incidentes': { difficulty: 'avancado', estMin: 50 },
 };
 

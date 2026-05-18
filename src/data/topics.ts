@@ -159,6 +159,7 @@ export const TOPICS: Topic[] = [
   { id: 'c06', num: 'C06', title: 'CrowdSec: IPS colaborativo com threat intelligence — agent + LAPI + bouncers, cenários comportamentais (vs regex estática do Fail2ban), collections do Hub, bouncer nftables e community blocklist.', layer: 'Segurança · IPS', layerClass: 'l3', href: '/crowdsec', group: 'Cloud & Platform Engineering' },
   { id: 'c07', num: 'C07', title: 'Tailscale: VPN mesh zero-port — protocolo WireGuard + NAT traversal (DERP), login SSO identidade-first, MagicDNS, ACLs da tailnet, subnet router e exit node sem abrir uma porta.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/tailscale', group: 'Cloud & Platform Engineering' },
   { id: 'c08', num: 'C08', title: 'Proxmox Backup Server: backup incremental deduplicado de VMs/CTs — datastore, namespaces, jobs agendados, prune + garbage collection, verify de integridade e restore file-level ou VM completa.', layer: 'Infra · Backup', layerClass: 'l6', href: '/proxmox-backup-server', group: 'Cloud & Platform Engineering' },
+  { id: 'c09', num: 'C09', title: 'OpenPGP / GPG: chave mestra [C] + subchaves ECC [S][E][A], cifrar/decifrar/assinar/verificar, backup de subchaves, certificado de revogação e commits Git assinados.', layer: 'Segurança · Criptografia', layerClass: 'l6', href: '/gpg', group: 'Cloud & Platform Engineering' },
 ];
 
 // ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
@@ -232,6 +233,7 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/crowdsec':              { label: 'CrowdSec — IPS Colaborativo', icon: '🛰️', trail: 'avancados' },
   '/tailscale':             { label: 'Tailscale — VPN Mesh',        icon: '🔗', trail: 'avancados' },
   '/proxmox-backup-server': { label: 'Proxmox Backup Server',       icon: '💾', trail: 'avancados' },
+  '/gpg':                   { label: 'OpenPGP / GPG',               icon: '🔑', trail: 'avancados' },
 };
 
 // Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
@@ -254,7 +256,7 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/ldap', '/pihole', '/ssh-proxy', '/nfs', '/haproxy', '/ansible', '/monitoring',
     '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
     '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
-    '/crowdsec', '/tailscale', '/proxmox-backup-server', '/resposta-incidentes',
+    '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg', '/resposta-incidentes',
   ],
 };
 

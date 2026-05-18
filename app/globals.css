@@ -313,6 +313,8 @@ html.light {
   .module-accent-crowdsec              { --mod: #1a8cff; }
   .module-accent-tailscale             { --mod: #6b5bd6; }
   .module-accent-proxmox-backup-server { --mod: #5b9bd5; }
+  /* Sprint GPG — OpenPGP / GPG */
+  .module-accent-gpg                   { --mod: #b8860b; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
   .module-accent-usuarios           { --mod: #6366f1; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */

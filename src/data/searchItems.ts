@@ -264,6 +264,10 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'p-pbs', title: 'Proxmox Backup Server', description: 'Backup incremental e deduplicado de VMs/CTs — datastore, jobs, verify e restore granular', category: 'Página', href: '/proxmox-backup-server', icon: Server },
   { id: 'g-pbs-dedup', category: 'Glossário', title: 'Deduplicação (PBS)', description: 'Blocos idênticos guardados uma só vez — 10 backups diários ocupam pouco mais que um backup completo', href: '/proxmox-backup-server', icon: Server },
   { id: 'g-pbs-prune-gc', category: 'Glossário', title: 'Prune vs Garbage Collection (PBS)', description: 'Prune marca snapshots fora da retenção; o GC é o que libera de fato o espaço dos blocos órfãos', href: '/proxmox-backup-server', icon: Server },
+  // Sprint GPG — OpenPGP / GPG
+  { id: 'p-gpg', title: 'OpenPGP / GPG', description: 'Criptografia de chave pública na prática — gerar chaves, cifrar, assinar, verificar e assinar commits Git', category: 'Página', href: '/gpg', icon: Shield },
+  { id: 'g-gpg-subchaves', category: 'Glossário', title: 'Chave mestra [C] e subchaves [S][E][A]', description: 'A mestra é a identidade (Certify); subchaves ECC fazem o uso diário — Sign, Encrypt, Authenticate. Vazou uma? Revoga só ela', href: '/gpg', icon: Shield },
+  { id: 'g-gpg-git-sign', category: 'Glossário', title: 'Commit Git assinado com GPG', description: 'git config user.signingkey + commit.gpgsign — prova de autoria do commit, vira o selo Verified no GitHub', href: '/gpg', icon: Shield },
 
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },

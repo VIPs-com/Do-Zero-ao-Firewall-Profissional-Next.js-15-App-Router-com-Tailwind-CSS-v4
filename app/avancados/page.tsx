@@ -68,6 +68,7 @@ const SECTIONS: Section[] = [
       { path: '/crowdsec',              num: 'C06', title: 'CrowdSec — IPS Colaborativo',  icon: '🛰️', checkpoint: 'crowdsec-instalado', desc: 'Cenários comportamentais, collections, bouncer nftables, blocklist comunitária' },
       { path: '/tailscale',             num: 'C07', title: 'Tailscale — VPN Mesh',         icon: '🔗', checkpoint: 'tailscale-instalado', desc: 'Mesh zero-port, NAT traversal, ACLs, subnet router e exit node' },
       { path: '/proxmox-backup-server', num: 'C08', title: 'Proxmox Backup Server',        icon: '💾', checkpoint: 'pbs-datastore',     desc: 'Backup incremental deduplicado, datastore, prune/GC, verify e restore' },
+      { path: '/gpg',                   num: 'C09', title: 'OpenPGP / GPG',                icon: '🔑', checkpoint: 'gpg-chave',         desc: 'Chaves e subchaves ECC, cifrar/assinar/verificar, backup, revogação, commits Git assinados' },
     ],
   },
 ];

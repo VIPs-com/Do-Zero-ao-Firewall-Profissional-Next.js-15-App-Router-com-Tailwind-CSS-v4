@@ -78,6 +78,8 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/crowdsec',              title: 'CrowdSec — IPS Colaborativo' },
   { path: '/tailscale',             title: 'Tailscale — VPN Mesh Zero-Port' },
   { path: '/proxmox-backup-server', title: 'Proxmox Backup Server' },
+  // Sprint GPG — OpenPGP / GPG
+  { path: '/gpg',                   title: 'OpenPGP / GPG' },
   // Capstone — Resposta a Incidentes (Sprint CÓDICE)
   { path: '/resposta-incidentes', title: 'Resposta a Incidentes (DFIR)' },
 ];

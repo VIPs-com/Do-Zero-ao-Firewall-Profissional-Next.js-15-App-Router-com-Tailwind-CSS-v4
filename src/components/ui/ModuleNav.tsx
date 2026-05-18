@@ -82,6 +82,7 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/crowdsec':            '🛰️ CrowdSec',
   '/tailscale':           '🔗 Tailscale',
   '/proxmox-backup-server': '💾 PBS',
+  '/gpg':                 '🔑 GPG',
 };
 
 type AnyModule = CourseModule | SimpleModule;

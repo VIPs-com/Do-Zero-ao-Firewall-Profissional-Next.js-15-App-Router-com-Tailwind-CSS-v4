@@ -1449,4 +1449,57 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       explanation: 'O verify job relê os snapshots e valida o checksum de cada bloco, detectando corrupção. Combinado com restores de teste periódicos, é o que transforma "eu acho que tenho backup" em "eu sei que consigo recuperar".',
       trail: 'avancados',
     },
+  // ── OpenPGP / GPG (Sprint GPG) ─────────────────────────────────────────────
+  {
+      text: 'No modelo de chave OpenPGP recomendado, qual a função da chave mestra?',
+      badge: '🔑 GPG',
+      options: [
+        'Cifrar todos os arquivos do dia a dia',
+        'Ter apenas a capacidade [C]ertify — é a identidade e certifica as subchaves; fica offline',
+        'Assinar commits do Git',
+        'Autenticar conexões SSH',
+      ],
+      correct: 1,
+      explanation: 'A mestra tem só [C]ertify — ela é a identidade e assina as subchaves. Fica guardada offline. O uso diário (assinar, cifrar, autenticar) é feito pelas subchaves [S][E][A], que podem ser revogadas e regeradas sem perder a identidade.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Você precisa fazer backup operacional da sua chave GPG para usar no dia a dia. Qual comando é o correto?',
+      badge: '🔑 GPG',
+      options: [
+        'gpg --export-secret-keys (exporta a mestra inteira)',
+        'gpg --export-secret-subkeys (exporta só as subchaves)',
+        'gpg --export (exporta só a chave pública)',
+        'cp -r ~/.gnupg /backup',
+      ],
+      correct: 1,
+      explanation: 'Para uso operacional, `--export-secret-subkeys` exporta apenas as subchaves [S][E][A] — você opera sem nunca expor a mestra [C], que permanece offline. Exportar a mestra inteira só é necessário para backup do cofre, guardado separadamente.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Ao verificar uma assinatura GPG de um arquivo que foi alterado após assinado, qual o resultado?',
+      badge: '🔑 GPG',
+      options: [
+        'Good signature — o GPG ignora alterações pequenas',
+        'BAD signature — a assinatura não cobre mais o conteúdo alterado',
+        'O comando trava aguardando confirmação',
+        'A assinatura é recalculada automaticamente',
+      ],
+      correct: 1,
+      explanation: '"BAD signature" é o GPG funcionando como deve: a assinatura cobre o conteúdo exato do momento em que foi feita. Qualquer alteração posterior quebra a verificação — é exatamente assim que se detecta adulteração.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Por que gerar o certificado de revogação no mesmo dia em que se cria a chave GPG?',
+      badge: '🔑 GPG',
+      options: [
+        'Porque o GPG exige isso para a chave funcionar',
+        'Porque, se a chave for comprometida ou o acesso for perdido depois, o certificado é o que avisa o mundo para não confiar mais nela',
+        'Porque o certificado expira em 24 horas',
+        'Porque sem ele não é possível assinar commits',
+      ],
+      correct: 1,
+      explanation: 'O certificado de revogação é o seguro: ele declara "esta chave não é mais confiável". Se você perder o acesso à chave ou ela vazar, sem o certificado (gerado e guardado offline com antecedência) você não consegue revogá-la — ela fica válida indefinidamente.',
+      trail: 'avancados',
+    },
 ];

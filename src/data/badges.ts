@@ -63,7 +63,8 @@ export type BadgeId =
   | 'incident-master'
   | 'crowdsec-master'
   | 'tailscale-master'
-  | 'pbs-master';
+  | 'pbs-master'
+  | 'gpg-master';
 
 export interface BadgeDef {
   icon: string;
@@ -139,4 +140,5 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'crowdsec-master':        { icon: '🛰️', title: 'CrowdSec Master',           desc: 'Configurou o CrowdSec — collections, cenários comportamentais e bouncer nftables para defesa colaborativa' },
   'tailscale-master':       { icon: '🔗', title: 'Tailscale Master',          desc: 'Montou uma tailnet com Tailscale — mesh zero-port, ACLs, subnet router e exit node' },
   'pbs-master':             { icon: '💾', title: 'PBS Master',                desc: 'Operou o Proxmox Backup Server — datastore, jobs incrementais deduplicados, verify e restore' },
+  'gpg-master':             { icon: '🔑', title: 'GPG Master',                desc: 'Domina o OpenPGP/GPG — chaves e subchaves ECC, cifrar/assinar/verificar, backup, revogação e commits Git assinados' },
 };

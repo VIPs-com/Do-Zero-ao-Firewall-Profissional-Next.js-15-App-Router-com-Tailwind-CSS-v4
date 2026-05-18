@@ -464,6 +464,12 @@ export const ROUTE_SEO = {
       'Proxmox Backup Server (PBS): backup incremental e deduplicado de VMs e containers — datastore, namespaces, jobs agendados, retenção com prune e garbage collection, verify de integridade e restore file-level ou de VM completa.',
     keywords: ['Proxmox Backup Server', 'PBS', 'backup VM', 'deduplicação', 'vzdump', 'datastore', 'restore', 'garbage collection', 'regra 3-2-1', 'homelab'],
   },
+  '/gpg': {
+    title: 'OpenPGP / GPG | Criptografia, Assinatura e Commits Git Assinados',
+    description:
+      'OpenPGP/GPG do zero: gere chave mestra e subchaves ECC (Ed25519/Cv25519), cifre e decifre arquivos, assine e verifique, faça backup das subchaves e o certificado de revogação, e assine seus commits Git com GPG.',
+    keywords: ['GPG', 'OpenPGP', 'GnuPG', 'criptografia', 'assinatura digital', 'commit assinado', 'Ed25519', 'subchaves', 'certificado de revogação', 'chave pública', 'web of trust'],
+  },
   '/resposta-incidentes': {
     title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
     description:
