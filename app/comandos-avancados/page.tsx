@@ -503,6 +503,83 @@ jq '.[] | select(.active == true)' x.json     # filtra por condição
           </InfoBox>
         </section>
 
+        {/* ── Armadilhas Fatais (Códice de Sobrevivência, Vol. I) ── */}
+        <section id="armadilhas-fatais" className="mb-12 scroll-mt-24">
+          <h2 className="text-2xl font-bold mb-2">⚠️ Armadilhas Fatais — comandos que não voltam atrás</h2>
+          <p className="text-text-2 mb-6">
+            Ferramentas poderosas como <code>dd</code> e o redirecionador <code>{'>'}</code> não
+            perguntam se você tem certeza — o Linux respeita sua autonomia. Conhecer as
+            armadilhas é o que separa o profissional do amador. Estes comandos executam{' '}
+            <strong>sem confirmação e sem desfazer</strong>.
+          </p>
+
+          <div className="overflow-x-auto mb-6">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-2 pr-4 text-err">Comando</th>
+                  <th className="text-left py-2 pr-4 text-text-2">O que destrói</th>
+                  <th className="text-left py-2 text-ok">Hábito que protege</th>
+                </tr>
+              </thead>
+              <tbody className="text-text-2">
+                <tr className="border-b border-border/50">
+                  <td className="py-2 pr-4 font-mono text-err">rm -rf /</td>
+                  <td className="py-2 pr-4">Apaga tudo a partir da raiz. Variações: <code>rm -rf ~</code>, <code>rm -rf *</code></td>
+                  <td className="py-2">Alias <code>rm -i</code> no <code>.bashrc</code>; releia o caminho antes do Enter</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-2 pr-4 font-mono text-err">dd if=... of=/dev/sda</td>
+                  <td className="py-2 pr-4">Sobrescreve o disco bruto — destrói a tabela de partições</td>
+                  <td className="py-2">Confirme o dispositivo com <code>lsblk</code> antes de todo <code>dd</code></td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-2 pr-4 font-mono text-err">mkfs.ext4 /dev/sda</td>
+                  <td className="py-2 pr-4">Formata o disco — se errar <code>sda</code> por <code>sdb</code>, formatou o errado</td>
+                  <td className="py-2">Sempre confira o alvo com <code>lsblk</code> antes de formatar</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-2 pr-4 font-mono text-err">{'> /etc/ssh/sshd_config'}</td>
+                  <td className="py-2 pr-4">Redirecionamento vazio esvazia o arquivo — o serviço quebra no próximo restart</td>
+                  <td className="py-2">Use <code>truncate -s 0</code>; faça <code>cp arquivo.bak</code> antes de editar</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-2 pr-4 font-mono text-err">:(){'{'} :|:& {'}'};:</td>
+                  <td className="py-2 pr-4">Fork bomb — cria processos até travar a máquina</td>
+                  <td className="py-2"><code>ulimit -u</code> / <code>limits.conf</code> limitam processos por usuário</td>
+                </tr>
+                <tr>
+                  <td className="py-2 pr-4 font-mono text-err">curl URL | bash</td>
+                  <td className="py-2 pr-4">Executa código da internet que você não leu</td>
+                  <td className="py-2">Baixe com <code>curl -O</code>, leia com <code>less</code>, só então execute</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <WarnBox title="A regra que cobre todas as outras">
+            Desconfie de qualquer comando que mencione <code>/dev/sd*</code> e de qualquer
+            instrução que peça <code>sudo</code> sem explicar o porquê. <strong>Leia antes de
+            executar — sempre.</strong> Conhecimento é saber os comandos; sabedoria é saber
+            quais nunca rodar sem pensar duas vezes.
+          </WarnBox>
+
+          <HighlightBox title="Os 10 Mandamentos do Sobrevivente" className="mt-4">
+            <ol className="text-sm text-text-2 space-y-1.5 list-decimal pl-5">
+              <li>Leia antes de executar. Sempre.</li>
+              <li>Backup antes de qualquer mudança em arquivo crítico.</li>
+              <li>Snapshot antes de qualquer mudança grande em VM.</li>
+              <li>Leia o log (<code>journalctl -xe</code>) ANTES de reiniciar o serviço.</li>
+              <li>Nunca teste configuração nova direto no servidor principal.</li>
+              <li>Credencial padrão é porta aberta. Troque no mesmo dia.</li>
+              <li>RAID não é backup. Backup não testado não é backup.</li>
+              <li>Complexidade desnecessária é inimiga da estabilidade.</li>
+              <li>Documente enquanto faz, não &quot;depois&quot;.</li>
+              <li>O lab é treino. Trate com a seriedade de produção.</li>
+            </ol>
+          </HighlightBox>
+        </section>
+
         {/* Checkpoints */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">Checkpoints do Módulo</h2>

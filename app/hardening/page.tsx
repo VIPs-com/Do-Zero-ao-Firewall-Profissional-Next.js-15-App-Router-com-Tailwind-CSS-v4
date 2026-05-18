@@ -663,8 +663,84 @@ lynis audit system  # lynis = CIS Benchmark para Linux`}
         />
       </div>
 
+      {/* ── Defense in Depth (Códice de Sobrevivência, Vol. II) ── */}
+      <section id="defense-in-depth" className="mt-12 scroll-mt-24 space-y-4">
+        <h2 className="text-2xl font-bold mb-2">🛡️ Defense in Depth — defesa em camadas</h2>
+        <p className="text-text-2">
+          Hardening de SSH, sysctl e AppArmor é poderoso — mas é <strong>uma</strong> camada.
+          Segurança real é <strong>defesa em profundidade</strong>: cada camada que um atacante
+          precisa quebrar significa mais tempo, mais ruído e mais chance de você detectar antes
+          que ele alcance o que importa.
+        </p>
+        <div className="grid sm:grid-cols-5 gap-2 my-4 text-center text-xs">
+          {[
+            { n: '1', l: 'Borda', d: 'Firewall de borda — regras inter-VLAN, IDS/IPS' },
+            { n: '2', l: 'Segmentação', d: 'VLANs isoladas: IoT, lab, gerência, servidores' },
+            { n: '3', l: 'Hypervisor', d: 'Proxmox hardened — 2FA, web só na VLAN de gerência' },
+            { n: '4', l: 'Host', d: 'Cada VM: SSH por chave, UFW, fail2ban, sem root' },
+            { n: '5', l: 'Serviço', d: 'Menor privilégio — cada serviço no seu usuário' },
+          ].map(c => (
+            <div key={c.n} className="p-3 rounded-lg bg-bg-2 border border-border">
+              <div className="text-lg font-black text-[var(--mod)]">{c.n}</div>
+              <div className="font-bold text-text mb-1">{c.l}</div>
+              <div className="text-text-3 leading-snug">{c.d}</div>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="text-lg font-bold mt-6 mb-2">O que o Kali faz — e como você se defende</h3>
+        <p className="text-text-2 mb-3">
+          Conhecer as ferramentas do atacante é a melhor defesa. Eis o que alguém com Kali
+          Linux tentaria no seu ambiente — e a camada que neutraliza cada ataque:
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="border-b border-border">
+                <th className="text-left py-2 pr-4 text-err">Ferramenta do atacante</th>
+                <th className="text-left py-2 pr-4 text-text-2">O que faz</th>
+                <th className="text-left py-2 text-ok">Sua defesa</th>
+              </tr>
+            </thead>
+            <tbody className="text-text-2">
+              <tr className="border-b border-border/50">
+                <td className="py-2 pr-4 font-mono">nmap</td>
+                <td className="py-2 pr-4">Descobre portas e serviços abertos</td>
+                <td className="py-2">Feche o que não usa; rode <code>ss -tlnp</code> e faça nmap em si mesmo</td>
+              </tr>
+              <tr className="border-b border-border/50">
+                <td className="py-2 pr-4 font-mono">Hydra / Medusa</td>
+                <td className="py-2 pr-4">Força bruta de senha em SSH e outros serviços</td>
+                <td className="py-2">Chave SSH obrigatória + <code>PasswordAuthentication no</code> + fail2ban</td>
+              </tr>
+              <tr className="border-b border-border/50">
+                <td className="py-2 pr-4 font-mono">Metasploit</td>
+                <td className="py-2 pr-4">Explora vulnerabilidades de software desatualizado</td>
+                <td className="py-2">Patch é a melhor proteção — mantenha tudo atualizado</td>
+              </tr>
+              <tr className="border-b border-border/50">
+                <td className="py-2 pr-4 font-mono">Wireshark / tcpdump</td>
+                <td className="py-2 pr-4">Captura tráfego para ler senhas e dados</td>
+                <td className="py-2">Criptografia em tudo (HTTPS, SSH, VPN) + VLANs isolam segmentos</td>
+              </tr>
+              <tr>
+                <td className="py-2 pr-4 font-mono">LinPEAS</td>
+                <td className="py-2 pr-4">Busca caminho de escalada de privilégio após entrar</td>
+                <td className="py-2">Menor privilégio; nenhum arquivo de config world-writable (777)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <HighlightBox title="A regra de ouro da defesa" className="mt-4">
+          Se você não precisa que esteja aberto → feche. Se não precisa que esteja rodando →
+          pare. Se não precisa que esteja instalado → remova. <strong>Superfície de ataque
+          zero = nada para atacar.</strong>
+        </HighlightBox>
+      </section>
+
       {/* ── Exercícios Guiados ── */}
-      <section className="space-y-4">
+      <section className="space-y-4 mt-12">
         <h2 className="text-2xl font-bold mb-2">🎯 Exercícios Guiados</h2>
         <div className="grid gap-4">
           <div className="p-4 rounded-xl bg-bg-2 border border-border">
