@@ -246,12 +246,13 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
               Do zero ao firewall profissional. Aprenda segurança de redes Linux com laboratório real — WAN, DMZ e LAN.
             </p>
             <div className="flex flex-wrap gap-2 pt-1">
-              {['Next.js 15', 'React 19', 'Tailwind v4', 'TypeScript'].map(tag => (
+              {['Next.js 16', 'React 19', 'Tailwind v4', 'TypeScript'].map(tag => (
                 <span key={tag} className="text-[10px] px-2 py-0.5 rounded-full border border-border text-text-3">{tag}</span>
               ))}
             </div>
-            <div className="flex gap-3 pt-1">
-              <Link href="/dashboard" className="text-xs text-accent hover:text-accent-2 transition-colors">Dashboard →</Link>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link href="/jornada" className="text-xs text-accent hover:text-accent-2 transition-colors">Jornada →</Link>
+              <Link href="/dashboard" className="text-xs text-text-2 hover:text-text transition-colors">Dashboard →</Link>
               <Link href="/certificado" className="text-xs text-text-2 hover:text-text transition-colors">Certificado →</Link>
             </div>
           </div>
@@ -337,10 +338,10 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
           <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap justify-center sm:justify-start gap-5">
               {[
-                { value: '63', label: 'módulos' },
-                { value: '265', label: 'questões' },
-                { value: '62', label: 'conquistas' },
-                { value: '172', label: 'checkpoints' },
+                { value: '64', label: 'módulos' },
+                { value: '274', label: 'questões' },
+                { value: '63', label: 'conquistas' },
+                { value: '175', label: 'checkpoints' },
               ].map(stat => (
                 <div key={stat.label} className="flex items-baseline gap-1">
                   <span className="text-sm font-bold text-accent">{stat.value}</span>
