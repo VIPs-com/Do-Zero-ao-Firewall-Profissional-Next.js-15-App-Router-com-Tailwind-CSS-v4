@@ -2,16 +2,17 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Network, Regex, Shield, AlertCircle, Copy, Check, Plus, X, Terminal } from 'lucide-react';
+import { Network, Regex, Shield, AlertCircle, Copy, Check, Plus, X, Terminal, Binary } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { parseCidr } from '@/lib/cidr';
 import { testRegex, type RegexMatch } from '@/lib/regex';
 import { buildIptablesRule, buildIptablesScript, EMPTY_RULE, type IptablesRule } from '@/lib/iptables';
 import { renderPs1, DEFAULT_PS1_CONTEXT } from '@/lib/ps1';
+import { encodeBase64, decodeBase64 } from '@/lib/base64';
 import { useBadges } from '@/context/BadgeContext';
 import { useTabFilter } from '@/hooks/useTabFilter';
 
-type ToolTab = 'cidr' | 'regex' | 'iptables' | 'ps1';
+type ToolTab = 'cidr' | 'regex' | 'iptables' | 'ps1' | 'base64';
 
 /** Presets de PS1 prontos para experimentar. */
 const PS1_PRESETS: Array<{ label: string; value: string }> = [
@@ -144,11 +145,22 @@ export default function FerramentasPage() {
     [ps1, ps1Root],
   );
 
+  // ── Base64 ─────────────────────────────────────────────────────────────────
+  const [b64Mode, setB64Mode] = useState<'encode' | 'decode'>('decode');
+  const [b64Input, setB64Input] = useState(
+    'eyJhbGciOiJIUzI1NiJ9',
+  );
+  const b64Result = useMemo(
+    () => (b64Mode === 'encode' ? encodeBase64(b64Input) : decodeBase64(b64Input)),
+    [b64Mode, b64Input],
+  );
+
   const TABS: Array<{ id: ToolTab; label: string }> = [
     { id: 'cidr', label: '🧮 Calculadora CIDR' },
     { id: 'regex', label: '🔍 Validador de Regex' },
     { id: 'iptables', label: '🔥 Gerador de iptables' },
     { id: 'ps1', label: '🖥️ Simulador de PS1' },
+    { id: 'base64', label: '🔣 Base64' },
   ];
 
   return (
@@ -553,6 +565,77 @@ export default function FerramentasPage() {
             preview e adicione <code>PS1=&apos;...&apos;</code> ao seu <code>~/.bashrc</code>.
             Escapes: <code>\u</code> usuário · <code>\h</code> host · <code>\w</code> caminho ·
             <code>\W</code> pasta atual · <code>\$</code> #/$ · <code>\e[..m</code> cor ANSI.
+          </div>
+        </div>
+      )}
+
+      {/* ── Base64 ───────────────────────────────────────────────────────────── */}
+      {isActive('base64') && (
+        <div>
+          <div className="bg-bg-2 border border-border rounded-2xl p-6 space-y-4">
+            <div className="flex flex-wrap items-center gap-2" role="radiogroup" aria-label="Modo Base64">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-text-3 mr-1">Modo:</span>
+              {([
+                { id: 'decode' as const, label: 'Decodificar' },
+                { id: 'encode' as const, label: 'Codificar' },
+              ]).map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={b64Mode === m.id}
+                  onClick={() => setB64Mode(m.id)}
+                  className={cn(
+                    'px-3 py-1 rounded-full text-xs font-bold border transition-colors',
+                    b64Mode === m.id
+                      ? 'bg-accent border-accent text-bg'
+                      : 'border-border text-text-2 hover:border-accent/50',
+                  )}
+                >
+                  {m.label}
+                </button>
+              ))}
+            </div>
+            <div>
+              <label htmlFor="base64-input" className="block text-xs font-bold uppercase tracking-widest text-text-3 mb-2">
+                {b64Mode === 'encode' ? 'Texto a codificar' : 'Base64 a decodificar'}
+              </label>
+              <textarea
+                id="base64-input"
+                value={b64Input}
+                onChange={(e) => setB64Input(e.target.value)}
+                rows={4}
+                spellCheck={false}
+                className="w-full bg-bg-3 border border-border rounded-lg px-3 py-2 font-mono text-xs focus:border-accent outline-none transition-colors resize-y"
+              />
+            </div>
+          </div>
+
+          {b64Result.ok ? (
+            <div className="mt-6">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <p className="text-xs font-bold uppercase tracking-widest text-text-3">
+                  {b64Mode === 'encode' ? 'Base64' : 'Texto decodificado'}
+                </p>
+                <CopyButton text={b64Result.output} label="resultado" />
+              </div>
+              <pre className="bg-bg-2 border border-border rounded-xl p-4 text-sm font-mono whitespace-pre-wrap break-words leading-relaxed min-h-[3rem]">
+                {b64Result.output}
+              </pre>
+            </div>
+          ) : (
+            <div className="mt-6 flex items-center gap-3 p-4 rounded-xl border border-err/30 bg-err/5 text-sm text-text-2">
+              <AlertCircle size={18} className="text-err shrink-0" aria-hidden="true" />
+              <span>{b64Result.error}</span>
+            </div>
+          )}
+
+          <div className="mt-8 p-4 rounded-xl bg-info/5 border border-info/20 text-xs text-text-3 leading-relaxed">
+            <strong className="text-text-2">Onde isso ajuda:</strong> Secrets do Kubernetes e
+            do Docker guardam valores em Base64 — cole o conteúdo de um
+            <code> data:</code> para ver o texto real. Equivale a
+            <code> echo VALOR | base64 -d</code> no terminal. Base64 <Binary size={12} className="inline" aria-hidden="true" /> não
+            é criptografia: qualquer um decodifica.
           </div>
         </div>
       )}

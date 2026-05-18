@@ -98,6 +98,27 @@ test('iptables: adicionar e remover regras da lista de script', async ({ page })
   await expect(page.getByText(/script — 1 regra/i)).toBeVisible();
 });
 
+test('Base64: a aba decodifica e codifica ao vivo', async ({ page }) => {
+  await page.goto('/ferramentas');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /base64/i }).click();
+
+  // Modo decodificar (padrão) — decodifica um Secret do Kubernetes
+  await page.getByLabel(/base64 a decodificar/i).fill('cGFzc3dvcmQ=');
+  await expect(page.locator('pre').filter({ hasText: 'password' })).toBeVisible();
+
+  // Alterna para codificar
+  await page.getByRole('radio', { name: 'Codificar', exact: true }).click();
+  await page.getByLabel(/texto a codificar/i).fill('hello');
+  await expect(page.locator('pre').filter({ hasText: 'aGVsbG8=' })).toBeVisible();
+
+  // Base64 inválido no modo decodificar exibe erro
+  await page.getByRole('radio', { name: 'Decodificar', exact: true }).click();
+  await page.getByLabel(/base64 a decodificar/i).fill('@@@ inválido @@@');
+  await expect(page.getByText(/base64 inválido/i)).toBeVisible();
+});
+
 test('PS1: a aba renderiza o preview e responde aos presets', async ({ page }) => {
   await page.goto('/ferramentas');
   await page.waitForLoadState('networkidle');
