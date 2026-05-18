@@ -1242,4 +1242,57 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       explanation: '`haproxy -c -f <arquivo>` faz um dry-run: analisa o arquivo de configuração, reporta erros de sintaxe e sai sem tocar no serviço em execução. É a checagem obrigatória antes de qualquer `reload` — um `reload` com config inválida pode derrubar o balanceador.',
       trail: 'avancados',
     },
+  // ── Resposta a Incidentes (Sprint CÓDICE — DFIR / NIST SP 800-61) ──────────
+  {
+      text: 'Você descobre que um servidor foi comprometido. Qual deve ser a PRIMEIRA preocupação antes de qualquer ação?',
+      badge: '🚨 Resposta a Incidentes',
+      options: [
+        'Reiniciar a máquina imediatamente para "limpar" o invasor',
+        'NÃO reiniciar — preservar as evidências voláteis (RAM, processos, conexões) antes de qualquer coisa',
+        'Deletar todos os arquivos suspeitos o mais rápido possível',
+        'Trocar a senha de root e considerar o caso resolvido',
+      ],
+      correct: 1,
+      explanation: 'O reboot destrói as evidências voláteis — conexões ativas, processos do atacante, conteúdo da RAM e sessões abertas. Sem elas você nunca saberá como o invasor entrou nem se ainda está lá. A regra de ouro do NIST: preserve antes de agir.',
+      trail: 'avancados',
+    },
+  {
+      text: 'Na fase de contenção, por que se recomenda manter a política OUTPUT em ACCEPT enquanto se bloqueia INPUT?',
+      badge: '🚨 Resposta a Incidentes',
+      options: [
+        'Porque OUTPUT DROP não tem efeito nenhum no iptables',
+        'Para manter a coleta e o envio de evidências funcionando — bloquear a entrada já corta o atacante',
+        'Porque o atacante só usa conexões de saída',
+        'Para o servidor continuar respondendo a pings externos',
+      ],
+      correct: 1,
+      explanation: 'Bloquear toda a saída interrompe a coleta remota de logs e o envio das evidências para fora — e pode te trancar para fora. Em contenção, cortar a ENTRADA já corta o acesso do atacante; a saída só é bloqueada depois de garantir seu acesso e copiar as evidências.',
+      trail: 'avancados',
+    },
+  {
+      text: 'O que o comando `lsof | grep deleted` revela durante a investigação de um incidente?',
+      badge: '🚨 Resposta a Incidentes',
+      options: [
+        'Arquivos que foram movidos para a lixeira',
+        'Binários que foram apagados do disco mas ainda estão em execução — técnica de ocultação comum',
+        'Logs que o sistema rotacionou automaticamente',
+        'Usuários que foram removidos do /etc/passwd',
+      ],
+      correct: 1,
+      explanation: 'Um processo malicioso comum apaga o próprio binário do disco mas continua rodando na memória — some de um `ls`, mas o kernel ainda mantém o arquivo aberto. `lsof | grep deleted` expõe exatamente esses processos, sendo mais confiável que inspecionar /proc manualmente.',
+      trail: 'avancados',
+    },
+  {
+      text: 'CENÁRIO: após erradicar o invasor, você vai restaurar um backup. A timeline mostra que o comprometimento começou há 3 semanas. O que fazer?',
+      badge: '🚨 Resposta a Incidentes',
+      options: [
+        'Restaurar o backup mais recente — é sempre o mais seguro',
+        'Restaurar um backup anterior ao início do comprometimento (>3 semanas) e fechar o vetor antes de voltar ao ar',
+        'Não restaurar nada — apenas trocar as senhas',
+        'Restaurar o backup mais recente e rodar um antivírus depois',
+      ],
+      correct: 1,
+      explanation: 'O backup mais recente provavelmente já contém a persistência do atacante (criada há 3 semanas). É preciso usar a timeline para escolher um ponto de restauração anterior ao dwell time — e fechar o vetor de entrada antes de reintegrar o sistema, validando com nmap externo.',
+      trail: 'avancados',
+    },
 ];

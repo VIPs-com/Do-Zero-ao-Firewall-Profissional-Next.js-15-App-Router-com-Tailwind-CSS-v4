@@ -249,6 +249,10 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'haproxy-conceito', title: 'HAProxy — Load Balancer', description: 'Balanceador de carga L4 (TCP) e L7 (HTTP) — frontend, backend, alta disponibilidade e escalabilidade', category: 'Tópico', href: '/haproxy', icon: Network },
   { id: 'haproxy-balance',  title: 'HAProxy — algoritmos e health checks', description: 'balance roundrobin/leastconn/source, option httpchk, server check, failover automático e weight', category: 'Tópico', href: '/haproxy', icon: Network },
   { id: 'haproxy-stats',    title: 'HAProxy — stats e stick-tables', description: 'Página de estatísticas em /stats, terminação SSL com bind ssl crt e rate limit com stick-table', category: 'Tópico', href: '/haproxy', icon: Network },
+  // Sprint CÓDICE — Resposta a Incidentes (DFIR)
+  { id: 'p-resposta-incidentes', title: 'Resposta a Incidentes (DFIR)', description: 'O que fazer quando o servidor foi comprometido — o ciclo NIST SP 800-61 na prática', category: 'Página', href: '/resposta-incidentes', icon: Shield },
+  { id: 'g-ir-ciclo',  category: 'Glossário', title: 'Ciclo NIST de Resposta a Incidentes', description: 'Detecção → Contenção → Preservação → Timeline → Análise → Erradicação → Recuperação → Pós-incidente. Não improvise: siga o fluxo do NIST SP 800-61', href: '/resposta-incidentes', icon: Shield },
+  { id: 'g-ir-evidencias', category: 'Glossário', title: 'Preservação de evidências voláteis', description: 'Não reinicie: o reboot apaga RAM, processos e conexões. Colete dados voláteis com ir_collect.sh e tire snapshot antes de qualquer análise forense', href: '/resposta-incidentes', icon: Shield },
 
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },

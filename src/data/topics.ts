@@ -155,6 +155,7 @@ export const TOPICS: Topic[] = [
   { id: 'c02', num: 'C02', title: 'OPNsense: firewall enterprise com Web UI — regras por interface (ingress), Aliases, Port Forward (DNAT), VPN WireGuard/OpenVPN wizard, Suricata IDS/IPS integrado e Alta Disponibilidade com CARP.', layer: 'Firewall · Enterprise', layerClass: 'l3', href: '/opnsense', group: 'Cloud & Platform Engineering' },
   { id: 'c03', num: 'C03', title: 'Nextcloud self-hosted: Docker Compose (Nextcloud+MariaDB+Redis+Traefik), CalDAV/CardDAV, integração LDAP, object storage MinIO, backup 3-2-1 automatizado e apps Calendar/Contacts/Talk.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/nextcloud', group: 'Cloud & Platform Engineering' },
   { id: 'c04', num: 'C04', title: 'eBPF Avançado + Cilium: CNI nativo eBPF substituindo kube-proxy e flannel, Hubble para observabilidade de fluxos L7 em tempo real, CiliumNetworkPolicy HTTP path e DNS (toFQDNs), Tetragon TracingPolicy para runtime security.', layer: 'eBPF · CNI', layerClass: 'l3', href: '/ebpf-avancado', group: 'Cloud & Platform Engineering' },
+  { id: 'c05', num: 'C05', title: 'Resposta a Incidentes (DFIR): o ciclo NIST SP 800-61 — detecção de comprometimento, contenção sem destruir evidências, preservação volátil, timeline forense, erradicação, recuperação validada e pós-incidente.', layer: 'Segurança · DFIR', layerClass: 'l3', href: '/resposta-incidentes', group: 'Cloud & Platform Engineering' },
 ];
 
 // ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
@@ -224,6 +225,7 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/opnsense':      { label: 'OPNsense',                    icon: '🔥', trail: 'avancados' },
   '/nextcloud':     { label: 'Nextcloud',                   icon: '☁️', trail: 'avancados' },
   '/ebpf-avancado': { label: 'eBPF Avançado + Cilium',      icon: '🧬', trail: 'avancados' },
+  '/resposta-incidentes': { label: 'Resposta a Incidentes', icon: '🚨', trail: 'avancados' },
 };
 
 // Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
@@ -246,6 +248,7 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/ldap', '/pihole', '/ssh-proxy', '/nfs', '/haproxy', '/ansible', '/monitoring',
     '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
     '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
+    '/resposta-incidentes',
   ],
 };
 

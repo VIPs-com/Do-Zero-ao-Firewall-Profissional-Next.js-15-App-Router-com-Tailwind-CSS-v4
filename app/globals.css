@@ -307,6 +307,8 @@ html.light {
   .module-accent-vault              { --mod: #fbbf24; }
   /* Sprint HAPROXY — Load Balancer L4/L7 */
   .module-accent-haproxy            { --mod: #1f9d8a; }
+  /* Sprint CÓDICE — Resposta a Incidentes (DFIR) */
+  .module-accent-resposta-incidentes { --mod: #e11d48; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
   .module-accent-usuarios           { --mod: #6366f1; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */

@@ -74,6 +74,8 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/opnsense',      title: 'OPNsense' },
   { path: '/nextcloud',     title: 'Nextcloud' },
   { path: '/ebpf-avancado', title: 'eBPF Avançado + Cilium' },
+  // Capstone — Resposta a Incidentes (Sprint CÓDICE)
+  { path: '/resposta-incidentes', title: 'Resposta a Incidentes (DFIR)' },
 ];
 
 // ── Trilha Fundamentos Linux (v2.0) — iniciantes ──────────────────────────────

@@ -59,7 +59,8 @@ export type BadgeId =
   | 'usuarios-master'
   | 'troubleshooting-master'
   | 'ground-zero'
-  | 'haproxy-master';
+  | 'haproxy-master'
+  | 'incident-master';
 
 export interface BadgeDef {
   icon: string;
@@ -131,4 +132,5 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'troubleshooting-master': { icon: '🔎', title: 'Troubleshooting Master',   desc: 'Diagnosticou conectividade, portas e causa raiz via logs — resolve "o site não abre" sem entrar em pânico' },
   'ground-zero':            { icon: '🏁', title: 'Ground Zero',              desc: 'Completou todos os 17 módulos da Trilha Fundamentos Linux — você não é mais iniciante!' },
   'haproxy-master':         { icon: '⚖️', title: 'HAProxy Master',           desc: 'Configurou um balanceador de carga HAProxy com frontend/backend, health checks e página de estatísticas' },
+  'incident-master':        { icon: '🚨', title: 'Incident Responder',       desc: 'Dominou o ciclo de Resposta a Incidentes do NIST — detecção, contenção, preservação de evidências e pós-incidente' },
 };

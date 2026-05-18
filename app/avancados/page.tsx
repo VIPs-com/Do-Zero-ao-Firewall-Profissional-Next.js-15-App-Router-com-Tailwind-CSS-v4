@@ -64,6 +64,7 @@ const SECTIONS: Section[] = [
       { path: '/opnsense',      num: 'C02', title: 'OPNsense',                    icon: '🔥', checkpoint: 'opnsense-instalado',      desc: 'Firewall enterprise com Web UI, regras, VPN, CARP HA' },
       { path: '/nextcloud',     num: 'C03', title: 'Nextcloud Self-Hosted',       icon: '☁️', checkpoint: 'nextcloud-instalado',     desc: 'Docker Compose, MariaDB+Redis+Traefik, apps, backup 3-2-1' },
       { path: '/ebpf-avancado', num: 'C04', title: 'eBPF Avançado + Cilium',      icon: '🧬', checkpoint: 'cilium-instalado',        desc: 'Cilium CNI, Hubble L7, CiliumNetworkPolicy, Tetragon' },
+      { path: '/resposta-incidentes', num: 'C05', title: 'Resposta a Incidentes (DFIR)', icon: '🚨', checkpoint: 'ir-deteccao',     desc: 'Ciclo NIST: detecção, contenção, forense, erradicação, pós-incidente' },
     ],
   },
 ];

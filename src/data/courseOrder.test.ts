@@ -145,8 +145,8 @@ describe('FUNDAMENTOS_ORDER — integridade da trilha Fundamentos Linux', () => 
 
 describe('ADVANCED_ORDER — módulos avançados v3.0→v5.0', () => {
 
-  it('tem exatamente 22 módulos', () => {
-    expect(ADVANCED_ORDER).toHaveLength(22);
+  it('tem exatamente 23 módulos', () => {
+    expect(ADVANCED_ORDER).toHaveLength(23);
   });
 
   it('não há paths duplicados', () => {

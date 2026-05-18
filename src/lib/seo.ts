@@ -446,6 +446,12 @@ export const ROUTE_SEO = {
       'Use SSH como proxy SOCKS5 com -D, port forwarding local e remoto com -L/-R, Jump Host com -J, autossh para túneis persistentes e ~/.ssh/config para produtividade máxima.',
     keywords: ['SSH', 'SOCKS5', 'proxy', 'port forwarding', 'SSH tunnel', 'jump host', 'autossh', 'ssh -D', 'ssh -L', 'ssh -R', 'ProxyJump', 'SSH config'],
   },
+  '/resposta-incidentes': {
+    title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
+    description:
+      'O que fazer quando o servidor foi comprometido: detecção de invasão, contenção sem destruir evidências, preservação de dados voláteis, timeline forense, erradicação, recuperação validada e pós-incidente — seguindo o framework NIST SP 800-61.',
+    keywords: ['resposta a incidentes', 'DFIR', 'NIST SP 800-61', 'forense Linux', 'incident response', 'blue team', 'preservação de evidências', 'tabletop exercise', 'segurança Linux'],
+  },
   '/ebpf-avancado': {
     title: 'eBPF Avançado + Cilium | CNI eBPF, Hubble, NetworkPolicy L7 e Tetragon',
     description:

@@ -78,6 +78,7 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/opnsense':          '🔥 OPNsense',
   '/nextcloud':         '☁️ Nextcloud',
   '/ebpf-avancado':     '🧬 eBPF Avançado',
+  '/resposta-incidentes': '🚨 Resposta a Incidentes',
 };
 
 type AnyModule = CourseModule | SimpleModule;

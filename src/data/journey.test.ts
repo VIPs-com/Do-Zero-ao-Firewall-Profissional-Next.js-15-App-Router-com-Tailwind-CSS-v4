@@ -11,24 +11,24 @@ import {
 import { FUNDAMENTOS_ORDER, COURSE_ORDER, ADVANCED_ORDER } from './courseOrder';
 
 describe('JOURNEY', () => {
-  it('tem exatamente 64 módulos (17 + 25 + 22)', () => {
-    expect(JOURNEY).toHaveLength(64);
+  it('tem exatamente 65 módulos (17 + 25 + 23)', () => {
+    expect(JOURNEY).toHaveLength(65);
   });
 
   it('todos os paths são únicos', () => {
     const paths = JOURNEY.map((m) => m.path);
-    expect(new Set(paths).size).toBe(64);
+    expect(new Set(paths).size).toBe(65);
   });
 
-  it('ordem das fases: Fundamentos (0–16), Firewall (17–41), Avançados (42–63)', () => {
+  it('ordem das fases: Fundamentos (0–16), Firewall (17–41), Avançados (42–64)', () => {
     JOURNEY.slice(0, 17).forEach((m) => expect(m.trail).toBe('fundamentos'));
     JOURNEY.slice(17, 42).forEach((m) => expect(m.trail).toBe('firewall'));
     JOURNEY.slice(42).forEach((m) => expect(m.trail).toBe('avancados'));
   });
 
-  it('começa em /fhs e termina em /ebpf-avancado', () => {
+  it('começa em /fhs e termina em /resposta-incidentes', () => {
     expect(JOURNEY[0].path).toBe('/fhs');
-    expect(JOURNEY[JOURNEY.length - 1].path).toBe('/ebpf-avancado');
+    expect(JOURNEY[JOURNEY.length - 1].path).toBe('/resposta-incidentes');
   });
 
   it('todo módulo tem estMin > 0 e dificuldade válida', () => {
@@ -82,18 +82,18 @@ describe('getNextJourneyModule', () => {
 });
 
 describe('getJourneyProgress', () => {
-  it('progresso vazio → 0/64 (0%)', () => {
-    expect(getJourneyProgress([])).toEqual({ completed: 0, total: 64, percent: 0 });
+  it('progresso vazio → 0/65 (0%)', () => {
+    expect(getJourneyProgress([])).toEqual({ completed: 0, total: 65, percent: 0 });
   });
 
-  it('tudo concluído → 64/64 (100%)', () => {
+  it('tudo concluído → 65/65 (100%)', () => {
     const all = JOURNEY.map((m) => m.path);
-    expect(getJourneyProgress(all)).toEqual({ completed: 64, total: 64, percent: 100 });
+    expect(getJourneyProgress(all)).toEqual({ completed: 65, total: 65, percent: 100 });
   });
 
   it('conta visitas e arredonda o percentual', () => {
-    const r = getJourneyProgress(JOURNEY.slice(0, 32).map((m) => m.path));
-    expect(r.completed).toBe(32);
-    expect(r.percent).toBe(50);
+    const r = getJourneyProgress(JOURNEY.slice(0, 13).map((m) => m.path));
+    expect(r.completed).toBe(13);
+    expect(r.percent).toBe(20); // 13/65 = 20%
   });
 });

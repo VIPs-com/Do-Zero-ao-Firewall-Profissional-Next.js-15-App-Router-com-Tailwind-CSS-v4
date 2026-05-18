@@ -108,6 +108,7 @@ const JOURNEY_META: Record<string, JourneyMetaEntry> = {
   '/opnsense':      { difficulty: 'avancado', estMin: 40 },
   '/nextcloud':     { difficulty: 'avancado', estMin: 40 },
   '/ebpf-avancado': { difficulty: 'avancado', estMin: 55 },
+  '/resposta-incidentes': { difficulty: 'avancado', estMin: 50 },
 };
 
 /** Erro explícito se um path do array de ordem não tiver metadado. */
