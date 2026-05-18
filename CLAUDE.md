@@ -128,7 +128,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 54 (Sprint HAPROXY: +/haproxy) |
 | `totalTopics` | `app/dashboard/page.tsx` | 90 (Sprint HAPROXY: +S10 haproxy) |
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 175 (Sprint HAPROXY: +3 checkpoints haproxy) |
-| Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
+| Texto na Home | `app/page.tsx` | "90 tópicos práticos" + stats: 90/64/63/7 |
 | Badges | `src/context/BadgeContext.tsx` | 63 (Sprint HAPROXY: +haproxy-master) |
 | searchItems | `src/data/searchItems.ts` | 252 (Sprint JORNADA: +1 jornada) |
 
