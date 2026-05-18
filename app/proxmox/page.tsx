@@ -539,6 +539,51 @@ pvecm status                  # Status do cluster`}
         />
       </div>
 
+      {/* ── Endurecimento do Host (guia Fortaleza Proxmox) ── */}
+      <div id="hardening-host" className="max-w-5xl mx-auto px-4 mb-12 scroll-mt-24">
+        <h2 className="text-2xl font-bold mb-2">🛡️ Endurecimento do Host — a ordem que nunca perde acesso</h2>
+        <p className="text-text-2 mb-4">
+          Depois de criar VMs, o host Proxmox em si precisa ser endurecido. A regra de ouro:
+          <strong> a sequência importa</strong> — cada passo é validado antes do próximo, e
+          você nunca executa algo que possa te trancar para fora sem antes garantir uma rota
+          de volta.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-3 mb-6 text-sm">
+          {[
+            { n: '1', t: 'Fundação', d: 'IP fixo, NTP, repositórios corrigidos, backup do /etc/pve, snapshot ZFS inicial' },
+            { n: '2', t: 'Identidade', d: 'Usuário com sudo + chave SSH Ed25519 — teste o login novo ANTES de desabilitar a senha' },
+            { n: '3', t: '2FA', d: 'TOTP no SSH e no painel web — sempre com uma 2ª sessão aberta como rede de segurança' },
+            { n: '4', t: 'Detecção', d: 'CrowdSec + bouncer (módulo /crowdsec) — whitelist do seu IP antes de ativar' },
+            { n: '5', t: 'Acesso remoto', d: 'Tailscale (módulo /tailscale) — acesso zero-port antes de fechar o firewall' },
+            { n: '6', t: 'Firewall', d: 'nftables política DROP — só feche a porta depois que o acesso alternativo já funciona' },
+          ].map(s => (
+            <div key={s.n} className="p-3 rounded-lg bg-bg-2 border border-border">
+              <span className="font-bold text-accent">Fase {s.n} · {s.t}</span>
+              <p className="text-text-3 mt-1 leading-snug">{s.d}</p>
+            </div>
+          ))}
+        </div>
+        <WarnBox title="Por que a ordem é sagrada">
+          Ativar o firewall DROP <em>antes</em> de configurar o acesso remoto = servidor
+          inacessível. Desabilitar a senha SSH <em>antes</em> de testar a chave = porta
+          trancada sem chave. Cada fase só avança quando a anterior foi <strong>verificada</strong>.
+        </WarnBox>
+        <p className="text-text-2 mt-4 mb-2">
+          E a rotina que mantém o storage saudável — calendário de snapshot e scrub do ZFS:
+        </p>
+        <CodeBlock lang="bash" code={`# Snapshot ZFS antes de toda mudança grande (rollback em segundos)
+zfs snapshot rpool/ROOT/pve-1@pre-upgrade-$(date +%F)
+zfs list -t snapshot                       # conferir
+# zfs rollback rpool/ROOT/pve-1@pre-upgrade-...   # se algo der errado
+
+# Scrub mensal — detecta e corrige bit rot. Agende no cron:
+echo '0 3 1 * * root /sbin/zpool scrub rpool' | sudo tee /etc/cron.d/zfs-scrub
+zpool status rpool                         # ver resultado do último scrub
+
+# Rotina: snapshot a cada mudança · scrub mensal ·
+# teste de restore trimestral (ver módulo Proxmox Backup Server)`} />
+      </div>
+
       {/* ── Erros Comuns ── */}
       <div className="max-w-5xl mx-auto px-4 space-y-4 mb-8">
         <h2 className="text-2xl font-bold flex items-center gap-2">

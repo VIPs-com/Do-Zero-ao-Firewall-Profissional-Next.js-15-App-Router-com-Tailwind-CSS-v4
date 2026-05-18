@@ -781,6 +781,49 @@ scrape_configs:
 # Scale: Thanos/Cortex para multi-cluster`}
         />
 
+        {/* Alertas leves via Telegram — homelab de 1 nó */}
+        <section id="alertas-telegram" className="scroll-mt-24">
+          <h2 className="text-2xl font-bold mb-2">Alertas leves via Telegram</h2>
+          <p className="text-text-2 mb-4">
+            Prometheus + Alertmanager + Grafana é o padrão para frotas — mas para um{' '}
+            <strong>homelab de 1 nó</strong> é muito peso. Um script que lê métricas básicas
+            e manda mensagem no <strong>Telegram</strong> via cron tem overhead zero e avisa
+            exatamente o que importa: disco cheio, serviço caído, IP banido.
+          </p>
+          <InfoBox title="Quando o Telegram basta — e quando ir para o Alertmanager">
+            <strong>1 servidor, poucos serviços:</strong> script + cron + Telegram resolve.
+            <strong> Múltiplos nós para correlacionar, regras de severidade, silenciamento,
+            rotas:</strong> aí o Alertmanager (acima) ganha. Comece simples; suba o nível
+            quando a necessidade for real.
+          </InfoBox>
+          <p className="text-text-2 mt-4 mb-2">
+            Crie um bot com o <code>@BotFather</code>, pegue o <code>token</code> e o seu{' '}
+            <code>chat_id</code>, e agende um verificador:
+          </p>
+          <CodeBlock lang="bash" code={`#!/bin/bash
+# alerta-telegram.sh — checagem leve de saúde do host
+TOKEN="SEU_BOT_TOKEN"
+CHAT_ID="SEU_CHAT_ID"
+
+notifica() {
+  curl -s -X POST "https://api.telegram.org/bot$TOKEN/sendMessage" \\
+    -d chat_id="$CHAT_ID" -d text="$1" > /dev/null
+}
+
+# Disco acima de 85%?
+USO=$(df --output=pcent / | tail -1 | tr -dc '0-9')
+[ "$USO" -ge 85 ] && notifica "⚠️ Disco em \${USO}% em \$(hostname)"
+
+# Algum serviço crítico caiu?
+for svc in sshd nginx crowdsec; do
+  systemctl is-active --quiet "$svc" || notifica "🔴 Serviço $svc caiu em $(hostname)"
+done`} />
+          <CodeBlock lang="bash" code={`# Agendar a checagem a cada 15 minutos
+chmod +x /usr/local/bin/alerta-telegram.sh
+echo '*/15 * * * * root /usr/local/bin/alerta-telegram.sh' \\
+  | sudo tee /etc/cron.d/alerta-telegram`} />
+        </section>
+
         </div>}
 
         {/* Exercícios Guiados */}

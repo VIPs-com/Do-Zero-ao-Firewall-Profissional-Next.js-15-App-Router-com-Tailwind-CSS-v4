@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Shield, Network, Globe, Server, Activity, Lock } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
 import { CodeBlock } from '@/components/ui/CodeBlock';
-import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
+import { InfoBox, WarnBox, WindowsComparisonBox, HorizonteBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
@@ -436,6 +436,44 @@ pihole -w "cdn.site-legitimo.com"
               <p className="text-text-2 text-sm mt-1">DNS sinkhole protegendo toda a rede — anúncios e rastreadores bloqueados na fonte.</p>
             </div>
           )}
+        </section>
+
+        {/* ── Horizonte: Pi-hole → AdGuard Home ── */}
+        <section id="horizonte-adguard" className="scroll-mt-24 mb-12">
+          <h2 className="text-2xl font-bold mb-2">Horizonte — do Pi-hole ao AdGuard Home</h2>
+          <p className="text-text-2 mb-4">
+            O Pi-hole é a fundação do DNS sinkhole. O <strong>AdGuard Home</strong> resolve o
+            mesmo problema — bloquear anúncios e rastreadores na rede inteira — mas com um
+            servidor DNS próprio embutido e recursos modernos de privacidade.
+          </p>
+          <HorizonteBox
+            classicoLabel="Pi-hole — DNS sinkhole consagrado"
+            modernoLabel="AdGuard Home — sinkhole all-in-one"
+            classico={
+              <ul className="space-y-1 list-disc pl-4">
+                <li>DNS sinkhole encaminhador — depende de um resolver upstream</li>
+                <li>Blocklists (gravity), whitelist/blacklist, regex</li>
+                <li>Ecossistema enorme, dashboard maduro, Query Log</li>
+                <li>DoH/DoT exigem configuração extra (cloudflared/unbound)</li>
+              </ul>
+            }
+            moderno={
+              <ul className="space-y-1 list-disc pl-4">
+                <li>Servidor DNS completo embutido — DoH/DoT/DoQ nativos</li>
+                <li>Um único binário Go, instalação e upgrade simples</li>
+                <li>Filtragem por cliente, agendamento, controle parental</li>
+                <li>Config em YAML versionável — sem PHP, sem dnsmasq</li>
+              </ul>
+            }
+            ganho="Você aprende a anatomia de um DNS sinkhole com o Pi-hole — gravity, upstream,
+                   bloqueio de domínios. Com o AdGuard Home o mesmo conceito vem num pacote
+                   único, com DNS criptografado nativo. Iniciante: comece pelo Pi-hole.
+                   Quer DoH/DoT sem malabarismo: AdGuard Home."
+          />
+          <InfoBox title="Os dois resolvem o mesmo problema">
+            Não rode os dois na mesma porta 53 ao mesmo tempo. Escolha um como DNS da LAN.
+            A migração é direta: as blocklists e o conceito de whitelist são equivalentes.
+          </InfoBox>
         </section>
 
         {/* ── Erros Comuns ── */}
