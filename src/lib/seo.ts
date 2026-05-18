@@ -83,6 +83,11 @@ export const ROUTE_SEO = {
     description:
       '24 tópicos práticos sobre firewall Linux, DNS, SSL, VPN, Proxy e Port Knocking. Organize seu estudo por camada OSI.',
   },
+  '/jornada': {
+    title: 'Jornada Unificada — Do Zero ao Avançado',
+    description:
+      'A trilha completa do Workshop Linux em uma linha do tempo única: 64 módulos de Fundamentos a Cloud, com nível de dificuldade, tempo estimado e seu próximo passo destacado.',
+  },
   '/quiz': {
     title: 'Quiz de Certificação',
     description:

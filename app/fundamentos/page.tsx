@@ -105,9 +105,14 @@ export default function FundamentosPage() {
           />
         </div>
         {allDone && (
-          <p className="mt-3 text-sm text-ok font-semibold flex items-center gap-2">
-            <CheckCircle2 size={14} /> Trilha 100% concluída! Badges 🐧 Fundamentos Master e 🏁 Ground Zero desbloqueados.
-          </p>
+          <div className="mt-3 space-y-2">
+            <p className="text-sm text-ok font-semibold flex items-center gap-2">
+              <CheckCircle2 size={14} /> Trilha 100% concluída! Badges 🐧 Fundamentos Master e 🏁 Ground Zero desbloqueados.
+            </p>
+            <Link href="/jornada" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline">
+              🧭 Trilha concluída — continue na sua Jornada Unificada
+            </Link>
+          </div>
         )}
       </div>
 

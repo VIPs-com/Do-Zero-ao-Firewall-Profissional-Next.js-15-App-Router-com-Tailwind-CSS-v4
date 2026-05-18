@@ -138,9 +138,14 @@ export default function AvancadosPage() {
           />
         </div>
         {allDone && (
-          <p className="mt-3 text-sm text-ok font-semibold flex items-center gap-2">
-            <CheckCircle2 size={14} /> Trilha concluída! Badge 🌐 Advanced Master desbloqueado. Você é um SysAdmin profissional.
-          </p>
+          <div className="mt-3 space-y-2">
+            <p className="text-sm text-ok font-semibold flex items-center gap-2">
+              <CheckCircle2 size={14} /> Trilha concluída! Badge 🌐 Advanced Master desbloqueado. Você é um SysAdmin profissional.
+            </p>
+            <Link href="/jornada" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline">
+              🧭 Veja sua Jornada Unificada completa
+            </Link>
+          </div>
         )}
       </div>
 

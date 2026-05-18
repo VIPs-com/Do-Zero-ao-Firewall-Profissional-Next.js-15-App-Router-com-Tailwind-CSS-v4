@@ -88,6 +88,7 @@ e2e/                        # Playwright E2E (Sprint T₂)
   20-cheat-sheet.spec.ts        # /cheat-sheet: 4 abas, busca + estado vazio, filtro OSI, copiar (5 casos)
   21-quiz-config.spec.ts        # /quiz tela inicial: seletores trilha/sessão, preview, ?trail= param (4 casos)
   22-glossario.spec.ts          # /glossario: busca + estado vazio, filtro por categoria (3 casos)
+  24-jornada.spec.ts            # /jornada: render 3 fases, barra 0%, próximo módulo, navegação (4 casos)
   23-progress-dropdown.spec.ts  # ProgressDropdown header: abre/fecha, abas de trilha, ESC (3 casos)
 playwright.config.ts        # build prod + start, chromium, webServer timeout 180s
 ```
@@ -129,7 +130,7 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 | `checklistItemsCount` | `app/dashboard/page.tsx` | 175 (Sprint HAPROXY: +3 checkpoints haproxy) |
 | Texto na Home | `app/page.tsx` | "86 tópicos práticos" + stats: 86/60/58/7 |
 | Badges | `src/context/BadgeContext.tsx` | 63 (Sprint HAPROXY: +haproxy-master) |
-| searchItems | `src/data/searchItems.ts` | 251 (Sprint Ferramentas v4: +1 base64) |
+| searchItems | `src/data/searchItems.ts` | 252 (Sprint JORNADA: +1 jornada) |
 
 ---
 
@@ -505,6 +506,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint E2E-HARDENING Rodada 2: a 2ª execução do CI ainda mostrou 6 flaky (specs de contador no dashboard que semeavam via `page.evaluate`); todos convertidos para `page.addInitScript` — `03-quiz-expert:67`, `07-dashboard-counters:19`, `10-fundamentos-trail:86`, `14-foundation-modules:84` e `:170`; `06-export-import` refatorado para construir o snapshot JSON diretamente em Node (sem semear o navegador e reler, eliminando a corrida); verificado com `--repeat-each=3` (18/18 ✓). Padrão consolidado: **todo seed de localStorage pré-`goto` usa `addInitScript`, nunca `page.evaluate`**.
 - ✅ Sprint STRICT (TypeScript estrito): quarta e última recomendação da Auditoria Técnica — `tsconfig.json` migrado de `"strict": false` para `"strict": true`. A varredura prévia (`tsc --noEmit --strict` sobre os 216 arquivos do projeto) retornou **0 erros** — o código já era estrito-limpo graças à disciplina de tipagem explícita. Migração de uma linha, sem mudanças de código; comentário stale em `regex.ts` (que citava `strict:false`) atualizado. Agora valem `strictNullChecks`, `noImplicitAny`, `strictFunctionTypes` etc. — narrowing de uniões discriminadas e segurança contra `null`/`undefined` plenos; lint ✓ · eslint ✓ · 232 testes · build 79 rotas.
 - ✅ Sprint Ferramentas v4 (Base64): 5ª aba "🔣 Base64" em `/ferramentas` — `src/lib/base64.ts` com `encodeBase64`/`decodeBase64` puros e seguros para UTF-8 (`TextEncoder`/`TextDecoder`, não só `btoa`/`atob`), shape único `Base64Result` + `base64.test.ts` (9 testes, incluindo round-trip UTF-8 e caso real de Secret do Kubernetes); UI com toggle Codificar/Decodificar (radiogroup), preview ao vivo e `CopyButton`; `searchItems` 250→251; `e2e/18` +1 caso (decodifica Secret K8s, codifica, erro em Base64 inválido); lint ✓ · eslint ✓ · 18 suítes · 241 testes · build 79 rotas · E2E 18 (9/9).
+- ✅ Sprint JORNADA (Jornada Unificada): resolve o maior gap pedagógico para o aluno "do zero ao avançado" — as 3 trilhas eram silos. `src/data/journey.ts` — módulo puro que compõe `FUNDAMENTOS_ORDER` (17) + `COURSE_ORDER` (25) + `ADVANCED_ORDER` (22) numa única linha do tempo `JOURNEY` de 64 módulos (path/title/trail derivados — zero duplicação; dificuldade + `estMin` num mapa `JOURNEY_META`), `getNextJourneyModule()` e `getJourneyProgress()` puros + `journey.test.ts` (16 testes); nova rota `/jornada` (`app/jornada/page.tsx` + `layout.tsx`) — linha do tempo com 3 fases, badge de dificuldade (🟢🟡🔴) + tempo estimado por módulo, ✓ por módulo visitado, barra de progresso geral X/64 e o próximo módulo destacado com "Continue aqui →"; `ROUTE_SEO` +`/jornada` (74→75 rotas), nav link 🧭 Jornada no `ClientLayout`, CTA "Não sabe por onde começar?" na home repontado para `/jornada`, card "Jornada Unificada" no dashboard (aditivo), +1 searchItem (`p-jornada`, 251→252); nudge cross-trilha em `/fundamentos` e `/avancados` (bloco `allDone` → link `/jornada`); `e2e/24-jornada.spec.ts` (4 casos) + `e2e/15-routes-smoke` 74→75; `CONTENT_PAGES_COUNT` inalterado (54 — `/jornada` é página índice); lint ✓ · eslint ✓ · 19 suítes · 257 testes · build 80 rotas · E2E (88/88).
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ✅ Simulador de Prompt PS1: ENTREGUE no Sprint Ferramentas-PS1 — aba interativa de preview ao vivo em `/ferramentas` (motor puro `src/lib/ps1.ts`), complementa o conteúdo PS1/PS2 do Sprint Anatomia do Shell em `/comandos`.
 

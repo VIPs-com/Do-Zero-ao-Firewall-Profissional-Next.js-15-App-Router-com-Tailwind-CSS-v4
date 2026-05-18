@@ -161,17 +161,17 @@ export default function Home() {
           className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-[rgba(99,102,241,0.08)] border border-[rgba(99,102,241,0.3)]"
         >
           <div className="flex items-center gap-3 text-center sm:text-left">
-            <span className="text-2xl" aria-hidden="true">🐧</span>
+            <span className="text-2xl" aria-hidden="true">🧭</span>
             <div>
-              <p className="font-bold text-sm text-[#6366f1]">Novo no Linux?</p>
-              <p className="text-xs text-text-2">Comece pela Trilha Fundamentos — 15 módulos do zero antes do firewall.</p>
+              <p className="font-bold text-sm text-[#6366f1]">Não sabe por onde começar?</p>
+              <p className="text-xs text-text-2">Veja a Jornada Unificada — 64 módulos do zero ao avançado, com seu próximo passo sempre destacado.</p>
             </div>
           </div>
           <Link
-            href="/fundamentos"
+            href="/jornada"
             className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#6366f1] text-white font-semibold text-sm hover:bg-[#4f46e5] transition-colors"
           >
-            Começar aqui
+            Ver a jornada
             <ArrowRight size={14} aria-hidden="true" />
           </Link>
         </motion.div>

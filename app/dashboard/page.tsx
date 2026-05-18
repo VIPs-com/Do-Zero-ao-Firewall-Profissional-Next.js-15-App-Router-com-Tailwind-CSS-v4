@@ -25,6 +25,7 @@ import { useBadges, BADGE_DEFS, BadgeId } from '@/context/BadgeContext';
 import { COURSE_ORDER, FUNDAMENTOS_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
 import { getSRSData, getTotalDue } from '@/lib/srs';
 import { QUIZ_QUESTIONS } from '@/data/quizQuestions';
+import { getJourneyProgress, getNextJourneyModule } from '@/data/journey';
 
 export default function DashboardPage() {
   const {
@@ -135,6 +136,14 @@ export default function DashboardPage() {
     []
   );
 
+  const journey = React.useMemo(() => {
+    const visited = Array.from(visitedPages);
+    return {
+      progress: getJourneyProgress(visited, checklist),
+      next: getNextJourneyModule(visited, checklist),
+    };
+  }, [visitedPages, checklist]);
+
   const stats = [
     { label: 'Tópicos Lidos',    value: `${visitedPages.size}/${totalTopics}`,          icon: <BookOpen />, color: 'text-info' },
     { label: 'Labs Concluídos',  value: `${checklistCompleted}/${checklistItemsCount}`, icon: <Shield />,   color: 'text-ok' },
@@ -206,6 +215,30 @@ export default function DashboardPage() {
                 <div className="text-[10px] font-bold uppercase tracking-widest text-text-3">{stat.label}</div>
               </div>
             ))}
+          </div>
+
+          {/* Jornada Unificada */}
+          <div className="p-4 rounded-xl border border-accent/30 bg-accent/5">
+            <div className="flex items-center gap-4">
+              <span className="text-2xl shrink-0" aria-hidden="true">🧭</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-mono uppercase tracking-wider text-text-3">Jornada Unificada · Do Zero ao Avançado</p>
+                <p className="font-bold text-text">
+                  {journey.progress.completed}/{journey.progress.total} módulos · {journey.progress.percent}%
+                  {journey.next && <span className="font-normal text-text-2"> · próximo: {journey.next.title}</span>}
+                </p>
+              </div>
+              <Link
+                href="/jornada"
+                className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg border border-accent/40 text-accent hover:bg-accent/10 transition-colors"
+              >
+                Ver jornada →
+              </Link>
+            </div>
+            <div className="mt-3 h-1.5 rounded-full bg-bg-3 overflow-hidden">
+              <div className="h-full bg-accent transition-[width] duration-700"
+                style={{ width: `${journey.progress.percent}%` }} />
+            </div>
           </div>
 
           {/* SRS — Revisões Pendentes */}
