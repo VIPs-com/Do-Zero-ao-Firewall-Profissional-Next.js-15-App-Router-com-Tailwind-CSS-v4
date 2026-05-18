@@ -6,16 +6,16 @@
 
 **Slide 1 — Visao Geral**
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
-- **Stack:** Next.js 16, Tailwind CSS v4, TypeScript 5.8, React 19
+- **Stack:** Next.js 16.2.6, Tailwind CSS v4, TypeScript 5.8 (strict), React 19
 - **Missao:** Democratizar infraestrutura Linux com experiencia gamificada e imersiva
-- **Escopo:** 90 tópicos, 79 rotas, 63 badges, 175 checkpoints de validação
+- **Escopo:** 90 tópicos, 80 rotas, 63 badges, 175 checkpoints de validação · 274 questões de quiz
 
 ---
 
 **Slide 2 — Arquitetura**
 - **Frontend:** Client + Server Components hibridos (estado reativo + metadata SEO)
 - **Persistencia:** `localStorage` como fonte unica (Backend descartado — escopo educacional)
-- **Build:** Turbopack · 79 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
+- **Build:** Turbopack · 80 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
 - **Infraestrutura:** Nginx como Proxy Reverso + PM2 para alta disponibilidade
 
 ---
@@ -29,7 +29,7 @@
 ---
 
 **Slide 4 — SEO & Performance (Sprint B)**
-- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (74 rotas) e `buildMetadata()`
+- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (75 rotas) e `buildMetadata()`
 - **Geracao automatica:** sitemap, robots, OG image, favicon, apple-icon, manifest — todos via `next/og` edge
 - **Fontes:** `next/font` self-hospedado (zero CLS, LGPD-safe)
 - **JSON-LD:** `LearningResource` no root layout
@@ -62,15 +62,25 @@
 - **Sprint F4-F7 ✅** pacotes · boot · comandos-avancados · rsyslog (v2.0 COMPLETO)
 - **Sprint I.7–I.11 ✅** DHCP · Samba · Apache · OpenVPN · Traefik
 - **Sprint I.12–I.13 ✅** LDAP · Pi-hole (v3.0 COMPLETO)
-- **Sprint I.14–I.17 ✅** Ansible · Prometheus+Grafana · Kubernetes/K3s · Terraform (v4.0 parcial)
+- **Sprint I.14–I.25 ✅** Ansible · Prometheus+Grafana · Kubernetes · Terraform · Suricata · eBPF · Service Mesh · SRE · CI/CD · OPNsense · Nextcloud · eBPF Avançado (v4.0 + v5.0 COMPLETOS)
+- **Sprint JORNADA ✅** Rota `/jornada` — une as 3 trilhas numa linha do tempo única (64 módulos)
+- **Hub `/ferramentas` ✅** 5 utilitários portáteis: CIDR · Regex · iptables · PS1 · Base64
 
 ---
 
-**Slide 8 — Mensagens-Chave**
-- **Seguro por design:** CSP nonce + HSTS + ESLint a11y como gate
+**Slide 8 — Engenharia & Qualidade**
+- **CI ✅** GitHub Actions — lint + testes + build + E2E em todo push/PR para a `main`
+- **TypeScript estrito ✅** `tsconfig` migrado para `strict: true`
+- **Dependências ✅** Next 16.2.6 + override postcss → `npm audit` 0 vulnerabilidades
+- **Cobertura:** 19 suítes vitest · 257 testes · 24 specs Playwright (105 casos, 0 flaky)
+
+---
+
+**Slide 9 — Mensagens-Chave**
+- **Seguro por design:** CSP nonce + HSTS + ESLint a11y como gate + CI verde
 - **Escopo honesto:** Sem backend, sem SW — localStorage e PWA Lite bastam
 - **Educacional primeiro:** Toda decisao tecnica prioriza clareza de aprendizado
-- **Progressao real:** v1.0→v2.0→v3.0→v4.0 formam um SysAdmin completo
+- **Progressao real:** v1.0→v2.0→v3.0→v4.0→v5.0 formam um SysAdmin completo
 
 ---
 [<- Voltar ao indice](README.md)

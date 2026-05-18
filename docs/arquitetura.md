@@ -66,7 +66,9 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 wireguard/                ← Módulo 10: WireGuard VPN (Sprint I.1)
 │   ├── 📁 fail2ban/                 ← Módulo 11: Fail2ban (Sprint I.2)
 │   ├── 📁 topicos/                  ← Índice dos 90 tópicos práticos
-│   ├── 📁 quiz/                     ← Avaliação gamificada (271 perguntas)
+│   ├── 📁 jornada/                  ← Jornada Unificada — as 3 trilhas em 64 módulos
+│   ├── 📁 ferramentas/              ← Hub de 5 utilitários (CIDR/Regex/iptables/PS1/Base64)
+│   ├── 📁 quiz/                     ← Avaliação gamificada (274 perguntas)
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   ├── 📁 certificado/              ← Certificado de conclusão
 │   │
@@ -125,14 +127,17 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── quizQuestions.ts         ← 50 perguntas do quiz (Sprint F + Polish-I)
-    │   ├── searchItems.ts           ← Índice da busca global (243 itens)
+    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (274) de quiz/{firewall,fundamentos,avancados}.ts
+    │   ├── searchItems.ts           ← Índice da busca global (252 itens)
     │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (22)
-    │   └── deepDives.tsx            ← Conteúdo dos 6 modais avançados
+    │   ├── journey.ts               ← Jornada Unificada: JOURNEY (64), getNextJourneyModule()
+    │   └── deepDives.tsx            ← Conteúdo dos modais avançados
     │
     └── 📁 lib/
         ├── seo.ts                   ← SITE_CONFIG, ROUTE_SEO, buildMetadata()
         ├── seo.test.ts              ← Testes de SEO (Sprint T₁)
+        ├── cidr.ts · regex.ts · iptables.ts · ps1.ts · base64.ts  ← lógica pura do hub /ferramentas
+        ├── srs.ts · migrations.ts   ← motor SM-2 + migração versionada de localStorage
         ├── useFocusTrap.ts          ← Hook a11y: focus trap, ESC, restore focus
         └── utils.ts                 ← cn() helper (clsx + tailwind-merge)
 ```

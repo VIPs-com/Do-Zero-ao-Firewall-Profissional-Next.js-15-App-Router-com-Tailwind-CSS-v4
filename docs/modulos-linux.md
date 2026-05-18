@@ -2,6 +2,12 @@
 
 *Para cada módulo: Conceito → Por que importa → Exemplo real → Checklist → Erros comuns*
 
+> **Navegação unificada:** a rota `/jornada` (Jornada Unificada) une as 3 trilhas
+> — Fundamentos (17) → Firewall (25) → Avançados (22) — numa linha do tempo única
+> de 64 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
+> destacado. O hub `/ferramentas` reúne 5 utilitários portáteis (Calculadora CIDR,
+> Validador de Regex, Gerador de iptables, Simulador de PS1, Base64).
+
 ---
 
 ## Módulo 1 — Instalação & Fundação

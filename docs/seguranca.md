@@ -54,7 +54,19 @@ Ler `headers()` no root layout torna **todas as rotas dinamicas** (`f` em vez de
 | Variaveis | `NEXT_PUBLIC_` apenas para o que o browser precisa ler |
 | Secrets | Nunca no codigo — `.env` no `.gitignore` |
 | Inputs | Sanitizacao de XSS antes de qualquer `localStorage.setItem` |
-| Dependencias | `npm audit` mensal |
+| Dependencias | `npm audit` mensal — estado atual **0 vulnerabilidades** |
+| TypeScript | `strict: true` — `strictNullChecks` + `noImplicitAny` plenos |
+| CI | GitHub Actions valida lint + testes + build + E2E em todo push |
+
+## Dependências (estado atual)
+
+`npm audit` reporta **0 vulnerabilidades**. Mantido por:
+
+- **Next.js 16.2.6** — fecha 13 advisories da Next.js, incluindo XSS em App Router
+  com CSP nonces (`GHSA-ffhc-5mcf-pf4q`, relevante ao `proxy.ts`) e bypasses de
+  Middleware/Proxy.
+- **`"overrides": { "postcss": "^8.5.10" }`** no `package.json` — força a versão
+  segura do postcss inclusive na cópia aninhada do `next`.
 
 ---
 [<- Voltar ao indice](README.md)

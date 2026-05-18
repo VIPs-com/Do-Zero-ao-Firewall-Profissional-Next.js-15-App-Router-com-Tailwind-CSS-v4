@@ -15,8 +15,8 @@
 ## Funcionalidades
 
 - [Gamificacao & Badges](gamificacao.md) — 63 badges · 175 checkpoints · 7 milestones · como adicionar
-- [Busca Global](busca-global.md) — CMD+K, searchItems (243 itens), deep dives
-- [SEO — Fonte Unica](seo.md) — ROUTE_SEO (74 rotas), buildMetadata(), sitemap, OG image, JSON-LD
+- [Busca Global](busca-global.md) — CMD+K, searchItems (252 itens), deep dives
+- [SEO — Fonte Unica](seo.md) — ROUTE_SEO (75 rotas), buildMetadata(), sitemap, OG image, JSON-LD
 - [Acessibilidade — WCAG 2.1 AA](acessibilidade.md) — modais, focus trap, reduced motion, ESLint jsx-a11y
 - [PWA Lite & Boundaries](pwa-boundaries.md) — manifest.ts, error/not-found/loading boundaries
 
@@ -28,11 +28,11 @@
 
 ## Conteudo do Laboratorio
 
-- [Modulos Linux](modulos-linux.md) — v1.0 Firewall (25) + v2.0 Fundamentos (17) + v3.0 Servidores + v4.0 Infra + v5.0 Cloud
+- [Modulos Linux](modulos-linux.md) — v1.0 Firewall (25) + v2.0 Fundamentos (17) + v3.0 Servidores + v4.0 Infra + v5.0 Cloud · rota `/jornada` une as 3 trilhas
 
 ## Referencia
 
-- [Roadmap Tecnico](roadmap.md) — histórico completo de sprints (A → HORIZONTE-TIMERS)
+- [Roadmap Tecnico](roadmap.md) — histórico completo de sprints (A → JORNADA)
 - [Glossario Tecnico](glossario.md) — termos de infraestrutura, Next.js e seguranca
 - [Apresentacao Executiva](apresentacao.md) — slide deck atualizado para apresentacoes rapidas
 
@@ -42,16 +42,20 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Rotas no build | 79 (54 páginas de conteúdo + suporte + sitemap/robots/OG/icons/manifest) |
-| ROUTE_SEO | 74 rotas |
+| Rotas no build | 80 (54 páginas de conteúdo + suporte + sitemap/robots/OG/icons/manifest) |
+| ROUTE_SEO | 75 rotas |
 | Tópicos | 90 |
 | Badges | 63 (7 milestones) |
 | Checkpoints | 175 |
-| Quiz (perguntas) | 271 |
+| Quiz (perguntas) | 274 |
 | v1.0 Firewall | 25 módulos ✅ |
 | v2.0 Fundamentos | 17 módulos ✅ |
 | v3.0 Servidores | 9 módulos ✅ |
 | v4.0 Infra Moderna | 9 módulos ✅ |
 | v5.0 Cloud & Platform | 4 módulos ✅ |
-| Testes vitest | 14 suítes · 200 testes |
-| Testes E2E | 19 specs Playwright |
+| Testes vitest | 19 suítes · 257 testes |
+| Testes E2E | 24 specs Playwright · 105 casos |
+| CI | GitHub Actions — lint + testes + build + E2E em todo push/PR |
+| Vulnerabilidades | 0 (`npm audit`) |
+| TypeScript | `strict: true` |
+| Stack | Next.js 16.2.6 · React 19 · TS 5.8 · Tailwind v4 |

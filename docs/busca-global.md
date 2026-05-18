@@ -28,7 +28,7 @@
 
 ## Quantidade de itens
 
-243 itens indexados — todos os módulos com ≥3 itens de busca; cobre rotas, tópicos, comandos, glossário, incidentes e ferramentas.
+252 itens indexados — todos os módulos com ≥3 itens de busca; cobre rotas, tópicos, comandos, glossário, incidentes e ferramentas.
 
 ## Deep Dives — Modais avançados (16 total)
 

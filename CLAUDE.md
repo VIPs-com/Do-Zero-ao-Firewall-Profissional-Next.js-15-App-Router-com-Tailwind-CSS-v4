@@ -13,12 +13,12 @@ npm run dev          # servidor local em http://localhost:3000
 npm run lint         # tsc --noEmit — typecheck rápido (SEMPRE antes do build)
 npm run lint:eslint  # ESLint + jsx-a11y (acessibilidade WCAG 2.1 AA)
 npm run lint:all     # roda lint + lint:eslint em sequência
-npm run test         # vitest run — 14 suítes · 200 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav, srs, topicos, useTabFilter, quiz, searchItems, migrations, incidents, cidr)
+npm run test         # vitest run — 19 suítes · 257 testes (BadgeContext, ClientLayout, GlobalSearch, SEO, courseOrder, ModuleNav, srs, topicos, useTabFilter, quiz, searchItems, migrations, incidents, cidr, regex, iptables, ps1, base64, journey)
 npm run test:watch   # vitest watch mode
 npm run test:e2e     # Playwright E2E — build prod + start (CSP nonce real)
 npm run test:e2e:ui  # Playwright com UI interativa
 npm run test:e2e:headed # Playwright com browser visível
-npm run build        # valida TypeScript + gera 50 rotas próprias (build reporta 69/69 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
+npm run build        # valida TypeScript + gera as rotas (build reporta 80 incluindo /sitemap, /robots, /opengraph-image, /icon, /apple-icon, /manifest.webmanifest, /_not-found)
 npm run start        # servidor de produção na porta 3000
 ```
 
@@ -60,7 +60,7 @@ src/
     quiz/firewall.ts        # 105 questões — trilha firewall
     quiz/fundamentos.ts     # 68 questões — trilha fundamentos (17 módulos · +👤 Usuários +🔎 Troubleshooting)
     quiz/avancados.ts       # 101 questões — trilha avancados (22 módulos · todos com ≥4 questões)
-    searchItems.ts          # 238 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 69/69 rotas cobertas
+    searchItems.ts          # 252 itens indexados para GlobalSearch (CMD+K / Ctrl+K) — todos os módulos têm ≥3 itens · 75/75 rotas cobertas
     badges.ts               # BadgeId + BadgeDef + BADGE_DEFS (62 badges) — re-exportado do BadgeContext para tree-shaking
     topics.ts               # TrailTab + Topic + ModuleMeta + TOPICS + MODULE_META + TRAIL_MODULES + TRAIL_CONFIG
     courseOrder.ts          # COURSE_ORDER (25 módulos Firewall) + FUNDAMENTOS_ORDER (17 módulos Fundamentos) + ADVANCED_ORDER (20 módulos v3.0→v5.0) para ModuleNav
@@ -328,8 +328,10 @@ Conformidade implementada no Sprint C:
 1. `npm run lint` — zero erros TypeScript
 2. `npm run lint:eslint` — zero warnings de acessibilidade
 3. `npm test` — suíte vitest passando
-4. `npm run build` — 71/71 rotas (49 páginas próprias + /sitemap + /robots + /opengraph-image + /icon + /apple-icon + /manifest.webmanifest + /_not-found + rotas dinâmicas proxy)
-5. Verificar consistência dos números da tabela de constantes
+4. `npm run build` — 80 rotas (páginas próprias + /sitemap + /robots + /opengraph-image + /icon + /apple-icon + /manifest.webmanifest + /_not-found + rotas dinâmicas proxy)
+5. Verificar consistência dos números da tabela de constantes (`npx tsx scripts/check-constants.ts`)
+
+> O CI (`.github/workflows/ci.yml`) roda os 4 passos + os 24 specs E2E em todo push/PR para a `main`.
 
 ---
 

@@ -1166,6 +1166,36 @@ Sprint Docs Sync + Reconciliação ✅ scripts/check-constants.ts
   └── docs/ sincronizados: 63 badges · 175 checkpoints · 90 tópicos ·
       243 searchItems · 74 rotas · 271 questões · 200 testes vitest
 
+── Hub /ferramentas — utilitários portáteis ─────────────────────────
+Sprint Ferramentas v2 ✅ /ferramentas vira 3 abas via useTabFilter
+  └── + Validador de Regex (regex.ts) + Gerador de iptables (iptables.ts)
+Sprint Ferramentas-Copy ✅ CopyButton com feedback "Copiado!"
+Sprint Ferramentas-Script ✅ buildIptablesScript — múltiplas regras
+Sprint Ferramentas-PS1 ✅ Simulador de prompt PS1 (ps1.ts, cores ANSI)
+Sprint Dashboard-Ferramentas ✅ card de atalho no /dashboard
+Sprint Ferramentas v4 ✅ 5ª aba Base64 (base64.ts, UTF-8 safe)
+
+── Qualidade & Engenharia ───────────────────────────────────────────
+Sprint Auditoria de Qualidade ✅ quiz ≥4 questões/módulo · busca ≥3 itens
+Sprint NANO ✅ Guia nano no /cheat-sheet (editor para iniciantes)
+Sprint CI ✅ GitHub Actions — lint + testes + build + E2E em push/PR
+Sprint SECURITY ✅ next 16.2.6 + override postcss → npm audit 0 vulns
+Sprint E2E-HARDENING (×2) ✅ 9 testes flaky → 0 (seed via addInitScript)
+Sprint STRICT ✅ tsconfig "strict": true (0 erros — código já estrito-limpo)
+Sprint E2E-Cobertura/Glossário/Progress ✅ +specs cheat-sheet, quiz,
+  glossário e ProgressDropdown (24 specs E2E no total)
+
+── Jornada Unificada ────────────────────────────────────────────────
+Sprint JORNADA ✅ rota /jornada — une as 3 trilhas (Fundamentos →
+  Firewall → Avançados) numa linha do tempo única de 64 módulos
+  ├── journey.ts: JOURNEY + getNextJourneyModule + getJourneyProgress
+  ├── dificuldade (🟢🟡🔴) + tempo estimado por módulo · próximo passo
+  └── nudge cross-trilha + card no dashboard + nav link 🧭
+
+Estado atual ✅ 63 badges · 175 checkpoints · 90 tópicos · 252 searchItems
+  · 75 rotas · 274 questões · 19 suítes/257 testes vitest · 24 specs E2E
+  · Next 16.2.6 · TypeScript strict · CI verde · 0 vulnerabilidades
+
 ❌ Backend/Supabase — DESCARTADO
    localStorage atende ao escopo educacional.
    Portabilidade via export/import JSON implementada (Sprint J).
