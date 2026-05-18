@@ -13,10 +13,9 @@ export interface RegexMatch {
 }
 
 /**
- * Resultado do teste de regex. Shape único (não-discriminado) para compatibilidade
- * com `strict: false` do tsconfig — narrowing de união discriminada por boolean
- * não é confiável sem `strictNullChecks`. Em sucesso, `error` é `''`; em falha,
- * `matches` é `[]` e `count` é `0`.
+ * Resultado do teste de regex. Shape único (não-discriminado): todos os campos
+ * estão sempre presentes — em sucesso, `error` é `''`; em falha, `matches` é `[]`
+ * e `count` é `0`. Simples de consumir sem narrowing.
  */
 export interface RegexResult {
   /** `true` se o padrão é válido. */
