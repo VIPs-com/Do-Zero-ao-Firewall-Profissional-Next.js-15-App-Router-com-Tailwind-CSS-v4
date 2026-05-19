@@ -163,6 +163,8 @@ export const TOPICS: Topic[] = [
   { id: 'c10', num: 'C10', title: 'LVM, RAID & Armazenamento: volumes lógicos (PV/VG/LV), redimensionamento a quente, RAID por software com mdadm, snapshots e introdução ao ZFS.', layer: 'Infra · Armazenamento', layerClass: 'l6', href: '/lvm-raid', group: 'Cloud & Platform Engineering' },
   { id: 'c11', num: 'C11', title: 'Banco de Dados: administração de PostgreSQL e MariaDB — instalação, usuários e permissões, backup/restore (pg_dump/mysqldump) e replicação primária-réplica.', layer: 'Infra · Dados', layerClass: 'l7', href: '/banco-de-dados', group: 'Cloud & Platform Engineering' },
   { id: 'c12', num: 'C12', title: 'Servidor de E-mail: Postfix (MTA/SMTP) + Dovecot (IMAP/POP3), autenticação SASL, TLS e anti-spam com SpamAssassin.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/mail-server', group: 'Cloud & Platform Engineering' },
+  { id: 'c13', num: 'C13', title: 'Redes Camada 2 & 3: VLANs 802.1Q, agregação de links (bonding/LACP), bridges, IPv6 e roteamento estático e dinâmico (OSPF/BGP com FRR).', layer: 'Camada 2/3 · Rede', layerClass: 'l3', href: '/redes-l2-l3', group: 'Cloud & Platform Engineering' },
+  { id: 'c14', num: 'C14', title: 'Alta Disponibilidade: IP virtual flutuante com keepalived/VRRP, clustering com Pacemaker/Corosync, quorum, STONITH/fencing e failover testado.', layer: 'Infra · Resiliência', layerClass: 'l4', href: '/alta-disponibilidade', group: 'Cloud & Platform Engineering' },
 ];
 
 // ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
@@ -240,6 +242,8 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/lvm-raid':              { label: 'LVM, RAID & Armazenamento',   icon: '💽', trail: 'avancados' },
   '/banco-de-dados':        { label: 'Banco de Dados',              icon: '🗄️', trail: 'avancados' },
   '/mail-server':           { label: 'Servidor de E-mail',          icon: '📧', trail: 'avancados' },
+  '/redes-l2-l3':           { label: 'Redes Camada 2 & 3',          icon: '🌐', trail: 'avancados' },
+  '/alta-disponibilidade':  { label: 'Alta Disponibilidade',        icon: '♻️', trail: 'avancados' },
 };
 
 // Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
@@ -263,7 +267,8 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
     '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
     '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg',
-    '/lvm-raid', '/banco-de-dados', '/mail-server', '/resposta-incidentes',
+    '/lvm-raid', '/banco-de-dados', '/mail-server',
+    '/redes-l2-l3', '/alta-disponibilidade', '/resposta-incidentes',
   ],
 };
 

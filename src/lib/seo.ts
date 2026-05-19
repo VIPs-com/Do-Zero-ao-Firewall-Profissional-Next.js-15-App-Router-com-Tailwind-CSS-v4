@@ -488,6 +488,18 @@ export const ROUTE_SEO = {
       'Monte um servidor de e-mail Linux completo: Postfix como MTA/SMTP, Dovecot para IMAP/POP3, autenticação SASL, criptografia TLS e filtragem anti-spam com SpamAssassin.',
     keywords: ['servidor de e-mail', 'Postfix', 'Dovecot', 'SMTP', 'IMAP', 'POP3', 'anti-spam', 'SpamAssassin', 'MTA', 'SASL', 'TLS e-mail', 'correio Linux'],
   },
+  '/redes-l2-l3': {
+    title: 'Redes Camada 2 & 3 | VLAN, Bonding, IPv6 e Roteamento no Linux',
+    description:
+      'Domine a fundação de redes no Linux: VLANs 802.1Q, agregação de links com bonding e LACP, bridges para VMs, endereçamento IPv6 e roteamento estático e dinâmico (OSPF/BGP com FRRouting).',
+    keywords: ['VLAN', '802.1Q', 'bonding', 'LACP', 'bridge Linux', 'IPv6', 'roteamento', 'OSPF', 'BGP', 'FRRouting', 'Netplan', 'camada 2', 'camada 3'],
+  },
+  '/alta-disponibilidade': {
+    title: 'Alta Disponibilidade | Clustering, VRRP e Failover no Linux',
+    description:
+      'Elimine pontos únicos de falha: IP virtual flutuante com keepalived/VRRP, clustering com Pacemaker e Corosync, quorum, STONITH/fencing e failover testado e cronometrado.',
+    keywords: ['alta disponibilidade', 'HA', 'keepalived', 'VRRP', 'Pacemaker', 'Corosync', 'cluster Linux', 'failover', 'quorum', 'STONITH', 'fencing', 'VIP'],
+  },
   '/resposta-incidentes': {
     title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
     description:

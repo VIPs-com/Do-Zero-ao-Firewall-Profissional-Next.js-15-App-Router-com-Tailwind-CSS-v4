@@ -280,6 +280,16 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'g-mail-postfix-dovecot', category: 'Glossário', title: 'Postfix vs Dovecot', description: 'Postfix é o MTA — envia e recebe via SMTP; Dovecot entrega ao cliente via IMAP/POP3. Juntos formam o servidor completo', href: '/mail-server', icon: Server },
   { id: 'g-mail-spamassassin', category: 'Glossário', title: 'Anti-spam com SpamAssassin', description: 'Pontua cada mensagem por regras heurísticas e listas — acima do limiar, o e-mail é marcado ou descartado como spam', href: '/mail-server', icon: Server },
 
+  // Sprint REDES-L23 — Redes Camada 2 & 3 (/redes-l2-l3)
+  { id: 'p-redes-l2-l3', title: 'Redes Camada 2 & 3', description: 'VLANs 802.1Q, bonding/LACP, bridges, IPv6 e roteamento estático e dinâmico (OSPF/BGP)', category: 'Página', href: '/redes-l2-l3', icon: Network },
+  { id: 'g-redes-vlan', category: 'Glossário', title: 'VLAN (802.1Q)', description: 'Divide um switch físico em vários lógicos — cada VLAN é um domínio de broadcast isolado; só se falam por um roteador', href: '/redes-l2-l3', icon: Network },
+  { id: 'g-redes-bonding', category: 'Glossário', title: 'Bonding / Link Aggregation', description: 'Une várias placas físicas num bond0 — redundância (active-backup) ou banda agregada (LACP 802.3ad)', href: '/redes-l2-l3', icon: Network },
+
+  // Sprint HA — Alta Disponibilidade (/alta-disponibilidade)
+  { id: 'p-alta-disponibilidade', title: 'Alta Disponibilidade', description: 'IP virtual flutuante com keepalived/VRRP, cluster Pacemaker/Corosync, quorum, fencing e failover', category: 'Página', href: '/alta-disponibilidade', icon: Shield },
+  { id: 'g-ha-vrrp', category: 'Glossário', title: 'VRRP e VIP flutuante', description: 'O VRRP elege MASTER/BACKUP; o VIP flutua para o nó vivo — clientes apontam sempre para o IP virtual', href: '/alta-disponibilidade', icon: Shield },
+  { id: 'g-ha-stonith', category: 'Glossário', title: 'STONITH / fencing', description: 'Garante que o nó perdido foi desligado antes de promover o recurso noutro — evita split-brain e corrupção', href: '/alta-disponibilidade', icon: Shield },
+
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },
   { id: 'vault-approle',    title: 'Vault AppRole — Autenticação para Máquinas',   description: 'role-id + secret-id geram token com TTL — o método correto para apps e pipelines CI/CD',                  category: 'Tópico', href: '/vault', icon: Shield },

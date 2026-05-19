@@ -67,7 +67,9 @@ export type BadgeId =
   | 'gpg-master'
   | 'storage-master'
   | 'dba-master'
-  | 'mail-master';
+  | 'mail-master'
+  | 'redes-master'
+  | 'ha-master';
 
 export interface BadgeDef {
   icon: string;
@@ -147,4 +149,6 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'storage-master':         { icon: '💽', title: 'Storage Master',            desc: 'Domina LVM, RAID por software, snapshots e ZFS' },
   'dba-master':             { icon: '🗄️', title: 'DBA Master',                desc: 'Administra PostgreSQL e MariaDB: backup, restore e replicação' },
   'mail-master':            { icon: '📧', title: 'Mail Master',               desc: 'Configurou servidor de e-mail Postfix + Dovecot com anti-spam' },
+  'redes-master':           { icon: '🌐', title: 'Redes Master',              desc: 'Domina VLANs, bonding, bridges, IPv6 e roteamento estático/dinâmico' },
+  'ha-master':              { icon: '♻️', title: 'HA Master',                 desc: 'Configurou alta disponibilidade com VRRP, Pacemaker/Corosync e failover' },
 };

@@ -319,6 +319,9 @@ html.light {
   .module-accent-lvm-raid              { --mod: #7c8db5; }
   .module-accent-banco-de-dados        { --mod: #336791; }
   .module-accent-mail-server           { --mod: #d93f3f; }
+  /* Sprint REDES-L23 — Redes Camada 2 & 3, Alta Disponibilidade */
+  .module-accent-redes-l2-l3           { --mod: #2a9d8f; }
+  .module-accent-alta-disponibilidade  { --mod: #e07a3f; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
   .module-accent-usuarios           { --mod: #6366f1; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */

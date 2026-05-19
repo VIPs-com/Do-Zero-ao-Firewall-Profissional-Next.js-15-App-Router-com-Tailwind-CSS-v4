@@ -72,6 +72,8 @@ const SECTIONS: Section[] = [
       { path: '/lvm-raid',              num: 'C10', title: 'LVM, RAID & Armazenamento',    icon: '💽', checkpoint: 'lvm-configurado',   desc: 'Volumes lógicos PV/VG/LV, redimensionamento a quente, RAID mdadm, snapshots, ZFS' },
       { path: '/banco-de-dados',        num: 'C11', title: 'Banco de Dados',               icon: '🗄️', checkpoint: 'db-instalado',      desc: 'PostgreSQL e MariaDB: usuários, permissões, backup/restore e replicação' },
       { path: '/mail-server',           num: 'C12', title: 'Servidor de E-mail',           icon: '📧', checkpoint: 'mail-postfix',      desc: 'Postfix MTA/SMTP, Dovecot IMAP/POP3, SASL, TLS e anti-spam' },
+      { path: '/redes-l2-l3',           num: 'C13', title: 'Redes Camada 2 & 3',           icon: '🌐', checkpoint: 'vlan-configurada',  desc: 'VLANs 802.1Q, bonding/LACP, bridges, IPv6 e roteamento estático/dinâmico' },
+      { path: '/alta-disponibilidade',  num: 'C14', title: 'Alta Disponibilidade',         icon: '♻️', checkpoint: 'vrrp-configurado',  desc: 'VIP flutuante com keepalived/VRRP, cluster Pacemaker/Corosync, quorum e failover' },
     ],
   },
 ];
@@ -105,7 +107,7 @@ export default function AvancadosPage() {
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(14,165,233,0.1)] border border-[rgba(14,165,233,0.3)] text-info text-[10px] font-bold uppercase tracking-wider mb-4">
             <Server size={11} />
-            Trilha v3.0 → v5.0 · 22 Módulos
+            Trilha v3.0 → v5.0 · {ALL_MODULES.length} Módulos
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             🚀 Trilha Avançada

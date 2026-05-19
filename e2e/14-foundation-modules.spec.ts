@@ -6,7 +6,7 @@ import { test, expect } from './fixtures';
  * Cobre os comportamentos observáveis dos dois novos módulos do Sprint FOUNDATION:
  *   1. /usuarios renderiza com 3 abas e conteúdo esperado
  *   2. Visitar /usuarios registra a visita no localStorage
- *   3. Checkpoint 'usuario-criado' contabilizado no dashboard (1/199)
+ *   3. Checkpoint 'usuario-criado' contabilizado no dashboard (1/205)
  *   4. Badge usuarios-master seeded aparece no dashboard
  *   5. ModuleNav em /usuarios: Anterior → /permissoes, Próximo → /discos
  *   6. /troubleshooting renderiza com 3 abas e conteúdo esperado
@@ -81,7 +81,7 @@ test('visitar /usuarios registra a visita no localStorage', async ({ page }) => 
 
 // ── 3. Checkpoint /usuarios refletido no dashboard ────────────────────────────
 
-test('checkpoint usuario-criado é contabilizado no dashboard (1/199)', async ({ page }) => {
+test('checkpoint usuario-criado é contabilizado no dashboard (1/205)', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('workshop-checklist-v2', JSON.stringify({ 'usuario-criado': true }));
   });
@@ -89,7 +89,7 @@ test('checkpoint usuario-criado é contabilizado no dashboard (1/199)', async ({
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByText('1/199', { exact: true })).toBeVisible();
+  await expect(page.getByText('1/205', { exact: true })).toBeVisible();
 });
 
 // ── 4. Badge usuarios-master seeded aparece no dashboard ─────────────────────
@@ -178,7 +178,7 @@ test('checkpoint trouble-conectividade é contabilizado no dashboard', async ({ 
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByText('2/199', { exact: true })).toBeVisible();
+  await expect(page.getByText('2/205', { exact: true })).toBeVisible();
 });
 
 // ── 9. Badge troubleshooting-master seeded aparece no dashboard ───────────────

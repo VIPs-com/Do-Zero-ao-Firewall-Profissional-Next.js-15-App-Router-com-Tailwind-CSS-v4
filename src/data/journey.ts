@@ -115,6 +115,8 @@ const JOURNEY_META: Record<string, JourneyMetaEntry> = {
   '/lvm-raid':              { difficulty: 'avancado', estMin: 45 },
   '/banco-de-dados':        { difficulty: 'avancado', estMin: 45 },
   '/mail-server':           { difficulty: 'avancado', estMin: 45 },
+  '/redes-l2-l3':           { difficulty: 'avancado', estMin: 45 },
+  '/alta-disponibilidade':  { difficulty: 'avancado', estMin: 50 },
   '/resposta-incidentes': { difficulty: 'avancado', estMin: 50 },
 };
 

@@ -62,15 +62,16 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  // Counter-Sync: TOPICS.length=98 (Sprint PILARES: +C10/C11/C12 LVM-RAID/Banco/Mail)
-  const totalTopics = 98;
+  // Counter-Sync: TOPICS.length=100 (Sprint REDES-L23: +C13/C14 Redes L2/L3 e Alta Disponibilidade)
+  const totalTopics = 100;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
   // Sprint NFS: +3 checkpoints nfs → 160+3 = 163
   // Sprint VAULT: +3 checkpoints vault → 163+3 = 166
   // Sprint PILARES: +9 checkpoints LVM-RAID/Banco/Mail → 190+9 = 199
-  const checklistItemsCount = 199;
+  // Sprint REDES-L23: +6 checkpoints Redes L2/L3 + Alta Disponibilidade → 199+6 = 205
+  const checklistItemsCount = 205;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 
@@ -116,10 +117,10 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  // linux-ninja threshold = floor(199 * 0.75) = 149
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 149) {
-    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (149/199 checkpoints)',
-      current: checklistCompleted, total: 149, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  // linux-ninja threshold = floor(205 * 0.75) = 153
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 153) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (153/205 checkpoints)',
+      current: checklistCompleted, total: 153, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
   } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 25) {
     nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 25 módulos do curso',
       current: visitedModulesCount, total: 25,

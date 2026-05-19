@@ -84,6 +84,9 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/lvm-raid',              title: 'LVM, RAID & Armazenamento' },
   { path: '/banco-de-dados',        title: 'Banco de Dados' },
   { path: '/mail-server',           title: 'Servidor de E-mail' },
+  // Sprint REDES-L23 — Redes Camada 2 & 3 e Alta Disponibilidade
+  { path: '/redes-l2-l3',           title: 'Redes Camada 2 & 3' },
+  { path: '/alta-disponibilidade',  title: 'Alta Disponibilidade' },
   // Capstone — Resposta a Incidentes (Sprint CÓDICE)
   { path: '/resposta-incidentes', title: 'Resposta a Incidentes (DFIR)' },
 ];
