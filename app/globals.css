@@ -322,6 +322,10 @@ html.light {
   /* Sprint REDES-L23 — Redes Camada 2 & 3, Alta Disponibilidade */
   .module-accent-redes-l2-l3           { --mod: #2a9d8f; }
   .module-accent-alta-disponibilidade  { --mod: #e07a3f; }
+  /* Sprint CLOUD/GIT/CARREIRA — Fase 3 do Diagnóstico Curricular */
+  .module-accent-cloud-publica         { --mod: #ff9900; }
+  .module-accent-git                   { --mod: #f05133; }
+  .module-accent-carreira              { --mod: #14b8a6; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
   .module-accent-usuarios           { --mod: #6366f1; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */

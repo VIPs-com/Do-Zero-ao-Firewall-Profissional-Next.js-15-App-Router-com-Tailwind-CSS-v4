@@ -88,6 +88,9 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/mail-server':         '📧 Mail',
   '/redes-l2-l3':         '🌐 Redes L2/L3',
   '/alta-disponibilidade': '♻️ Alta Disponibilidade',
+  '/cloud-publica':       '☁️ Cloud',
+  '/git':                 '🔀 Git',
+  '/carreira':            '🎖️ Carreira',
 };
 
 type AnyModule = CourseModule | SimpleModule;

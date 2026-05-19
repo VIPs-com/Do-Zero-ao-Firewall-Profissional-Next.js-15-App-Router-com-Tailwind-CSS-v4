@@ -87,6 +87,10 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   // Sprint REDES-L23 — Redes Camada 2 & 3 e Alta Disponibilidade
   { path: '/redes-l2-l3',           title: 'Redes Camada 2 & 3' },
   { path: '/alta-disponibilidade',  title: 'Alta Disponibilidade' },
+  // Sprint CLOUD/GIT/CARREIRA — Fase 3 do Diagnóstico Curricular
+  { path: '/cloud-publica',         title: 'Cloud Pública (AWS)' },
+  { path: '/git',                   title: 'Git — Controle de Versão' },
+  { path: '/carreira',              title: 'Carreira' },
   // Capstone — Resposta a Incidentes (Sprint CÓDICE)
   { path: '/resposta-incidentes', title: 'Resposta a Incidentes (DFIR)' },
 ];

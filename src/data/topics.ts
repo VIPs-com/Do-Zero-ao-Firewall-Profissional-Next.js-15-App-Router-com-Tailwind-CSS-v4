@@ -165,6 +165,9 @@ export const TOPICS: Topic[] = [
   { id: 'c12', num: 'C12', title: 'Servidor de E-mail: Postfix (MTA/SMTP) + Dovecot (IMAP/POP3), autenticação SASL, TLS e anti-spam com SpamAssassin.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/mail-server', group: 'Cloud & Platform Engineering' },
   { id: 'c13', num: 'C13', title: 'Redes Camada 2 & 3: VLANs 802.1Q, agregação de links (bonding/LACP), bridges, IPv6 e roteamento estático e dinâmico (OSPF/BGP com FRR).', layer: 'Camada 2/3 · Rede', layerClass: 'l3', href: '/redes-l2-l3', group: 'Cloud & Platform Engineering' },
   { id: 'c14', num: 'C14', title: 'Alta Disponibilidade: IP virtual flutuante com keepalived/VRRP, clustering com Pacemaker/Corosync, quorum, STONITH/fencing e failover testado.', layer: 'Infra · Resiliência', layerClass: 'l4', href: '/alta-disponibilidade', group: 'Cloud & Platform Engineering' },
+  { id: 'c15', num: 'C15', title: 'Cloud Pública (AWS): fundamentos de cloud — IAM (usuários, grupos, políticas), VPC (sub-redes, security groups), EC2 e deploy de aplicações.', layer: 'Cloud · IaaS', layerClass: 'l7', href: '/cloud-publica', group: 'Cloud & Platform Engineering' },
+  { id: 'c16', num: 'C16', title: 'Git — Controle de Versão: commits, branches, merge, resolução de conflitos e fluxo colaborativo (feature branch, pull request).', layer: 'Infra · DevOps', layerClass: 'l6', href: '/git', group: 'Cloud & Platform Engineering' },
+  { id: 'c17', num: 'C17', title: 'Carreira: preparação para o mercado — certificações (LPIC-1, CompTIA Linux+), portfólio técnico e entrevista de SysAdmin/DevOps.', layer: 'Carreira', layerClass: 'l7', href: '/carreira', group: 'Cloud & Platform Engineering' },
 ];
 
 // ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
@@ -244,6 +247,9 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/mail-server':           { label: 'Servidor de E-mail',          icon: '📧', trail: 'avancados' },
   '/redes-l2-l3':           { label: 'Redes Camada 2 & 3',          icon: '🌐', trail: 'avancados' },
   '/alta-disponibilidade':  { label: 'Alta Disponibilidade',        icon: '♻️', trail: 'avancados' },
+  '/cloud-publica':         { label: 'Cloud Pública (AWS)',         icon: '☁️', trail: 'avancados' },
+  '/git':                   { label: 'Git — Controle de Versão',    icon: '🔀', trail: 'avancados' },
+  '/carreira':              { label: 'Carreira',                    icon: '🎖️', trail: 'avancados' },
 };
 
 // Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
@@ -268,7 +274,8 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
     '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg',
     '/lvm-raid', '/banco-de-dados', '/mail-server',
-    '/redes-l2-l3', '/alta-disponibilidade', '/resposta-incidentes',
+    '/redes-l2-l3', '/alta-disponibilidade',
+    '/cloud-publica', '/git', '/carreira', '/resposta-incidentes',
   ],
 };
 

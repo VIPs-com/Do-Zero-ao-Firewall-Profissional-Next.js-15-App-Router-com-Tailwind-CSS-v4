@@ -1,7 +1,7 @@
 import { test, expect } from './fixtures';
 
 /**
- * Sprint Advanced-E2E — E2E da Trilha Avançada (32 módulos v3.0→v5.0)
+ * Sprint Advanced-E2E — E2E da Trilha Avançada (35 módulos v3.0→v5.0)
  *
  * Espelha 10-fundamentos-trail.spec.ts para a trilha avançada.
  *
@@ -17,18 +17,19 @@ import { test, expect } from './fixtures';
  *   2. Visitar /dhcp registra a visita no localStorage
  *   3. Badge advanced-master seeded aparece no dashboard
  *   4. ModuleNav em /dhcp: sem Anterior (1º da trilha), Próximo → /samba
- *   5. ModuleNav em /ebpf-avancado: Anterior → /nextcloud, sem Próximo (último)
- *   6. advanced-master desbloqueado ao visitar todos os 32 módulos
+ *   5. ModuleNav em /resposta-incidentes: Anterior → /carreira, sem Próximo (último)
+ *   6. advanced-master desbloqueado ao visitar todos os 35 módulos
  */
 
-/** Todos os paths da ADVANCED_ORDER (32 módulos) */
+/** Todos os paths da ADVANCED_ORDER (35 módulos) */
 const ALL_ADVANCED_PATHS = [
   '/dhcp', '/samba', '/apache', '/openvpn', '/traefik', '/ldap', '/pihole', '/nfs',
   '/haproxy', '/ansible', '/monitoring', '/kubernetes', '/terraform', '/suricata', '/ebpf',
   '/service-mesh', '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
   '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg',
   '/lvm-raid', '/banco-de-dados', '/mail-server',
-  '/redes-l2-l3', '/alta-disponibilidade', '/resposta-incidentes',
+  '/redes-l2-l3', '/alta-disponibilidade',
+  '/cloud-publica', '/git', '/carreira', '/resposta-incidentes',
 ];
 
 // ── 1. Índice /avancados ──────────────────────────────────────────────────
@@ -105,18 +106,18 @@ test('ModuleNav em /resposta-incidentes: Anterior aponta para /ebpf-avancado, se
   await page.goto('/resposta-incidentes');
   await page.waitForLoadState('networkidle');
 
-  // Anterior aponta para /alta-disponibilidade (penúltimo)
+  // Anterior aponta para /carreira (penúltimo)
   const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
-  await expect(prev).toHaveAttribute('href', '/alta-disponibilidade');
+  await expect(prev).toHaveAttribute('href', '/carreira');
 
   // Último módulo da trilha: sem botão Próximo
   await expect(page.getByRole('link', { name: /^próximo módulo:/i })).not.toBeVisible();
 });
 
-// ── 6. Desbloqueio real do badge ao visitar todos os 32 módulos ──────────
+// ── 6. Desbloqueio real do badge ao visitar todos os 35 módulos ──────────
 
-test('advanced-master é desbloqueado ao visitar todos os 32 módulos', async ({ page }) => {
+test('advanced-master é desbloqueado ao visitar todos os 35 módulos', async ({ page }) => {
   // Seed via addInitScript — injeta o localStorage ANTES dos scripts da página,
   // evitando a corrida de hidratação do BadgeContext (o save effect inicial
   // sobrescreveria um seed feito via page.evaluate).

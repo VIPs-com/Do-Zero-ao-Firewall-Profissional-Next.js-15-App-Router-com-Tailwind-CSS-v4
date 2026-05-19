@@ -125,13 +125,13 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 64 (Sprint REDES-L23: +/redes-l2-l3 +/alta-disponibilidade) |
-| `totalTopics` | `app/dashboard/page.tsx` | 100 (Sprint REDES-L23: +C13/C14) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 205 (Sprint REDES-L23: +6 checkpoints) |
-| Texto na Home | `app/page.tsx` | "100 tópicos práticos" + stats: 100/74/73/7 |
-| Badges | `src/data/badges.ts` | 73 (Sprint REDES-L23: +redes/ha-master) |
-| searchItems | `src/data/searchItems.ts` | 283 (Sprint REDES-L23: +6) |
-| linux-ninja threshold | `src/context/BadgeContext.tsx` | 153 (floor(205 × 0.75)) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 67 (Sprint CARREIRA: +/cloud-publica +/git +/carreira) |
+| `totalTopics` | `app/dashboard/page.tsx` | 103 (Sprint CARREIRA: +C15/C16/C17) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 214 (Sprint CARREIRA: +9 checkpoints) |
+| Texto na Home | `app/page.tsx` | "103 tópicos práticos" + stats: 103/77/76/7 |
+| Badges | `src/data/badges.ts` | 76 (Sprint CARREIRA: +cloud/git/carreira-master) |
+| searchItems | `src/data/searchItems.ts` | 292 (Sprint CARREIRA: +9) |
+| linux-ninja threshold | `src/context/BadgeContext.tsx` | 160 (floor(214 × 0.75)) |
 
 ---
 
@@ -551,10 +551,7 @@ Conformidade implementada no Sprint C:
   - Sprint APROF-INFRA — cenários reais de troubleshooting na v4.0 + módulo Loki real (evolução do HorizonteBox de `/rsyslog`).
 - ✅ **Fase 1 — Pilares de SysAdmin (Sprint PILARES):** 3 módulos novos na trilha Avançados, antes do capstone `/resposta-incidentes` — `/lvm-raid` (badge 💽 `storage-master` — LVM PV/VG/LV, RAID mdadm, snapshots, ZFS), `/banco-de-dados` (badge 🗄️ `dba-master` — PostgreSQL/MariaDB: usuários, backup, replicação, tuning), `/mail-server` (badge 📧 `mail-master` — Postfix MTA, Dovecot IMAP/POP3, SPF/DKIM/DMARC). ADVANCED_ORDER 27→30, CONTENT_PAGES_COUNT 59→62, checklistItemsCount 190→199, totalTopics 95→98, JOURNEY 69→72, badges 68→71, linux-ninja 142→149, searchItems 268→277, quiz avancados 121→133 (QUIZ_QUESTIONS 306), ROUTE_SEO 80→83; tópicos C10/C11/C12; stats home (98/72/71) e rodapé sincronizadas; e2e 07/10/11/14/15/16 atualizados; lint ✓ · eslint ✓ · 257 testes ✓ · check-constants 7/7 ✓ · build 88 rotas · E2E (116/116).
 - ✅ **Fase 2 — Redes & Alta Disponibilidade (Sprint REDES-L23):** 2 módulos novos na trilha Avançados, antes do capstone — `/redes-l2-l3` (badge 🌐 `redes-master` — VLANs 802.1Q, bonding/LACP, bridges, IPv6, roteamento estático e OSPF/BGP com FRR) e `/alta-disponibilidade` (badge ♻️ `ha-master` — keepalived/VRRP, VIP flutuante, Pacemaker/Corosync, quorum, STONITH/fencing, failover testado). ADVANCED_ORDER 30→32, CONTENT_PAGES_COUNT 62→64, checklistItemsCount 199→205, totalTopics 98→100, JOURNEY 72→74, badges 71→73, linux-ninja 149→153, searchItems 277→283, quiz avancados 133→141 (QUIZ_QUESTIONS 314), ROUTE_SEO 83→85; tópicos C13/C14; stats home (100/74/73) e rodapé sincronizadas; e2e 07/10/11/14/15/16 atualizados; lint ✓ · eslint ✓ · 257 testes ✓ · check-constants 7/7 ✓ · build 90 rotas · E2E (118/118).
-- ⏳ **Fase 3 — Carreira & Cloud:**
-  - Sprint CLOUD — `/cloud-publica` (AWS: IAM/VPC/EC2/S3) · badge ☁️ `cloud-master`.
-  - Sprint GIT — `/git` (versionamento como competência) · badge 🔀 `git-master`.
-  - Sprint CARREIRA — simulado cronometrado + portfólio + roteiro de entrevista em `/certificacoes` e `/quiz` · badge 🎖️ `carreira-master`.
+- ✅ **Fase 3 — Carreira & Cloud (Sprint CARREIRA):** 3 módulos novos na trilha Avançados, antes do capstone — `/cloud-publica` (badge ☁️ `cloud-master` — AWS: responsabilidade compartilhada, IAM, VPC/subnets/SG, EC2, S3, free tier), `/git` (badge 🔀 `git-master` — commits, branches, merge/rebase, conflitos, remotes, fluxo de PR) e `/carreira` (badge 🎖️ `carreira-master` — certificações LPIC/CompTIA, simulado cronometrado, portfólio no GitHub, entrevista técnica). ADVANCED_ORDER 32→35, CONTENT_PAGES_COUNT 64→67, checklistItemsCount 205→214, totalTopics 100→103, JOURNEY 74→77, badges 73→76, linux-ninja 153→160, searchItems 283→292, quiz avancados 141→153 (QUIZ_QUESTIONS 326), ROUTE_SEO 85→88; tópicos C15/C16/C17; stats home (103/77/76) e rodapé sincronizadas; e2e 07/10/11/14/15/16 atualizados; lint ✓ · eslint ✓ · 257 testes ✓ · check-constants 7/7 ✓ · build 93 rotas · E2E (121/121). **Roadmap do Diagnóstico Curricular concluído — Fases 1, 2 e 3 entregues.**
 - ⏳ **Polimento contínuo:** deep-diver por `Set` de paths obrigatórios · baseline axe/Lighthouse em 5 rotas · `check-constants.ts` no CI de todo PR.
 - 🎯 **Projeção ao fim das 4 fases:** ~78 módulos · ~77 badges · ~217 checkpoints.
 

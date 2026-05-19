@@ -69,7 +69,10 @@ export type BadgeId =
   | 'dba-master'
   | 'mail-master'
   | 'redes-master'
-  | 'ha-master';
+  | 'ha-master'
+  | 'cloud-master'
+  | 'git-master'
+  | 'carreira-master';
 
 export interface BadgeDef {
   icon: string;
@@ -151,4 +154,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'mail-master':            { icon: '📧', title: 'Mail Master',               desc: 'Configurou servidor de e-mail Postfix + Dovecot com anti-spam' },
   'redes-master':           { icon: '🌐', title: 'Redes Master',              desc: 'Domina VLANs, bonding, bridges, IPv6 e roteamento estático/dinâmico' },
   'ha-master':              { icon: '♻️', title: 'HA Master',                 desc: 'Configurou alta disponibilidade com VRRP, Pacemaker/Corosync e failover' },
+  'cloud-master':           { icon: '☁️', title: 'Cloud Master',              desc: 'Domina os fundamentos de cloud pública AWS: IAM, VPC e deploy de aplicações' },
+  'git-master':             { icon: '🔀', title: 'Git Master',                desc: 'Domina o controle de versão com Git: commits, branches, merge e fluxo colaborativo' },
+  'carreira-master':        { icon: '🎖️', title: 'Carreira Master',           desc: 'Preparou-se para o mercado: certificações, portfólio e entrevista técnica' },
 };

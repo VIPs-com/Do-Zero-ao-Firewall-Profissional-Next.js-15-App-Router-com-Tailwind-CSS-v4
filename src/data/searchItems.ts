@@ -24,7 +24,8 @@ import {
   HardDrive,
   Wrench,
   FolderOpen,
-  Users
+  Users,
+  Cloud
 } from 'lucide-react';
 import React from 'react';
 
@@ -289,6 +290,21 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'p-alta-disponibilidade', title: 'Alta Disponibilidade', description: 'IP virtual flutuante com keepalived/VRRP, cluster Pacemaker/Corosync, quorum, fencing e failover', category: 'Página', href: '/alta-disponibilidade', icon: Shield },
   { id: 'g-ha-vrrp', category: 'Glossário', title: 'VRRP e VIP flutuante', description: 'O VRRP elege MASTER/BACKUP; o VIP flutua para o nó vivo — clientes apontam sempre para o IP virtual', href: '/alta-disponibilidade', icon: Shield },
   { id: 'g-ha-stonith', category: 'Glossário', title: 'STONITH / fencing', description: 'Garante que o nó perdido foi desligado antes de promover o recurso noutro — evita split-brain e corrupção', href: '/alta-disponibilidade', icon: Shield },
+
+  // Sprint CLOUD — Cloud Pública AWS (/cloud-publica)
+  { id: 'p-cloud-publica', title: 'Cloud Pública (AWS)', description: 'Fundamentos de cloud — IAM, VPC, security groups, EC2 e deploy de aplicações na nuvem', category: 'Página', href: '/cloud-publica', icon: Cloud },
+  { id: 'g-cloud-iam', category: 'Glossário', title: 'IAM (Identity and Access Management)', description: 'Controla quem acessa o quê na AWS — usuários, grupos e políticas JSON regidas pelo princípio do menor privilégio', href: '/cloud-publica', icon: Cloud },
+  { id: 'g-cloud-vpc', category: 'Glossário', title: 'VPC e Security Groups', description: 'A VPC é a rede privada virtual na nuvem; o security group é o firewall stateful da instância EC2 (allow-list por porta)', href: '/cloud-publica', icon: Cloud },
+
+  // Sprint GIT — Controle de Versão (/git)
+  { id: 'p-git', title: 'Git — Controle de Versão', description: 'Commits e os três estados, branches, merge, resolução de conflitos e fluxo colaborativo com pull requests', category: 'Página', href: '/git', icon: GitMerge },
+  { id: 'g-git-branch', category: 'Glossário', title: 'Branch e Merge', description: 'A branch é uma linha de desenvolvimento paralela; o merge integra as mudanças de volta — fast-forward ou commit de merge', href: '/git', icon: GitMerge },
+  { id: 'g-git-staging', category: 'Glossário', title: 'Staging Area (Index)', description: 'A área intermediária entre o working directory e o repositório — git add seleciona o que entra no próximo commit', href: '/git', icon: GitMerge },
+
+  // Sprint CARREIRA — Preparação para o mercado (/carreira)
+  { id: 'p-carreira', title: 'Carreira', description: 'Certificações LPIC-1 e CompTIA Linux+, simulado, portfólio técnico e entrevista de SysAdmin/DevOps', category: 'Página', href: '/carreira', icon: Award },
+  { id: 'g-carreira-lpic', category: 'Glossário', title: 'Certificação LPIC-1', description: 'Certificação Linux neutra de fornecedor — duas provas (101/102) que validam administração de sistema no nível júnior', href: '/carreira', icon: Award },
+  { id: 'g-carreira-portfolio', category: 'Glossário', title: 'Portfólio Técnico', description: 'Reúne projetos práticos (scripts, labs, configs no GitHub) que comprovam competência além do currículo', href: '/carreira', icon: Award },
 
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },

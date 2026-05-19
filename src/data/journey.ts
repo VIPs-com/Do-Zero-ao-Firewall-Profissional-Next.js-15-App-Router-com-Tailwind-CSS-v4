@@ -117,6 +117,9 @@ const JOURNEY_META: Record<string, JourneyMetaEntry> = {
   '/mail-server':           { difficulty: 'avancado', estMin: 45 },
   '/redes-l2-l3':           { difficulty: 'avancado', estMin: 45 },
   '/alta-disponibilidade':  { difficulty: 'avancado', estMin: 50 },
+  '/cloud-publica':         { difficulty: 'avancado', estMin: 45 },
+  '/git':                   { difficulty: 'avancado', estMin: 45 },
+  '/carreira':              { difficulty: 'avancado', estMin: 45 },
   '/resposta-incidentes': { difficulty: 'avancado', estMin: 50 },
 };
 

@@ -500,6 +500,24 @@ export const ROUTE_SEO = {
       'Elimine pontos únicos de falha: IP virtual flutuante com keepalived/VRRP, clustering com Pacemaker e Corosync, quorum, STONITH/fencing e failover testado e cronometrado.',
     keywords: ['alta disponibilidade', 'HA', 'keepalived', 'VRRP', 'Pacemaker', 'Corosync', 'cluster Linux', 'failover', 'quorum', 'STONITH', 'fencing', 'VIP'],
   },
+  '/cloud-publica': {
+    title: 'Cloud Pública (AWS) | IAM, VPC e Deploy de Aplicações',
+    description:
+      'Domine os fundamentos de cloud pública na AWS: IAM (usuários, grupos e políticas de menor privilégio), VPC (sub-redes, route tables e security groups), instâncias EC2 e deploy de aplicações na nuvem.',
+    keywords: ['AWS', 'cloud pública', 'IAM', 'VPC', 'EC2', 'security group', 'sub-rede', 'deploy', 'cloud computing', 'IaaS', 'nuvem', 'menor privilégio'],
+  },
+  '/git': {
+    title: 'Git — Controle de Versão | Branches, Merge e Fluxo Colaborativo',
+    description:
+      'Domine o controle de versão com Git: commits atômicos, branches, merge e resolução de conflitos, fluxo colaborativo com feature branches e pull requests — a competência essencial de todo profissional de TI.',
+    keywords: ['Git', 'controle de versão', 'commit', 'branch', 'merge', 'conflito', 'pull request', 'feature branch', 'GitHub', 'versionamento', 'fluxo colaborativo', 'staging'],
+  },
+  '/carreira': {
+    title: 'Carreira | Certificações, Portfólio e Entrevista Técnica',
+    description:
+      'Prepare-se para o mercado de TI: certificações LPIC-1 e CompTIA Linux+, simulado cronometrado, montagem de portfólio técnico e roteiro para a entrevista de SysAdmin/DevOps.',
+    keywords: ['carreira', 'certificação Linux', 'LPIC-1', 'CompTIA Linux+', 'portfólio', 'entrevista técnica', 'SysAdmin', 'DevOps', 'mercado de trabalho', 'simulado', 'currículo TI'],
+  },
   '/resposta-incidentes': {
     title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
     description:

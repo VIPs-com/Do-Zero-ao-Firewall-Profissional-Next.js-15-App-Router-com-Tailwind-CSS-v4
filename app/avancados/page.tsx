@@ -74,6 +74,9 @@ const SECTIONS: Section[] = [
       { path: '/mail-server',           num: 'C12', title: 'Servidor de E-mail',           icon: '📧', checkpoint: 'mail-postfix',      desc: 'Postfix MTA/SMTP, Dovecot IMAP/POP3, SASL, TLS e anti-spam' },
       { path: '/redes-l2-l3',           num: 'C13', title: 'Redes Camada 2 & 3',           icon: '🌐', checkpoint: 'vlan-configurada',  desc: 'VLANs 802.1Q, bonding/LACP, bridges, IPv6 e roteamento estático/dinâmico' },
       { path: '/alta-disponibilidade',  num: 'C14', title: 'Alta Disponibilidade',         icon: '♻️', checkpoint: 'vrrp-configurado',  desc: 'VIP flutuante com keepalived/VRRP, cluster Pacemaker/Corosync, quorum e failover' },
+      { path: '/cloud-publica',         num: 'C15', title: 'Cloud Pública (AWS)',          icon: '☁️', checkpoint: 'cloud-iam',         desc: 'Fundamentos de cloud AWS — IAM, VPC, security groups, EC2 e deploy de aplicações' },
+      { path: '/git',                   num: 'C16', title: 'Git — Controle de Versão',     icon: '🔀', checkpoint: 'git-branch',        desc: 'Commits, branches, merge, resolução de conflitos e fluxo colaborativo' },
+      { path: '/carreira',              num: 'C17', title: 'Carreira',                     icon: '🎖️', checkpoint: 'simulado-completo', desc: 'Certificações LPIC-1/CompTIA Linux+, portfólio técnico e entrevista de SysAdmin/DevOps' },
     ],
   },
 ];
