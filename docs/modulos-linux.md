@@ -3,8 +3,8 @@
 *Para cada módulo: Conceito → Por que importa → Exemplo real → Checklist → Erros comuns*
 
 > **Navegação unificada:** a rota `/jornada` (Jornada Unificada) une as 3 trilhas
-> — Fundamentos (17) → Firewall (25) → Avançados (27) — numa linha do tempo única
-> de 69 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
+> — Fundamentos (17) → Firewall (25) → Avançados (35) — numa linha do tempo única
+> de 77 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
 > destacado. O hub `/ferramentas` reúne 5 utilitários portáteis (Calculadora CIDR,
 > Validador de Regex, Gerador de iptables, Simulador de PS1, Base64).
 
@@ -405,9 +405,9 @@ Gestão de segredos: Unseal com Shamir Secret Sharing, secret engines (KV e Data
 
 ---
 
-## Trilha v5.0 — Cloud & Platform Engineering (9 módulos) ✅ COMPLETA
+## Trilha v5.0 — Cloud & Platform Engineering (17 módulos) ✅ COMPLETA
 
-*Nível sênior: automação de plataforma, observabilidade avançada, segurança e resposta a incidentes.*
+*Nível sênior: pilares de SysAdmin, automação de plataforma, redes avançadas, alta disponibilidade, cloud, carreira e resposta a incidentes.*
 
 ### C01 — CI/CD com GitHub Actions · `/cicd`
 6 conceitos core (Workflow/Job/Step/Action/Runner/Artifact), pipeline CI com jobs paralelos (lint+test) encadeados via `needs` até build + artifact upload, Docker build+push com `login-action`+`metadata-action` (semver+sha tags)+`build-push-action`+cache GHA, environments (staging auto + production com required reviewers), matrix strategy (node 18/20/22 × ubuntu/windows, fail-fast, exclude), scopes de secrets (repo/env/org), self-hosted runner (systemd service), workflows reutilizáveis (`workflow_call`), notificação Slack on-failure. Integração contínua e entrega contínua do zero ao ambiente de produção.
@@ -433,7 +433,31 @@ Backup deduplicado e incremental: PBS vs `vzdump` puro, arquitetura (PBS server 
 ### C08 — OpenPGP / GPG · `/gpg`
 Criptografia de chave pública: chave mestra [C]ertify + subchaves ECC [S]ign/[E]ncrypt/[A]uthenticate (Ed25519/Cv25519), `--quick-generate-key`/`--quick-add-key`, cifrar/decifrar/`--detach-sign`/`--verify`, backup com `--export-secret-subkeys`, certificado de revogação `--gen-revoke`, commits Git assinados (`commit.gpgsign`). Horizonte: SSH-via-GPG, Tails, WKD, ML-KEM pós-quântico.
 
-### C09 — Resposta a Incidentes (DFIR) · `/resposta-incidentes`
+### C09 — LVM, RAID & Armazenamento · `/lvm-raid` *(Sprint PILARES)*
+Gestão profissional de armazenamento: LVM (PV → VG → LV, redimensionar a quente, snapshots), RAID por software com `mdadm` (níveis 0/1/5/10, monitoramento de array degradado), e ZFS (pools, datasets, snapshots, compressão). Badge 💽 `storage-master`.
+
+### C10 — Banco de Dados · `/banco-de-dados` *(Sprint PILARES)*
+Administração de PostgreSQL e MariaDB: criação de usuários e permissões, backup (`pg_dump`/`mysqldump`) e restore, replicação primário-réplica e noções de tuning. Badge 🗄️ `dba-master`.
+
+### C11 — Servidor de E-mail · `/mail-server` *(Sprint PILARES)*
+Stack de e-mail completa: Postfix como MTA (SMTP), Dovecot para IMAP/POP3, e anti-spam/autenticação com SPF, DKIM e DMARC. Badge 📧 `mail-master`.
+
+### C12 — Redes Camada 2 & 3 · `/redes-l2-l3` *(Sprint REDES-L23)*
+Redes além do básico: VLANs 802.1Q, bonding/LACP, bridges, IPv6, roteamento estático e dinâmico (OSPF/BGP com FRR). Badge 🌐 `redes-master`.
+
+### C13 — Alta Disponibilidade · `/alta-disponibilidade` *(Sprint REDES-L23)*
+Tolerância a falhas: `keepalived`/VRRP com VIP flutuante, cluster Pacemaker/Corosync, quorum, STONITH/fencing e failover testado. Badge ♻️ `ha-master`.
+
+### C14 — Cloud Pública (AWS) · `/cloud-publica` *(Sprint CARREIRA)*
+Fundamentos de cloud pública na AWS: IAM (identidade e permissões), VPC (rede virtual), EC2 (instâncias) e S3 (armazenamento de objetos) — deploy de aplicações na nuvem. Badge ☁️ `cloud-master`.
+
+### C15 — Git — Controle de Versão · `/git` *(Sprint CARREIRA)*
+Versionamento como competência profissional: commits, branches, merge e fluxo de trabalho colaborativo. Badge 🔀 `git-master`.
+
+### C16 — Carreira · `/carreira` *(Sprint CARREIRA)*
+Preparação para o mercado: trilha de certificações (LPIC-1, CompTIA Linux+), simulado cronometrado, montagem de portfólio e roteiro de entrevista técnica. Badge 🎖️ `carreira-master`.
+
+### C17 — Resposta a Incidentes (DFIR) · `/resposta-incidentes`
 Capstone do curso — Resposta a Incidentes seguindo o NIST SP 800-61: ciclo de 8 fases (detecção → contenção → preservação → timeline → análise → erradicação → recuperação → pós-incidente), script `ir_collect.sh`, os 7 Mandamentos do DFIR, tabletop exercises. O que fazer quando, mesmo com firewall/hardening/Fail2ban, algo deu errado.
 
 ---

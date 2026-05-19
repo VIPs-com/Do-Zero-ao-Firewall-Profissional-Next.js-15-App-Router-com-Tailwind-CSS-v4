@@ -6,7 +6,7 @@ O workflow `.github/workflows/ci.yml` (GitHub Actions) roda em **todo push/PR pa
 e espelha o "Checklist Antes de Qualquer Commit":
 
 - Job `validate` — `npm ci` → `tsc --noEmit` → `eslint` → `vitest` → `next build`
-- Job `e2e` — instala o chromium do Playwright, roda os 24 specs E2E e publica o
+- Job `e2e` — instala o chromium do Playwright, roda os 25 specs E2E e publica o
   `playwright-report` como artifact (7 dias)
 - `concurrency` cancela execuções antigas do mesmo ref
 

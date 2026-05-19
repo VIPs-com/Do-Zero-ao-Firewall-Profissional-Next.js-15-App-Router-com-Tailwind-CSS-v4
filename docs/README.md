@@ -14,9 +14,9 @@
 
 ## Funcionalidades
 
-- [Gamificacao & Badges](gamificacao.md) — 68 badges · 190 checkpoints · 7 milestones · como adicionar
-- [Busca Global](busca-global.md) — CMD+K, searchItems (268 itens), deep dives
-- [SEO — Fonte Unica](seo.md) — ROUTE_SEO (80 rotas), buildMetadata(), sitemap, OG image, JSON-LD
+- [Gamificacao & Badges](gamificacao.md) — 76 badges · 214 checkpoints · 7 milestones · como adicionar
+- [Busca Global](busca-global.md) — CMD+K, searchItems (292 itens), deep dives
+- [SEO — Fonte Unica](seo.md) — ROUTE_SEO (88 rotas), buildMetadata(), sitemap, OG image, JSON-LD
 - [Acessibilidade — WCAG 2.1 AA](acessibilidade.md) — modais, focus trap, reduced motion, ESLint jsx-a11y
 - [PWA Lite & Boundaries](pwa-boundaries.md) — manifest.ts, error/not-found/loading boundaries
 
@@ -43,19 +43,19 @@
 
 | Métrica | Valor |
 |---------|-------|
-| Rotas no build | 85 (59 páginas de conteúdo + suporte + sitemap/robots/OG/icons/manifest) |
-| ROUTE_SEO | 80 rotas |
-| Tópicos | 95 |
-| Badges | 68 (7 milestones) |
-| Checkpoints | 190 |
-| Quiz (perguntas) | 294 |
+| Rotas no build | 93 (77 páginas de conteúdo + suporte + sitemap/robots/OG/icons/manifest) |
+| ROUTE_SEO | 88 rotas |
+| Tópicos | 103 |
+| Badges | 76 (7 milestones) |
+| Checkpoints | 214 |
+| Quiz (perguntas) | 326 |
 | v1.0 Firewall | 25 módulos ✅ |
 | v2.0 Fundamentos | 17 módulos ✅ |
 | v3.0 Servidores | 9 módulos ✅ |
 | v4.0 Infra Moderna | 9 módulos ✅ |
-| v5.0 Cloud & Platform | 9 módulos ✅ |
-| Testes vitest | 19 suítes · 257 testes |
-| Testes E2E | 24 specs Playwright · 113 casos |
+| v5.0 Cloud & Platform | 17 módulos ✅ |
+| Testes vitest | 19 suítes · 258 testes |
+| Testes E2E | 25 specs Playwright |
 | CI | GitHub Actions — lint + testes + build + E2E em todo push/PR |
 | Vulnerabilidades | 0 (`npm audit`) |
 | TypeScript | `strict: true` |

@@ -55,7 +55,7 @@ Este projeto é uma **plataforma educacional completa** que ensina segurança de
 | Runtime | React | ^19.0.0 |
 | Build | Turbopack | (built-in) |
 
-**Sprints concluídos:** A · B · C · D · E · G · F · M · T₀/T₁ · J · I.1 · I.2 · Polish · T₂ · R · P · L · SIGMA · SIGMA Fase 2 · SIGMA Fase 3 · W · W2 · Polish (ModuleNav) · Audit Fix · V+Topics+UX · T₃ · Badge V2 · UI-H · PV · CE · CERT · ANIM · CE-E2E · EVOL · I.3 (Hardening) · I.4 (Docker) · F1-F3 (Fundamentos v2.0 — 15 módulos) · Polish-F · I.5 (SSH 2FA) · I.6 (Docker Compose) · Polish-I+Quiz++ · F4-F7 (Pacotes/Boot/CmdAvançados/Rsyslog — v2.0 COMPLETO) · I.7-I.13 (DHCP/Samba/Apache/OpenVPN/Traefik/LDAP/Pi-hole — v3.0 COMPLETO) · I.14-I.17 (Ansible/Monitoring/K8s/Terraform) · I.18-I.25 (Suricata/eBPF/ServiceMesh/SRE/CICD/OPNsense/Nextcloud/eBPF-Avançado — v4.0+v5.0 COMPLETOS) · SSH-PROXY · Quiz-Completo · Quiz-Fundamentos · Advanced-Trail (ADVANCED_ORDER — 19 módulos, badge 🌐) · PROGRESS-DROPDOWN (3 abas) · QUIZ-TRAIL · TOPICOS-TRAIL · AVANCADOS-INDEX · GLOSSARIO-ADVANCED (85 termos) · QUIZ-UX (shuffle + tamanho de sessão) · SEARCH-EXPAND · CONTENT-ATAQUES/PIVOTING/LABORATORIO · WINDOWS-POLISH · FUNDAMENTOS-WINDOWS · ERROS-COMUNS (100% cobertura) · DEEP-DIVES-V2/V3/V4 (16 deep dives) · GLOSSARIO-V2/V3 (115 termos) · CHEAT-V2/V3 (97 comandos) · QUIZ-200/QUIZ-SCENARIOS (254 perguntas) · SEARCH-COMPLETE (220 itens) · UX-TABS (13 páginas) · UX-PAGES (topicos + cheat-sheet) · UX-TABS-2 (5 páginas) · UX-TABS-3 (19 páginas — 100% cobertura de abas) · Advanced-E2E · QUIZ-v2 · CHEAT-v4 · TOPICOS-INTENT (toggle 📚/🔥) · SRS (motor SM-2 + /treino) · UX-TABS-4 (100% abas) · SRS-E2E · SRS-STREAK (badge 🔥) · NFS (/nfs v3.0) · QUIZ-MODULO · QUIZ-CTA · PRINT-CHEAT · SPARSE-TABS-FIX · PERF (−70% re-renders) · EVOL-INTERNAL · QUIZ-SPLIT · CONSOLIDACAO · E2E-TOPICOS · HOOK (useTabFilter) · SEARCH-ROUTES · FOUNDATION (F16 /usuarios + F17 /troubleshooting · trilha Fundamentos 17 módulos · badge 🏁 ground-zero) · E2E-FOUNDATION · E2E-FULL (smoke 71 rotas) · QUIZ-GROUND-ZERO (hub de quiz Fundamentos) · LAYOUT-SYNC · **E2E-HARDENING** (157 testes vitest · 15 specs E2E · 75/75 build · 62 badges · 172 checkpoints · 89 tópicos · 265 questões).
+**Sprints concluídos:** A · B · C · D · E · G · F · M · T₀/T₁ · J · I.1 · I.2 · Polish · T₂ · R · P · L · SIGMA · SIGMA Fase 2 · SIGMA Fase 3 · W · W2 · Polish (ModuleNav) · Audit Fix · V+Topics+UX · T₃ · Badge V2 · UI-H · PV · CE · CERT · ANIM · CE-E2E · EVOL · I.3 (Hardening) · I.4 (Docker) · F1-F3 (Fundamentos v2.0 — 15 módulos) · Polish-F · I.5 (SSH 2FA) · I.6 (Docker Compose) · Polish-I+Quiz++ · F4-F7 (Pacotes/Boot/CmdAvançados/Rsyslog — v2.0 COMPLETO) · I.7-I.13 (DHCP/Samba/Apache/OpenVPN/Traefik/LDAP/Pi-hole — v3.0 COMPLETO) · I.14-I.17 (Ansible/Monitoring/K8s/Terraform) · I.18-I.25 (Suricata/eBPF/ServiceMesh/SRE/CICD/OPNsense/Nextcloud/eBPF-Avançado — v4.0+v5.0 COMPLETOS) · SSH-PROXY · Quiz-Completo · Quiz-Fundamentos · Advanced-Trail (ADVANCED_ORDER — 19 módulos, badge 🌐) · PROGRESS-DROPDOWN (3 abas) · QUIZ-TRAIL · TOPICOS-TRAIL · AVANCADOS-INDEX · GLOSSARIO-ADVANCED (85 termos) · QUIZ-UX (shuffle + tamanho de sessão) · SEARCH-EXPAND · CONTENT-ATAQUES/PIVOTING/LABORATORIO · WINDOWS-POLISH · FUNDAMENTOS-WINDOWS · ERROS-COMUNS (100% cobertura) · DEEP-DIVES-V2/V3/V4 (16 deep dives) · GLOSSARIO-V2/V3 (115 termos) · CHEAT-V2/V3 (97 comandos) · QUIZ-200/QUIZ-SCENARIOS (254 perguntas) · SEARCH-COMPLETE (220 itens) · UX-TABS (13 páginas) · UX-PAGES (topicos + cheat-sheet) · UX-TABS-2 (5 páginas) · UX-TABS-3 (19 páginas — 100% cobertura de abas) · Advanced-E2E · QUIZ-v2 · CHEAT-v4 · TOPICOS-INTENT (toggle 📚/🔥) · SRS (motor SM-2 + /treino) · UX-TABS-4 (100% abas) · SRS-E2E · SRS-STREAK (badge 🔥) · NFS (/nfs v3.0) · QUIZ-MODULO · QUIZ-CTA · PRINT-CHEAT · SPARSE-TABS-FIX · PERF (−70% re-renders) · EVOL-INTERNAL · QUIZ-SPLIT · CONSOLIDACAO · E2E-TOPICOS · HOOK (useTabFilter) · SEARCH-ROUTES · FOUNDATION (F16 /usuarios + F17 /troubleshooting · trilha Fundamentos 17 módulos · badge 🏁 ground-zero) · E2E-FOUNDATION · E2E-FULL (smoke 71 rotas) · QUIZ-GROUND-ZERO (hub de quiz Fundamentos) · LAYOUT-SYNC · E2E-HARDENING · CÓDICE (/resposta-incidentes — capstone DFIR) · FORTALEZA (CrowdSec/Tailscale/PBS) · GPG (/gpg) · PILARES (LVM-RAID/Banco-de-Dados/Mail-Server) · REDES-L23 (/redes-l2-l3 + /alta-disponibilidade) · CARREIRA (/cloud-publica + /git + /carreira) · APROF · **POLIMENTO** (258 testes vitest · 25 specs E2E · build 93 rotas · 76 badges · 214 checkpoints · 103 tópicos · 326 questões · 77 módulos).
 
 ---
 
@@ -77,11 +77,11 @@ npm run build      # 71/71 páginas (49 próprias + assets SEO/PWA)
 ## 📂 Estrutura de Pastas (resumo)
 
 ```
-app/                    ← App Router — 47 rotas públicas
+app/                    ← App Router — 88 rotas públicas
   layout.tsx            ← Root layout + anti-FOUC + JSON-LD + nonce CSP
   globals.css           ← Tokens de tema dark/light (@theme)
   providers.tsx         ← <BadgeProvider> global
-  [49 rotas de conteúdo] ← v1.0 (25 módulos) + v2.0 Fundamentos (15) + v3.0 Servidores (10) + v4.0 Infra (8) + v5.0 Cloud (4) + suporte
+  [77 rotas de conteúdo] ← v1.0 (25 módulos) + v2.0 Fundamentos (17) + v3.0 Servidores (9) + v4.0 Infra (9) + v5.0 Cloud & Platform (17) + suporte
   [páginas especiais]   ← /topicos, /quiz, /dashboard, /certificado, ...
 proxy.ts                ← CSP nonce per-request (Next.js 16)
 next.config.ts          ← Headers de segurança (HSTS, X-Frame-Options…)
@@ -119,21 +119,21 @@ src/
 | 15 | Docker Compose | `/docker-compose` | stacks, redes internas, secrets |
 | + | Ataques, Pivoting, Lab, Proxmox, Audit… | diversas | — |
 
-### v2.0 — Fundamentos Linux (15 módulos ✅)
+### v2.0 — Fundamentos Linux (17 módulos ✅)
 
-FHS · Comandos · Editores · Processos · Permissões · Discos · Logs · Backup · Shell Script · Cron · Pacotes · Boot · Comandos Avançados · Rsyslog · **SSH Proxy**
+FHS · Comandos · Editores · Processos · Permissões · Usuários · Discos · Logs · Backup · Shell Script · Cron · Pacotes · Boot · Comandos Avançados · Rsyslog · SSH Proxy · **Troubleshooting**
 
-### v3.0 — Servidores e Serviços (10 módulos ✅)
+### v3.0 — Servidores e Serviços (9 módulos ✅)
 
-DHCP · Samba · Apache · OpenVPN · Traefik · LDAP · Pi-hole · Docker · Docker Compose · SSH Proxy
+DHCP · Samba · Apache · OpenVPN · Traefik · LDAP · Pi-hole · NFS · HAProxy
 
-### v4.0 — Infraestrutura Moderna (8 módulos ✅)
+### v4.0 — Infraestrutura Moderna (9 módulos ✅)
 
-Ansible · Prometheus+Grafana · Kubernetes/K3s · Terraform · Suricata IDS/IPS · eBPF & XDP · Service Mesh (Istio) · SRE & SLOs
+Ansible · Prometheus+Grafana · Kubernetes/K3s · Terraform · Suricata IDS/IPS · eBPF & XDP · Service Mesh (Istio) · SRE & SLOs · HashiCorp Vault
 
-### v5.0 — Cloud & Platform Engineering (4 módulos ✅)
+### v5.0 — Cloud & Platform Engineering (17 módulos ✅)
 
-CI/CD GitHub Actions · OPNsense · Nextcloud · eBPF Avançado + Cilium
+CI/CD GitHub Actions · OPNsense · Nextcloud · eBPF Avançado + Cilium · CrowdSec · Tailscale · Proxmox Backup Server · GPG · LVM/RAID · Banco de Dados · Servidor de E-mail · Redes L2/L3 · Alta Disponibilidade · Cloud Pública (AWS) · Git · Carreira · Resposta a Incidentes (DFIR)
 
 > Detalhes de cada módulo: [docs/modulos-linux.md](docs/modulos-linux.md)
 

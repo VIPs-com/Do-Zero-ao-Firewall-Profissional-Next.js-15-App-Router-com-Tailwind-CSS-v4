@@ -1211,9 +1211,34 @@ Sprint GPG ✅ /gpg — OpenPGP/GPG do zero ao expert
   ├── cifrar/assinar/verificar, backup, revogação, commits Git assinados
   └── badge gpg-master (68º) · checkpoints 187→190 · 3 abas + Horizonte
 
-Estado atual ✅ 68 badges · 190 checkpoints · 95 tópicos · 268 searchItems
-  · 80 rotas (build 85) · 294 questões · 19 suítes/257 testes vitest · 24 specs E2E
-  · 69 módulos (25 Firewall + 17 Fundamentos + 27 Avançados)
+── Fases 1–3 do Diagnóstico Curricular ──────────────────────────────
+Sprint PILARES ✅ 3 pilares de SysAdmin na trilha Avançados
+  ├── /lvm-raid — LVM (PV/VG/LV, snapshots), RAID mdadm, ZFS · 💽 storage-master
+  ├── /banco-de-dados — PostgreSQL/MariaDB: usuários, backup, replicação · 🗄️ dba-master
+  └── /mail-server — Postfix MTA + Dovecot IMAP/POP3 + SPF/DKIM/DMARC · 📧 mail-master
+  badges 68→71 · checkpoints 190→199 · ADVANCED_ORDER 27→30
+
+Sprint REDES-L23 ✅ Redes avançadas e alta disponibilidade
+  ├── /redes-l2-l3 — VLANs 802.1Q, bonding/LACP, bridges, IPv6, OSPF/BGP (FRR) · 🌐 redes-master
+  └── /alta-disponibilidade — keepalived/VRRP, VIP, Pacemaker/Corosync, STONITH · ♻️ ha-master
+  badges 71→73 · checkpoints 199→205 · ADVANCED_ORDER 30→32
+
+Sprint CARREIRA ✅ Fase 3 — carreira e cloud
+  ├── /cloud-publica — AWS: IAM, VPC, EC2, S3 · ☁️ cloud-master
+  ├── /git — versionamento como competência: branches, merge, fluxo · 🔀 git-master
+  └── /carreira — certificações, portfólio, entrevista técnica · 🎖️ carreira-master
+  badges 73→76 · checkpoints 205→214 · ADVANCED_ORDER 32→35
+
+Sprint APROF ✅ Aprofundamento de 7 módulos (Forte → Excelente)
+  └── /shell-script, /apache, /samba, /ldap, /kubernetes, /ansible, /terraform
+      enriquecidos com tuning, segurança e cenários reais de troubleshooting
+
+Sprint POLIMENTO ✅ CONTENT_PAGES_COUNT agora derivado de CONTENT_PAGE_PATHS
+  └── reconciliação de constantes via scripts/check-constants.ts (7/7 ✓)
+
+Estado atual ✅ 76 badges · 214 checkpoints · 103 tópicos · 292 searchItems
+  · 88 rotas (build 93) · 326 questões · 19 suítes/258 testes vitest · 25 specs E2E
+  · 77 módulos (25 Firewall + 17 Fundamentos + 35 Avançados)
   · Next 16.2.6 · TypeScript strict · CI verde · 0 vulnerabilidades
 
 ❌ Backend/Supabase — DESCARTADO
