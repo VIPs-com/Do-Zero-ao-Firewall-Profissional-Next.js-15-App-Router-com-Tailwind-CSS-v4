@@ -6,6 +6,7 @@ import {
   BadgeProvider,
   useBadges,
   CONTENT_PAGES_COUNT,
+  CONTENT_PAGE_PATHS,
   ALL_CHECKLIST_IDS,
   type BadgeId,
 } from './BadgeContext';
@@ -38,17 +39,30 @@ describe('BadgeContext', () => {
     expect(persisted).toContain('certificado');
   });
 
-  it('trackPageVisit × CONTENT_PAGES_COUNT desbloqueia deep-diver', () => {
+  it('visitar TODAS as CONTENT_PAGE_PATHS desbloqueia deep-diver', () => {
+    const { result } = renderHook(() => useBadges(), { wrapper });
+
+    // Honestidade pedagógica: deep-diver só desbloqueia visitando as páginas
+    // de conteúdo REAIS — não N rotas quaisquer.
+    act(() => {
+      CONTENT_PAGE_PATHS.forEach(slug => result.current.trackPageVisit(`/${slug}`));
+    });
+
+    expect(CONTENT_PAGE_PATHS.length).toBe(CONTENT_PAGES_COUNT);
+    expect(result.current.unlockedBadges.has('deep-diver')).toBe(true);
+    expect(result.current.unlockedBadges.has('explorer')).toBe(true);
+  });
+
+  it('visitar N rotas QUAISQUER (não-conteúdo) NÃO desbloqueia deep-diver', () => {
     const { result } = renderHook(() => useBadges(), { wrapper });
 
     act(() => {
       for (let i = 0; i < CONTENT_PAGES_COUNT; i++) {
-        result.current.trackPageVisit(`/rota-${i}`);
+        result.current.trackPageVisit(`/rota-inexistente-${i}`);
       }
     });
 
-    expect(result.current.unlockedBadges.has('deep-diver')).toBe(true);
-    // explorer também — 5 <= CONTENT_PAGES_COUNT
+    expect(result.current.unlockedBadges.has('deep-diver')).toBe(false);
     expect(result.current.unlockedBadges.has('explorer')).toBe(true);
   });
 

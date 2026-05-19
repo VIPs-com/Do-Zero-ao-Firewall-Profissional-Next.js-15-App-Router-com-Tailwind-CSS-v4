@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo, lazy, Suspense } from 'react';
-import { COURSE_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
+import { COURSE_ORDER, FUNDAMENTOS_ORDER, ADVANCED_ORDER } from '@/data/courseOrder';
 import { BADGE_DEFS } from '@/data/badges';
 import type { BadgeId, BadgeDef } from '@/data/badges';
 import { runStorageMigrations } from '@/lib/migrations';
@@ -146,55 +146,19 @@ export const ALL_CHECKLIST_IDS = [
 ]; // 214 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
- * PÁGINAS DE CONTEÚDO (59 rotas técnicas — threshold). Base do badge 'deep-diver'.
- * Total disponível: 72 rotas (69 módulos + /fundamentos + /avancados + /dashboard).
- * Inclui agora: /glossario, /certificado, /evolucao (corrigido Sprint TRACK-FIX).
- * ClientLayout chama trackPageVisit(pathname) em toda navegação.
- * Atualizar este número e a lista se novas rotas forem adicionadas.
+ * PÁGINAS DE CONTEÚDO — base do badge 'deep-diver' (Mergulhador).
  *
- *  1. /instalacao          12. /hardening
- *  2. /wan-nat             13. /docker
- *  3. /dns                 14. /docker-compose
- *  4. /nginx-ssl           15. /audit-logs
- *  5. /lan-proxy           16. /ataques-avancados
- *  6. /dnat                17. /pivoteamento
- *  7. /port-knocking       18. /laboratorio
- *  8. /vpn-ipsec           19. /proxmox
- *  9. /wireguard           20. /evolucao
- * 10. /nftables            21. /cheat-sheet
- * 11. /fail2ban            22. /glossario
- * 12. /hardening           23. /web-server
- * 13. /ssh-2fa             24. /docker-compose
- * 25. /pacotes
- * 26. /boot
- * 27. /comandos-avancados
- * 28. /rsyslog
- * 29. /dhcp
- * 30. /samba
- * 31. /apache
- * 32. /openvpn
- * 33. /traefik
- * 34. /ldap
- * 35. /pihole
- * 36. /ansible
- * 37. /monitoring
- * 38. /kubernetes
- * 39. /terraform
- * 40. /suricata
- * 41. /ebpf
- * 42. /service-mesh
- * 43. /sre
- * 44. /cicd
- * 45. /opnsense
- * 46. /nextcloud
- * 47. /ebpf-avancado
- * 48. /ssh-proxy
- * 49. /avancados     (índice trilha avançada — Sprint AVANCADOS-INDEX)
- * 50. /nfs           (Sprint NFS — Network File System)
- * 51. /vault         (Sprint VAULT — HashiCorp Vault)
- * + /fundamentos já era parte dos 48 implicitamente; corrigido na contagem 49
+ * Honestidade pedagógica (Sprint POLIMENTO): o badge NÃO desbloqueia mais com
+ * "N rotas quaisquer visitadas". `CONTENT_PAGE_PATHS` é a lista REAL e derivada
+ * dos módulos das 3 trilhas (FUNDAMENTOS_ORDER + COURSE_ORDER + ADVANCED_ORDER);
+ * o Mergulhador só é concedido quando o aluno visitou TODAS essas páginas.
+ * A lista cresce sozinha quando um módulo entra em qualquer um dos 3 arrays —
+ * nada a sincronizar à mão.
  */
-export const CONTENT_PAGES_COUNT = 67;
+export const CONTENT_PAGE_PATHS: readonly string[] = [
+  ...FUNDAMENTOS_ORDER, ...COURSE_ORDER, ...ADVANCED_ORDER,
+].map(m => m.path.replace(/^\//, ''));
+export const CONTENT_PAGES_COUNT = CONTENT_PAGE_PATHS.length;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -298,7 +262,12 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     localStorage.setItem('workshop-visited-pages', JSON.stringify(Array.from(visitedPages)));
     if (visitedPages.size >= 5)                  unlockBadge('explorer');
-    if (visitedPages.size >= CONTENT_PAGES_COUNT) unlockBadge('deep-diver');
+    // deep-diver: visitou TODAS as páginas de conteúdo (slug com ou sem barra —
+    // ClientLayout grava com '/', algumas páginas gravam sem).
+    const visitedContentPages = CONTENT_PAGE_PATHS.filter(
+      slug => visitedPages.has(slug) || visitedPages.has('/' + slug),
+    ).length;
+    if (visitedContentPages >= CONTENT_PAGES_COUNT) unlockBadge('deep-diver');
     if (visitedPages.has('laboratorio') && visitedPages.has('proxmox')) unlockBadge('resgate-gold');
     // Mestre do Curso: todos os 25 módulos de COURSE_ORDER visitados
     const allVisited = COURSE_ORDER.every(m => {
