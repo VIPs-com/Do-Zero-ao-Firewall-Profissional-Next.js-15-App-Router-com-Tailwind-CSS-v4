@@ -83,6 +83,9 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/tailscale':           '🔗 Tailscale',
   '/proxmox-backup-server': '💾 PBS',
   '/gpg':                 '🔑 GPG',
+  '/lvm-raid':            '💽 Storage',
+  '/banco-de-dados':      '🗄️ Banco de Dados',
+  '/mail-server':         '📧 Mail',
 };
 
 type AnyModule = CourseModule | SimpleModule;

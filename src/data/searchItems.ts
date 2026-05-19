@@ -269,6 +269,17 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'g-gpg-subchaves', category: 'Glossário', title: 'Chave mestra [C] e subchaves [S][E][A]', description: 'A mestra é a identidade (Certify); subchaves ECC fazem o uso diário — Sign, Encrypt, Authenticate. Vazou uma? Revoga só ela', href: '/gpg', icon: Shield },
   { id: 'g-gpg-git-sign', category: 'Glossário', title: 'Commit Git assinado com GPG', description: 'git config user.signingkey + commit.gpgsign — prova de autoria do commit, vira o selo Verified no GitHub', href: '/gpg', icon: Shield },
 
+  // Sprint PILARES — LVM/RAID, Banco de Dados, Servidor de E-mail
+  { id: 'p-lvm-raid', title: 'LVM, RAID & Armazenamento', description: 'Volumes lógicos, redimensionamento a quente, RAID por software com mdadm, snapshots e ZFS', category: 'Página', href: '/lvm-raid', icon: HardDrive },
+  { id: 'g-lvm-pv-vg-lv', category: 'Glossário', title: 'PV, VG e LV (LVM)', description: 'Physical Volume é o disco; Volume Group junta vários PVs; Logical Volume é a partição flexível que cresce a quente', href: '/lvm-raid', icon: HardDrive },
+  { id: 'g-raid-mdadm', category: 'Comando', title: 'mdadm — RAID por software', description: 'mdadm --create /dev/md0 cria o array; RAID 1 espelha, RAID 5 distribui paridade — redundância sem controladora dedicada', href: '/lvm-raid', icon: HardDrive },
+  { id: 'p-banco-de-dados', title: 'Banco de Dados', description: 'Administração de PostgreSQL e MariaDB — usuários, permissões, backup/restore e replicação', category: 'Página', href: '/banco-de-dados', icon: Server },
+  { id: 'g-db-backup', category: 'Comando', title: 'pg_dump e mysqldump', description: 'Backup lógico do banco em SQL — pg_dump para PostgreSQL, mysqldump para MariaDB/MySQL; restaura com psql ou mysql', href: '/banco-de-dados', icon: Server },
+  { id: 'g-db-replicacao', category: 'Glossário', title: 'Replicação primária-réplica', description: 'A réplica copia o WAL/binlog da primária em tempo real — leitura distribuída e failover de alta disponibilidade', href: '/banco-de-dados', icon: Server },
+  { id: 'p-mail-server', title: 'Servidor de E-mail', description: 'Postfix MTA/SMTP + Dovecot IMAP/POP3 com autenticação SASL, TLS e anti-spam', category: 'Página', href: '/mail-server', icon: Server },
+  { id: 'g-mail-postfix-dovecot', category: 'Glossário', title: 'Postfix vs Dovecot', description: 'Postfix é o MTA — envia e recebe via SMTP; Dovecot entrega ao cliente via IMAP/POP3. Juntos formam o servidor completo', href: '/mail-server', icon: Server },
+  { id: 'g-mail-spamassassin', category: 'Glossário', title: 'Anti-spam com SpamAssassin', description: 'Pontua cada mensagem por regras heurísticas e listas — acima do limiar, o e-mail é marcado ou descartado como spam', href: '/mail-server', icon: Server },
+
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },
   { id: 'vault-approle',    title: 'Vault AppRole — Autenticação para Máquinas',   description: 'role-id + secret-id geram token com TTL — o método correto para apps e pipelines CI/CD',                  category: 'Tópico', href: '/vault', icon: Shield },

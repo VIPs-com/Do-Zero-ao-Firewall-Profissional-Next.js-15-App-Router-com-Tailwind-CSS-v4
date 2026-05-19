@@ -338,10 +338,10 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
           <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap justify-center sm:justify-start gap-5">
               {[
-                { value: '69', label: 'módulos' },
-                { value: '294', label: 'questões' },
-                { value: '68', label: 'conquistas' },
-                { value: '190', label: 'checkpoints' },
+                { value: '72', label: 'módulos' },
+                { value: '306', label: 'questões' },
+                { value: '71', label: 'conquistas' },
+                { value: '199', label: 'checkpoints' },
               ].map(stat => (
                 <div key={stat.label} className="flex items-baseline gap-1">
                   <span className="text-sm font-bold text-accent">{stat.value}</span>

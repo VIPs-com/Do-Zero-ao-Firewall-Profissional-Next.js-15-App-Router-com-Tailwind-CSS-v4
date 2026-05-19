@@ -11,16 +11,16 @@ import {
 import { FUNDAMENTOS_ORDER, COURSE_ORDER, ADVANCED_ORDER } from './courseOrder';
 
 describe('JOURNEY', () => {
-  it('tem exatamente 69 módulos (17 + 25 + 27)', () => {
-    expect(JOURNEY).toHaveLength(69);
+  it('tem exatamente 72 módulos (17 + 25 + 30)', () => {
+    expect(JOURNEY).toHaveLength(72);
   });
 
   it('todos os paths são únicos', () => {
     const paths = JOURNEY.map((m) => m.path);
-    expect(new Set(paths).size).toBe(69);
+    expect(new Set(paths).size).toBe(72);
   });
 
-  it('ordem das fases: Fundamentos (0–16), Firewall (17–41), Avançados (42–68)', () => {
+  it('ordem das fases: Fundamentos (0–16), Firewall (17–41), Avançados (42–71)', () => {
     JOURNEY.slice(0, 17).forEach((m) => expect(m.trail).toBe('fundamentos'));
     JOURNEY.slice(17, 42).forEach((m) => expect(m.trail).toBe('firewall'));
     JOURNEY.slice(42).forEach((m) => expect(m.trail).toBe('avancados'));
@@ -82,18 +82,18 @@ describe('getNextJourneyModule', () => {
 });
 
 describe('getJourneyProgress', () => {
-  it('progresso vazio → 0/69 (0%)', () => {
-    expect(getJourneyProgress([])).toEqual({ completed: 0, total: 69, percent: 0 });
+  it('progresso vazio → 0/72 (0%)', () => {
+    expect(getJourneyProgress([])).toEqual({ completed: 0, total: 72, percent: 0 });
   });
 
-  it('tudo concluído → 69/69 (100%)', () => {
+  it('tudo concluído → 72/72 (100%)', () => {
     const all = JOURNEY.map((m) => m.path);
-    expect(getJourneyProgress(all)).toEqual({ completed: 69, total: 69, percent: 100 });
+    expect(getJourneyProgress(all)).toEqual({ completed: 72, total: 72, percent: 100 });
   });
 
   it('conta visitas e arredonda o percentual', () => {
-    const r = getJourneyProgress(JOURNEY.slice(0, 35).map((m) => m.path));
-    expect(r.completed).toBe(35);
-    expect(r.percent).toBe(51); // 35/69 ≈ 51%
+    const r = getJourneyProgress(JOURNEY.slice(0, 36).map((m) => m.path));
+    expect(r.completed).toBe(36);
+    expect(r.percent).toBe(50); // 36/72 = 50%
   });
 });

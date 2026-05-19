@@ -315,6 +315,10 @@ html.light {
   .module-accent-proxmox-backup-server { --mod: #5b9bd5; }
   /* Sprint GPG — OpenPGP / GPG */
   .module-accent-gpg                   { --mod: #b8860b; }
+  /* Sprint PILARES — LVM/RAID, Banco de Dados, Servidor de E-mail */
+  .module-accent-lvm-raid              { --mod: #7c8db5; }
+  .module-accent-banco-de-dados        { --mod: #336791; }
+  .module-accent-mail-server           { --mod: #d93f3f; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
   .module-accent-usuarios           { --mod: #6366f1; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */

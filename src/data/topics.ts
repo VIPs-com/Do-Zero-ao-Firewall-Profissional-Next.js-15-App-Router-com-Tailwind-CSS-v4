@@ -160,6 +160,9 @@ export const TOPICS: Topic[] = [
   { id: 'c07', num: 'C07', title: 'Tailscale: VPN mesh zero-port — protocolo WireGuard + NAT traversal (DERP), login SSO identidade-first, MagicDNS, ACLs da tailnet, subnet router e exit node sem abrir uma porta.', layer: 'Camada 3 · Rede', layerClass: 'l3', href: '/tailscale', group: 'Cloud & Platform Engineering' },
   { id: 'c08', num: 'C08', title: 'Proxmox Backup Server: backup incremental deduplicado de VMs/CTs — datastore, namespaces, jobs agendados, prune + garbage collection, verify de integridade e restore file-level ou VM completa.', layer: 'Infra · Backup', layerClass: 'l6', href: '/proxmox-backup-server', group: 'Cloud & Platform Engineering' },
   { id: 'c09', num: 'C09', title: 'OpenPGP / GPG: chave mestra [C] + subchaves ECC [S][E][A], cifrar/decifrar/assinar/verificar, backup de subchaves, certificado de revogação e commits Git assinados.', layer: 'Segurança · Criptografia', layerClass: 'l6', href: '/gpg', group: 'Cloud & Platform Engineering' },
+  { id: 'c10', num: 'C10', title: 'LVM, RAID & Armazenamento: volumes lógicos (PV/VG/LV), redimensionamento a quente, RAID por software com mdadm, snapshots e introdução ao ZFS.', layer: 'Infra · Armazenamento', layerClass: 'l6', href: '/lvm-raid', group: 'Cloud & Platform Engineering' },
+  { id: 'c11', num: 'C11', title: 'Banco de Dados: administração de PostgreSQL e MariaDB — instalação, usuários e permissões, backup/restore (pg_dump/mysqldump) e replicação primária-réplica.', layer: 'Infra · Dados', layerClass: 'l7', href: '/banco-de-dados', group: 'Cloud & Platform Engineering' },
+  { id: 'c12', num: 'C12', title: 'Servidor de E-mail: Postfix (MTA/SMTP) + Dovecot (IMAP/POP3), autenticação SASL, TLS e anti-spam com SpamAssassin.', layer: 'Camada 7 · Aplicação', layerClass: 'l7', href: '/mail-server', group: 'Cloud & Platform Engineering' },
 ];
 
 // ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
@@ -234,6 +237,9 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/tailscale':             { label: 'Tailscale — VPN Mesh',        icon: '🔗', trail: 'avancados' },
   '/proxmox-backup-server': { label: 'Proxmox Backup Server',       icon: '💾', trail: 'avancados' },
   '/gpg':                   { label: 'OpenPGP / GPG',               icon: '🔑', trail: 'avancados' },
+  '/lvm-raid':              { label: 'LVM, RAID & Armazenamento',   icon: '💽', trail: 'avancados' },
+  '/banco-de-dados':        { label: 'Banco de Dados',              icon: '🗄️', trail: 'avancados' },
+  '/mail-server':           { label: 'Servidor de E-mail',          icon: '📧', trail: 'avancados' },
 };
 
 // Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
@@ -256,7 +262,8 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/ldap', '/pihole', '/ssh-proxy', '/nfs', '/haproxy', '/ansible', '/monitoring',
     '/kubernetes', '/terraform', '/suricata', '/ebpf', '/service-mesh',
     '/sre', '/vault', '/cicd', '/opnsense', '/nextcloud', '/ebpf-avancado',
-    '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg', '/resposta-incidentes',
+    '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg',
+    '/lvm-raid', '/banco-de-dados', '/mail-server', '/resposta-incidentes',
   ],
 };
 

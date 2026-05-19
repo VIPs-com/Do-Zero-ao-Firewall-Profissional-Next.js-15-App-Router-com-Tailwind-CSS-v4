@@ -127,7 +127,13 @@ export const ALL_CHECKLIST_IDS = [
   'pbs-datastore', 'pbs-job', 'pbs-restore',
   // Sprint GPG — /gpg (OpenPGP / GPG)
   'gpg-chave', 'gpg-cifrar', 'gpg-git',
-]; // 190 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint LVM-RAID (3)
+  'lvm-configurado', 'raid-montado', 'snapshot-criado',
+  // Sprint BANCO-DE-DADOS (3)
+  'db-instalado', 'db-backup', 'db-replicacao',
+  // Sprint MAIL-SERVER (3)
+  'mail-postfix', 'mail-dovecot', 'mail-antispam',
+]; // 199 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO (59 rotas técnicas — threshold). Base do badge 'deep-diver'.
@@ -178,7 +184,7 @@ export const ALL_CHECKLIST_IDS = [
  * 51. /vault         (Sprint VAULT — HashiCorp Vault)
  * + /fundamentos já era parte dos 48 implicitamente; corrigido na contagem 49
  */
-export const CONTENT_PAGES_COUNT = 59;
+export const CONTENT_PAGES_COUNT = 62;
 
 // Badges que merecem celebração especial ao desbloquear
 const MILESTONE_BADGES = new Set<BadgeId>([
@@ -354,6 +360,9 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['tailscale-instalado'] && checklist['tailscale-mesh'] && checklist['tailscale-subnet']) unlockBadge('tailscale-master');
     if (checklist['pbs-datastore'] && checklist['pbs-job'] && checklist['pbs-restore']) unlockBadge('pbs-master');
     if (checklist['gpg-chave'] && checklist['gpg-cifrar'] && checklist['gpg-git']) unlockBadge('gpg-master');
+    if (checklist['lvm-configurado'] && checklist['raid-montado'] && checklist['snapshot-criado']) unlockBadge('storage-master');
+    if (checklist['db-instalado'] && checklist['db-backup'] && checklist['db-replicacao']) unlockBadge('dba-master');
+    if (checklist['mail-postfix'] && checklist['mail-dovecot'] && checklist['mail-antispam']) unlockBadge('mail-master');
     // Sprint SSH-PROXY — SSH como Proxy SOCKS
     if (checklist['ssh-dinamico'] && checklist['ssh-local'] && checklist['ssh-jump']) unlockBadge('ssh-proxy-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
@@ -405,8 +414,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['ssh-dinamico'] && checklist['trouble-conectividade']
     ) unlockBadge('ground-zero');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (floor(190*0.75) = 142).
-    if (Object.values(checklist).filter(v => v).length >= 142) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (floor(199*0.75) = 149).
+    if (Object.values(checklist).filter(v => v).length >= 149) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

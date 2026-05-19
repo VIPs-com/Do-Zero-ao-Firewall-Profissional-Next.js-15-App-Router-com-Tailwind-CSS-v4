@@ -470,6 +470,24 @@ export const ROUTE_SEO = {
       'OpenPGP/GPG do zero: gere chave mestra e subchaves ECC (Ed25519/Cv25519), cifre e decifre arquivos, assine e verifique, faça backup das subchaves e o certificado de revogação, e assine seus commits Git com GPG.',
     keywords: ['GPG', 'OpenPGP', 'GnuPG', 'criptografia', 'assinatura digital', 'commit assinado', 'Ed25519', 'subchaves', 'certificado de revogação', 'chave pública', 'web of trust'],
   },
+  '/lvm-raid': {
+    title: 'LVM, RAID & Armazenamento | Volumes Lógicos, mdadm e Snapshots no Linux',
+    description:
+      'Armazenamento Linux na prática: LVM (physical volume, volume group e logical volume), redimensionamento de partições a quente, RAID por software com mdadm, snapshots de volumes lógicos e introdução ao ZFS.',
+    keywords: ['LVM', 'RAID', 'mdadm', 'volume lógico', 'snapshot', 'ZFS', 'armazenamento Linux', 'physical volume', 'volume group', 'pvcreate', 'lvextend', 'particionamento'],
+  },
+  '/banco-de-dados': {
+    title: 'Banco de Dados | Administração de PostgreSQL e MariaDB no Linux',
+    description:
+      'Administre bancos de dados em Linux: instalação e tuning de PostgreSQL e MariaDB, criação de usuários e permissões, backup e restore com pg_dump e mysqldump, e replicação primária-réplica.',
+    keywords: ['banco de dados', 'PostgreSQL', 'MariaDB', 'MySQL', 'backup', 'restore', 'pg_dump', 'mysqldump', 'replicação', 'DBA', 'administração de banco', 'SQL Linux'],
+  },
+  '/mail-server': {
+    title: 'Servidor de E-mail | Postfix, Dovecot e Anti-Spam no Linux',
+    description:
+      'Monte um servidor de e-mail Linux completo: Postfix como MTA/SMTP, Dovecot para IMAP/POP3, autenticação SASL, criptografia TLS e filtragem anti-spam com SpamAssassin.',
+    keywords: ['servidor de e-mail', 'Postfix', 'Dovecot', 'SMTP', 'IMAP', 'POP3', 'anti-spam', 'SpamAssassin', 'MTA', 'SASL', 'TLS e-mail', 'correio Linux'],
+  },
   '/resposta-incidentes': {
     title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
     description:

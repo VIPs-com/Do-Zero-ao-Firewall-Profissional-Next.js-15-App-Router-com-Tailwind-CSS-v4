@@ -64,7 +64,10 @@ export type BadgeId =
   | 'crowdsec-master'
   | 'tailscale-master'
   | 'pbs-master'
-  | 'gpg-master';
+  | 'gpg-master'
+  | 'storage-master'
+  | 'dba-master'
+  | 'mail-master';
 
 export interface BadgeDef {
   icon: string;
@@ -141,4 +144,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'tailscale-master':       { icon: '🔗', title: 'Tailscale Master',          desc: 'Montou uma tailnet com Tailscale — mesh zero-port, ACLs, subnet router e exit node' },
   'pbs-master':             { icon: '💾', title: 'PBS Master',                desc: 'Operou o Proxmox Backup Server — datastore, jobs incrementais deduplicados, verify e restore' },
   'gpg-master':             { icon: '🔑', title: 'GPG Master',                desc: 'Domina o OpenPGP/GPG — chaves e subchaves ECC, cifrar/assinar/verificar, backup, revogação e commits Git assinados' },
+  'storage-master':         { icon: '💽', title: 'Storage Master',            desc: 'Domina LVM, RAID por software, snapshots e ZFS' },
+  'dba-master':             { icon: '🗄️', title: 'DBA Master',                desc: 'Administra PostgreSQL e MariaDB: backup, restore e replicação' },
+  'mail-master':            { icon: '📧', title: 'Mail Master',               desc: 'Configurou servidor de e-mail Postfix + Dovecot com anti-spam' },
 };

@@ -69,6 +69,9 @@ const SECTIONS: Section[] = [
       { path: '/tailscale',             num: 'C07', title: 'Tailscale — VPN Mesh',         icon: '🔗', checkpoint: 'tailscale-instalado', desc: 'Mesh zero-port, NAT traversal, ACLs, subnet router e exit node' },
       { path: '/proxmox-backup-server', num: 'C08', title: 'Proxmox Backup Server',        icon: '💾', checkpoint: 'pbs-datastore',     desc: 'Backup incremental deduplicado, datastore, prune/GC, verify e restore' },
       { path: '/gpg',                   num: 'C09', title: 'OpenPGP / GPG',                icon: '🔑', checkpoint: 'gpg-chave',         desc: 'Chaves e subchaves ECC, cifrar/assinar/verificar, backup, revogação, commits Git assinados' },
+      { path: '/lvm-raid',              num: 'C10', title: 'LVM, RAID & Armazenamento',    icon: '💽', checkpoint: 'lvm-configurado',   desc: 'Volumes lógicos PV/VG/LV, redimensionamento a quente, RAID mdadm, snapshots, ZFS' },
+      { path: '/banco-de-dados',        num: 'C11', title: 'Banco de Dados',               icon: '🗄️', checkpoint: 'db-instalado',      desc: 'PostgreSQL e MariaDB: usuários, permissões, backup/restore e replicação' },
+      { path: '/mail-server',           num: 'C12', title: 'Servidor de E-mail',           icon: '📧', checkpoint: 'mail-postfix',      desc: 'Postfix MTA/SMTP, Dovecot IMAP/POP3, SASL, TLS e anti-spam' },
     ],
   },
 ];

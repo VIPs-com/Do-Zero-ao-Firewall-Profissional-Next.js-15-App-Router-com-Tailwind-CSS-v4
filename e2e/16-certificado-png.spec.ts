@@ -6,13 +6,13 @@ import { test, expect } from './fixtures';
  * O certificado só é liberado quando `isReady`:
  *   checklistPercentage >= 90  &&  quizScore >= 80
  *
- * checklistPercentage = round(valores true no checklist / 190 * 100) — conta
- * QUALQUER valor true (BadgeContext.checklistPercentage), então seedar 175
- * chaves true resulta em ~92%.
+ * checklistPercentage = round(valores true no checklist / 199 * 100) — conta
+ * QUALQUER valor true (BadgeContext.checklistPercentage), então seedar 185
+ * chaves true resulta em ~93%.
  */
 
 /**
- * Seed que satisfaz isReady (175/190 ≈ 91% + quiz score).
+ * Seed que satisfaz isReady (185/199 ≈ 93% + quiz score).
  *
  * Usa `addInitScript` em vez de `evaluate`: o BadgeContext tem um save effect
  * que grava o checklist no mount — semear via `evaluate` antes do `goto` é
@@ -27,7 +27,7 @@ import { test, expect } from './fixtures';
 async function seedReady(page: import('@playwright/test').Page, quizScore: number) {
   await page.addInitScript((score) => {
     const checklist: Record<string, boolean> = {};
-    for (let i = 0; i < 175; i++) checklist[`chk-${i}`] = true;
+    for (let i = 0; i < 185; i++) checklist[`chk-${i}`] = true;
     localStorage.setItem('workshop-checklist-v2', JSON.stringify(checklist));
     localStorage.setItem('workshop-quiz-score', String(score));
     localStorage.setItem(

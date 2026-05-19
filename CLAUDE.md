@@ -125,12 +125,13 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 59 (Sprint GPG: +/gpg) |
-| `totalTopics` | `app/dashboard/page.tsx` | 95 (Sprint GPG: +C09 gpg) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 190 (Sprint GPG: +3 checkpoints gpg-*) |
-| Texto na Home | `app/page.tsx` | "95 tópicos práticos" + stats: 95/69/68/7 |
-| Badges | `src/context/BadgeContext.tsx` | 68 (Sprint GPG: +gpg-master) |
-| searchItems | `src/data/searchItems.ts` | 268 (Sprint GPG: +3 gpg) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 62 (Sprint PILARES: +/lvm-raid +/banco-de-dados +/mail-server) |
+| `totalTopics` | `app/dashboard/page.tsx` | 98 (Sprint PILARES: +C10/C11/C12) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 199 (Sprint PILARES: +9 checkpoints) |
+| Texto na Home | `app/page.tsx` | "98 tópicos práticos" + stats: 98/72/71/7 |
+| Badges | `src/data/badges.ts` | 71 (Sprint PILARES: +storage/dba/mail-master) |
+| searchItems | `src/data/searchItems.ts` | 277 (Sprint PILARES: +9) |
+| linux-ninja threshold | `src/context/BadgeContext.tsx` | 149 (floor(199 × 0.75)) |
 
 ---
 
@@ -548,10 +549,7 @@ Conformidade implementada no Sprint C:
   - Sprint APROF-FUND — scripting avançado em `/shell-script` (traps, getopts, `bats`), +2 deep dives, +exercícios na trilha Fundamentos.
   - Sprint APROF-SERVERS — tuning + segurança por módulo na v3.0 (Apache MPM, Samba VFS, LDAP TLS hardening).
   - Sprint APROF-INFRA — cenários reais de troubleshooting na v4.0 + módulo Loki real (evolução do HorizonteBox de `/rsyslog`).
-- ⏳ **Fase 1 — Pilares de SysAdmin (prioridade máxima):**
-  - Sprint LVM-RAID — `/lvm-raid` · badge 💽 `storage-master` (lvm-configurado, raid-montado, snapshot-criado).
-  - Sprint DATABASE — `/banco-de-dados` · badge 🗄️ `dba-master` (db-instalado, db-backup, db-replicacao).
-  - Sprint MAIL — `/mail-server` · badge 📧 `mail-master` (mail-postfix, mail-dovecot, mail-antispam).
+- ✅ **Fase 1 — Pilares de SysAdmin (Sprint PILARES):** 3 módulos novos na trilha Avançados, antes do capstone `/resposta-incidentes` — `/lvm-raid` (badge 💽 `storage-master` — LVM PV/VG/LV, RAID mdadm, snapshots, ZFS), `/banco-de-dados` (badge 🗄️ `dba-master` — PostgreSQL/MariaDB: usuários, backup, replicação, tuning), `/mail-server` (badge 📧 `mail-master` — Postfix MTA, Dovecot IMAP/POP3, SPF/DKIM/DMARC). ADVANCED_ORDER 27→30, CONTENT_PAGES_COUNT 59→62, checklistItemsCount 190→199, totalTopics 95→98, JOURNEY 69→72, badges 68→71, linux-ninja 142→149, searchItems 268→277, quiz avancados 121→133 (QUIZ_QUESTIONS 306), ROUTE_SEO 80→83; tópicos C10/C11/C12; stats home (98/72/71) e rodapé sincronizadas; e2e 07/10/11/14/15/16 atualizados; lint ✓ · eslint ✓ · 257 testes ✓ · check-constants 7/7 ✓ · build 88 rotas · E2E (116/116).
 - ⏳ **Fase 2 — Redes & Alta Disponibilidade:**
   - Sprint REDES-L23 — `/redes-l2-l3` · badge 🌐 `redes-master` (vlan-configurada, bonding-ativo, ipv6-roteado).
   - Sprint HA — `/alta-disponibilidade` · badge ♻️ `ha-master` (vrrp-configurado, cluster-quorum, failover-testado).

@@ -112,6 +112,9 @@ const JOURNEY_META: Record<string, JourneyMetaEntry> = {
   '/tailscale':             { difficulty: 'avancado', estMin: 40 },
   '/proxmox-backup-server': { difficulty: 'avancado', estMin: 45 },
   '/gpg':                   { difficulty: 'avancado', estMin: 45 },
+  '/lvm-raid':              { difficulty: 'avancado', estMin: 45 },
+  '/banco-de-dados':        { difficulty: 'avancado', estMin: 45 },
+  '/mail-server':           { difficulty: 'avancado', estMin: 45 },
   '/resposta-incidentes': { difficulty: 'avancado', estMin: 50 },
 };
 

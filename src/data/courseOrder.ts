@@ -80,6 +80,10 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/proxmox-backup-server', title: 'Proxmox Backup Server' },
   // Sprint GPG — OpenPGP / GPG
   { path: '/gpg',                   title: 'OpenPGP / GPG' },
+  // Sprint PILARES — LVM/RAID, Banco de Dados, Servidor de E-mail
+  { path: '/lvm-raid',              title: 'LVM, RAID & Armazenamento' },
+  { path: '/banco-de-dados',        title: 'Banco de Dados' },
+  { path: '/mail-server',           title: 'Servidor de E-mail' },
   // Capstone — Resposta a Incidentes (Sprint CÓDICE)
   { path: '/resposta-incidentes', title: 'Resposta a Incidentes (DFIR)' },
 ];
