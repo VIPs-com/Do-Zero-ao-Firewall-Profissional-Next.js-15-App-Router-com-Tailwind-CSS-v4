@@ -66,7 +66,7 @@ export const ROUTE_SEO = {
   '/': {
     title: 'Do Zero ao Firewall Profissional',
     description:
-      'Aprenda segurança de redes Linux na prática: 95 tópicos, laboratório WAN/DMZ/LAN, quiz gamificado e certificado de conclusão. 100% gratuito, em português.',
+      'Aprenda segurança de redes Linux na prática: 103 tópicos, laboratório WAN/DMZ/LAN, quiz gamificado e certificado de conclusão. 100% gratuito, em português.',
   },
   '/dashboard': {
     title: 'Dashboard de Progresso',
@@ -81,17 +81,22 @@ export const ROUTE_SEO = {
   '/topicos': {
     title: 'Índice de Tópicos',
     description:
-      '95 tópicos práticos sobre Linux: firewall, DNS, SSL, VPN, servidores, infraestrutura moderna e cloud. Organize seu estudo por trilha e camada OSI.',
+      '103 tópicos práticos sobre Linux: firewall, DNS, SSL, VPN, servidores, infraestrutura moderna e cloud. Organize seu estudo por trilha e camada OSI.',
+  },
+  '/comece-aqui': {
+    title: 'Comece Aqui — Como Usar o Workshop Linux',
+    description:
+      'Guia de entrada do Workshop Linux: escolha sua trilha (Fundamentos, Firewall ou Avançados), entenda a Jornada Unificada, os checkpoints, o quiz, o treino SRS e o certificado.',
   },
   '/jornada': {
     title: 'Jornada Unificada — Do Zero ao Avançado',
     description:
-      'A trilha completa do Workshop Linux em uma linha do tempo única: 69 módulos de Fundamentos a Cloud, com nível de dificuldade, tempo estimado e seu próximo passo destacado.',
+      'A trilha completa do Workshop Linux em uma linha do tempo única: 77 módulos de Fundamentos a Cloud, com nível de dificuldade, tempo estimado e seu próximo passo destacado.',
   },
   '/quiz': {
     title: 'Quiz de Certificação',
     description:
-      '294 questões sobre Linux, firewall, redes, servidores e infraestrutura — filtre por trilha e módulo. Teste seus conhecimentos e conquiste badges.',
+      '326 questões sobre Linux, firewall, redes, servidores e infraestrutura — filtre por trilha e módulo. Teste seus conhecimentos e conquiste badges.',
   },
   '/certificado': {
     title: 'Certificado de Conclusão',

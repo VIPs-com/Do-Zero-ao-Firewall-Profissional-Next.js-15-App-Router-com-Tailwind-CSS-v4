@@ -55,3 +55,32 @@ test('ModuleNav em /certificado: tem Anterior (Quiz), sem Próximo', async ({ pa
   // Último módulo: sem botão Próximo
   await expect(page.getByRole('link', { name: /^próximo módulo:/i })).not.toBeVisible();
 });
+
+// ── Sprint TRILHA-GUIADA — handoff de fim-de-trilha ────────────────────────────
+
+test('ModuleNav handoff: /troubleshooting (Fundamentos) → /instalacao (Firewall)', async ({ page }) => {
+  await page.goto('/troubleshooting');
+  await page.waitForLoadState('networkidle');
+
+  const handoff = page.getByRole('link', { name: /trilha fundamentos conclu.da.*continue em trilha firewall/i });
+  await expect(handoff).toBeVisible();
+  await expect(handoff).toHaveAttribute('href', '/instalacao');
+});
+
+test('ModuleNav handoff: /certificado (Firewall) → /avancados', async ({ page }) => {
+  await page.goto('/certificado');
+  await page.waitForLoadState('networkidle');
+
+  const handoff = page.getByRole('link', { name: /trilha firewall conclu.da.*continue em trilha avan.ada/i });
+  await expect(handoff).toBeVisible();
+  await expect(handoff).toHaveAttribute('href', '/avancados');
+});
+
+test('ModuleNav handoff: /resposta-incidentes (capstone) → /jornada', async ({ page }) => {
+  await page.goto('/resposta-incidentes');
+  await page.waitForLoadState('networkidle');
+
+  const handoff = page.getByRole('link', { name: /trilha avan.ada conclu.da.*continue em sua jornada completa/i });
+  await expect(handoff).toBeVisible();
+  await expect(handoff).toHaveAttribute('href', '/jornada');
+});

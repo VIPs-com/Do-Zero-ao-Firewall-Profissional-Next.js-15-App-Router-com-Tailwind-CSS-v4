@@ -45,7 +45,9 @@ export const SEARCH_ITEMS: SearchItem[] = [
   // ─── Páginas ────────────────────────────────────────────────────────────────
   { id: 'p-home',       title: 'Início',        description: 'Página inicial com topologia interativa da rede', category: 'Página', href: '/',            icon: Home },
   { id: 'p-dashboard',  title: 'Dashboard',        description: 'Seu progresso, badges e checkpoints concluídos',  category: 'Página', href: '/dashboard',          icon: Layout },
-  { id: 'p-jornada',    title: 'Jornada Unificada', description: 'Trilha completa em linha do tempo única — 64 módulos do zero ao avançado com seu próximo passo destacado', category: 'Página', href: '/jornada', icon: Layout },
+  { id: 'p-comece-aqui',title: 'Comece Aqui', description: 'Guia de entrada — escolha sua trilha, entenda a Jornada Unificada, checkpoints, quiz, SRS e certificado em 2 minutos', category: 'Página', href: '/comece-aqui', icon: Layout },
+  { id: 'g-comece-aqui-trilhas', category: 'Glossário', title: 'As 3 trilhas do Workshop', description: '🐧 Fundamentos (terminal/Linux) · 🔥 Firewall (redes/segurança) · 🚀 Avançados (servidores/cloud). Escolha pelo seu nível atual', href: '/comece-aqui', icon: Layout },
+  { id: 'p-jornada',    title: 'Jornada Unificada', description: 'Trilha completa em linha do tempo única — 77 módulos do zero ao avançado com seu próximo passo destacado', category: 'Página', href: '/jornada', icon: Layout },
   { id: 'p-modulos',    title: 'Módulos do Curso', description: 'Mapa visual dos 21 módulos com progresso visitado/pendente', category: 'Página', href: '/dashboard#modulos', icon: Layout },
   { id: 'p-topics',     title: 'Tópicos',       description: 'Índice completo de todos os módulos do workshop', category: 'Página', href: '/topicos',      icon: Book },
   { id: 'p-cheat',      title: 'Cheat Sheet',   description: 'Referência rápida de comandos iptables e Linux',  category: 'Página', href: '/cheat-sheet', icon: FileText },

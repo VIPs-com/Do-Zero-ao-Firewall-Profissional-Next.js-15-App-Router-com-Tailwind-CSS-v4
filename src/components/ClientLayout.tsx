@@ -20,6 +20,7 @@ const GlobalSearch = dynamic(
 
 const NAV_LINKS = [
   { href: '/',             label: 'Início',      icon: '🏠' },
+  { href: '/comece-aqui',  label: 'Comece Aqui', icon: '🚀' },
   { href: '/dashboard',    label: 'Dashboard',   icon: '📊' },
   { href: '/jornada',      label: 'Jornada',     icon: '🧭' },
   { href: '/fundamentos',  label: 'Fundamentos', icon: '🐧' },

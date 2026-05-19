@@ -41,8 +41,8 @@ export const COURSE_ORDER: CourseModule[] = [
 ];
 
 // ── Módulos Avançados (v3.0 → v5.0) — Servidores, Infraestrutura e Cloud ──────
-// 19 módulos não lineares — usados para rastreamento de progresso no dashboard.
-// Não integra ModuleNav (sem prev/next). Badge: advanced-master.
+// 35 módulos — usados no índice /avancados e na navegação ModuleNav (prev/next
+// derivados do índice). Badge: advanced-master.
 export interface SimpleModule {
   path: string;
   title: string;
@@ -118,3 +118,21 @@ export const FUNDAMENTOS_ORDER: CourseModule[] = [
   { path: '/ssh-proxy',          title: 'SSH como Proxy SOCKS',         prev: '/rsyslog',            next: '/troubleshooting' },
   { path: '/troubleshooting',   title: 'Troubleshooting de Rede',      prev: '/ssh-proxy',          next: null },
 ];
+
+// ── Handoff de fim-de-trilha (Sprint TRILHA-GUIADA) ───────────────────────────
+// Quando o aluno chega ao ÚLTIMO módulo de uma trilha (next === null), o ModuleNav
+// exibe um card guiando-o para a próxima etapa — orientação suave, sem bloqueio.
+export interface TrailHandoff {
+  /** Mensagem de conclusão exibida no card. */
+  label: string;
+  /** Rota de destino — primeiro módulo / índice da próxima trilha. */
+  href: string;
+  /** Nome da próxima etapa exibido no botão. */
+  nextLabel: string;
+}
+
+export const TRAIL_HANDOFF: Record<string, TrailHandoff> = {
+  '/troubleshooting':     { label: 'Trilha Fundamentos concluída',  href: '/instalacao', nextLabel: 'Trilha Firewall' },
+  '/certificado':         { label: 'Trilha Firewall concluída',     href: '/avancados',  nextLabel: 'Trilha Avançada' },
+  '/resposta-incidentes': { label: 'Trilha Avançada concluída',     href: '/jornada',    nextLabel: 'sua Jornada completa' },
+};

@@ -39,7 +39,7 @@ const PHASE_V3 = {
   name: 'Servidores e Serviços',
   color: 'border-info/40 bg-info/5',
   badgeColor: 'bg-info/15 text-info border-info/30',
-  status: '11 disponíveis · 0 em breve ✅',
+  status: '12 disponíveis · 0 em breve ✅',
   modules: [
     { name: 'Docker Networking',         slug: '/docker',         available: true,  icon: '🐳', tags: ['bridge', 'iptables', 'DOCKER-USER'] },
     { name: 'Docker Compose',            slug: '/docker-compose', available: true,  icon: '🐙', tags: ['multi-container', 'networks', 'secrets'] },
@@ -52,6 +52,7 @@ const PHASE_V3 = {
     { name: 'Pi-hole',                   slug: '/pihole',         available: true,  icon: '🕳️', tags: ['DNS', 'bloqueio de anúncios', 'privacy'] },
     { name: 'SSH como Proxy SOCKS',      slug: '/ssh-proxy',      available: true,  icon: '🚇', tags: ['-D SOCKS5', '-L/-R forward', 'Jump Host'] },
     { name: 'NFS — Network File System', slug: '/nfs',            available: true,  icon: '🗂️', tags: ['NFSv4', '/etc/exports', 'porta 2049'] },
+    { name: 'HAProxy — Load Balancer',   slug: '/haproxy',        available: true,  icon: '⚖️', tags: ['L4/L7', 'health checks', 'stick-tables'] },
   ],
 };
 
@@ -60,7 +61,7 @@ const PHASE_V4 = {
   name: 'Infraestrutura Moderna',
   color: 'border-layer-6/40 bg-layer-6/5',
   badgeColor: 'bg-layer-6/15 text-layer-6 border-layer-6/30',
-  status: '8 disponíveis · 0 em breve ✅',
+  status: '9 disponíveis · 0 em breve ✅',
   modules: [
     { name: 'Ansible para SysAdmins', slug: '/ansible',        available: true,  icon: '⚙️',  tags: ['IaC', 'playbooks', 'automação'] },
     { name: 'Prometheus + Grafana',   slug: '/monitoring',     available: true,  icon: '📊',  tags: ['métricas', 'dashboards', 'alertas'] },
@@ -70,6 +71,7 @@ const PHASE_V4 = {
     { name: 'eBPF & XDP',            slug: '/ebpf',           available: true,  icon: '⚡',  tags: ['kernel', 'bpftrace', 'Cilium'] },
     { name: 'Service Mesh (Istio)',   slug: '/service-mesh',   available: true,  icon: '🕸️',  tags: ['mTLS', 'VirtualService', 'Kiali'] },
     { name: 'SRE & SLOs',            slug: '/sre',            available: true,  icon: '🎯',  tags: ['error budget', 'burn rate', 'postmortem'] },
+    { name: 'HashiCorp Vault',        slug: '/vault',          available: true,  icon: '🔐',  tags: ['secrets', 'AppRole', 'KV/Database'] },
   ],
 };
 
@@ -78,12 +80,25 @@ const PHASE_V5 = {
   name: 'Cloud & Platform Engineering',
   color: 'border-layer-7/40 bg-layer-7/5',
   badgeColor: 'bg-layer-7/15 text-layer-7 border-layer-7/30',
-  status: '4 disponíveis · 0 em breve ✅',
+  status: '17 disponíveis · 0 em breve ✅',
   modules: [
-    { name: 'CI/CD com GitHub Actions',  slug: '/cicd',           available: true, icon: '🚀', tags: ['pipeline', 'deploy', 'workflows'] },
-    { name: 'OPNsense / pfSense',        slug: '/opnsense',       available: true, icon: '🔥', tags: ['enterprise', 'HA', 'web UI'] },
-    { name: 'Nextcloud — Nuvem Pessoal', slug: '/nextcloud',      available: true, icon: '☁️', tags: ['storage', 'caldav', 'self-hosted'] },
-    { name: 'eBPF Avançado + Cilium',    slug: '/ebpf-avancado',  available: true, icon: '🧬', tags: ['CNI', 'eBPF networking', 'Hubble'] },
+    { name: 'CI/CD com GitHub Actions',     slug: '/cicd',                  available: true, icon: '🚀', tags: ['pipeline', 'deploy', 'workflows'] },
+    { name: 'OPNsense / pfSense',           slug: '/opnsense',              available: true, icon: '🔥', tags: ['enterprise', 'HA', 'web UI'] },
+    { name: 'Nextcloud — Nuvem Pessoal',    slug: '/nextcloud',             available: true, icon: '☁️', tags: ['storage', 'caldav', 'self-hosted'] },
+    { name: 'eBPF Avançado + Cilium',       slug: '/ebpf-avancado',         available: true, icon: '🧬', tags: ['CNI', 'eBPF networking', 'Hubble'] },
+    { name: 'CrowdSec — IPS Colaborativo',  slug: '/crowdsec',              available: true, icon: '🛰️', tags: ['threat intel', 'bouncers', 'cenários'] },
+    { name: 'Tailscale — VPN Mesh',         slug: '/tailscale',             available: true, icon: '🔗', tags: ['mesh', 'NAT traversal', 'SSO'] },
+    { name: 'Proxmox Backup Server',        slug: '/proxmox-backup-server', available: true, icon: '💾', tags: ['dedup', 'incremental', 'verify'] },
+    { name: 'OpenPGP / GPG',                slug: '/gpg',                   available: true, icon: '🔑', tags: ['ECC', 'subchaves', 'Git signed'] },
+    { name: 'LVM, RAID & Armazenamento',    slug: '/lvm-raid',              available: true, icon: '💽', tags: ['PV/VG/LV', 'mdadm', 'ZFS'] },
+    { name: 'Banco de Dados',               slug: '/banco-de-dados',        available: true, icon: '🗄️', tags: ['PostgreSQL', 'MariaDB', 'replicação'] },
+    { name: 'Servidor de E-mail',           slug: '/mail-server',           available: true, icon: '📧', tags: ['Postfix', 'Dovecot', 'SPF/DKIM/DMARC'] },
+    { name: 'Redes Camada 2 & 3',           slug: '/redes-l2-l3',           available: true, icon: '🌐', tags: ['VLAN 802.1Q', 'bonding', 'IPv6', 'OSPF/BGP'] },
+    { name: 'Alta Disponibilidade',         slug: '/alta-disponibilidade',  available: true, icon: '♻️', tags: ['VRRP', 'Pacemaker', 'STONITH'] },
+    { name: 'Cloud Pública (AWS)',          slug: '/cloud-publica',         available: true, icon: '☁️', tags: ['IAM', 'VPC', 'EC2', 'S3'] },
+    { name: 'Git — Controle de Versão',     slug: '/git',                   available: true, icon: '🔀', tags: ['branches', 'merge/rebase', 'PR'] },
+    { name: 'Carreira',                     slug: '/carreira',              available: true, icon: '🎖️', tags: ['certificações', 'portfólio', 'entrevista'] },
+    { name: 'Resposta a Incidentes (DFIR)', slug: '/resposta-incidentes',   available: true, icon: '🚨', tags: ['NIST', 'forense', 'capstone'] },
   ],
 };
 
@@ -136,7 +151,7 @@ export default function EvolutionPage() {
             href="/avancados"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-accent-2 transition-colors"
           >
-            🚀 Explorar Trilha Avançada (22 módulos)
+            🚀 Explorar Trilha Avançada (35 módulos)
           </Link>
         </div>
         <Rocket className="absolute -bottom-10 -right-10 text-accent/5 w-64 h-64 rotate-12" />
@@ -224,9 +239,10 @@ export default function EvolutionPage() {
         <div className="relative pl-12 space-y-12 before:absolute before:left-[23px] before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-accent before:via-accent-2 before:to-ok">
           {[
             { t: 'Fundamentos', d: 'Domínio de Linux, iptables, DNS, Proxy e modelo OSI. (Você está aqui ✅)', s: ['Linux', 'iptables', 'DNS'] },
-            { t: 'Automação e IaC', d: 'Aprender Ansible, Terraform e Git. Versionar a infraestrutura como código.', s: ['Ansible', 'Terraform', 'Git'] },
+            { t: 'Automação e IaC', d: 'Aprender Ansible, Terraform e Git (módulo /git). Versionar a infraestrutura como código.', s: ['Ansible', 'Terraform', 'Git'] },
             { t: 'Contêineres', d: 'Dominar Docker e Kubernetes. Entender redes virtuais em pods.', s: ['Docker', 'Kubernetes', 'Helm'] },
-            { t: 'SRE / Platform', d: 'Projetar plataformas resilientes com observabilidade e alta disponibilidade.', s: ['Prometheus', 'Grafana', 'SLO'] }
+            { t: 'SRE / Platform', d: 'Projetar plataformas resilientes com observabilidade e alta disponibilidade.', s: ['Prometheus', 'Grafana', 'SLO'] },
+            { t: 'Carreira & Mercado', d: 'Certificações (LPIC/CompTIA), portfólio no GitHub e entrevista técnica — veja o módulo /carreira.', s: ['LPIC', 'CompTIA', 'Portfólio'] }
           ].map((step, i) => (
             <div key={i} className="relative">
               <div className="absolute -left-[48px] top-0 w-12 h-12 rounded-full bg-bg border-4 border-bg-2 flex items-center justify-center z-10 font-bold text-accent shadow-lg">

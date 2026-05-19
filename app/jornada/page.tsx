@@ -15,7 +15,7 @@ import {
 } from '@/data/journey';
 
 /* Sprint JORNADA — linha do tempo única "do zero ao avançado".
-   Une as 3 trilhas (Fundamentos → Firewall → Avançados) em 64 módulos. */
+   Une as 3 trilhas (Fundamentos → Firewall → Avançados) em 77 módulos. */
 
 const PHASE: Record<JourneyTrail, { label: string; icon: string; desc: string }> = {
   fundamentos: { label: 'Fundamentos Linux', icon: '🐧', desc: 'A base — terminal, arquivos, processos e permissões.' },

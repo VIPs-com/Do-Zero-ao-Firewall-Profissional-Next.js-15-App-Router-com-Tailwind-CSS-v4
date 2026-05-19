@@ -142,7 +142,7 @@ function buildPhase(
   });
 }
 
-/** A jornada completa: 64 módulos em ordem pedagógica (Fundamentos → Firewall → Avançados). */
+/** A jornada completa: 77 módulos em ordem pedagógica (Fundamentos → Firewall → Avançados). */
 export const JOURNEY: JourneyModule[] = [
   ...buildPhase(FUNDAMENTOS_ORDER, 'fundamentos'),
   ...buildPhase(COURSE_ORDER, 'firewall'),

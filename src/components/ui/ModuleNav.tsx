@@ -8,7 +8,7 @@
 
 import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { COURSE_ORDER, CourseModule, SimpleModule } from '@/data/courseOrder';
+import { COURSE_ORDER, CourseModule, SimpleModule, TRAIL_HANDOFF } from '@/data/courseOrder';
 
 /**
  * Mapeamento rota → badge do quiz (campo `badge` em quizQuestions.ts).
@@ -124,6 +124,8 @@ export function ModuleNav({ currentPath, order }: ModuleNavProps) {
   }
 
   const quizBadge = PATH_TO_QUIZ_BADGE[currentPath] ?? null;
+  // Handoff de fim-de-trilha: no último módulo de uma trilha, guia para a próxima.
+  const handoff = !nextModule ? TRAIL_HANDOFF[currentPath] : undefined;
 
   return (
     <div className="mt-12 pt-8 border-t border-border space-y-4">
@@ -170,6 +172,21 @@ export function ModuleNav({ currentPath, order }: ModuleNavProps) {
           <div />
         )}
       </div>
+
+      {/* Handoff de fim-de-trilha — guia o aluno para a próxima trilha (orientação suave) */}
+      {handoff && (
+        <Link
+          href={handoff.href}
+          className="flex items-center justify-between gap-3 p-4 rounded-lg border border-ok/40 bg-ok/5 hover:border-ok/70 transition-colors"
+          aria-label={`${handoff.label} — continue em ${handoff.nextLabel}`}
+        >
+          <span className="text-sm">
+            <span className="font-semibold text-ok">✅ {handoff.label}</span>
+            <span className="text-text-2"> — continue em {handoff.nextLabel}</span>
+          </span>
+          <ArrowRight className="w-5 h-5 text-ok shrink-0" aria-hidden="true" />
+        </Link>
+      )}
     </div>
   );
 }
