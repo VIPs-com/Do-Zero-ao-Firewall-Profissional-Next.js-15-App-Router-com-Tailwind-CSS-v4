@@ -54,10 +54,17 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
     return !document.documentElement.classList.contains('light');
   });
 
+  /* `mounted` evita mismatch de hidratação no ícone do toggle de tema.
+   * SSR renderiza um placeholder do mesmo tamanho; o ícone (Sol/Lua) só
+   * entra após o primeiro effect — sem regenerar o subtree por divergência
+   * de SVG entre servidor e cliente. */
+  const [mounted, setMounted] = useState(false);
+
   /* Sincroniza ícone caso o script anti-FOUC já tenha aplicado "light" antes da
    * hidratação do React (edge case em navegação direta com preferência salva). */
   useEffect(() => {
     setIsDark(!document.documentElement.classList.contains('light'));
+    setMounted(true);
   }, []);
 
   /* ---- Atalho de teclado para busca ---- */
@@ -171,13 +178,12 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
               className="p-2 rounded-md bg-bg-3 border border-border text-text-2 hover:border-accent hover:text-text transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
               aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
               title={isDark ? 'Tema claro' : 'Tema escuro'}
-              suppressHydrationWarning
             >
-              <span suppressHydrationWarning>
-                {isDark
-                  ? <Sun  size={18} aria-hidden="true" />
-                  : <Moon size={18} aria-hidden="true" />}
-              </span>
+              {mounted
+                ? (isDark
+                    ? <Sun  size={18} aria-hidden="true" />
+                    : <Moon size={18} aria-hidden="true" />)
+                : <span className="inline-block w-[18px] h-[18px]" aria-hidden="true" />}
             </button>
 
             {/* Progresso do curso — Sprint UI-H */}

@@ -38,6 +38,7 @@ const SECTIONS: Section[] = [
       { path: '/ldap',     num: 'S06', title: 'LDAP / OpenLDAP',        icon: '👥', checkpoint: 'ldap-instalado',      desc: 'DIT, OUs, posixAccount, PAM — autenticação única' },
       { path: '/pihole',   num: 'S07', title: 'Pi-hole',                icon: '🕳️', checkpoint: 'pihole-instalado',    desc: 'DNS sinkhole, blocklists gravity, Unbound local' },
       { path: '/nfs',      num: 'S09', title: 'NFS — Network File System', icon: '🗂️', checkpoint: 'nfs-instalado',       desc: '/etc/exports, NFSv4 porta 2049, mount _netdev, ID mapping' },
+      { path: '/haproxy',  num: 'S10', title: 'HAProxy — Load Balancer',   icon: '⚖️', checkpoint: 'haproxy-instalado',   desc: 'frontend/backend, algoritmos (roundrobin/leastconn), health checks, stick-tables L4/L7' },
     ],
   },
   {
@@ -53,6 +54,7 @@ const SECTIONS: Section[] = [
       { path: '/ebpf',          num: 'I06', title: 'eBPF & XDP',                 icon: '⚡', checkpoint: 'ebpf-instalado',          desc: 'BCC tools, bpftrace, filtros XDP, Cilium CNI, Falco' },
       { path: '/service-mesh',  num: 'I07', title: 'Service Mesh (Istio)',        icon: '🕸️', checkpoint: 'service-mesh-instalado',  desc: 'sidecar Envoy, mTLS automático, VirtualService, Kiali' },
       { path: '/sre',           num: 'I08', title: 'SRE & SLOs',                 icon: '🎯', checkpoint: 'sre-slo-definido',        desc: 'SLIs/SLOs, error budget, burn rate, postmortem blameless' },
+      { path: '/vault',         num: 'I09', title: 'HashiCorp Vault',            icon: '🔐', checkpoint: 'vault-instalado',         desc: 'Unseal/Shamir, secret engines KV e Database dinâmico, AppRole, políticas HCL' },
     ],
   },
   {

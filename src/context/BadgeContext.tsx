@@ -247,12 +247,15 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const checklistData = safeParseObject<Record<string, boolean>>('workshop-checklist-v2');
     const score     = safeParseInt('workshop-quiz-score');
 
-    if (badges)        setUnlockedBadges(new Set(badges));
-    if (pages)         setVisitedPages(new Set(pages));
-    if (clicks !== null) setTopologyClicks(clicks);
-    if (risks)         setClickedRisks(new Set(risks));
-    if (checklistData) setChecklist(checklistData);
-    if (score !== null)  setQuizScore(score);
+    // Merge funcional: filhos podem chamar setters ANTES desta load effect rodar
+    // (ClientLayout chama trackPageVisit no mount). Usar setter direto sobrescreveria
+    // a página atual recém-rastreada — usamos updater functional para preservar.
+    if (badges)        setUnlockedBadges(prev => new Set([...prev, ...badges]));
+    if (pages)         setVisitedPages(prev => new Set([...prev, ...pages]));
+    if (clicks !== null) setTopologyClicks(prev => Math.max(prev, clicks));
+    if (risks)         setClickedRisks(prev => new Set([...prev, ...risks]));
+    if (checklistData) setChecklist(prev => ({ ...checklistData, ...prev }));
+    if (score !== null)  setQuizScore(prev => Math.max(prev, score));
   }, []);
 
   useEffect(() => {
