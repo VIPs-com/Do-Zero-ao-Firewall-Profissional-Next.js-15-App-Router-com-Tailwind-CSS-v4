@@ -298,6 +298,24 @@ git commit -m "fix(tema): descricao curta e direta"
 
 ---
 
+## ATENCAO — Diretório de Trabalho (fonte da verdade)
+
+> **O repositório real é a RAIZ do projeto:**
+> `E:\Cursor\Do Zero ao Firewall Profissional Next.js 15 (App Router) com Tailwind CSS v4\`
+> É lá que `git` opera (branch `main`, `.git` próprio). Sempre edite e commite a partir dela.
+
+- A pasta `.claude/` é **ignorada pelo git** (`.gitignore`). Qualquer arquivo dentro dela
+  (incluindo `.claude/worktrees/...`) **NÃO é versionado** e nunca chega ao GitHub.
+- `.claude/worktrees/great-benz/` **não é um git worktree real** (`git worktree list` mostra
+  só a raiz) — é um diretório descartável. **Nunca edite arquivos de projeto ali.**
+- O shell pode resetar o cwd para dentro de `.claude/worktrees/great-benz/`. Por isso,
+  **todo comando deve prefixar** `cd "E:\Cursor\Do Zero ao Firewall...\" && <comando>`
+  e toda chamada de Edit/Write/Read deve usar o caminho absoluto da **raiz real**.
+- Antes de editar/commitar, confirme: `git rev-parse --git-dir` deve apontar para o `.git`
+  da raiz, e `git ls-files | wc -l` deve ser > 0.
+
+---
+
 ## Acessibilidade — WCAG 2.1 AA
 
 Conformidade implementada no Sprint C:
@@ -513,6 +531,7 @@ Conformidade implementada no Sprint C:
 - ✅ Sprint FORTALEZA (Hardening do Host Proxmox): 3 novos módulos a partir do guia "Fortaleza Proxmox" da equipe (CC BY-SA 4.0) — `/crowdsec` (🛰️ IPS colaborativo: agent+LAPI+bouncers, cenários comportamentais vs regex, collections do Hub, bouncer nftables, community blocklist — o payoff do HorizonteBox em /fail2ban), `/tailscale` (🔗 VPN mesh zero-port: protocolo WireGuard + NAT traversal/DERP, login SSO, MagicDNS, ACLs da tailnet, subnet router, exit node), `/proxmox-backup-server` (💾 PBS: backup incremental deduplicado, datastore/namespaces, jobs, prune+GC, verify, restore file-level/VM). Cada um: 3 abas, FluxoCard, WindowsComparisonBox, 4 erros comuns, badge + 3 checkpoints. Inseridos em `ADVANCED_ORDER` ANTES de `/resposta-incidentes` (que permanece o capstone/último da JOURNEY). badges 64→67, checkpoints 178→187, CONTENT_PAGES_COUNT 55→58, totalTopics 91→94, ADVANCED_ORDER 23→26, JOURNEY 65→68, linux-ninja 133→140, searchItems 255→264, quiz avancados 105→117 (QUIZ_QUESTIONS 290), ROUTE_SEO 76→79; tópicos C06/C07/C08; stats home (94/68/67) e rodapé (68/290/67/187) sincronizadas; module-accent crowdsec/tailscale/proxmox-backup-server; lint ✓ · eslint ✓ · 257 testes · build 84 rotas · E2E (108/108).
 - ✅ Sprint FORTALEZA — Aproveitamento extra: enriquecimentos do guia "Fortaleza Proxmox" — HorizonteBox Pi-hole→AdGuard Home em `/pihole`; seção "Endurecimento do Host" (ordem das 6 fases + calendário ZFS) em `/proxmox`; seção "Alertas leves via Telegram" em `/monitoring` (script Bash + variante Python estruturada do `telegram-monitor.py`); seção "Tor Hidden Service" em `/tailscale` (publicar serviço `.onion` anônimo sem IP/porta — `HiddenServiceDir` no torrc, contraste com a tailnet); +1 searchItem (`g-tor-hidden-service`, 264→265). Fix capturado pelo CI: `e2e/16-certificado-png` seed 160→170 (checklistPercentage caiu <90% com os +9 checkpoints da FORTALEZA).
 - ✅ Sprint GPG (OpenPGP / GPG): novo módulo `/gpg` a partir do curso interno "OpenPGP/GPG do Zero ao Expert" da equipe VIPs-com — criptografia de chave pública na prática. 3 abas (🔑 Conceito & Primeira Chave / 🔐 Cifrar, Assinar & Verificar / 🛡️ Backup, Revogação & Git), FluxoCard da anatomia da chave (mestra [C] + subchaves ECC [S][E][A]), geração com `--quick-generate-key`/`--quick-add-key` Ed25519/Cv25519, cifrar/decifrar/`--detach-sign`/`--verify` (incl. BAD signature), backup com `--export-secret-subkeys`, certificado de revogação `--gen-revoke`, commits Git assinados (`commit.gpgsign`), WindowsComparisonBox (Gpg4win/Kleopatra ↔ GnuPG CLI), seção Horizonte (SSH-via-GPG, Tails offline, WKD, ML-KEM pós-quântico), 6 erros comuns; badge 🔑 `gpg-master` (68º); 3 checkpoints (`gpg-chave`, `gpg-cifrar`, `gpg-git`); module-accent-gpg #b8860b; inserido em `ADVANCED_ORDER` antes de `/resposta-incidentes`; CONTENT_PAGES_COUNT 58→59, checklistItemsCount 187→190, totalTopics 94→95, ADVANCED_ORDER 26→27, JOURNEY 68→69, badges 67→68, linux-ninja 140→142, searchItems 265→268, quiz avancados 117→121 (QUIZ_QUESTIONS 294); tópico C09; ROUTE_SEO 79→80; stats home (95/69/68) e rodapé sincronizadas; `e2e/16` seed 175 (checklistPercentage); lint ✓ · eslint ✓ · 257 testes · build 85 rotas · E2E (113/113).
+- ✅ Sprint Docs Sync (pós-GPG): `docs/` reconciliado com o estado pós-Sprints CÓDICE/FORTALEZA/GPG via `scripts/check-constants.ts` (7/7 ✓) — `README.md`, `apresentacao.md`, `arquitetura.md`, `gamificacao.md` (+badges crowdsec/tailscale/pbs/incident/gpg, +12 checkpoints, threshold 142), `modulos-linux.md` (v5.0 com 9 módulos C01–C09), `roadmap.md` (sprints CÓDICE/FORTALEZA/GPG), `busca-global.md`, `seo.md` e `deploy.md` com os valores reais (68 badges · 190 checkpoints · 95 tópicos · 268 searchItems · 80 rotas/build 85 · 294 questões · 69 módulos). Material de origem `.claude/doc-equipe/pgp` removido (integrado). Lição registrada na seção "Diretório de Trabalho": editar sempre na raiz real, nunca em `.claude/worktrees/`.
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ✅ Simulador de Prompt PS1: ENTREGUE no Sprint Ferramentas-PS1 — aba interativa de preview ao vivo em `/ferramentas` (motor puro `src/lib/ps1.ts`), complementa o conteúdo PS1/PS2 do Sprint Anatomia do Shell em `/comandos`.
 
