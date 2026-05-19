@@ -105,6 +105,104 @@ verificar_servico() {
 verificar_servico nginx
 verificar_servico ssh`;
 
+const BASH_ESTRITO = `#!/bin/bash
+# Strict mode — torna o bash rigoroso e previsível
+set -euo pipefail
+IFS=$'\\n\\t'
+
+# -e          : aborta se qualquer comando falhar (saída != 0)
+# -u          : aborta ao usar variável não definida
+# -o pipefail : falha no pipe se QUALQUER etapa falhar
+# IFS         : separador só por quebra de linha e tab
+
+# Valor padrão protege contra variável vazia
+DESTINO="\${1:-/var/backups}"
+
+# Sempre cite variáveis entre aspas
+echo "Gravando backup em \\"\${DESTINO}\\""
+
+# Sem set -e, a linha abaixo continuaria mesmo se o cd falhasse
+cd "\${DESTINO}"
+tar czf backup.tar.gz /etc`;
+
+const TRAP_EXEMPLO = `#!/bin/bash
+set -euo pipefail
+
+# mktemp gera um nome único e seguro
+TMPDIR="$(mktemp -d)"
+LOCKFILE="/var/run/meu-script.lock"
+
+cleanup() {
+  echo "Limpando recursos temporários..."
+  rm -rf "\${TMPDIR}"
+  rm -f  "\${LOCKFILE}"
+}
+
+# cleanup roda em QUALQUER saída: sucesso, erro ou Ctrl+C
+trap cleanup EXIT INT TERM
+
+# Trabalho real usando o diretório temporário
+touch "\${LOCKFILE}"
+echo "dados" > "\${TMPDIR}/relatorio.txt"
+process "\${TMPDIR}/relatorio.txt"
+
+# Não precisa apagar nada no fim — o trap garante a limpeza`;
+
+const GETOPTS_EXEMPLO = `#!/bin/bash
+set -euo pipefail
+
+VERBOSE=0
+SAIDA="relatorio.txt"
+
+uso() {
+  echo "Uso: \${0##*/} [-v] [-o arquivo] [-h]"
+  echo "  -v          modo verboso"
+  echo "  -o arquivo  arquivo de saída (padrão: relatorio.txt)"
+  echo "  -h          mostra esta ajuda"
+}
+
+# "vo:h" — o ':' após 'o' indica que -o EXIGE um valor
+while getopts "vo:h" opt; do
+  case "\${opt}" in
+    v) VERBOSE=1 ;;
+    o) SAIDA="\${OPTARG}" ;;
+    h) uso; exit 0 ;;
+    \\?) echo "Flag inválida: -\${OPTARG}" >&2; uso; exit 1 ;;
+  esac
+done
+
+# Descarta as flags já lidas, restando os argumentos posicionais
+shift $((OPTIND - 1))
+
+[ "\${VERBOSE}" -eq 1 ] && echo "Modo verboso ligado"
+echo "Saída: \${SAIDA}"
+echo "Argumentos restantes: \$*"`;
+
+const BATS_EXEMPLO = `#!/usr/bin/env bats
+# exemplo.bats — testes do gerar-relatorio.sh
+# Instalar: apt install bats   |   Rodar: bats exemplo.bats
+
+@test "flag -h retorna codigo de saida 0" {
+  run ./gerar-relatorio.sh -h
+  [ "\${status}" -eq 0 ]
+}
+
+@test "flag invalida retorna codigo 1" {
+  run ./gerar-relatorio.sh -x
+  [ "\${status}" -eq 1 ]
+}
+
+@test "gera o arquivo de saida solicitado" {
+  run ./gerar-relatorio.sh -o /tmp/teste.txt
+  [ "\${status}" -eq 0 ]
+  [ -f /tmp/teste.txt ]
+}
+
+@test "saida contem o cabecalho esperado" {
+  run ./gerar-relatorio.sh
+  [[ "\${output}" == *"Relatorio"* ]]
+}`;
+
 export default function ShellScriptPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
 
@@ -210,6 +308,104 @@ Batch (.bat / .cmd):
             variáveis locais e <code>return</code> para código de saída.
           </p>
           <CodeBlock code={FUNCOES} lang="bash" title="Funções bash" />
+        </section>
+
+        <section id="bash-estrito">
+          <h2 className="text-2xl font-bold mb-2">Robustez — Bash Estrito (Strict Mode)</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Por padrão, o bash é <strong>tolerante demais</strong>: ele continua executando mesmo
+            depois de um comando falhar e trata variáveis inexistentes como string vazia. Em um
+            script de produção isso é perigoso — um <code>rm -rf &quot;$DIR/&quot;</code> com{' '}
+            <code>$DIR</code> vazia apaga a raiz do sistema. O <em>strict mode</em> corrige isso
+            com três flags na primeira linha útil do script.
+          </p>
+          <CodeBlock
+            code={BASH_ESTRITO}
+            lang="bash"
+            title="Cabeçalho de um script robusto"
+          />
+          <ul className="text-sm text-text-2 mt-4 space-y-1 list-disc list-inside">
+            <li><code>set -e</code> — aborta o script imediatamente se qualquer comando retornar erro (saída ≠ 0).</li>
+            <li><code>set -u</code> — aborta se uma variável não definida for usada (pega erros de digitação).</li>
+            <li><code>set -o pipefail</code> — em <code>cmd1 | cmd2</code>, propaga a falha de <em>qualquer</em> etapa do pipe, não só da última.</li>
+            <li><code>IFS=$&apos;\n\t&apos;</code> — restringe o separador de campos a quebra de linha e tab, evitando word splitting por espaços.</li>
+          </ul>
+          <WarnBox className="mt-4" title="O perigo de scripts sem set -e">
+            <p className="text-sm text-text-2">
+              Sem <code>set -e</code>, um script que faz <code>cd /backup</code> e o diretório
+              não existe vai continuar rodando no diretório errado — e o <code>rm</code> seguinte
+              apaga a pasta errada. Sempre prefira valores padrão com{' '}
+              <code>{'${'}VAR:-default{'}'}</code> e cite variáveis entre aspas:{' '}
+              <code>&quot;$VAR&quot;</code>. Strict mode transforma falhas silenciosas em
+              falhas barulhentas — e barulhentas você conserta.
+            </p>
+          </WarnBox>
+        </section>
+
+        <section id="traps">
+          <h2 className="text-2xl font-bold mb-2">trap — Limpeza e Captura de Sinais</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Scripts criam arquivos temporários, montam diretórios, abrem locks. Se o script morrer
+            no meio — por erro, por <kbd>Ctrl+C</kbd> ou por um <code>kill</code> — esse lixo fica
+            para trás. O <code>trap</code> registra uma função que roda <strong>sempre</strong> que
+            o script termina, não importa o motivo, garantindo a limpeza.
+          </p>
+          <CodeBlock code={TRAP_EXEMPLO} lang="bash" title="trap + função cleanup" />
+          <InfoBox className="mt-4" title="Sinais que valem capturar">
+            <p className="text-sm text-text-2">
+              <code>EXIT</code> dispara em qualquer saída (sucesso ou erro) — é o lugar ideal para
+              limpeza. <code>INT</code> é o <kbd>Ctrl+C</kbd> do usuário. <code>TERM</code> é o{' '}
+              <code>kill</code> padrão (e o que o systemd envia ao parar um serviço). Use{' '}
+              <code>mktemp</code> em vez de inventar nomes como <code>/tmp/meu.tmp</code>:
+              ele gera um nome único e evita colisão e ataques de symlink.
+            </p>
+          </InfoBox>
+        </section>
+
+        <section id="getopts">
+          <h2 className="text-2xl font-bold mb-2">getopts — Parsing de Argumentos</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Ler <code>$1</code>, <code>$2</code> na mão funciona para um argumento — mas vira um
+            pesadelo quando o script precisa de flags opcionais (<code>-v</code>),
+            flags com valor (<code>-o arquivo</code>) e ordem livre. O builtin{' '}
+            <code>getopts</code> resolve isso de forma padronizada, igual a qualquer comando Unix.
+          </p>
+          <CodeBlock code={GETOPTS_EXEMPLO} lang="bash" title="getopts — exemplo completo" />
+          <ul className="text-sm text-text-2 mt-4 space-y-1 list-disc list-inside">
+            <li>A string <code>&quot;vo:h&quot;</code> declara as flags; o <code>:</code> após uma letra significa que ela <strong>exige um valor</strong>.</li>
+            <li><code>{'${OPTARG}'}</code> contém o valor da flag atual (ex.: o nome do arquivo de <code>-o</code>).</li>
+            <li><code>{'${OPTIND}'}</code> é o índice do próximo argumento; <code>shift $((OPTIND - 1))</code> descarta as flags já lidas, deixando só os argumentos posicionais.</li>
+            <li>O caso <code>\?</code> captura flags inválidas e exibe a mensagem de uso.</li>
+          </ul>
+          <InfoBox className="mt-4" title="getopts vs $1 / $@ posicional">
+            <p className="text-sm text-text-2">
+              Use <code>$1</code>/<code>$@</code> posicional quando o script recebe argumentos
+              fixos e obrigatórios numa ordem clara (ex.: <code>backup.sh origem destino</code>).
+              Use <code>getopts</code> quando há flags opcionais, valores nomeados ou quando você
+              quer que a ordem dos argumentos não importe — é a interface profissional, previsível
+              e fácil de documentar com um <code>-h</code>.
+            </p>
+          </InfoBox>
+        </section>
+
+        <section id="bats">
+          <h2 className="text-2xl font-bold mb-2">Testando Scripts com bats</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Script de produção também merece teste automatizado. O <strong>bats</strong> (Bash
+            Automated Testing System) deixa você escrever testes em bash: cada bloco{' '}
+            <code>@test</code> roda o código com <code>run</code> e verifica o código de saída
+            (<code>$status</code>) e a saída (<code>$output</code>). Assim você muda o script com
+            confiança — se quebrar um comportamento, o teste acusa.
+          </p>
+          <CodeBlock code={BATS_EXEMPLO} lang="bash" title="exemplo.bats" />
+          <InfoBox className="mt-4" title="Por que testar scripts">
+            <p className="text-sm text-text-2">
+              Um script de backup ou de firewall roda sem ninguém olhando. Um teste bats que
+              valida &quot;arquivo gerado existe&quot; ou &quot;flag -h retorna código 0&quot;
+              transforma o script numa peça confiável. Instale com{' '}
+              <code>apt install bats</code> e rode com <code>bats exemplo.bats</code>.
+            </p>
+          </InfoBox>
         </section>
 
         <HighlightBox title="🔜 Próxima versão deste módulo">

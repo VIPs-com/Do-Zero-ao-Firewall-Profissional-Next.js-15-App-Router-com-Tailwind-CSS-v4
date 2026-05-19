@@ -385,6 +385,149 @@ ls -la /srv/samba/privado
           </InfoBox>
         </section>
 
+        {/* 7. Tuning & VFS */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">7. Tuning &amp; VFS — Objetos e Performance</h2>
+
+          <p className="text-text-2 mb-4">
+            O Samba pode interceptar cada operação de arquivo através dos <strong>objetos VFS</strong>
+            (Virtual File System) — módulos empilháveis que adicionam funcionalidade sem mexer no
+            sistema de arquivos real. São declarados por share com o parâmetro <code>vfs objects</code>.
+          </p>
+
+          <div className="bg-bg-2 border border-border rounded-lg overflow-hidden mb-6">
+            <table className="w-full text-sm">
+              <thead><tr className="border-b border-border bg-bg-3">
+                <th className="text-left p-3">Objeto VFS</th>
+                <th className="text-left p-3">Função</th>
+              </tr></thead>
+              <tbody>
+                {[
+                  ['recycle', 'Lixeira — arquivos apagados vão para uma pasta oculta em vez de sumir.'],
+                  ['audit / full_audit', 'Auditoria — registra no syslog cada open/read/write/unlink (quem fez o quê).'],
+                  ['shadow_copy2', 'Snapshots — expõe versões anteriores na aba "Versões anteriores" do Windows.'],
+                  ['catia / fruit', 'Compatibilidade — traduz nomes/atributos para clientes macOS e Windows.'],
+                ].map(([o, fn]) => (
+                  <tr key={o} className="border-b border-border/50">
+                    <td className="p-3 font-mono text-accent">{o}</td>
+                    <td className="p-3 text-text-2">{fn}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <CodeBlock lang="ini" title="/etc/samba/smb.conf — share com lixeira e auditoria" code={`[privado]
+    path = /srv/samba/privado
+    valid users = joao, maria
+    read only = no
+
+    # ── VFS: lixeira + auditoria ──────────────────────────
+    vfs objects = recycle full_audit
+
+    # recycle — para onde vão os arquivos apagados:
+    recycle:repository = .lixeira
+    recycle:keeptree = yes          # preserva a árvore de pastas
+    recycle:versions = yes          # mantém versões (arquivo, arquivo.1, ...)
+    recycle:exclude = *.tmp *.log
+
+    # full_audit — o que registrar no syslog:
+    full_audit:prefix = %u|%I|%S
+    full_audit:success = mkdir rename unlink rmdir write
+    full_audit:failure = none
+    full_audit:facility = local5
+    full_audit:priority = notice`} />
+
+          <CodeBlock lang="ini" title="shadow_copy2 — versões anteriores via snapshots" code={`[dados]
+    path = /srv/samba/dados
+    vfs objects = shadow_copy2
+    # Os snapshots (LVM, ZFS, Btrfs) devem ser montados em
+    # subpastas com este formato de nome:
+    shadow:snapdir = .snapshots
+    shadow:format = @GMT-%Y.%m.%d-%H.%M.%S
+    shadow:localtime = no
+    # → o Windows mostra os snapshots em "Propriedades > Versões anteriores"`} />
+
+          <h3 className="font-semibold mb-3 mt-6 text-info">Opções de performance no [global]</h3>
+          <p className="text-text-2 mb-4">
+            Em redes modernas (SMB3, kernels recentes) os padrões do Samba já são bons. Os ajustes
+            abaixo ainda valem em links de baixa latência e para transferências grandes.
+          </p>
+          <CodeBlock lang="ini" title="/etc/samba/smb.conf — seção [global]" code={`[global]
+    # Tuning do socket TCP — buffers maiores para arquivos grandes:
+    socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=131072 SO_SNDBUF=131072
+
+    # I/O assíncrono — o smbd não bloqueia esperando o disco:
+    aio read size = 1
+    aio write size = 1
+
+    # read raw / write raw — transferências em blocos grandes (SMB1 legado;
+    # ignorado pelo SMB2/3, que já faz isso de forma nativa):
+    read raw = yes
+    write raw = yes
+
+    # use sendfile — kernel envia o arquivo direto, sem copiar para o userspace:
+    use sendfile = yes`} />
+
+          <InfoBox title="Meça antes de ajustar">
+            <p className="text-sm text-text-2">
+              Acompanhe a carga real com <code>smbstatus</code> e o log de nível 3
+              (<code>log level = 3</code> temporário). Ajustar <code>socket options</code> às cegas
+              costuma piorar — em SMB3 o ganho vem mais de habilitar VFS sob demanda do que de
+              microtuning de buffers.
+            </p>
+          </InfoBox>
+        </section>
+
+        {/* 8. Hardening */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">8. Hardening — Protocolo e Acesso</h2>
+
+          <p className="text-text-2 mb-4">
+            O <strong>SMB1</strong> é o protocolo explorado pelo WannaCry/EternalBlue e deve estar
+            sempre desativado. Forçar SMB3, exigir criptografia e restringir o acesso anônimo
+            fecham os vetores clássicos de ataque a servidores de arquivos.
+          </p>
+
+          <CodeBlock lang="ini" title="/etc/samba/smb.conf — seção [global] endurecida" code={`[global]
+    # ── Forçar SMB3, eliminar o vulnerável SMB1 ──────────
+    server min protocol = SMB3
+    client min protocol = SMB2
+
+    # ── Exigir criptografia do tráfego SMB ───────────────
+    smb encrypt = required        # 'desired' para negociar; 'required' obriga
+
+    # ── Fechar a porta para o acesso anônimo ─────────────
+    restrict anonymous = 2        # bloqueia enumeração de shares/usuários sem login
+    map to guest = Never          # credencial inválida = recusada (não vira guest)
+
+    # ── Limitar o Samba às interfaces e redes confiáveis ─
+    interfaces = 127.0.0.1 192.168.1.0/24
+    bind interfaces only = yes
+    hosts allow = 127.0.0.1 192.168.1.0/24
+    hosts deny = 0.0.0.0/0`} />
+
+          <CodeBlock lang="bash" code={`# Validar e aplicar:
+testparm -s
+
+# Confirmar que o SMB1 está desligado e a versão mínima é SMB3:
+testparm -s --parameter-name "server min protocol"
+
+# Reiniciar e checar conexões — a coluna de protocolo deve mostrar SMB3:
+sudo systemctl restart smbd nmbd
+sudo smbstatus`} />
+
+          <WarnBox title="smb encrypt = required quebra clientes antigos">
+            <p className="text-sm text-text-2">
+              A criptografia obrigatória recusa clientes que não a suportam (Windows 7, dispositivos
+              IoT, scanners de rede). Em ambiente misto, use <code>smb encrypt = desired</code> no
+              <code> [global]</code> e <code>required</code> apenas nos shares sensíveis. E reforce
+              o conselho do módulo: <strong>nunca exponha 139/445 na WAN</strong> — acesso remoto
+              deve passar por VPN.
+            </p>
+          </WarnBox>
+        </section>
+
         </>)}
 
         {isActive('exercicios') && (<>

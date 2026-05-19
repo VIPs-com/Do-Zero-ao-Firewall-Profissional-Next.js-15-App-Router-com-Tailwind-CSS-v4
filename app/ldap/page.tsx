@@ -501,6 +501,160 @@ ldapsearch -Y EXTERNAL -H ldapi:/// \\
   -b "cn=schema,cn=config" "(cn=*)" dn`} />
         </section>
 
+        {/* TLS Hardening */}
+        <section>
+          <h2 className="section-title">TLS Hardening — Exigir Conexão Cifrada</h2>
+          <p className="text-text-2 mb-4">
+            Habilitar o TLS não basta: o slapd ainda aceita conexões em texto claro na porta 389.
+            O hardening consiste em <strong>recusar bind sem cifra</strong>, restringir os
+            protocolos e cifras aceitos e medir a força da camada de segurança com o
+            <em> SSF</em> (Security Strength Factor) — um número que representa os bits de
+            criptografia efetivos da conexão.
+          </p>
+          <CodeBlock lang="ini" title="/tmp/tls-hardening.ldif — aplicado via OLC" code={`dn: cn=config
+changetype: modify
+# TLS 1.2 no mínimo (3.3 = TLSv1.2; 3.4 = TLSv1.3):
+replace: olcTLSProtocolMin
+olcTLSProtocolMin: 3.3
+-
+# Apenas cifras fortes, sem algoritmos legados:
+replace: olcTLSCipherSuite
+olcTLSCipherSuite: SECURE256:-VERS-ALL:+VERS-TLS1.3:+VERS-TLS1.2
+-
+# Exigir certificado válido do cliente quando ele apresentar um:
+replace: olcTLSVerifyClient
+olcTLSVerifyClient: try`} />
+          <CodeBlock lang="ini" title="/tmp/ssf.ldif — exigir cifra para qualquer operação" code={`dn: cn=config
+changetype: modify
+# Nenhuma operação aceita abaixo de 128 bits de força (= TLS obrigatório):
+replace: olcSecurity
+olcSecurity: ssf=128 update_ssf=128 simple_bind=128`} />
+          <CodeBlock lang="bash" code={`# Aplicar as duas mudanças (autenticação EXTERNAL via socket local):
+ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/tls-hardening.ldif
+ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/ssf.ldif
+systemctl restart slapd
+
+# Conexão em texto claro agora deve FALHAR — "Confidentiality required":
+ldapsearch -x -H ldap://localhost -b "dc=empresa,dc=com" "(uid=joao)"
+
+# StartTLS na porta 389 ou LDAPS na 636 passam a ser obrigatórios:
+ldapsearch -x -ZZ -H ldap://localhost -b "dc=empresa,dc=com" "(uid=joao)"
+ldapsearch -x    -H ldaps://localhost -b "dc=empresa,dc=com" "(uid=joao)"`} />
+          <InfoBox className="mt-3">
+            <strong>SSF na prática:</strong> <code>ssf=0</code> é texto claro, <code>ssf=128</code>
+            equivale a uma sessão TLS comum e <code>ssf=256</code> exige cifras de 256 bits.
+            O <code>-ZZ</code> do <code>ldapsearch</code> força StartTLS e <em>falha</em> se a
+            negociação não ocorrer (o <code>-Z</code> minúsculo apenas tenta).
+          </InfoBox>
+        </section>
+
+        {/* ACLs do slapd */}
+        <section>
+          <h2 className="section-title">ACLs do slapd — Proteger o userPassword</h2>
+          <p className="text-text-2 mb-4">
+            As ACLs (<code>olcAccess</code>) decidem <strong>quem lê e escreve cada atributo</strong>.
+            A regra de ouro: o <code>userPassword</code> nunca deve ser legível por terceiros —
+            só o próprio dono (para trocá-la) e o admin. As ACLs são avaliadas em ordem; a
+            primeira que casa vence, então as regras específicas vêm antes das genéricas.
+          </p>
+          <CodeBlock lang="ini" title="/tmp/acl.ldif — ACLs do banco MDB" code={`dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+replace: olcAccess
+# 1) Senha: só o dono escreve, o admin gere, ninguém mais lê:
+olcAccess: {0}to attrs=userPassword,shadowLastChange
+  by self write
+  by dn="cn=admin,dc=empresa,dc=com" write
+  by anonymous auth
+  by * none
+# 2) Demais atributos: dono escreve, usuários autenticados leem:
+olcAccess: {1}to *
+  by self write
+  by dn="cn=admin,dc=empresa,dc=com" write
+  by users read
+  by * none`} />
+          <CodeBlock lang="bash" code={`# Aplicar as ACLs:
+ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/acl.ldif
+
+# Conferir as ACLs ativas no banco:
+ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" \\
+  "(olcDatabase={1}mdb)" olcAccess
+
+# Validar: o joao NÃO deve conseguir ler a senha da maria.
+# A busca abaixo retorna a entrada, mas SEM o atributo userPassword:
+ldapsearch -x -ZZ -H ldap://localhost \\
+  -D "uid=joao,ou=usuarios,dc=empresa,dc=com" -W \\
+  -b "uid=maria,ou=usuarios,dc=empresa,dc=com" userPassword`} />
+          <WarnBox className="mt-3">
+            <strong>by anonymous auth</strong> é indispensável: permite que o servidor compare a
+            senha durante o bind sem expor o hash. Trocar por <code>by anonymous none</code> quebra
+            toda a autenticação. Teste cada mudança de ACL com <code>slapacl</code> antes de
+            considerar concluída.
+          </WarnBox>
+        </section>
+
+        {/* ppolicy */}
+        <section>
+          <h2 className="section-title">Política de Senhas — Overlay ppolicy</h2>
+          <p className="text-text-2 mb-4">
+            O overlay <code>ppolicy</code> (password policy) adiciona ao OpenLDAP o que o
+            <code> /etc/login.defs</code> faz no Linux local: <strong>expiração, complexidade
+            mínima, histórico e bloqueio por tentativas erradas</strong> — essenciais para
+            conformidade (LPIC-2, ISO 27001) e para travar ataques de força bruta.
+          </p>
+          <CodeBlock lang="bash" code={`# Carregar o módulo do overlay e ativá-lo no banco:
+cat > /tmp/ppolicy-load.ldif << 'EOF'
+dn: cn=module{0},cn=config
+changetype: modify
+add: olcModuleLoad
+olcModuleLoad: ppolicy
+
+dn: olcOverlay=ppolicy,olcDatabase={1}mdb,cn=config
+changetype: add
+objectClass: olcOverlayConfig
+objectClass: olcPPolicyConfig
+olcOverlay: ppolicy
+olcPPolicyDefault: cn=default,ou=policies,dc=empresa,dc=com
+olcPPolicyHashCleartext: TRUE
+EOF
+ldapadd -Y EXTERNAL -H ldapi:/// -f /tmp/ppolicy-load.ldif`} />
+          <CodeBlock lang="ini" title="/tmp/policy.ldif — a política padrão" code={`dn: cn=default,ou=policies,dc=empresa,dc=com
+objectClass: pwdPolicy
+objectClass: device
+cn: default
+pwdAttribute: userPassword
+pwdMinLength: 12              # mínimo de 12 caracteres
+pwdMaxAge: 7776000           # senha expira em 90 dias (em segundos)
+pwdInHistory: 5              # não reutilizar as últimas 5 senhas
+pwdMaxFailure: 5             # 5 erros consecutivos...
+pwdLockout: TRUE             # ...bloqueiam a conta
+pwdLockoutDuration: 900      # bloqueio dura 15 minutos
+pwdExpireWarning: 604800     # avisa o usuário 7 dias antes de expirar`} />
+          <CodeBlock lang="bash" code={`# Criar a OU de policies e importar a política:
+echo "dn: ou=policies,dc=empresa,dc=com
+objectClass: organizationalUnit
+ou: policies" | ldapadd -x -D "cn=admin,dc=empresa,dc=com" -W
+
+ldapadd -x -D "cn=admin,dc=empresa,dc=com" -W -f /tmp/policy.ldif
+
+# Inspecionar o estado da política de um usuário (conta bloqueada?):
+ldapsearch -x -ZZ -H ldap://localhost \\
+  -D "cn=admin,dc=empresa,dc=com" -W \\
+  -b "uid=joao,ou=usuarios,dc=empresa,dc=com" \\
+  pwdAccountLockedTime pwdFailureTime pwdChangedTime
+
+# Desbloquear manualmente uma conta travada:
+echo "dn: uid=joao,ou=usuarios,dc=empresa,dc=com
+changetype: modify
+delete: pwdAccountLockedTime" | \\
+  ldapmodify -x -D "cn=admin,dc=empresa,dc=com" -W`} />
+          <InfoBox className="mt-3">
+            <strong>Limites de busca:</strong> além das senhas, proteja o servidor contra consultas
+            abusivas com <code>olcSizeLimit</code> (máximo de entradas por resposta) e
+            <code> olcTimeLimit</code> (segundos por busca) na <code>cn=config</code>. Sem isso,
+            um <code>ldapsearch</code> sem filtro pode varrer todo o diretório e sobrecarregar o slapd.
+          </InfoBox>
+        </section>
+
         </div>}
 
         {/* Exercícios */}

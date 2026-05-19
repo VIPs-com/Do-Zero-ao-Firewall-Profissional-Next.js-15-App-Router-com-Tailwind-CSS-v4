@@ -827,6 +827,133 @@ resource "azurerm_linux_virtual_machine" "web" {
 # 1 linguagem para TODA a infraestrutura`}
         />
 
+        {/* Troubleshooting de Cenários Reais */}
+        <section className="mb-12">
+          <h2 className="section-title flex items-center gap-2"><Database size={22} /> Diagnóstico de Estado e Drift</h2>
+          <p className="text-text-2 mb-6 leading-relaxed">
+            O <code>terraform.tfstate</code> é a fonte de verdade do Terraform — quando ele diverge da
+            infraestrutura real, surgem os problemas mais traiçoeiros. Estes são os cenários que todo
+            profissional de IaC enfrenta e como resolvê-los sem destruir produção por engano.
+          </p>
+
+          {/* Drift */}
+          <h3 className="font-bold text-lg mb-2 text-warn">1. <code>plan</code> mostra mudança inesperada — &quot;drift&quot;</h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> você não tocou no código HCL, mas <code>terraform plan</code> mostra
+            mudanças (<code>~ update</code>) que ninguém pediu. Isso é <em>drift</em>: alguém alterou o
+            recurso direto na console da cloud, e a realidade não bate mais com o state.
+          </p>
+          <CodeBlock lang="bash" code={`# 1. Detectar o drift sem alterar nada — só atualiza o state
+#    com a realidade da cloud e mostra o que divergiu.
+terraform plan -refresh-only
+
+# Saída típica: alguém mudou o instance_type na console AWS
+#   ~ resource "aws_instance" "web" {
+#       ~ instance_type = "t3.small" -> "t3.micro"
+#     }
+
+# 2. DUAS escolhas — você decide quem é a verdade:
+
+# (A) A console venceu: aceitar a mudança manual no state
+terraform apply -refresh-only
+#     O state passa a refletir t3.small. O código deveria
+#     então ser atualizado para casar.
+
+# (B) O código venceu: reverter a infra ao que o HCL diz
+terraform apply
+#     O Terraform muda o recurso de volta para t3.micro.
+
+# Nota: 'terraform refresh' (sozinho) está obsoleto.
+# Use sempre 'terraform plan/apply -refresh-only'.`} />
+          <InfoBox title="Drift é inevitável — discipline a equipe">
+            <p className="text-sm">A causa raiz do drift é quase sempre humana: alguém &quot;deu um jeitinho&quot; na console em vez de editar o HCL. A solução de longo prazo é processo — toda mudança passa pelo Terraform. Rodar <code>terraform plan</code> periodicamente (num pipeline de CI) detecta drift cedo.</p>
+          </InfoBox>
+
+          {/* Recurso preso / state rm + import */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">2. Recurso &quot;preso&quot; — <code>state rm</code> e <code>import</code></h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> o Terraform insiste em recriar (ou falhar ao destruir) um recurso
+            que já não existe na cloud, ou existe mas foi criado fora do Terraform. O state e a realidade
+            estão dessincronizados.
+          </p>
+          <CodeBlock lang="bash" code={`# CENÁRIO A — o state aponta para um recurso que foi DELETADO
+#             manualmente na cloud. O Terraform tropeça nele.
+#   Solução: remover a entrada do state SEM destruir nada.
+terraform state list                       # achar o endereço exato
+terraform state rm aws_instance.orfao
+#   O recurso some do state. O próximo 'plan' o recria do zero
+#   (se ainda estiver no código) ou o ignora.
+
+# CENÁRIO B — o recurso EXISTE na cloud mas foi criado à mão,
+#             fora do Terraform. 'apply' falharia com "already exists".
+#   Solução: adotar o recurso para dentro do state com 'import'.
+terraform import aws_instance.web i-0abc123def456789
+#   Depois do import, rode 'terraform plan': o ideal é "No changes".
+#   Se houver diff, ajuste o HCL até casar com a realidade.
+
+# Inspecionar um recurso já no state (útil antes de mexer):
+terraform state show aws_instance.web`} />
+          <WarnBox title="state rm NÃO destrói — mas é perigoso">
+            <p className="text-sm"><code>terraform state rm</code> apenas faz o Terraform &quot;esquecer&quot; o recurso — a infra real continua intacta. O risco é o oposto: esquecer um recurso ainda ativo cria um recurso órfão (custo na fatura, sem gestão). Sempre faça backup do state antes (<code>cp terraform.tfstate terraform.tfstate.bkp</code>) e confirme com <code>state list</code> o endereço exato.</p>
+          </WarnBox>
+
+          {/* State lock travado */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">3. State travado — <code>force-unlock</code></h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> <code>Error acquiring the state lock</code>. O Terraform usa um
+            lock no remote backend para impedir dois <code>apply</code> simultâneos. Se um processo
+            anterior travou (crash, Ctrl+C, conexão caiu), o lock fica órfão.
+          </p>
+          <CodeBlock lang="bash" code={`# Erro típico — o ID do lock aparece na própria mensagem:
+#   Error: Error acquiring the state lock
+#   Lock Info:
+#     ID:        a1b2c3d4-5678-90ab-cdef-1234567890ab
+#     Who:       deploy@runner-ci
+#     Created:   2026-05-19 14:32:01 UTC
+
+# ANTES de forçar — confirme que NÃO há outro apply rodando!
+#   Um force-unlock durante um apply real corrompe o state.
+
+# Liberar o lock órfão, passando o ID exato do erro:
+terraform force-unlock a1b2c3d4-5678-90ab-cdef-1234567890ab
+
+# Em seguida, o apply normal volta a funcionar:
+terraform apply`} />
+
+          {/* ForceNew e -target */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">4. <code>ForceNew</code> recriando recurso por engano · <code>plan -target</code></h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> o <code>plan</code> mostra <code>-/+ destroy and then create
+            replacement</code> quando você só queria um ajuste simples. Certos atributos são imutáveis
+            (&quot;force-new&quot;) — alterá-los obriga o provider a destruir e recriar o recurso inteiro.
+          </p>
+          <CodeBlock lang="bash" code={`# O plan deixa o motivo explícito — procure a anotação:
+terraform plan
+#   # aws_instance.web must be replaced
+#   -/+ resource "aws_instance" "web" {
+#       ~ ami = "ami-aaa" -> "ami-bbb" # forces replacement
+#       ~ id  = "i-0abc" -> (known after apply)
+#     }
+# 'ami' é force-new: trocá-la RECRIA a instância (perde IP, disco efêmero).
+
+# Como agir:
+#  • Se a recriação NÃO é desejada: reverta o atributo no HCL.
+#  • Se o downtime é o problema: lifecycle { create_before_destroy = true }.
+#  • Se o dado é precioso (banco): mova-o para um recurso de storage
+#    separado que NÃO seja recriado junto.
+
+# DEPURAÇÃO CIRÚRGICA — aplicar/planejar só UM recurso, sem mexer
+# no resto da infra. Útil para isolar um problema num plan gigante:
+terraform plan  -target=aws_security_group.web
+terraform apply -target=aws_security_group.web
+
+# Aviso: -target é para depuração pontual. Não use como rotina —
+# ele ignora o grafo de dependências e pode deixar o state inconsistente.`} />
+          <InfoBox title="A regra de ouro do Terraform em produção">
+            <p className="text-sm">Nunca rode <code>terraform apply</code> sem antes ler o <code>plan</code> linha por linha. As palavras-chave que exigem atenção máxima são <code>destroy</code>, <code>forces replacement</code> e <code>must be replaced</code>. Diante delas, pare e confirme se a recriação é mesmo aceitável — especialmente para bancos de dados e volumes.</p>
+          </InfoBox>
+        </section>
+
         </div>}
 
         {/* Exercícios Guiados */}

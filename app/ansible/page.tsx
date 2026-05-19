@@ -815,6 +815,131 @@ ansible-playbook site.yml
 # SSH direto, idempotente por padrão`}
         />
 
+        {/* Troubleshooting de Cenários Reais */}
+        <section className="mb-12">
+          <h2 className="section-title flex items-center gap-2"><RefreshCw size={22} /> Quando o playbook falha</h2>
+          <p className="text-text-2 mb-6 leading-relaxed">
+            Um playbook que &quot;roda&quot; não significa um playbook correto. O Ansible tem ferramentas
+            poderosas de depuração — saber usá-las separa o iniciante do profissional. Estes são os problemas
+            mais frequentes em produção e como atacá-los.
+          </p>
+
+          {/* Task sempre changed */}
+          <h3 className="font-bold text-lg mb-2 text-warn">1. Task sempre <code>changed</code> — quebrando a idempotência</h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> uma task aparece <code>changed</code> em <em>toda</em> execução, mesmo
+            sem nada ter mudado no sistema. Isso polui o relatório e impede saber o que de fato foi alterado.
+          </p>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Causa raiz:</strong> uso dos módulos <code>command</code> ou <code>shell</code>, que
+            <em> sempre</em> executam — eles não verificam estado. Módulos como <code>apt</code>,
+            <code>copy</code> ou <code>file</code> são idempotentes: só relatam <code>changed</code> se
+            realmente mudaram algo.
+          </p>
+          <CodeBlock lang="yaml" code={`# ❌ ERRADO — 'command' sempre executa, sempre 'changed'
+- name: Criar diretório
+  ansible.builtin.command: mkdir -p /opt/app
+
+# ✅ CERTO — módulo 'file' é idempotente: 'ok' se já existe
+- name: Criar diretório
+  ansible.builtin.file:
+    path: /opt/app
+    state: directory
+
+# Se PRECISAR mesmo de 'command', controle o 'changed' você mesmo:
+- name: Rodar script de migração só uma vez
+  ansible.builtin.command: /opt/app/migrate.sh
+  args:
+    creates: /opt/app/.migrated   # NÃO roda se este arquivo existir
+  # ou use 'changed_when' / 'failed_when' para definir o resultado:
+  # changed_when: "'aplicado' in resultado.stdout"
+  register: resultado`} />
+
+          {/* Erro de conexão SSH */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">2. Erro de conexão SSH — <code>UNREACHABLE</code></h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> o host aparece como <code>UNREACHABLE!</code> antes mesmo de qualquer
+            task rodar. O Ansible não conseguiu sequer abrir a sessão SSH.
+          </p>
+          <CodeBlock lang="bash" code={`# PASSO 1 — o -vvv mostra a linha de comando SSH EXATA que o Ansible tenta.
+#           Copie-a e rode na mão para ver o erro real do SSH.
+ansible-playbook site.yml -vvv
+
+# PASSO 2 — testar a conexão crua, fora do Ansible
+ssh -v deploy@192.168.1.10
+
+# Causas raiz mais comuns:
+#  • Host key changed — primeira conexão a um host novo.
+#    Solução: rodar 'ssh-keyscan' ou desativar a checagem em ansible.cfg:
+#      [defaults]
+#      host_key_checking = False
+#
+#  • Usuário errado — o inventário usa ansible_user que não existe no host.
+#
+#  • Falta de privilégio — a task precisa de root mas 'become' não está ligado.
+#    Solução: 'become: true' no play, e --ask-become-pass se o sudo pede senha.
+
+# Forçar usuário e pedir senha de sudo na linha de comando:
+ansible-playbook site.yml -u deploy --ask-become-pass`} />
+          <InfoBox title="host_key_checking — segurança vs automação">
+            <p className="text-sm">Desativar <code>host_key_checking</code> facilita a automação mas remove a proteção contra man-in-the-middle. Em produção, prefira popular o <code>~/.ssh/known_hosts</code> com <code>ssh-keyscan</code> antecipadamente, em vez de desativar a checagem.</p>
+          </InfoBox>
+
+          {/* gather_facts lento + variável indefinida */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">3. <code>gather_facts</code> lento e variável indefinida</h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma A:</strong> o playbook demora muito numa etapa &quot;Gathering Facts&quot; antes
+            de qualquer task. <strong>Sintoma B:</strong> <code>The task includes an option with an
+            undefined variable</code> — o playbook aborta porque uma variável não foi definida.
+          </p>
+          <CodeBlock lang="yaml" code={`# Sintoma A — desligar a coleta de fatos quando o playbook NÃO usa
+#             nenhuma variável ansible_* (acelera bastante em frotas grandes)
+- name: Deploy rápido
+  hosts: webservers
+  gather_facts: false      # pula a etapa "Gathering Facts"
+  tasks: [...]
+
+# Sintoma B — proteja variáveis opcionais com o filtro 'default'
+- name: Usar porta configurável
+  ansible.builtin.debug:
+    msg: "Porta: {{ app_port | default(8080) }}"   # nunca fica indefinida
+
+# Para depurar QUAL variável está indefinida e o que o host vê:
+- name: Inspecionar variáveis
+  ansible.builtin.debug:
+    var: hostvars[inventory_hostname]`} />
+
+          {/* Dry-run e depuração seletiva */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">4. Depurar com segurança: <code>--check</code>, <code>--diff</code>, <code>--start-at-task</code></h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> o playbook falha lá pela task número 20, e re-executar tudo do zero
+            a cada tentativa de correção custa minutos preciosos. O profissional depura cirurgicamente.
+          </p>
+          <CodeBlock lang="bash" code={`# DRY-RUN — simula a execução SEM alterar nada nos hosts.
+#           Mostra quais tasks ficariam 'changed'.
+ansible-playbook site.yml --check
+
+# --check + --diff — além de simular, mostra o DIFF linha a linha
+# dos arquivos que seriam alterados (templates, lineinfile, copy).
+ansible-playbook site.yml --check --diff
+
+# RETOMAR da task que falhou, sem repetir as 19 anteriores.
+# O nome da task vem do output do erro.
+ansible-playbook site.yml --start-at-task="Configurar Nginx"
+
+# Isolar a depuração a UM host do grupo (não mexe nos outros).
+ansible-playbook site.yml --limit web2
+
+# Rodar apenas as tasks marcadas com uma tag — depuração focada.
+ansible-playbook site.yml --tags "firewall" --check
+
+# Passo a passo: confirma cada task interativamente (y/n/c).
+ansible-playbook site.yml --step`} />
+          <InfoBox title="O ciclo de depuração do profissional">
+            <p className="text-sm">Diante de um playbook que falha: (1) leia o erro e identifique a task; (2) rode com <code>-vvv</code> para ver o comando real; (3) corrija; (4) re-teste só aquela parte com <code>--start-at-task</code> + <code>--limit</code> + <code>--check</code>; (5) só então aplique de verdade no grupo inteiro. Nunca aplique uma correção não testada em produção.</p>
+          </InfoBox>
+        </section>
+
         </div>}
 
         {/* Exercícios Guiados */}

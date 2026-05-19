@@ -849,6 +849,131 @@ kubectl rollout undo deploy/nginx
 # AWS EKS, GCP GKE, Azure AKS, bare-metal`}
         />
 
+        {/* Troubleshooting de Cenários Reais */}
+        <section className="mb-12">
+          <h2 className="section-title flex items-center gap-2"><Activity size={22} /> Diagnóstico em Produção</h2>
+          <p className="text-text-2 mb-6 leading-relaxed">
+            Em produção, os Pods raramente quebram com mensagens claras. O segredo é seguir sempre a mesma
+            sequência: <strong>sintoma → comando de diagnóstico → causa raiz</strong>. Estes são os quatro
+            estados problemáticos que todo operador de Kubernetes encontra — e como destrinchá-los.
+          </p>
+
+          {/* CrashLoopBackOff */}
+          <h3 className="font-bold text-lg mb-2 text-warn">1. Pod em <code>CrashLoopBackOff</code></h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> o container inicia, morre, o Kubernetes reinicia, ele morre de novo —
+            o contador <code>RESTARTS</code> sobe sem parar e o intervalo entre tentativas cresce (backoff).
+            A aplicação nunca fica estável.
+          </p>
+          <CodeBlock lang="bash" code={`# 1. Confirmar o estado
+kubectl get pod minha-app -n producao
+# NAME       READY   STATUS             RESTARTS      AGE
+# minha-app  0/1     CrashLoopBackOff   6 (2m ago)    12m
+
+# 2. PASSO-CHAVE: ler o log do container que JÁ MORREU (--previous)
+#    'kubectl logs' sem --previous mostra o container atual, que pode
+#    ainda nem ter logado nada. --previous mostra a execução anterior.
+kubectl logs minha-app -n producao --previous
+
+# 3. Ver os eventos do Pod — revela OOMKilled, probe falhando, etc.
+kubectl describe pod minha-app -n producao
+# Procure no fim, em "Events" e "Last State":
+#   Last State:   Terminated
+#     Reason:     OOMKilled        <- estourou o limite de memória
+#     Reason:     Error            <- a aplicação saiu com exit code != 0
+#   Liveness probe failed: HTTP probe failed with statuscode: 500`} />
+          <WarnBox title="As 3 causas raiz mais comuns">
+            <ul className="text-sm space-y-1 mt-1">
+              <li><strong>OOMKilled:</strong> o container excedeu <code>resources.limits.memory</code>. O kernel matou o processo. Solução: aumentar o limite ou corromper menos memória na app.</li>
+              <li><strong>readinessProbe/livenessProbe falhando:</strong> a probe aponta para uma porta/caminho errado, ou o <code>initialDelaySeconds</code> é curto demais e mata a app antes dela subir.</li>
+              <li><strong>Erro de configuração:</strong> variável de ambiente ausente, banco inacessível, arquivo de config faltando — a app sai com exit code diferente de 0 logo no boot.</li>
+            </ul>
+          </WarnBox>
+
+          {/* ImagePullBackOff */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">2. Pod em <code>ImagePullBackOff</code> / <code>ErrImagePull</code></h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> o Pod nunca chega a iniciar — fica preso tentando baixar a imagem.
+            Diferente do <code>CrashLoopBackOff</code>, aqui o container nem nasceu.
+          </p>
+          <CodeBlock lang="bash" code={`# Comando de diagnóstico: o "Events" do describe é definitivo
+kubectl describe pod minha-app -n producao | grep -A5 Events
+# Failed to pull image "registro.empresa.com/app:v2":
+#   manifest unknown                  <- TAG ERRADA ou imagem inexistente
+#   pull access denied / unauthorized <- REGISTRO PRIVADO sem credencial
+
+# Causa raiz A — tag errada: confirme o que existe no registro
+#   Erro de digitação em image: ou tag 'latest' que foi removida.
+
+# Causa raiz B — registro privado sem Secret. Crie o secret e referencie:
+kubectl create secret docker-registry registry-secret \\
+  --docker-server=registro.empresa.com \\
+  --docker-username=usuario \\
+  --docker-password='senha' \\
+  -n producao
+
+# E adicione no spec do Pod / Deployment:
+#   spec:
+#     imagePullSecrets:
+#       - name: registry-secret`} />
+
+          {/* Service sem Endpoints */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">3. Service sem <code>Endpoints</code> — &quot;a app está UP mas ninguém acessa&quot;</h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> os Pods estão <code>Running</code> e <code>Ready</code>, mas qualquer
+            <code>curl</code> ao Service dá timeout ou &quot;connection refused&quot;. O Service existe, mas
+            está vazio por dentro.
+          </p>
+          <CodeBlock lang="bash" code={`# 1. O comando que mata a charada: ver os Endpoints do Service.
+#    Endpoints = a lista de IPs de Pod por trás do Service.
+kubectl get endpoints nginx-svc -n producao
+# NAME        ENDPOINTS   AGE
+# nginx-svc   <none>      5m        <- VAZIO! o Service não achou nenhum Pod
+
+# 2. Comparar o selector do Service com os labels dos Pods
+kubectl describe svc nginx-svc -n producao | grep Selector
+# Selector:  app=nginx
+
+kubectl get pods -n producao --show-labels
+# NAME         ...   LABELS
+# nginx-xxx    ...   app=nginx-web   <- DIFERENTE de 'app=nginx'!
+
+# CAUSA RAIZ: o 'selector' do Service NÃO bate com os 'labels' do Pod.
+# O Service só roteia para Pods cujos labels casam EXATAMENTE com o selector.
+# Solução: alinhar os dois — corrigir o selector OU os labels do template.`} />
+          <InfoBox title="Outras causas de Endpoints vazio">
+            <p className="text-sm">Se os labels batem mas os Endpoints continuam vazios, verifique se os Pods estão de fato <code>Ready</code> — um Pod com <code>readinessProbe</code> falhando é excluído dos Endpoints mesmo estando <code>Running</code>. Confira também se a <code>targetPort</code> do Service aponta para a porta real do container.</p>
+          </InfoBox>
+
+          {/* Pod Pending */}
+          <h3 className="font-bold text-lg mb-2 mt-8 text-warn">4. Pod preso em <code>Pending</code> — nunca é agendado</h3>
+          <p className="text-text-2 mb-3 text-sm leading-relaxed">
+            <strong>Sintoma:</strong> o Pod fica eternamente em <code>Pending</code>. Ele foi criado, mas o
+            scheduler não conseguiu colocá-lo em nenhum nó.
+          </p>
+          <CodeBlock lang="bash" code={`# Comando de diagnóstico: o "Events" diz exatamente o que falta
+kubectl describe pod minha-app -n producao | grep -A10 Events
+
+# CAUSA RAIZ A — recursos insuficientes:
+#   0/1 nodes are available: 1 Insufficient cpu.
+#   0/1 nodes are available: 1 Insufficient memory.
+# O somatório de resources.requests dos Pods excede a capacidade do nó.
+# Solução: reduzir requests, adicionar um nó worker, ou escalar menos réplicas.
+
+kubectl describe node | grep -A6 "Allocated resources"
+
+# CAUSA RAIZ B — PVC não vinculado (Pending por storage):
+#   pod has unbound immediate PersistentVolumeClaims
+kubectl get pvc -n producao
+# NAME           STATUS    VOLUME   CAPACITY
+# postgres-pvc   Pending   ...               <- o PVC não achou um PV
+# Verifique o provisionador: kubectl get pods -n kube-system | grep local-path
+# e se o storageClassName existe: kubectl get storageclass`} />
+          <InfoBox title="A regra de ouro do diagnóstico no Kubernetes">
+            <p className="text-sm">Independentemente do estado problemático, o fluxo é sempre o mesmo: <code>kubectl get pod</code> revela o <em>estado</em>, <code>kubectl describe pod</code> revela os <em>eventos</em> e a <em>causa</em>, e <code>kubectl logs --previous</code> revela o que a <em>aplicação</em> disse antes de morrer. Domine esses três e você diagnostica 90% dos incidentes.</p>
+          </InfoBox>
+        </section>
+
         </div>}
 
         {/* Exercícios Guiados */}

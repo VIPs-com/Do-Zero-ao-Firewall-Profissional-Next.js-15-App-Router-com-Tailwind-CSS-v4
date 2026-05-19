@@ -423,6 +423,171 @@ sudo a2enmod proxy_wstunnel
           />
         </section>
 
+        {/* 7. Performance & MPM */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">7. Performance &amp; MPM — Tuning do Apache</h2>
+
+          <p className="text-text-2 mb-4">
+            O Apache processa requisições através de um <strong>MPM (Multi-Processing Module)</strong> —
+            o módulo que decide como o servidor cria processos e threads. Escolher o MPM certo é a
+            decisão de performance mais importante: define quanta memória o Apache consome e quantas
+            conexões simultâneas ele aguenta. Só um MPM pode estar ativo por vez.
+          </p>
+
+          <div className="bg-bg-2 border border-border rounded-lg overflow-hidden mb-6">
+            <table className="w-full text-sm">
+              <thead><tr className="border-b border-border bg-bg-3">
+                <th className="text-left p-3">MPM</th>
+                <th className="text-left p-3">Modelo</th>
+                <th className="text-left p-3">Quando usar</th>
+              </tr></thead>
+              <tbody>
+                {[
+                  ['prefork', 'Um processo por requisição, sem threads', 'Obrigatório com mod_php e libs não thread-safe. Estável, porém o que mais consome RAM.'],
+                  ['worker',  'Processos com várias threads cada',       'Sites estáticos / proxy reverso. Bem mais leve que o prefork em alta carga.'],
+                  ['event',   'Como o worker, mas thread dedicada gerencia conexões KeepAlive', 'Padrão moderno (Apache 2.4). Melhor para muitas conexões ociosas — recomendado quando não há mod_php.'],
+                ].map(([m, mod, use]) => (
+                  <tr key={m} className="border-b border-border/50">
+                    <td className="p-3 font-mono text-accent">{m}</td>
+                    <td className="p-3 text-text-2">{mod}</td>
+                    <td className="p-3 text-text-2">{use}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <CodeBlock lang="bash" code={`# Ver qual MPM está ativo:
+apache2ctl -V | grep -i mpm
+#  Server MPM: event
+
+# Trocar de MPM (só um pode estar ativo):
+sudo a2dismod mpm_prefork
+sudo a2enmod  mpm_event
+sudo systemctl restart apache2
+
+# Atenção: mod_php exige o prefork. Em vez disso, use PHP-FPM
+# (php8.x-fpm) com proxy_fcgi — assim você libera o MPM event:
+sudo a2dismod php8.3
+sudo a2enconf php8.3-fpm
+sudo a2enmod proxy_fcgi mpm_event`} />
+
+          <CodeBlock lang="apache" title="/etc/apache2/mods-available/mpm_event.conf" code={`<IfModule mpm_event_module>
+    StartServers             2
+    MinSpareThreads         25
+    MaxSpareThreads         75
+    ThreadLimit             64
+    ThreadsPerChild         25     # threads por processo filho
+    MaxRequestWorkers      150     # teto de requisições simultâneas
+    MaxConnectionsPerChild   0     # 0 = processo nunca recicla (use 10000 se houver leak de memória)
+</IfModule>`} />
+
+          <InfoBox title="Como dimensionar o MaxRequestWorkers">
+            <p className="text-sm text-text-2 mb-2">
+              O <code>MaxRequestWorkers</code> é o limite de requisições atendidas ao mesmo tempo —
+              quem chega além disso entra na fila. A regra prática:
+            </p>
+            <p className="text-sm text-text-2 mb-2">
+              <code>MaxRequestWorkers = (RAM total − RAM do SO e do banco) ÷ RAM média por processo Apache</code>
+            </p>
+            <p className="text-sm text-text-2">
+              Meça a RAM por processo com <code>ps -ylC apache2 --sort:rss</code>. No MPM event/worker,
+              o valor deve ser múltiplo de <code>ThreadsPerChild</code>. Definir alto demais leva ao
+              <em> swap</em> e derruba o servidor; baixo demais cria fila e lentidão.
+            </p>
+          </InfoBox>
+
+          <h3 className="font-semibold mb-3 mt-6 text-info">KeepAlive — reutilizar a conexão TCP</h3>
+          <p className="text-text-2 mb-4">
+            O <code>KeepAlive</code> mantém a conexão TCP aberta para servir vários recursos
+            (HTML, CSS, JS, imagens) sem reabrir socket a cada um — reduz latência. Mas conexão
+            ociosa consome um worker, então o <code>KeepAliveTimeout</code> deve ser curto.
+          </p>
+          <CodeBlock lang="apache" title="/etc/apache2/apache2.conf" code={`KeepAlive On
+MaxKeepAliveRequests 100   # recursos servidos por conexão antes de fechar
+KeepAliveTimeout 5         # segundos de espera por nova requisição (curto!)`} />
+
+          <h3 className="font-semibold mb-3 mt-6 text-info">mod_deflate e mod_expires — compressão e cache</h3>
+          <p className="text-text-2 mb-4">
+            O <code>mod_deflate</code> comprime as respostas com gzip antes de enviar — reduz o
+            tráfego de texto (HTML/CSS/JS) em 60–80%. O <code>mod_expires</code> instrui o
+            navegador a guardar arquivos estáticos em cache, eliminando requisições repetidas.
+          </p>
+          <CodeBlock lang="bash" code={`sudo a2enmod deflate expires headers`} />
+          <CodeBlock lang="apache" title="conf-available/performance.conf" code={`# ── Compressão gzip — só tipos que comprimem bem ──
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+    # NÃO comprimir imagens já comprimidas (jpg/png) — só gasta CPU
+</IfModule>
+
+# ── Cache do navegador para estáticos ──
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png  "access plus 1 month"
+    ExpiresByType text/css   "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>`} />
+
+          <InfoBox title="Validar o ganho">
+            <p className="text-sm text-text-2">
+              Confirme a compressão com <code>curl -H &quot;Accept-Encoding: gzip&quot; -I https://site.local/style.css</code> —
+              a resposta deve trazer <code>Content-Encoding: gzip</code>. Para o cache, verifique o
+              header <code>Cache-Control</code>/<code>Expires</code> na resposta dos arquivos estáticos.
+            </p>
+          </InfoBox>
+        </section>
+
+        {/* 8. Hardening */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">8. Hardening — Reduzir a Superfície de Ataque</h2>
+
+          <p className="text-text-2 mb-4">
+            Por padrão o Apache revela informações úteis a um atacante (versão exata, sistema
+            operacional) e habilita métodos HTTP raramente necessários. Endurecer o servidor é
+            cosmético no esforço, porém remove vetores clássicos de reconhecimento e exploração.
+          </p>
+
+          <CodeBlock lang="apache" title="conf-available/security.conf" code={`# ── Ocultar versão e SO no header Server e nas páginas de erro ──
+ServerTokens Prod        # "Server: Apache" — sem versão nem SO
+ServerSignature Off      # remove a assinatura no rodapé das páginas 404/500
+
+# ── Desativar o método TRACE (mitiga Cross-Site Tracing) ──
+TraceEnable Off
+
+# ── Bloquear listagem de diretórios sem index ──
+<Directory /var/www>
+    Options -Indexes
+</Directory>`} />
+
+          <CodeBlock lang="apache" title="VirtualHost — headers de segurança via mod_headers" code={`# Requer: a2enmod headers
+<VirtualHost *:443>
+    # ... SSL e DocumentRoot ...
+
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always set Content-Security-Policy "default-src 'self'"
+
+    # Remover headers que vazam a stack:
+    Header always unset X-Powered-By
+    Header unset Server
+</VirtualHost>`} />
+
+          <WarnBox title="Sempre valide antes de aplicar">
+            <p className="text-sm text-text-2">
+              Rode <code>sudo apache2ctl configtest</code> após cada mudança e prefira
+              <code> systemctl reload apache2</code> (recarrega sem derrubar conexões ativas) a
+              <code> restart</code>. Audite o resultado com <code>curl -I https://site.local</code>:
+              o header <code>Server</code> não deve mostrar versão, e os headers de segurança
+              devem aparecer. Ferramentas como o <em>securityheaders.com</em> dão uma nota objetiva.
+            </p>
+          </WarnBox>
+        </section>
+
         </>)}
 
         {isActive('exercicios') && (<>
