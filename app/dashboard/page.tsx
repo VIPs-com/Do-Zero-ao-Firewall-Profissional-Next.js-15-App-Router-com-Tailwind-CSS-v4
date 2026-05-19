@@ -62,7 +62,7 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  // Counter-Sync: TOPICS.length=87 (Sprint VAULT: +i09 HashiCorp Vault)
+  // Counter-Sync: TOPICS.length=95 (Sprint GPG: +C09 OpenPGP/GPG)
   const totalTopics = 95;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 

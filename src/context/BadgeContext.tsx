@@ -130,8 +130,8 @@ export const ALL_CHECKLIST_IDS = [
 ]; // 190 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
- * PÁGINAS DE CONTEÚDO (49 rotas técnicas — threshold). Base do badge 'deep-diver'.
- * Total disponível: 62 rotas (59 módulos + /fundamentos + /avancados + /dashboard).
+ * PÁGINAS DE CONTEÚDO (59 rotas técnicas — threshold). Base do badge 'deep-diver'.
+ * Total disponível: 72 rotas (69 módulos + /fundamentos + /avancados + /dashboard).
  * Inclui agora: /glossario, /certificado, /evolucao (corrigido Sprint TRACK-FIX).
  * ClientLayout chama trackPageVisit(pathname) em toda navegação.
  * Atualizar este número e a lista se novas rotas forem adicionadas.
