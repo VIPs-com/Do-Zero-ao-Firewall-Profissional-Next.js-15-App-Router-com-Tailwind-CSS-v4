@@ -1,10 +1,11 @@
 # 🔬 Diagnóstico Curricular — Workshop Linux
 
-> Avaliação do projeto (**69 módulos**) contra o currículo de um **profissional Linux /
+> Avaliação do projeto (**77 módulos**) contra o currículo de um **profissional Linux /
 > Redes / Segurança empregável**. Referência: LPIC‑1/2, CompTIA Linux+ / Network+ /
 > Security+ e a prática real de SysAdmin, DevOps e SRE.
 >
-> **Estado avaliado:** 68 badges · 190 checkpoints · 95 tópicos · 294 questões · 80 rotas.
+> **Estado atual:** 76 badges · 214 checkpoints · 103 tópicos · 326 questões · 88 rotas.
+> **Roadmap de evolução (Fases 0 → 3): ✅ CONCLUÍDO.**
 
 ---
 
@@ -14,179 +15,119 @@ O Workshop Linux deixou de ser um site de firewall e tornou‑se uma **plataform
 educacional completa em português**, com três trilhas progressivas (Fundamentos →
 Firewall → Avançados) e um capstone de resposta a incidentes.
 
-**Veredito:** forma muito bem um **Analista de Infraestrutura / Segurança de Redes
-Linux** (júnior a pleno). É um **manual interativo gamificado de altíssima qualidade** —
-e o roadmap deste documento o eleva a **formação profissional completa**, fechando os
-pilares de SysAdmin generalista e a ponte para o emprego.
+Com a execução das Fases 0 a 3 do roadmap, as **lacunas críticas foram fechadas** e os
+módulos sólidos foram aprofundados. O curso passou de "manual interativo de Redes &
+Segurança" para **formação profissional Linux completa**.
+
+**Veredito:** forma um profissional **Linux / Infraestrutura / Segurança** do zero ao
+nível pleno — cobrindo fundamentos, firewall, redes camada 2/3, servidores, banco de
+dados, e‑mail, armazenamento, alta disponibilidade, infraestrutura moderna, cloud e a
+ponte para o emprego.
 
 ---
 
 ## 2. 📊 Mapeamento completo: Grade Profissional → Workshop
 
-Legenda: 🟢 Excelente · 🟩 Forte · 🟡 Parcial · 🔴 Ausente · 🎯 alvo do roadmap
+Legenda: 🟢 Excelente · 🟩 Forte · 🟡 Parcial · 🔴 Ausente
 
-| Área curricular | Hoje | Alvo | Onde está / o que falta |
-|---|---|---|---|
-| Fundamentos Linux (FHS, shell, permissões, processos, boot) | 🟩 | 🟢 | Trilha v2.0 — 17 módulos · falta scripting avançado |
-| Pacotes & gerência de software | 🟩 | 🟢 | `/pacotes` · aprofundar repositórios/pinning |
-| Firewall & filtragem (iptables/nftables/NAT) | 🟢 | 🟢 | `/wan-nat`, `/dnat`, `/nftables`, `/port-knocking` |
-| Redes — DNS, proxy, troubleshooting | 🟩 | 🟢 | `/dns`, `/lan-proxy`, `/troubleshooting` |
-| Redes camada 2/3 (VLAN, bonding, IPv6, roteamento) | 🟡 | 🟢 | CIDR no `/ferramentas` · **falta módulo dedicado** |
-| VPN (IPSec, WireGuard, OpenVPN, mesh) | 🟢 | 🟢 | `/vpn-ipsec`, `/wireguard`, `/openvpn`, `/tailscale` |
-| Servidores (web, arquivo, diretório) | 🟩 | 🟢 | `/apache`, `/samba`, `/nfs`, `/ldap`, `/dhcp` |
-| Servidor de e‑mail (Postfix/Dovecot) | 🔴 | 🟢 | **ausente** — só regras de firewall para e‑mail |
-| Banco de dados (administração) | 🔴 | 🟢 | PostgreSQL/MariaDB só dentro de `/docker-compose` |
-| Armazenamento avançado (LVM, RAID, ZFS) | 🟡 | 🟢 | `/discos` cobre fdisk/fstab · **falta LVM/RAID** |
-| Alta disponibilidade (clustering, VRRP) | 🟡 | 🟢 | `/haproxy` + CARP no `/opnsense` · falta Pacemaker |
-| Containers & orquestração | 🟩 | 🟢 | `/docker`, `/docker-compose`, `/kubernetes`, `/ebpf-avancado` |
-| IaC & automação | 🟩 | 🟢 | `/ansible`, `/terraform`, `/cicd` |
-| Observabilidade & SRE | 🟩 | 🟢 | `/monitoring`, `/sre`, `/rsyslog` · falta stack Loki/ELK |
-| Segurança defensiva & ofensiva | 🟢 | 🟢 | `/hardening`, `/fail2ban`, `/suricata`, `/crowdsec`, `/ataques-avancados`, `/pivoteamento` |
-| Resposta a incidentes (DFIR) | 🟩 | 🟢 | `/resposta-incidentes` (capstone NIST) |
-| Criptografia aplicada | 🟩 | 🟢 | `/gpg`, `/nginx-ssl`, `/ssh-2fa` |
-| Backup & recuperação | 🟩 | 🟢 | `/backup`, `/proxmox-backup-server` |
-| Virtualização | 🟩 | 🟢 | `/laboratorio`, `/proxmox` |
-| Cloud pública (AWS/Azure/GCP hands‑on) | 🔴 | 🟢 | provider AWS de exemplo no `/terraform` |
-| Versionamento (Git como competência) | 🟡 | 🟢 | usado em `/cicd` e `/gpg` · não ensinado |
-| Carreira (portfólio, simulado, entrevista) | 🟡 | 🟢 | `/certificado` + `/certificacoes` · falta prep ativa |
+| Área curricular | Cobertura | Onde está no Workshop |
+|---|---|---|
+| Fundamentos Linux (FHS, shell, permissões, processos, boot) | 🟢 Excelente | Trilha v2.0 — 17 módulos · `/shell-script` com Bash estrito, `trap`, `getopts`, `bats` |
+| Pacotes & gerência de software | 🟢 Excelente | `/pacotes` — apt/dpkg, repositórios/PPA, snap, pip |
+| Firewall & filtragem (iptables/nftables/NAT) | 🟢 Excelente | `/wan-nat`, `/dnat`, `/nftables`, `/port-knocking` |
+| Redes — DNS, proxy, troubleshooting | 🟢 Excelente | `/dns`, `/lan-proxy`, `/troubleshooting` |
+| Redes camada 2/3 (VLAN, bonding, IPv6, roteamento) | 🟢 Excelente | `/redes-l2-l3` — 802.1Q, bonding/LACP, bridges, IPv6, OSPF/BGP |
+| VPN (IPSec, WireGuard, OpenVPN, mesh) | 🟢 Excelente | `/vpn-ipsec`, `/wireguard`, `/openvpn`, `/tailscale` |
+| Servidores (web, arquivo, diretório) | 🟢 Excelente | `/apache` (MPM+hardening), `/samba` (VFS+SMB3), `/ldap` (TLS+ppolicy), `/nfs`, `/dhcp` |
+| Servidor de e‑mail (Postfix/Dovecot) | 🟢 Excelente | `/mail-server` — Postfix MTA, Dovecot IMAP/POP3, SPF/DKIM/DMARC |
+| Banco de dados (administração) | 🟢 Excelente | `/banco-de-dados` — PostgreSQL/MariaDB: usuários, backup, replicação, tuning |
+| Armazenamento avançado (LVM, RAID, ZFS) | 🟢 Excelente | `/lvm-raid` — PV/VG/LV, snapshots, RAID mdadm, ZFS · `/discos` |
+| Alta disponibilidade (clustering, VRRP) | 🟢 Excelente | `/alta-disponibilidade` — keepalived/VRRP, Pacemaker/Corosync, quorum, fencing |
+| Containers & orquestração | 🟢 Excelente | `/docker`, `/docker-compose`, `/kubernetes` (+ diagnóstico em produção), `/ebpf-avancado` |
+| IaC & automação | 🟢 Excelente | `/ansible` (+ troubleshooting), `/terraform` (+ drift/state), `/cicd` |
+| Observabilidade & SRE | 🟢 Excelente | `/monitoring`, `/sre`, `/rsyslog` (HorizonteBox → Loki) |
+| Segurança defensiva & ofensiva | 🟢 Excelente | `/hardening`, `/fail2ban`, `/suricata`, `/crowdsec`, `/ataques-avancados`, `/pivoteamento` |
+| Resposta a incidentes (DFIR) | 🟢 Excelente | `/resposta-incidentes` — capstone NIST SP 800‑61 |
+| Criptografia aplicada | 🟢 Excelente | `/gpg`, `/nginx-ssl`, `/ssh-2fa` |
+| Backup & recuperação | 🟢 Excelente | `/backup`, `/proxmox-backup-server` |
+| Virtualização | 🟢 Excelente | `/laboratorio`, `/proxmox` |
+| Cloud pública (AWS) | 🟢 Excelente | `/cloud-publica` — IAM, VPC/SG, EC2, S3, free tier |
+| Versionamento (Git como competência) | 🟢 Excelente | `/git` — commits, branches, merge/rebase, conflitos, fluxo de PR |
+| Carreira (portfólio, simulado, entrevista) | 🟢 Excelente | `/carreira` — certificações, simulado cronometrado, portfólio, entrevista |
+
+**22 áreas curriculares · 22 no nível 🟢 Excelente.**
 
 ---
 
-## 3. ✅ Pontos fortes (excelente)
+## 3. ✅ Pontos fortes
 
-- **Profundidade rara** em firewall, redes e segurança — do `iptables` ao eBPF, DFIR e
-  CrowdSec. Poucos cursos chegam nesse nível.
-- **Progressão honesta:** Fundamentos → Firewall → Servidores → Infra → Cloud → Capstone.
-- **Gamificação madura:** 190 checkpoints, 68 badges, SRS (`/treino`), 294 questões,
+- **Cobertura completa e profunda** — das 22 áreas de um currículo profissional Linux,
+  todas atingem o nível Excelente, com módulos dedicados e conteúdo de produção.
+- **Progressão honesta:** Fundamentos → Firewall → Servidores → Infra → Cloud → Carreira
+  → Capstone DFIR.
+- **Gamificação madura:** 214 checkpoints, 76 badges, SRS (`/treino`), 326 questões,
   certificado verificável.
 - **Recursos pedagógicos de elite:** `WindowsComparisonBox`, `HorizonteBox`
   (clássico ↔ estado da arte), `/jornada` unificada, `/cheat-sheet`, `/ferramentas`.
-- **Engenharia sólida:** TypeScript estrito, CI, `check-constants.ts`, testes Vitest +
-  Playwright, CSP nonce, 0 vulnerabilidades.
-- **Alinhamento a certificações:** `/certificacoes` mapeia LPIC‑1 e CompTIA Linux+.
+- **Engenharia sólida:** TypeScript estrito, CI GitHub Actions, `check-constants.ts`,
+  testes Vitest + Playwright, CSP nonce, 0 vulnerabilidades.
+- **Alinhamento a certificações e carreira:** `/certificacoes` mapeia LPIC‑1/2 e
+  CompTIA Linux+; `/carreira` prepara para simulado, portfólio e entrevista.
 
-## 4. 🟡 Pontos fracos (precisa melhorar)
+## 4. 🟡 Pontos a evoluir (refinamento opcional)
 
-- Conteúdo é **leitura guiada + checklist**: ensina o "o quê" e o "porquê" muito bem,
-  mas o "fazer" depende de o aluno montar o próprio ambiente de VMs.
-- Armazenamento avançado, redes L2/L3 e shell scripting avançado estão superficiais.
-- Sem trilha de cloud pública prática.
-
-## 5. 🔴 Lacunas críticas (não planejadas até aqui)
-
-| Lacuna | Impacto na empregabilidade |
-|---|---|
-| **Servidor de e‑mail** (Postfix/Dovecot, SPF/DKIM/DMARC) | Tema clássico de SysAdmin e de prova LPIC‑2 |
-| **Administração de banco de dados** | Quase toda vaga de infra exige operar PostgreSQL/MySQL |
-| **LVM & RAID dedicados** | Gerência de disco em produção — esperado em entrevista |
-| **Alta disponibilidade real** (Pacemaker/Corosync, keepalived) | Serviços críticos exigem clustering/quorum |
-| **Cloud pública prática** | O mercado é majoritariamente cloud |
-| **Preparação de carreira** | Falta portfólio, simulado cronometrado e prep de entrevista |
+- Conteúdo é **leitura guiada + checklist + quiz**: ensina o "o quê", o "porquê" e o
+  "como" muito bem — mas o "fazer" ainda depende de o aluno montar o próprio ambiente
+  de VMs. Um laboratório executável embarcado seria o próximo salto.
+- **Observabilidade** pode ganhar um módulo dedicado de stack Loki/ELK (hoje tratado em
+  profundidade via `/monitoring`, `/rsyslog` e o HorizonteBox).
+- Polimentos de plataforma: deep‑diver por `Set` de paths obrigatórios; baseline
+  axe/Lighthouse em rotas‑chave.
 
 ---
 
-## 6. 📈 Avaliação geral: o que o aluno encontra
+## 5. 🎯 Resposta direta: "Com isso conseguimos formar bons profissionais?"
 
-O aluno encontra uma **formação teórica de excelência em Redes & Segurança Linux**, com
-trilha clara, prática validável por checkpoint e reforço por quiz/SRS. Sai sabendo
-**projetar, configurar e defender** uma infraestrutura Linux real.
+**Sim.** Com as Fases 0 → 3 concluídas, o Workshop forma um profissional **Linux /
+Infraestrutura / DevOps / Segurança** completo — do primeiro comando no terminal à
+cloud pública, passando pelos pilares de SysAdmin (banco de dados, e‑mail, LVM/RAID,
+alta disponibilidade), pela infraestrutura moderna (containers, IaC, observabilidade) e
+pela preparação ativa para o mercado (certificações, portfólio, entrevista).
 
-O que ele ainda **não** encontra: os pilares de SysAdmin generalista (BD, e‑mail,
-LVM/RAID, HA), um laboratório executável dentro da plataforma e a ponte direta para o
-primeiro emprego.
-
-## 7. 🎯 Resposta direta: "Com isso conseguimos formar bons profissionais?"
-
-**Sim — para a especialidade de Redes & Segurança Linux, hoje.** Para um **SysAdmin
-full / DevOps júnior completo**, ainda **não** — faltam os pilares da Fase 1 e a prep de
-carreira da Fase 3.
-
-Executando o roadmap abaixo (Fases 0 → 3), o Workshop passa a formar um profissional
-**completo e empregável**, com as 21 áreas curriculares no nível 🟢 Excelente.
+A ressalva honesta que permanece: **o curso ensina e valida, mas não substitui a
+prática no teclado** — o aluno precisa montar e operar o laboratório real. Essa é uma
+escolha pedagógica deliberada, não uma lacuna de conteúdo.
 
 ---
 
-## 8. 🏗️ Roadmap de evolução — Fases 0 → 3
+## 6. 🏗️ Roadmap de evolução — Fases 0 → 3 · ✅ CONCLUÍDO
 
-### Fase 0 — Aprofundamento (Forte → Excelente)
-Eleva os módulos já sólidos ao topo: deep dives novos, exercícios avançados e mais quiz.
+| Fase | Sprint | Entrega | Status |
+|---|---|---|---|
+| **0 — Aprofundamento** | APROF | `/shell-script` (Bash estrito, trap, getopts, bats); v3.0 `/apache`/`/samba`/`/ldap` (tuning + hardening); v4.0 `/kubernetes`/`/ansible`/`/terraform` (troubleshooting de produção) | ✅ |
+| **1 — Pilares de SysAdmin** | PILARES | `/lvm-raid` (💽 storage‑master), `/banco-de-dados` (🗄️ dba‑master), `/mail-server` (📧 mail‑master) | ✅ |
+| **2 — Redes & Alta Disponibilidade** | REDES‑L23 | `/redes-l2-l3` (🌐 redes‑master), `/alta-disponibilidade` (♻️ ha‑master) | ✅ |
+| **3 — Carreira & Cloud** | CARREIRA | `/cloud-publica` (☁️ cloud‑master), `/git` (🔀 git‑master), `/carreira` (🎖️ carreira‑master) | ✅ |
 
-### Fase 1 — Pilares de SysAdmin que faltam (prioridade máxima)
-Fecha as lacunas que travam a empregabilidade como SysAdmin generalista.
+**Resultado:** 8 módulos novos + 7 módulos aprofundados · 69 → 77 módulos · 68 → 76
+badges · 190 → 214 checkpoints · 95 → 103 tópicos · 294 → 326 questões · 80 → 88 rotas.
 
-### Fase 2 — Profundidade de redes & alta disponibilidade
-Completa redes L2/L3 e clustering de serviços críticos.
-
-### Fase 3 — Carreira & cloud
-Conecta o conhecimento ao mercado: cloud pública, Git e preparação de carreira.
-
----
-
-## 9. ✅ Plano detalhado — Sprints que estão por vir
-
-> Cada novo módulo segue o padrão CÓDICE/GPG: `page.tsx` + `layout.tsx`, `useTabFilter`
-> 3 abas, `FluxoCard`, `WindowsComparisonBox`, 3 checkpoints → 1 badge, ModuleNav,
-> entrada na cadeia de constantes, +quiz, +searchItems, `check-constants` verde, CI.
-
-### Fase 0 — Aprofundamento
-
-| Sprint | Escopo |
-|---|---|
-| **APROF‑FUND** | Trilha Fundamentos: scripting avançado em `/shell-script` (traps, getopts, `bats`), 2 deep dives novos, +exercícios |
-| **APROF‑SERVERS** | v3.0: seções de tuning e segurança por módulo (Apache MPM, Samba VFS, LDAP TLS hardening) |
-| **APROF‑INFRA** | v4.0: cenários reais de troubleshooting (K8s CrashLoop, Terraform drift, Ansible idempotência), stack Loki real evoluindo o HorizonteBox de `/rsyslog` |
-
-### Fase 1 — Pilares de SysAdmin
-
-| Sprint | Módulo novo | Badge · checkpoints |
-|---|---|---|
-| **LVM‑RAID** | `/lvm-raid` — PV/VG/LV, snapshots, resize, mdadm RAID 0/1/5, intro ZFS | 💽 `storage-master` · `lvm-configurado`, `raid-montado`, `snapshot-criado` |
-| **DATABASE** | `/banco-de-dados` — PostgreSQL/MariaDB: usuários/grants, `pg_dump`/restore, replicação, tuning básico | 🗄️ `dba-master` · `db-instalado`, `db-backup`, `db-replicacao` |
-| **MAIL** | `/mail-server` — Postfix + Dovecot, SPF/DKIM/DMARC, TLS, integração Fail2ban | 📧 `mail-master` · `mail-postfix`, `mail-dovecot`, `mail-antispam` |
-
-### Fase 2 — Redes & HA
-
-| Sprint | Módulo novo | Badge · checkpoints |
-|---|---|---|
-| **REDES‑L23** | `/redes-l2-l3` — VLANs (802.1Q), bonding, IPv6, roteamento estático + noções OSPF/BGP | 🌐 `redes-master` · `vlan-configurada`, `bonding-ativo`, `ipv6-roteado` |
-| **HA** | `/alta-disponibilidade` — keepalived/VRRP, Pacemaker/Corosync, quorum, fencing | ♻️ `ha-master` · `vrrp-configurado`, `cluster-quorum`, `failover-testado` |
-
-### Fase 3 — Carreira & Cloud
-
-| Sprint | Módulo / entrega | Badge · checkpoints |
-|---|---|---|
-| **CLOUD** | `/cloud-publica` — laboratório AWS: IAM, VPC, EC2, S3 (liga ao `/terraform`) | ☁️ `cloud-master` · `cloud-iam`, `cloud-vpc`, `cloud-deploy` |
-| **GIT** | `/git` — versionamento como competência: branch/merge/rebase, conflitos, fluxo de PR | 🔀 `git-master` · `git-branch`, `git-merge`, `git-fluxo` |
-| **CARREIRA** | Prep ativa em `/certificacoes` + `/quiz`: simulado cronometrado por certificação, guia de portfólio, roteiro de entrevista | 🎖️ `carreira-master` · `simulado-completo`, `portfolio-montado`, `entrevista-praticada` |
-
-### Polimento contínuo (baixo esforço, alto retorno)
-- **deep‑diver por `Set` de paths obrigatórios** — honestidade pedagógica (auditoria).
-- **Baseline axe/Lighthouse** em `/`, `/topicos`, `/quiz`, `/cheat-sheet`, `/dashboard`.
-- Rodar `check-constants.ts` no CI em todo PR.
-
-**Projeção ao fim das 4 fases:** ~9 módulos novos → ~78 módulos · ~77 badges ·
-~217 checkpoints · 21/21 áreas curriculares no nível 🟢 Excelente.
+### Polimento contínuo (opcional, baixo esforço)
+- deep‑diver por `Set` de paths obrigatórios — honestidade pedagógica.
+- Baseline axe/Lighthouse em `/`, `/topicos`, `/quiz`, `/cheat-sheet`, `/dashboard`.
+- Módulo dedicado de observabilidade com stack Loki/ELK.
 
 ---
 
-## 10. 🗺️ Jornada do aluno: hoje vs. ideal
+## 7. 🗺️ Jornada do aluno
 
-**Hoje:** Fundamentos → Firewall → Servidores → Infra → Cloud → Capstone DFIR →
-Certificado. Sólida, mas sem prep de carreira e com lacunas de SysAdmin generalista.
+**Trilha completa (rota `/jornada`):** Fundamentos *(17 módulos — inclui scripting
+avançado)* → Firewall *(25 módulos)* → Avançados *(35 módulos — servidores, banco de
+dados, e‑mail, armazenamento, redes L2/L3, alta disponibilidade, infraestrutura
+moderna, cloud, Git, carreira)* → Capstone DFIR → Certificado.
 
-**Ideal:** Fundamentos *(+ scripting avançado)* → Firewall → Servidores *(+ BD, e‑mail,
-LVM/RAID)* → **Redes L2/L3 & HA** → Infra/Cloud *(+ cloud pública prática)* → Capstone
-DFIR → **Portfólio + Simulado + Entrevista** → Certificado.
-
----
-
-## 11. ✅ Próximos passos (sequência recomendada)
-
-1. **Fase 0** primeiro — aprofundar o que já é Forte (menor risco, valida o padrão).
-2. **Fase 1** — começar pelo **Sprint LVM‑RAID** (menor e autocontido), depois DATABASE e MAIL.
-3. **Fase 2** — REDES‑L23 e HA.
-4. **Fase 3** — CLOUD, GIT e CARREIRA.
-5. Aplicar os **3 polimentos** em paralelo, sem bloquear as fases.
+Do `pwd` ao cluster de alta disponibilidade na AWS, com preparação de carreira e
+simulado de certificação — uma linha do tempo única de 77 módulos.
 
 ---
 [← Voltar ao indice](README.md)
