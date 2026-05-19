@@ -1192,8 +1192,28 @@ Sprint JORNADA ✅ rota /jornada — une as 3 trilhas (Fundamentos →
   ├── dificuldade (🟢🟡🔴) + tempo estimado por módulo · próximo passo
   └── nudge cross-trilha + card no dashboard + nav link 🧭
 
-Estado atual ✅ 63 badges · 175 checkpoints · 90 tópicos · 252 searchItems
-  · 75 rotas · 274 questões · 19 suítes/257 testes vitest · 24 specs E2E
+── Capstone, Endurecimento & Criptografia ───────────────────────────
+Sprint CÓDICE ✅ /resposta-incidentes — módulo capstone de DFIR
+  seguindo o NIST SP 800-61 (detecção → contenção → erradicação →
+  pós-incidente), script ir_collect.sh, os 7 Mandamentos, tabletop
+  exercises · badge incident-master (64º) · último módulo da JOURNEY
+
+Sprint FORTALEZA ✅ 3 módulos a partir do guia "Fortaleza Proxmox"
+  ├── /crowdsec — IPS colaborativo (agent + LAPI + bouncers, cenários
+  │   comportamentais, collections do Hub) — o payoff do HorizonteBox
+  ├── /tailscale — VPN mesh zero-port (WireGuard + NAT traversal/DERP,
+  │   SSO, MagicDNS, ACLs, subnet router, exit node, Tor hidden service)
+  └── /proxmox-backup-server — backup incremental deduplicado (datastore,
+      jobs, prune+GC, verify, restore) · badges 64→67 · checkpoints →187
+
+Sprint GPG ✅ /gpg — OpenPGP/GPG do zero ao expert
+  ├── chave mestra [C] + subchaves ECC [S][E][A] (Ed25519/Cv25519)
+  ├── cifrar/assinar/verificar, backup, revogação, commits Git assinados
+  └── badge gpg-master (68º) · checkpoints 187→190 · 3 abas + Horizonte
+
+Estado atual ✅ 68 badges · 190 checkpoints · 95 tópicos · 268 searchItems
+  · 80 rotas (build 85) · 294 questões · 19 suítes/257 testes vitest · 24 specs E2E
+  · 69 módulos (25 Firewall + 17 Fundamentos + 27 Avançados)
   · Next 16.2.6 · TypeScript strict · CI verde · 0 vulnerabilidades
 
 ❌ Backend/Supabase — DESCARTADO

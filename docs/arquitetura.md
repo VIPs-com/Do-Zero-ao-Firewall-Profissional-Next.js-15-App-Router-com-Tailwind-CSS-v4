@@ -65,10 +65,10 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 cheat-sheet/              ← Referência rápida de comandos
 │   ├── 📁 wireguard/                ← Módulo 10: WireGuard VPN (Sprint I.1)
 │   ├── 📁 fail2ban/                 ← Módulo 11: Fail2ban (Sprint I.2)
-│   ├── 📁 topicos/                  ← Índice dos 90 tópicos práticos
-│   ├── 📁 jornada/                  ← Jornada Unificada — as 3 trilhas em 64 módulos
+│   ├── 📁 topicos/                  ← Índice dos 95 tópicos práticos
+│   ├── 📁 jornada/                  ← Jornada Unificada — as 3 trilhas em 69 módulos
 │   ├── 📁 ferramentas/              ← Hub de 5 utilitários (CIDR/Regex/iptables/PS1/Base64)
-│   ├── 📁 quiz/                     ← Avaliação gamificada (274 perguntas)
+│   ├── 📁 quiz/                     ← Avaliação gamificada (294 perguntas)
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   ├── 📁 certificado/              ← Certificado de conclusão
 │   │
@@ -78,14 +78,17 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 discos/ · /logs-basicos/ · /backup/ · /shell-script/ · /cron/
 │   ├── 📁 pacotes/ · /boot/ · /comandos-avancados/ · /rsyslog/
 │   │
-│   │   ── v3.0 Servidores e Serviços ──────────────────────────────
-│   ├── 📁 dhcp/ · /samba/ · /apache/ · /openvpn/
-│   ├── 📁 traefik/ · /ldap/ · /pihole/
-│   │   (docker/ e docker-compose/ também aqui)
+│   │   ── v3.0 Servidores e Serviços (9) ────────────────────────
+│   ├── 📁 dhcp/ · /samba/ · /apache/ · /openvpn/ · /traefik/
+│   ├── 📁 ldap/ · /pihole/ · /nfs/ · /haproxy/
 │   │
-│   │   ── v4.0 Infraestrutura Moderna ─────────────────────────────
+│   │   ── v4.0 Infraestrutura Moderna (9) ───────────────────────
 │   ├── 📁 ansible/ · /monitoring/ · /kubernetes/ · /terraform/
-│   └── 📁 (v5.0 em planejamento: CI/CD, Service Mesh, SRE)
+│   ├── 📁 suricata/ · /ebpf/ · /service-mesh/ · /sre/ · /vault/
+│   │
+│   │   ── v5.0 Cloud & Platform Engineering (9) ──────────────────
+│   ├── 📁 cicd/ · /opnsense/ · /nextcloud/ · /ebpf-avancado/
+│   └── 📁 crowdsec/ · /tailscale/ · /proxmox-backup-server/ · /gpg/ · /resposta-incidentes/
 │
 ├── 📄 proxy.ts                      ← Sprint E: CSP nonce per-request
 ├── 📄 next.config.ts                ← Headers de segurança estáticos
@@ -99,7 +102,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 04-global-search.spec.ts     ← ⌘K abre, navega, ESC fecha
 │   ├── 05-theme-persistence.spec.ts ← Toggle dark/light + badge night-owl
 │   ├── 06-export-import-time-traveler.spec.ts ← Download + upload + badge
-│   ├── 07-dashboard-counters.spec.ts ← 3/175 checklist, 75% quiz, 0/63 badges
+│   ├── 07-dashboard-counters.spec.ts ← 3/190 checklist, 75% quiz, 0/68 badges
 │   ├── 08-module-nav.spec.ts         ← Navegação sequencial Anterior/Próximo
 │   └── 09-milestone-celebration.spec.ts ← Modal de conquista + confetti
 │
@@ -127,10 +130,10 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (274) de quiz/{firewall,fundamentos,avancados}.ts
-    │   ├── searchItems.ts           ← Índice da busca global (252 itens)
-    │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (22)
-    │   ├── journey.ts               ← Jornada Unificada: JOURNEY (64), getNextJourneyModule()
+    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (294) de quiz/{firewall,fundamentos,avancados}.ts
+    │   ├── searchItems.ts           ← Índice da busca global (268 itens)
+    │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (27)
+    │   ├── journey.ts               ← Jornada Unificada: JOURNEY (69), getNextJourneyModule()
     │   └── deepDives.tsx            ← Conteúdo dos modais avançados
     │
     └── 📁 lib/
@@ -148,12 +151,12 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **39** (base do badge deep-diver) |
-| `totalTopics` | `app/dashboard/page.tsx` | **74** |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | **127** (igual a `ALL_CHECKLIST_IDS.length`) |
-| Badges | `src/context/BadgeContext.tsx` | **46** |
-| searchItems | `src/data/searchItems.ts` | **121** |
-| Texto na Home | `app/page.tsx` | "58 tópicos práticos" + stats: 58/24/30/7 |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **59** (base do badge deep-diver) |
+| `totalTopics` | `app/dashboard/page.tsx` | **95** |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **190** (igual a `ALL_CHECKLIST_IDS.length`) |
+| Badges | `src/data/badges.ts` | **68** |
+| searchItems | `src/data/searchItems.ts` | **268** |
+| Texto na Home | `app/page.tsx` | "95 tópicos práticos" + stats: 95/69/68/7 |
 
 Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.
 

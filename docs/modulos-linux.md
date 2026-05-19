@@ -3,8 +3,8 @@
 *Para cada módulo: Conceito → Por que importa → Exemplo real → Checklist → Erros comuns*
 
 > **Navegação unificada:** a rota `/jornada` (Jornada Unificada) une as 3 trilhas
-> — Fundamentos (17) → Firewall (25) → Avançados (22) — numa linha do tempo única
-> de 64 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
+> — Fundamentos (17) → Firewall (25) → Avançados (27) — numa linha do tempo única
+> de 69 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
 > destacado. O hub `/ferramentas` reúne 5 utilitários portáteis (Calculadora CIDR,
 > Validador de Regex, Gerador de iptables, Simulador de PS1, Base64).
 
@@ -405,9 +405,9 @@ Gestão de segredos: Unseal com Shamir Secret Sharing, secret engines (KV e Data
 
 ---
 
-## Trilha v5.0 — Cloud & Platform Engineering ✅ COMPLETA
+## Trilha v5.0 — Cloud & Platform Engineering (9 módulos) ✅ COMPLETA
 
-*Nível sênior: automação de plataforma, observabilidade avançada e práticas de engenharia de software.*
+*Nível sênior: automação de plataforma, observabilidade avançada, segurança e resposta a incidentes.*
 
 ### C01 — CI/CD com GitHub Actions · `/cicd`
 6 conceitos core (Workflow/Job/Step/Action/Runner/Artifact), pipeline CI com jobs paralelos (lint+test) encadeados via `needs` até build + artifact upload, Docker build+push com `login-action`+`metadata-action` (semver+sha tags)+`build-push-action`+cache GHA, environments (staging auto + production com required reviewers), matrix strategy (node 18/20/22 × ubuntu/windows, fail-fast, exclude), scopes de secrets (repo/env/org), self-hosted runner (systemd service), workflows reutilizáveis (`workflow_call`), notificação Slack on-failure. Integração contínua e entrega contínua do zero ao ambiente de produção.
@@ -420,6 +420,21 @@ Self-hosted cloud storage: Docker Compose stack (Nextcloud+MariaDB+Redis+Traefik
 
 ### C04 — eBPF Avançado + Cilium · `/ebpf-avancado`
 CNI eBPF nativo no K3s: Cilium substituindo kube-proxy (O(1) eBPF map vs O(N) iptables) e flannel (sem overhead VXLAN), instalação K3s bare + helm install Cilium com `kubeProxyReplacement=true`, Hubble CLI+UI para observabilidade de fluxos L7 em tempo real (`hubble observe --verdict DROPPED`, service map), CiliumNetworkPolicy L3/L4 (default-deny + whitelist por labels) e L7 (HTTP path/method, DNS `toFQDNs` com update dinâmico), eBPF load balancing com DSR, Tetragon runtime security (TracingPolicy `Sigkill` para nc/ncat, detectar acesso `/etc/shadow`), eBPF maps avançados (LRU_HASH, RINGBUF, PERCPU_HASH), bpftrace avançado (kprobes, uprobes, histogramas).
+
+### C05 — CrowdSec — IPS Colaborativo · `/crowdsec`
+O "próximo passo" do Fail2ban: arquitetura agent + LAPI + parsers + cenários comportamentais + bouncers, `apt install crowdsec`, `cscli` (metrics/decisions/alerts/hub), collections do Hub (`cscli collections install crowdsecurity/sshd`), bouncer `crowdsec-firewall-bouncer-nftables`, Console + community blocklist. Cenário comportamental vs regex estática — threat intelligence colaborativa.
+
+### C06 — Tailscale — VPN Mesh Zero-Port · `/tailscale`
+VPN mesh gerenciada sobre o protocolo WireGuard: NAT traversal + DERP relays, login SSO (identidade-first), `tailscale up`, MagicDNS, ACLs (tailnet policy file), subnet router (`--advertise-routes`), exit node, Tailscale SSH. Acesso zero-port sem port forwarding — e publicação anônima via Tor Hidden Service.
+
+### C07 — Proxmox Backup Server · `/proxmox-backup-server`
+Backup deduplicado e incremental: PBS vs `vzdump` puro, arquitetura (PBS server + datastore + namespaces), criar datastore e conectar ao PVE, backup job agendado, retenção (prune + garbage collection), restore file-level e VM completa, verify jobs (integridade), regra 3-2-1 + sync offsite.
+
+### C08 — OpenPGP / GPG · `/gpg`
+Criptografia de chave pública: chave mestra [C]ertify + subchaves ECC [S]ign/[E]ncrypt/[A]uthenticate (Ed25519/Cv25519), `--quick-generate-key`/`--quick-add-key`, cifrar/decifrar/`--detach-sign`/`--verify`, backup com `--export-secret-subkeys`, certificado de revogação `--gen-revoke`, commits Git assinados (`commit.gpgsign`). Horizonte: SSH-via-GPG, Tails, WKD, ML-KEM pós-quântico.
+
+### C09 — Resposta a Incidentes (DFIR) · `/resposta-incidentes`
+Capstone do curso — Resposta a Incidentes seguindo o NIST SP 800-61: ciclo de 8 fases (detecção → contenção → preservação → timeline → análise → erradicação → recuperação → pós-incidente), script `ir_collect.sh`, os 7 Mandamentos do DFIR, tabletop exercises. O que fazer quando, mesmo com firewall/hardening/Fail2ban, algo deu errado.
 
 ---
 [← Voltar ao indice](README.md)

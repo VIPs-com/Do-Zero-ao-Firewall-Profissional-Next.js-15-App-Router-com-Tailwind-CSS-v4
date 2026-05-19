@@ -8,14 +8,14 @@
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
 - **Stack:** Next.js 16.2.6, Tailwind CSS v4, TypeScript 5.8 (strict), React 19
 - **Missao:** Democratizar infraestrutura Linux com experiencia gamificada e imersiva
-- **Escopo:** 90 tópicos, 80 rotas, 63 badges, 175 checkpoints de validação · 274 questões de quiz
+- **Escopo:** 95 tópicos, 85 rotas, 68 badges, 190 checkpoints de validação · 294 questões de quiz
 
 ---
 
 **Slide 2 — Arquitetura**
 - **Frontend:** Client + Server Components hibridos (estado reativo + metadata SEO)
 - **Persistencia:** `localStorage` como fonte unica (Backend descartado — escopo educacional)
-- **Build:** Turbopack · 80 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
+- **Build:** Turbopack · 85 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
 - **Infraestrutura:** Nginx como Proxy Reverso + PM2 para alta disponibilidade
 
 ---
@@ -29,26 +29,26 @@
 ---
 
 **Slide 4 — SEO & Performance (Sprint B)**
-- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (75 rotas) e `buildMetadata()`
+- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (80 rotas) e `buildMetadata()`
 - **Geracao automatica:** sitemap, robots, OG image, favicon, apple-icon, manifest — todos via `next/og` edge
 - **Fontes:** `next/font` self-hospedado (zero CLS, LGPD-safe)
 - **JSON-LD:** `LearningResource` no root layout
 
 ---
 
-**Slide 5 — Trilhas de Conteudo (4 versoes)**
+**Slide 5 — Trilhas de Conteudo (5 versoes)**
 - **v1.0 ✅** Zero ao Firewall — 25 módulos (iptables, NAT, DNS, VPN, Docker, Hardening...)
 - **v2.0 ✅** Fundamentos Linux — 17 módulos (FHS, Shell Script, Boot, Rsyslog, Usuários, Troubleshooting...)
 - **v3.0 ✅** Servidores e Serviços — 9 módulos (DHCP, Samba, Apache, OpenVPN, Traefik, LDAP, Pi-hole, NFS, HAProxy)
 - **v4.0 ✅** Infraestrutura Moderna — 9 módulos (Ansible, Prometheus+Grafana, Kubernetes, Terraform, Suricata, eBPF, Service Mesh, SRE, Vault)
-- **v5.0 ✅** Cloud & Platform Engineering — 4 módulos (CI/CD, OPNsense, Nextcloud, eBPF Avançado)
+- **v5.0 ✅** Cloud & Platform Engineering — 9 módulos (CI/CD, OPNsense, Nextcloud, eBPF Avançado, CrowdSec, Tailscale, Proxmox Backup Server, GPG, Resposta a Incidentes)
 
 ---
 
 **Slide 6 — Gamificacao**
-- **63 badges** desbloqueáveis (56 comuns + 7 milestones com modal + confetti)
-- **175 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
-- **Linux Ninja** 🥷 → completar 75% dos checkpoints (131/175)
+- **68 badges** desbloqueáveis (61 comuns + 7 milestones com modal + confetti)
+- **190 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
+- **Linux Ninja** 🥷 → completar 75% dos checkpoints (142/190)
 - **Mestre do Curso** 🎯 → visitar todos os 25 módulos da trilha principal
 - **MilestoneCelebration** modal + canvas-confetti (lazy-loaded, 3KB gzip)
 
@@ -63,7 +63,10 @@
 - **Sprint I.7–I.11 ✅** DHCP · Samba · Apache · OpenVPN · Traefik
 - **Sprint I.12–I.13 ✅** LDAP · Pi-hole (v3.0 COMPLETO)
 - **Sprint I.14–I.25 ✅** Ansible · Prometheus+Grafana · Kubernetes · Terraform · Suricata · eBPF · Service Mesh · SRE · CI/CD · OPNsense · Nextcloud · eBPF Avançado (v4.0 + v5.0 COMPLETOS)
-- **Sprint JORNADA ✅** Rota `/jornada` — une as 3 trilhas numa linha do tempo única (64 módulos)
+- **Sprint JORNADA ✅** Rota `/jornada` — une as 3 trilhas numa linha do tempo única (69 módulos)
+- **Sprint CÓDICE ✅** `/resposta-incidentes` — DFIR seguindo o NIST SP 800-61 (capstone)
+- **Sprint FORTALEZA ✅** CrowdSec · Tailscale · Proxmox Backup Server (endurecimento do host)
+- **Sprint GPG ✅** `/gpg` — OpenPGP/GPG: chaves ECC, cifrar/assinar, commits Git assinados
 - **Hub `/ferramentas` ✅** 5 utilitários portáteis: CIDR · Regex · iptables · PS1 · Base64
 
 ---
@@ -72,7 +75,7 @@
 - **CI ✅** GitHub Actions — lint + testes + build + E2E em todo push/PR para a `main`
 - **TypeScript estrito ✅** `tsconfig` migrado para `strict: true`
 - **Dependências ✅** Next 16.2.6 + override postcss → `npm audit` 0 vulnerabilidades
-- **Cobertura:** 19 suítes vitest · 257 testes · 24 specs Playwright (105 casos, 0 flaky)
+- **Cobertura:** 19 suítes vitest · 257 testes · 24 specs Playwright (113 casos, 0 flaky)
 
 ---
 
