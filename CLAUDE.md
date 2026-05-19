@@ -535,4 +535,31 @@ Conformidade implementada no Sprint C:
 - ⏸️ Service Worker offline: AVALIAR DEPOIS — complexidade desproporcional ao caso de uso.
 - ✅ Simulador de Prompt PS1: ENTREGUE no Sprint Ferramentas-PS1 — aba interativa de preview ao vivo em `/ferramentas` (motor puro `src/lib/ps1.ts`), complementa o conteúdo PS1/PS2 do Sprint Anatomia do Shell em `/comandos`.
 
+## Roadmap Futuro — Fases 0 → 3 (Diagnóstico Curricular)
+
+> Origem: `docs/DIAGNOSTICO-CURRICULAR.md` — eleva o curso de "manual interativo de
+> Redes & Segurança" para "formação profissional Linux completa" (21/21 áreas no nível
+> Excelente). Cada módulo novo segue o padrão CÓDICE/GPG (página + layout, `useTabFilter`
+> 3 abas, FluxoCard, WindowsComparisonBox, 3 checkpoints → 1 badge, ModuleNav, cadeia de
+> constantes, +quiz, +searchItems, `check-constants` verde, CI). Novos módulos da trilha
+> Avançados entram em `ADVANCED_ORDER` ANTES de `/resposta-incidentes` (capstone).
+
+- ⏳ **Fase 0 — Aprofundamento (Forte → Excelente):**
+  - Sprint APROF-FUND — scripting avançado em `/shell-script` (traps, getopts, `bats`), +2 deep dives, +exercícios na trilha Fundamentos.
+  - Sprint APROF-SERVERS — tuning + segurança por módulo na v3.0 (Apache MPM, Samba VFS, LDAP TLS hardening).
+  - Sprint APROF-INFRA — cenários reais de troubleshooting na v4.0 + módulo Loki real (evolução do HorizonteBox de `/rsyslog`).
+- ⏳ **Fase 1 — Pilares de SysAdmin (prioridade máxima):**
+  - Sprint LVM-RAID — `/lvm-raid` · badge 💽 `storage-master` (lvm-configurado, raid-montado, snapshot-criado).
+  - Sprint DATABASE — `/banco-de-dados` · badge 🗄️ `dba-master` (db-instalado, db-backup, db-replicacao).
+  - Sprint MAIL — `/mail-server` · badge 📧 `mail-master` (mail-postfix, mail-dovecot, mail-antispam).
+- ⏳ **Fase 2 — Redes & Alta Disponibilidade:**
+  - Sprint REDES-L23 — `/redes-l2-l3` · badge 🌐 `redes-master` (vlan-configurada, bonding-ativo, ipv6-roteado).
+  - Sprint HA — `/alta-disponibilidade` · badge ♻️ `ha-master` (vrrp-configurado, cluster-quorum, failover-testado).
+- ⏳ **Fase 3 — Carreira & Cloud:**
+  - Sprint CLOUD — `/cloud-publica` (AWS: IAM/VPC/EC2/S3) · badge ☁️ `cloud-master`.
+  - Sprint GIT — `/git` (versionamento como competência) · badge 🔀 `git-master`.
+  - Sprint CARREIRA — simulado cronometrado + portfólio + roteiro de entrevista em `/certificacoes` e `/quiz` · badge 🎖️ `carreira-master`.
+- ⏳ **Polimento contínuo:** deep-diver por `Set` de paths obrigatórios · baseline axe/Lighthouse em 5 rotas · `check-constants.ts` no CI de todo PR.
+- 🎯 **Projeção ao fim das 4 fases:** ~78 módulos · ~77 badges · ~217 checkpoints.
+
 Para detalhes completos: docs/ (índice em docs/README.md) · QUICKSTART.md · README.md

@@ -33,6 +33,7 @@
 ## Referencia
 
 - [Roadmap Tecnico](roadmap.md) — histórico completo de sprints (A → GPG)
+- [Diagnostico Curricular](DIAGNOSTICO-CURRICULAR.md) — cobertura vs. currículo profissional + roadmap Fases 0–3
 - [Glossario Tecnico](glossario.md) — termos de infraestrutura, Next.js e seguranca
 - [Apresentacao Executiva](apresentacao.md) — slide deck atualizado para apresentacoes rapidas
 
