@@ -54,7 +54,9 @@ describe('ClientLayout', () => {
   it('renderiza links de navegação principais', () => {
     render(<ClientLayout><div>content</div></ClientLayout>, { wrapper });
     expect(screen.getAllByText('Dashboard').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Quiz').length).toBeGreaterThan(0);
+    // Sprint HEADER-FOOTER: Quiz vive no dropdown "Estudo" (fechado por padrão).
+    // Validamos que o trigger do dropdown está presente.
+    expect(screen.getAllByText('Estudo').length).toBeGreaterThan(0);
   });
 
   it('toggleTheme dark→light adiciona classe "light" e persiste no localStorage', () => {

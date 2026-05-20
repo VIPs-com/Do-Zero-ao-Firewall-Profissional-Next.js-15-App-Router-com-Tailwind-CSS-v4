@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Sun, Moon, Search } from 'lucide-react';
+import { Menu, X, Sun, Moon, Search, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useBadges } from '@/context/BadgeContext';
 import { ProgressDropdown } from './ui/ProgressDropdown';
@@ -18,25 +18,32 @@ const GlobalSearch = dynamic(
   { ssr: false },
 );
 
+/* Sprint HEADER-FOOTER — nav reorganizado.
+ * `NAV_LINKS`  = barra principal (8 itens — cabem em telas lg sem overflow).
+ * `STUDY_LINKS` = dropdown "Estudo" (Quiz, Treino, Cheat Sheet, Ferramentas).
+ * Mobile menu renderiza os dois conjuntos como lista flat. */
 const NAV_LINKS = [
   { href: '/',             label: 'Início',      icon: '🏠' },
-  { href: '/comece-aqui',  label: 'Comece Aqui', icon: '🚀' },
+  { href: '/comece-aqui',  label: 'Comece Aqui', icon: '👋' },
   { href: '/dashboard',    label: 'Dashboard',   icon: '📊' },
   { href: '/jornada',      label: 'Jornada',     icon: '🧭' },
   { href: '/fundamentos',  label: 'Fundamentos', icon: '🐧' },
   { href: '/avancados',    label: 'Avançados',   icon: '🚀' },
   { href: '/topicos',      label: 'Tópicos',     icon: '📚' },
-  { href: '/instalacao',   label: 'Instalação',  icon: '🛠️' },
+  { href: '/certificado',  label: 'Certificado', icon: '🎓' },
+];
+
+const STUDY_LINKS = [
   { href: '/quiz',         label: 'Quiz',        icon: '🧠' },
   { href: '/treino',       label: 'Treino',      icon: '🎯' },
   { href: '/cheat-sheet',  label: 'Cheat Sheet', icon: '⚡' },
   { href: '/ferramentas',  label: 'Ferramentas', icon: '🧮' },
-  { href: '/certificado',  label: 'Certificado', icon: '🎓' },
 ];
 
 export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isMenuOpen,   setIsMenuOpen]   = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isStudyOpen,  setIsStudyOpen]  = useState(false);
   const pathname = usePathname();
   const { trackPageVisit, unlockBadge } = useBadges();
 
@@ -89,6 +96,7 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
     trackPageVisit(pathname);
     window.scrollTo(0, 0);
     setIsMenuOpen(false);
+    setIsStudyOpen(false);
   }, [pathname, trackPageVisit]);
 
   /* ---- Toggle de tema ---- */
@@ -135,9 +143,9 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
             <span className="hidden sm:inline">Workshop Linux</span>
           </Link>
 
-          {/* Nav desktop */}
-          <nav className="hidden lg:flex items-center gap-1 overflow-x-auto no-scrollbar py-2">
-            {NAV_LINKS.map(link => (
+          {/* Nav desktop — NAV_LINKS principais + dropdown "Estudo" antes do Certificado */}
+          <nav className="hidden lg:flex items-center gap-1 py-2">
+            {NAV_LINKS.slice(0, -1).map(link => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -152,6 +160,78 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
                 {link.label}
               </Link>
             ))}
+
+            {/* Dropdown "Estudo" — agrupa Quiz, Treino, Cheat Sheet, Ferramentas */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsStudyOpen(prev => !prev)}
+                aria-haspopup="menu"
+                aria-expanded={isStudyOpen}
+                className={cn(
+                  'inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
+                  STUDY_LINKS.some(s => s.href === pathname)
+                    ? 'bg-accent-bg text-accent-2'
+                    : 'text-text-2 hover:bg-bg-3 hover:text-text',
+                )}
+              >
+                Estudo
+                <ChevronDown size={14} aria-hidden="true" className={cn('transition-transform', isStudyOpen && 'rotate-180')} />
+              </button>
+              {isStudyOpen && (
+                <>
+                  {/* Backdrop invisível para fechar ao clicar fora */}
+                  <button
+                    type="button"
+                    aria-label="Fechar menu Estudo"
+                    className="fixed inset-0 z-30 cursor-default"
+                    onClick={() => setIsStudyOpen(false)}
+                  />
+                  <div
+                    role="menu"
+                    className="absolute right-0 top-full mt-1 z-40 min-w-[180px] rounded-md border border-border bg-bg-2 shadow-lg py-1"
+                  >
+                    {STUDY_LINKS.map(s => (
+                      <Link
+                        key={s.href}
+                        href={s.href}
+                        role="menuitem"
+                        aria-current={pathname === s.href ? 'page' : undefined}
+                        className={cn(
+                          'flex items-center gap-2 px-3 py-2 text-sm whitespace-nowrap transition-colors',
+                          pathname === s.href
+                            ? 'bg-accent-bg text-accent-2'
+                            : 'text-text-2 hover:bg-bg-3 hover:text-text',
+                        )}
+                      >
+                        <span aria-hidden="true">{s.icon}</span>
+                        {s.label}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Último item do NAV_LINKS (Certificado) */}
+            {(() => {
+              const last = NAV_LINKS[NAV_LINKS.length - 1];
+              return (
+                <Link
+                  key={last.href}
+                  href={last.href}
+                  aria-current={pathname === last.href ? 'page' : undefined}
+                  className={cn(
+                    'px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap',
+                    pathname === last.href
+                      ? 'bg-accent-bg text-accent-2'
+                      : 'text-text-2 hover:bg-bg-3 hover:text-text',
+                  )}
+                >
+                  {last.label}
+                </Link>
+              );
+            })()}
           </nav>
 
           {/* Ações */}
@@ -213,8 +293,8 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
             className="absolute inset-0 bg-black/60 backdrop-blur-sm w-full h-full"
             onClick={() => setIsMenuOpen(false)}
           />
-          <nav className="absolute top-16 left-0 right-0 bg-bg-2 border-b border-border p-4 flex flex-col gap-1 animate-in slide-in-from-top-10">
-            {NAV_LINKS.map(link => (
+          <nav className="absolute top-16 left-0 right-0 bg-bg-2 border-b border-border p-4 flex flex-col gap-1 animate-in slide-in-from-top-10 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            {[...NAV_LINKS, ...STUDY_LINKS].map(link => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -258,6 +338,7 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
               ))}
             </div>
             <div className="flex flex-wrap gap-3 pt-1">
+              <Link href="/comece-aqui" className="text-xs text-accent hover:text-accent-2 transition-colors">Comece aqui →</Link>
               <Link href="/jornada" className="text-xs text-accent hover:text-accent-2 transition-colors">Jornada →</Link>
               <Link href="/dashboard" className="text-xs text-text-2 hover:text-text transition-colors">Dashboard →</Link>
               <Link href="/certificado" className="text-xs text-text-2 hover:text-text transition-colors">Certificado →</Link>
@@ -266,7 +347,9 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
           {/* Coluna 2 — Trilha Firewall v1.0 */}
           <div className="space-y-3">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-accent">🔥 Trilha Firewall</p>
+            <Link href="/instalacao" className="text-[11px] font-semibold uppercase tracking-widest text-accent hover:text-accent-2 transition-colors inline-block">
+              🔥 Trilha Firewall →
+            </Link>
             <ul className="space-y-1.5">
               {[
                 { href: '/instalacao', label: 'Instalação & Lab' },
@@ -286,12 +369,19 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
                   </Link>
                 </li>
               ))}
+              <li className="pt-1">
+                <Link href="/jornada" className="text-xs text-accent hover:text-accent-2 transition-colors">
+                  Ver os 25 módulos →
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Coluna 3 — Fundamentos v2.0 */}
           <div className="space-y-3">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#6366f1]">🐧 Fundamentos Linux</p>
+            <Link href="/fundamentos" className="text-[11px] font-semibold uppercase tracking-widest text-[#6366f1] hover:opacity-80 transition-opacity inline-block">
+              🐧 Fundamentos Linux →
+            </Link>
             <ul className="space-y-1.5">
               {[
                 { href: '/fhs', label: 'Estrutura do Sistema' },
@@ -311,24 +401,31 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
                   </Link>
                 </li>
               ))}
+              <li className="pt-1">
+                <Link href="/fundamentos" className="text-xs text-[#6366f1] hover:opacity-80 transition-opacity">
+                  Ver os 17 módulos →
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Coluna 4 — Avançados v3.0–v5.0 */}
+          {/* Coluna 4 — Trilha Avançada v3.0 → v5.0 */}
           <div className="space-y-3">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-info">🚀 Servidores & IaC</p>
+            <Link href="/avancados" className="text-[11px] font-semibold uppercase tracking-widest text-info hover:opacity-80 transition-opacity inline-block">
+              🚀 Trilha Avançada →
+            </Link>
             <ul className="space-y-1.5">
               {[
                 { href: '/dhcp', label: 'DHCP' },
                 { href: '/samba', label: 'Samba' },
                 { href: '/apache', label: 'Apache' },
-                { href: '/openvpn', label: 'OpenVPN' },
-                { href: '/traefik', label: 'Traefik' },
                 { href: '/ansible', label: 'Ansible' },
-                { href: '/monitoring', label: 'Prometheus + Grafana' },
                 { href: '/kubernetes', label: 'Kubernetes / K3s' },
-                { href: '/terraform', label: 'Terraform' },
+                { href: '/vault', label: 'HashiCorp Vault' },
                 { href: '/cicd', label: 'CI/CD GitHub Actions' },
+                { href: '/gpg', label: 'OpenPGP / GPG' },
+                { href: '/cloud-publica', label: 'Cloud Pública (AWS)' },
+                { href: '/carreira', label: 'Carreira' },
               ].map(l => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-xs text-text-3 hover:text-text transition-colors">
@@ -336,6 +433,11 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
                   </Link>
                 </li>
               ))}
+              <li className="pt-1">
+                <Link href="/avancados" className="text-xs text-info hover:opacity-80 transition-opacity">
+                  Ver os 35 módulos →
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
