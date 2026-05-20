@@ -28,7 +28,7 @@
 
 ## Quantidade de itens
 
-292 itens indexados — todos os módulos com ≥3 itens de busca; cobre rotas, tópicos, comandos, glossário, incidentes e ferramentas.
+307 itens indexados — todos os módulos com ≥3 itens de busca; cobre rotas, tópicos, comandos, glossário, incidentes e ferramentas. Inclui termos do shell (awk, sed, xargs, history, aliases, find, grep, pipe, stdin/stdout/stderr, ~/.bashrc, PATH, sudo, chmod/chown, tar, rsync, inode, ps/top, ss, dig, curl/wget, etc.) adicionados no Sprint COMANDOS-GLOSSARIO.
 
 ## Deep Dives — Modais avançados (16 total)
 

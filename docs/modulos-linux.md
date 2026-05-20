@@ -3,10 +3,18 @@
 *Para cada módulo: Conceito → Por que importa → Exemplo real → Checklist → Erros comuns*
 
 > **Navegação unificada:** a rota `/jornada` (Jornada Unificada) une as 3 trilhas
-> — Fundamentos (17) → Firewall (25) → Avançados (35) — numa linha do tempo única
-> de 77 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
-> destacado. O hub `/ferramentas` reúne 5 utilitários portáteis (Calculadora CIDR,
-> Validador de Regex, Gerador de iptables, Simulador de PS1, Base64).
+> — Fundamentos (17) → Firewall (25) → Avançados (36) — numa linha do tempo única
+> de 78 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
+> destacado. A rota `/comece-aqui` é o guia de entrada (explica trilhas, jornada,
+> checkpoints, SRS e certificado). O hub `/ferramentas` reúne 5 utilitários
+> portáteis (Calculadora CIDR, Validador de Regex, Gerador de iptables,
+> Simulador de PS1, Base64).
+>
+> **Handoff fim-de-trilha:** o `ModuleNav` usa `TRAIL_HANDOFF` em
+> `src/data/courseOrder.ts` — quando o aluno chega no último módulo de uma trilha,
+> aparece um card "✅ Trilha X concluída → continue em Y" (mapeamento atual:
+> `/troubleshooting`→`/instalacao`, `/certificado`→`/avancados`,
+> `/resposta-incidentes`→`/jornada`).
 
 ---
 
@@ -330,7 +338,7 @@ Metodologia OSI L1→L7, `ping`/`ip`/`ss`/`dig`/`curl`/`journalctl`, isolamento 
 
 ---
 
-## Trilha v3.0 — Servidores e Serviços (12 módulos)
+## Trilha v3.0 — Servidores e Serviços (9 módulos)
 
 *Serviços de infraestrutura que completam o laboratório.*
 
@@ -405,7 +413,7 @@ Gestão de segredos: Unseal com Shamir Secret Sharing, secret engines (KV e Data
 
 ---
 
-## Trilha v5.0 — Cloud & Platform Engineering (17 módulos) ✅ COMPLETA
+## Trilha v5.0 — Cloud & Platform Engineering (18 módulos) ✅ COMPLETA
 
 *Nível sênior: pilares de SysAdmin, automação de plataforma, redes avançadas, alta disponibilidade, cloud, carreira e resposta a incidentes.*
 
@@ -457,7 +465,10 @@ Versionamento como competência profissional: commits, branches, merge e fluxo d
 ### C16 — Carreira · `/carreira` *(Sprint CARREIRA)*
 Preparação para o mercado: trilha de certificações (LPIC-1, CompTIA Linux+), simulado cronometrado, montagem de portfólio e roteiro de entrevista técnica. Badge 🎖️ `carreira-master`.
 
-### C17 — Resposta a Incidentes (DFIR) · `/resposta-incidentes`
+### C17 — Segurança Avançada · `/seguranca-avancada` *(Sprint SEGURANCA-PRO)*
+Segurança em camadas profundas do Linux: **SELinux** (MAC com labels e contextos, `getenforce`/`setenforce`, `audit2allow` para policies customizadas) — alternativa ao AppArmor; **LUKS** (criptografia de disco com `cryptsetup`, partições/containers, integração com `/etc/crypttab` e desbloqueio no boot); **auditd** (audit do kernel via `auditctl`, regras `-w`/`-a`, leitura com `ausearch`/`aureport`, integração com SIEM). Pré-requisito recomendado: Hardening (Sprint I.3). Badge 🛡️ `seguranca-pro-master`.
+
+### C18 — Resposta a Incidentes (DFIR) · `/resposta-incidentes`
 Capstone do curso — Resposta a Incidentes seguindo o NIST SP 800-61: ciclo de 8 fases (detecção → contenção → preservação → timeline → análise → erradicação → recuperação → pós-incidente), script `ir_collect.sh`, os 7 Mandamentos do DFIR, tabletop exercises. O que fazer quando, mesmo com firewall/hardening/Fail2ban, algo deu errado.
 
 ---

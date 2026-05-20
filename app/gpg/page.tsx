@@ -7,7 +7,7 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
-import { KeyRound, PenLine, Lock, Unlock, AlertOctagon, CheckCircle, AlertTriangle } from 'lucide-react';
+import { KeyRound, PenLine, Lock, Unlock, AlertOctagon, CheckCircle, AlertTriangle, Usb, PowerOff, Sparkles, KeySquare, Upload, Download } from 'lucide-react';
 import { useTabFilter } from '@/hooks/useTabFilter';
 
 /* Sprint GPG — OpenPGP / GPG do Zero ao Expert. Conteúdo adaptado do curso
@@ -346,6 +346,88 @@ gpg --export --armor aluno@openpgp-lab.local
               </div>
             ))}
           </div>
+        </section>
+
+        <section id="tails-master-offline" className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">🛡️ Workflow profissional: Chave Mestra Offline com Tails</h2>
+          <p className="text-text-2 mb-4">
+            Modelo de ameaça real: uma chave OpenPGP usada todo dia num laptop que pode ser
+            comprometido (malware, roubo, perda) também pode ser usada para <strong>forjar a sua
+            identidade</strong>, revogar acessos legítimos e expirar dados que você ainda precisa.
+            A solução profissional é simples e radical: a <strong>chave mestra [C]</strong>{' '}
+            <em>nunca</em> toca o laptop. Ela vive num <strong>Tails USB</strong> (Amnesic
+            Incognito Live System — distro Debian que não escreve no disco e roteia tudo pelo Tor).
+            No laptop daily-driver ficam <strong>apenas as subchaves [S][E][A]</strong>.
+          </p>
+
+          <FluxoCard
+            direction="vertical"
+            title="Workflow ponta a ponta — da gravação do Tails ao laptop diário"
+            steps={[
+              { label: 'Tails USB',           sub: 'dd if=tails.img of=/dev/sdX bs=4M num pendrive dedicado',     icon: <Usb size={14}/>,      color: 'border-info/50' },
+              { label: 'Boot air-gapped',     sub: 'Desligue Wi-Fi e Ethernet ANTES de bootar o Tails',           icon: <PowerOff size={14}/>, color: 'border-err/50' },
+              { label: 'Gerar par OpenPGP',   sub: 'gpg --quick-generate-key ... ed25519 cert 5y (só [C])',       icon: <Sparkles size={14}/>, color: 'border-accent/50' },
+              { label: 'Criar [S][E][A]',     sub: 'gpg --quick-add-key KEYID — sign + encr + auth, 1y cada',     icon: <KeySquare size={14}/>,color: 'border-ok/50' },
+              { label: 'Exportar SÓ subchaves',sub: '--export-secret-subkeys → sub.asc no USB de transferência', icon: <Upload size={14}/>,   color: 'border-info/50' },
+              { label: 'Importar no daily',   sub: 'gpg --import sub.asc → operação diária sem expor a mestra',   icon: <Download size={14}/>, color: 'border-accent/50' },
+            ]}
+          />
+
+          <p className="text-text-2 mt-6 mb-4">
+            O script completo, do air-gapped ao daily-driver:
+          </p>
+          <CodeBlock lang="bash" code={`# ── 1. No Tails (air-gapped) — gerar a chave mestra com VALIDADE
+gpg --quick-generate-key "Aluna <aluna@workshop.local>" ed25519 cert 5y
+
+# Pegar o KEYID
+gpg --list-secret-keys --keyid-format LONG
+
+# ── 2. Adicionar as 3 subchaves (1 ano cada — rotação anual forçada)
+gpg --quick-add-key KEYID cv25519 encr 1y    # [E] cifrar
+gpg --quick-add-key KEYID ed25519 sign 1y    # [S] assinar
+gpg --quick-add-key KEYID ed25519 auth 1y    # [A] autenticação SSH
+
+# ── 3. Gerar certificado de revogação ANTES de levar pro mundo
+gpg --output revoke.asc --gen-revoke KEYID
+# ↑ guarde em local seguro (cofre, papel impresso) — sem isso e sem a mestra,
+#   chave comprometida fica viva para sempre.
+
+# ── 4. Exportar SÓ as subchaves para o daily-driver
+gpg --export-secret-subkeys --armor KEYID > /media/amnesia/usb/sub.asc
+gpg --export --armor KEYID                  > /media/amnesia/usb/pub.asc
+
+# ── 5. No laptop diário — importar as subchaves
+gpg --import pub.asc sub.asc
+gpg --list-secret-keys
+# A linha que mostra a mestra deve aparecer como "sec#" (com #) = STUB
+# Ou seja: o laptop conhece a mestra mas NÃO TEM o material secreto dela.`} />
+
+          <InfoBox title="O sinal `sec#` — a prova de que a mestra ficou offline" className="mt-4">
+            Após importar só as subchaves, <code>gpg --list-secret-keys</code> mostra{' '}
+            <code>sec#</code> (com <em>hash</em>) no lugar de <code>sec</code>. Isso é o GPG
+            dizendo &quot;essa chave-mestra eu <em>conheço</em>, mas o material secreto dela{' '}
+            <strong>não está aqui</strong> — está em outro lugar&quot;. É exatamente o que você quer:
+            o laptop pode assinar, cifrar e autenticar (subchaves), mas não pode certificar
+            (criar/revogar subchaves, mudar UID) — só o Tails consegue.
+          </InfoBox>
+
+          <h3 className="text-xl font-bold mt-8 mb-3">🔄 Rotação anual</h3>
+          <p className="text-text-2 mb-4">
+            Como as subchaves expiram em 1 ano, todo aniversário você boota o Tails (air-gapped),
+            roda <code>gpg --quick-set-expire KEYID 1y subkey</code> e re-exporta o{' '}
+            <code>sub.asc</code> para o daily-driver. Se um laptop for comprometido entre rotações,
+            no pior caso o atacante tem acesso de até 1 ano — depois disso, expira sozinho.
+            Sem rotação, uma subchave vazada vale para sempre.
+          </p>
+
+          <WarnBox title="Se o pendrive Tails for perdido" className="mt-4">
+            Você ainda tem o <code>revoke.asc</code> gerado no passo 3. Importe-o em qualquer
+            máquina (<code>gpg --import revoke.asc</code>), publique no keyserver
+            (<code>gpg --keyserver keys.openpgp.org --send-keys KEYID</code>) e a chave estará
+            oficialmente revogada para todo o mundo OpenPGP. Sem o <code>revoke.asc</code> e
+            sem a mestra → você perdeu o controle dessa identidade <strong>para sempre</strong>.
+            Por isso o passo 3 vem ANTES de qualquer uso real.
+          </WarnBox>
         </section>
 
         <section className="mb-12">

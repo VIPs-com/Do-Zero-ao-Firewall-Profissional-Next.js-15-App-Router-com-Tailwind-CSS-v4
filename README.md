@@ -67,7 +67,7 @@ npm run dev        # http://localhost:3000
 npm run lint       # tsc --noEmit — typecheck
 npm run lint:eslint # ESLint + jsx-a11y
 npm test           # vitest — 6 suítes · 57 testes
-npm run build      # 71/71 páginas (49 próprias + assets SEO/PWA)
+npm run build      # 95 rotas (78 páginas de conteúdo + suporte + assets SEO/PWA)
 ```
 
 > Para guia completo de onboarding: [QUICKSTART.md](QUICKSTART.md)
@@ -77,12 +77,12 @@ npm run build      # 71/71 páginas (49 próprias + assets SEO/PWA)
 ## 📂 Estrutura de Pastas (resumo)
 
 ```
-app/                    ← App Router — 88 rotas públicas
+app/                    ← App Router — 90 rotas públicas (ROUTE_SEO)
   layout.tsx            ← Root layout + anti-FOUC + JSON-LD + nonce CSP
   globals.css           ← Tokens de tema dark/light (@theme)
   providers.tsx         ← <BadgeProvider> global
-  [77 rotas de conteúdo] ← v1.0 (25 módulos) + v2.0 Fundamentos (17) + v3.0 Servidores (9) + v4.0 Infra (9) + v5.0 Cloud & Platform (17) + suporte
-  [páginas especiais]   ← /topicos, /quiz, /dashboard, /certificado, ...
+  [78 rotas de conteúdo] ← v1.0 (25 módulos) + v2.0 Fundamentos (17) + v3.0 Servidores (9) + v4.0 Infra (9) + v5.0 Cloud & Platform (18) + suporte
+  [páginas especiais]   ← /comece-aqui, /jornada, /topicos, /quiz, /dashboard, /certificado, /ferramentas, ...
 proxy.ts                ← CSP nonce per-request (Next.js 16)
 next.config.ts          ← Headers de segurança (HSTS, X-Frame-Options…)
 src/
@@ -131,9 +131,9 @@ DHCP · Samba · Apache · OpenVPN · Traefik · LDAP · Pi-hole · NFS · HAPro
 
 Ansible · Prometheus+Grafana · Kubernetes/K3s · Terraform · Suricata IDS/IPS · eBPF & XDP · Service Mesh (Istio) · SRE & SLOs · HashiCorp Vault
 
-### v5.0 — Cloud & Platform Engineering (17 módulos ✅)
+### v5.0 — Cloud & Platform Engineering (18 módulos ✅)
 
-CI/CD GitHub Actions · OPNsense · Nextcloud · eBPF Avançado + Cilium · CrowdSec · Tailscale · Proxmox Backup Server · GPG · LVM/RAID · Banco de Dados · Servidor de E-mail · Redes L2/L3 · Alta Disponibilidade · Cloud Pública (AWS) · Git · Carreira · Resposta a Incidentes (DFIR)
+CI/CD GitHub Actions · OPNsense · Nextcloud · eBPF Avançado + Cilium · CrowdSec · Tailscale · Proxmox Backup Server · GPG · LVM/RAID · Banco de Dados · Servidor de E-mail · Redes L2/L3 · Alta Disponibilidade · Cloud Pública (AWS) · Git · Carreira · **Segurança Avançada** (SELinux/LUKS/auditd) · Resposta a Incidentes (DFIR)
 
 > Detalhes de cada módulo: [docs/modulos-linux.md](docs/modulos-linux.md)
 

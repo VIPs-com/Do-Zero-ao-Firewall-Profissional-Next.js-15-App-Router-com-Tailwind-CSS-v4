@@ -1,10 +1,10 @@
 # 🔬 Diagnóstico Curricular — Workshop Linux
 
-> Avaliação do projeto (**77 módulos**) contra o currículo de um **profissional Linux /
+> Avaliação do projeto (**78 módulos**) contra o currículo de um **profissional Linux /
 > Redes / Segurança empregável**. Referência: LPIC‑1/2, CompTIA Linux+ / Network+ /
 > Security+ e a prática real de SysAdmin, DevOps e SRE.
 >
-> **Estado atual:** 76 badges · 214 checkpoints · 103 tópicos · 326 questões · 88 rotas.
+> **Estado atual:** 77 badges · 217 checkpoints · 104 tópicos · 330 questões · 90 rotas.
 > **Roadmap de evolução (Fases 0 → 3): ✅ CONCLUÍDO.**
 
 ---
@@ -65,7 +65,7 @@ Legenda: 🟢 Excelente · 🟩 Forte · 🟡 Parcial · 🔴 Ausente
   todas atingem o nível Excelente, com módulos dedicados e conteúdo de produção.
 - **Progressão honesta:** Fundamentos → Firewall → Servidores → Infra → Cloud → Carreira
   → Capstone DFIR.
-- **Gamificação madura:** 214 checkpoints, 76 badges, SRS (`/treino`), 326 questões,
+- **Gamificação madura:** 217 checkpoints, 77 badges, SRS (`/treino`), 330 questões,
   certificado verificável.
 - **Recursos pedagógicos de elite:** `WindowsComparisonBox`, `HorizonteBox`
   (clássico ↔ estado da arte), `/jornada` unificada, `/cheat-sheet`, `/ferramentas`.
@@ -109,8 +109,9 @@ escolha pedagógica deliberada, não uma lacuna de conteúdo.
 | **2 — Redes & Alta Disponibilidade** | REDES‑L23 | `/redes-l2-l3` (🌐 redes‑master), `/alta-disponibilidade` (♻️ ha‑master) | ✅ |
 | **3 — Carreira & Cloud** | CARREIRA | `/cloud-publica` (☁️ cloud‑master), `/git` (🔀 git‑master), `/carreira` (🎖️ carreira‑master) | ✅ |
 
-**Resultado:** 8 módulos novos + 7 módulos aprofundados · 69 → 77 módulos · 68 → 76
-badges · 190 → 214 checkpoints · 95 → 103 tópicos · 294 → 326 questões · 80 → 88 rotas.
+**Resultado:** 9 módulos novos + 7 módulos aprofundados · 69 → 78 módulos · 68 → 77
+badges · 190 → 217 checkpoints · 95 → 104 tópicos · 294 → 330 questões · 80 → 90 rotas.
+**Fase 4 (extra — Sprint SEGURANCA-PRO)** trouxe `/seguranca-avancada` (SELinux, LUKS, auditd).
 
 ### Polimento contínuo (opcional, baixo esforço)
 - deep‑diver por `Set` de paths obrigatórios — honestidade pedagógica.
@@ -127,7 +128,7 @@ dados, e‑mail, armazenamento, redes L2/L3, alta disponibilidade, infraestrutur
 moderna, cloud, Git, carreira)* → Capstone DFIR → Certificado.
 
 Do `pwd` ao cluster de alta disponibilidade na AWS, com preparação de carreira e
-simulado de certificação — uma linha do tempo única de 77 módulos.
+simulado de certificação — uma linha do tempo única de 78 módulos.
 
 ---
 [← Voltar ao indice](README.md)

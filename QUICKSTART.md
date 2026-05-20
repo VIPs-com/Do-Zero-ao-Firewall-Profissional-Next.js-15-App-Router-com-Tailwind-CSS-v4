@@ -10,7 +10,7 @@
 npm install        # instalar dependências
 npm run dev        # http://localhost:3000
 npm test           # vitest — testes automatizados
-npm run build      # build de produção — 73/73 páginas (51 próprias + assets SEO/PWA)
+npm run build      # build de produção — 95 rotas (78 páginas de conteúdo + suporte + assets SEO/PWA)
 ```
 
 ---
@@ -30,7 +30,7 @@ npm test             # vitest — 19 suítes · 258 testes (BadgeContext, Client
 
 | Pasta / Arquivo | O que é |
 |---|---|
-| `/app` | Rotas e Layouts (App Router) — 88 rotas próprias |
+| `/app` | Rotas e Layouts (App Router) — 90 rotas próprias |
 | `/app/globals.css` | Tokens de cor dark/light + classes reutilizáveis |
 | `/app/layout.tsx` | Root layout + anti-FOUC + JSON-LD + nonce CSP |
 | `/app/providers.tsx` | `<BadgeProvider>` global |
@@ -43,8 +43,8 @@ npm test             # vitest — 19 suítes · 258 testes (BadgeContext, Client
 | `/src/components/ClientLayout.tsx` | Header, nav, toggle dark/light, busca global |
 | `/src/context/BadgeContext.tsx` | Estado global: badges, progresso, checkpoints |
 | `/src/data/quizQuestions.ts` | Perguntas do quiz extraídas (Sprint F) |
-| `/src/data/searchItems.ts` | Índice da busca global ⌘K (292 itens) |
-| `/src/data/courseOrder.ts` | COURSE_ORDER (25 módulos v1.0) + FUNDAMENTOS_ORDER (17 módulos v2.0) + ADVANCED_ORDER (35 módulos v3.0-v5.0) — usados pelo ModuleNav |
+| `/src/data/searchItems.ts` | Índice da busca global ⌘K (307 itens) |
+| `/src/data/courseOrder.ts` | COURSE_ORDER (25 módulos v1.0) + FUNDAMENTOS_ORDER (17 módulos v2.0) + ADVANCED_ORDER (36 módulos v3.0-v5.0) + TRAIL_HANDOFF — usados pelo ModuleNav |
 | `/src/lib/srs.ts` | Motor SM-2 Lite: getSRSData/saveSRSData/calculateNextReview/getDueItems/seedItem/streak |
 | `/src/data/deepDives.tsx` | Conteúdo dos 16 modais avançados |
 | `/src/lib/seo.ts` | **Fonte única** — `SITE_CONFIG`, `ROUTE_SEO`, `buildMetadata()` |
@@ -91,8 +91,8 @@ npm test             # vitest — 19 suítes · 258 testes (BadgeContext, Client
 - [ ] `npm run lint` — zero erros TypeScript
 - [ ] `npm run lint:eslint` — zero warnings de acessibilidade
 - [ ] `npm test` — vitest passando
-- [ ] `npm run build` — 72/72 páginas (50 próprias + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
-- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 50`, `totalTopics = 86`, `checklistItemsCount = 163`, `badges = 58`, `searchItems = 223`)
+- [ ] `npm run build` — 95 rotas (78 páginas de conteúdo + sitemap + robots + opengraph-image + icon + apple-icon + manifest + _not-found)
+- [ ] Verificar constantes críticas (`CONTENT_PAGES_COUNT = 78`, `totalTopics = 104`, `checklistItemsCount = 217`, `badges = 77`, `searchItems = 307`) — ou rodar `npx tsx scripts/check-constants.ts`
 - [ ] `.env.production` com `NEXT_PUBLIC_SITE_URL=https://seu-dominio.tld`
 - [ ] PM2: `pm2 start npm --name "workshop-linux" -- run start`
 - [ ] Nginx como proxy reverso (porta 3000)

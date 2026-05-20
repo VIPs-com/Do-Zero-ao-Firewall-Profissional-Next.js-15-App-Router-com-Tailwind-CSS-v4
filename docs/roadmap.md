@@ -1236,9 +1236,49 @@ Sprint APROF ✅ Aprofundamento de 7 módulos (Forte → Excelente)
 Sprint POLIMENTO ✅ CONTENT_PAGES_COUNT agora derivado de CONTENT_PAGE_PATHS
   └── reconciliação de constantes via scripts/check-constants.ts (7/7 ✓)
 
-Estado atual ✅ 76 badges · 214 checkpoints · 103 tópicos · 292 searchItems
-  · 88 rotas (build 93) · 326 questões · 19 suítes/258 testes vitest · 25 specs E2E
-  · 77 módulos (25 Firewall + 17 Fundamentos + 35 Avançados)
+Sprint TRILHA-GUIADA ✅ Fim-de-trilha + guia de entrada
+  ├── ModuleNav: TRAIL_HANDOFF em src/data/courseOrder.ts dispara card
+  │   "✅ Trilha X concluída → continue em Y" no último módulo de cada trilha
+  ├── Mapeamento: /troubleshooting→/instalacao, /certificado→/avancados,
+  │   /resposta-incidentes→/jornada
+  └── Nova rota /comece-aqui (suporte) — guia de entrada explicando trilhas,
+      jornada, checkpoints, SRS e certificado · /evolucao sincronizada
+
+Sprint UX-FIX ✅ Estabilidade do estado
+  ├── BadgeContext: merge funcional ao hidratar (evita perda de progresso
+  │   gravado durante o boot)
+  ├── Toggle de tema: flag `mounted` evita flash do ícone errado no SSR
+  └── /avancados: contagem de progresso corrigida pelo mesmo merge
+
+Sprint HEADER-FOOTER ✅ Navegação reorganizada
+  ├── Header: 8 itens principais + dropdown "Estudo" agrupando
+  │   Quiz/Treino/Cheat Sheet/Ferramentas (menos ruído, mesma cobertura)
+  ├── Footer: hubs clicáveis + "Ver os N módulos →" por coluna
+  └── Coluna 4 renomeada para "🚀 Trilha Avançada" com amostra balanceada
+
+Sprint SEGURANCA-PRO ✅ /seguranca-avancada — SELinux + LUKS + auditd
+  ├── SELinux (MAC com labels, contextos, audit2allow)
+  ├── LUKS (cryptsetup, /etc/crypttab, desbloqueio no boot)
+  ├── auditd (auditctl, ausearch/aureport, SIEM)
+  ├── Badge 🛡️ seguranca-pro-master (77º) — 3 checkpoints
+  │   (selinux-configurado, luks-criado, auditd-regras)
+  └── ADVANCED_ORDER 35→36 (v5.0 com 18 módulos) · checkpoints 214→217
+      tópicos 103→104 (C18) · badges 76→77
+
+Sprint COMANDOS-GLOSSARIO ✅ Enriquecimento de shell e glossário
+  ├── /comandos: novas seções awk, sed, xargs, aliases (~/.bashrc), history
+  │   (era "Próxima versão" — agora entregue)
+  ├── /glossario: +22 termos essenciais (grep, awk, sed, xargs, find, pipe,
+  │   stdin/stdout/stderr, alias, ~/.bashrc, history, PATH, sudo, chmod,
+  │   chown, tar, rsync, ln -s, inode, ps/top/htop, ss/netstat, dig,
+  │   curl/wget) — total 114→136 termos
+  └── +10 searchItems do shell (297→307)
+
+Estado atual ✅ 77 badges · 217 checkpoints · 104 tópicos · 307 searchItems
+  · 90 rotas (build 95) · 330 questões · 136 termos no glossário
+  · 19 suítes/258 testes vitest · 25 specs E2E
+  · 78 módulos (25 Firewall + 17 Fundamentos + 36 Avançados)
+  · Trilhas: v1.0 (25) · v2.0 (17) · v3.0 (9) · v4.0 (9) · v5.0 (18)
   · Next 16.2.6 · TypeScript strict · CI verde · 0 vulnerabilidades
 
 ❌ Backend/Supabase — DESCARTADO

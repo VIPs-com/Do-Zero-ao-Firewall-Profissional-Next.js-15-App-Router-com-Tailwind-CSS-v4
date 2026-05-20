@@ -65,10 +65,11 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 cheat-sheet/              ← Referência rápida de comandos
 │   ├── 📁 wireguard/                ← Módulo 10: WireGuard VPN (Sprint I.1)
 │   ├── 📁 fail2ban/                 ← Módulo 11: Fail2ban (Sprint I.2)
-│   ├── 📁 topicos/                  ← Índice dos 103 tópicos práticos
-│   ├── 📁 jornada/                  ← Jornada Unificada — as 3 trilhas em 77 módulos
+│   ├── 📁 topicos/                  ← Índice dos 104 tópicos práticos
+│   ├── 📁 jornada/                  ← Jornada Unificada — as 3 trilhas em 78 módulos
+│   ├── 📁 comece-aqui/              ← Guia de entrada (suporte) — trilhas, jornada, checkpoints, SRS, certificado
 │   ├── 📁 ferramentas/              ← Hub de 5 utilitários (CIDR/Regex/iptables/PS1/Base64)
-│   ├── 📁 quiz/                     ← Avaliação gamificada (326 perguntas)
+│   ├── 📁 quiz/                     ← Avaliação gamificada (330 perguntas)
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   ├── 📁 certificado/              ← Certificado de conclusão
 │   │
@@ -86,12 +87,13 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 ansible/ · /monitoring/ · /kubernetes/ · /terraform/
 │   ├── 📁 suricata/ · /ebpf/ · /service-mesh/ · /sre/ · /vault/
 │   │
-│   │   ── v5.0 Cloud & Platform Engineering (17) ─────────────────
+│   │   ── v5.0 Cloud & Platform Engineering (18) ─────────────────
 │   ├── 📁 cicd/ · /opnsense/ · /nextcloud/ · /ebpf-avancado/
 │   ├── 📁 crowdsec/ · /tailscale/ · /proxmox-backup-server/ · /gpg/
 │   ├── 📁 lvm-raid/ · /banco-de-dados/ · /mail-server/
 │   ├── 📁 redes-l2-l3/ · /alta-disponibilidade/
-│   └── 📁 cloud-publica/ · /git/ · /carreira/ · /resposta-incidentes/
+│   ├── 📁 cloud-publica/ · /git/ · /carreira/
+│   └── 📁 seguranca-avancada/ · /resposta-incidentes/   ← C18 SELinux/LUKS/auditd + capstone DFIR
 │
 ├── 📄 proxy.ts                      ← Sprint E: CSP nonce per-request
 ├── 📄 next.config.ts                ← Headers de segurança estáticos
@@ -133,10 +135,10 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (326) de quiz/{firewall,fundamentos,avancados}.ts
-    │   ├── searchItems.ts           ← Índice da busca global (292 itens)
-    │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (35)
-    │   ├── journey.ts               ← Jornada Unificada: JOURNEY (77), getNextJourneyModule()
+    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (330) de quiz/{firewall,fundamentos,avancados}.ts
+    │   ├── searchItems.ts           ← Índice da busca global (307 itens)
+    │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (36) + TRAIL_HANDOFF (fim-de-trilha)
+    │   ├── journey.ts               ← Jornada Unificada: JOURNEY (78), getNextJourneyModule()
     │   └── deepDives.tsx            ← Conteúdo dos modais avançados
     │
     └── 📁 lib/
@@ -154,12 +156,13 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **77** (derivado de `CONTENT_PAGE_PATHS`, base do badge deep-diver) |
-| `totalTopics` | `app/dashboard/page.tsx` | **103** |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | **214** (igual a `ALL_CHECKLIST_IDS.length`) |
-| Badges | `src/data/badges.ts` | **76** |
-| searchItems | `src/data/searchItems.ts` | **292** |
-| Texto na Home | `app/page.tsx` | "103 tópicos práticos" + stats: 103/77/76/7 |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **78** (derivado de `CONTENT_PAGE_PATHS`, base do badge deep-diver) |
+| `totalTopics` | `app/dashboard/page.tsx` | **104** |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **217** (igual a `ALL_CHECKLIST_IDS.length`) |
+| Badges | `src/data/badges.ts` | **77** |
+| searchItems | `src/data/searchItems.ts` | **307** |
+| Texto na Home | `app/page.tsx` | "104 tópicos práticos" + stats: 104/78/77/7 |
+| `linux-ninja` threshold | `src/context/BadgeContext.tsx` | **162** (floor(217 × 0.75)) |
 
 Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.
 

@@ -8,14 +8,14 @@
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
 - **Stack:** Next.js 16.2.6, Tailwind CSS v4, TypeScript 5.8 (strict), React 19
 - **Missao:** Democratizar infraestrutura Linux com experiencia gamificada e imersiva
-- **Escopo:** 103 tópicos, 93 rotas, 76 badges, 214 checkpoints de validação · 326 questões de quiz
+- **Escopo:** 104 tópicos, 95 rotas, 77 badges, 217 checkpoints de validação · 330 questões de quiz
 
 ---
 
 **Slide 2 — Arquitetura**
 - **Frontend:** Client + Server Components hibridos (estado reativo + metadata SEO)
 - **Persistencia:** `localStorage` como fonte unica (Backend descartado — escopo educacional)
-- **Build:** Turbopack · 93 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
+- **Build:** Turbopack · 95 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
 - **Infraestrutura:** Nginx como Proxy Reverso + PM2 para alta disponibilidade
 
 ---
@@ -29,26 +29,27 @@
 ---
 
 **Slide 4 — SEO & Performance (Sprint B)**
-- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (88 rotas) e `buildMetadata()`
+- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (90 rotas) e `buildMetadata()`
 - **Geracao automatica:** sitemap, robots, OG image, favicon, apple-icon, manifest — todos via `next/og` edge
 - **Fontes:** `next/font` self-hospedado (zero CLS, LGPD-safe)
 - **JSON-LD:** `LearningResource` no root layout
 
 ---
 
-**Slide 5 — Trilhas de Conteudo (5 versoes · 77 módulos)**
+**Slide 5 — Trilhas de Conteudo (5 versoes · 78 módulos)**
 - **v1.0 ✅** Zero ao Firewall — 25 módulos (iptables, NAT, DNS, VPN, Docker, Hardening...)
 - **v2.0 ✅** Fundamentos Linux — 17 módulos (FHS, Shell Script, Boot, Rsyslog, Usuários, Troubleshooting...)
 - **v3.0 ✅** Servidores e Serviços — 9 módulos (DHCP, Samba, Apache, OpenVPN, Traefik, LDAP, Pi-hole, NFS, HAProxy)
 - **v4.0 ✅** Infraestrutura Moderna — 9 módulos (Ansible, Prometheus+Grafana, Kubernetes, Terraform, Suricata, eBPF, Service Mesh, SRE, Vault)
-- **v5.0 ✅** Cloud & Platform Engineering — 17 módulos (CI/CD, OPNsense, Nextcloud, eBPF Avançado, CrowdSec, Tailscale, Proxmox Backup Server, GPG, LVM/RAID, Banco de Dados, Mail Server, Redes L2/L3, Alta Disponibilidade, Cloud Pública AWS, Git, Carreira, Resposta a Incidentes)
+- **v5.0 ✅** Cloud & Platform Engineering — 18 módulos (CI/CD, OPNsense, Nextcloud, eBPF Avançado, CrowdSec, Tailscale, Proxmox Backup Server, GPG, LVM/RAID, Banco de Dados, Mail Server, Redes L2/L3, Alta Disponibilidade, Cloud Pública AWS, Git, Carreira, **Segurança Avançada** [SELinux/LUKS/auditd], Resposta a Incidentes)
+- **Suporte/Navegação:** `/comece-aqui` (guia de entrada) · `/jornada` (linha do tempo unificada) · `/ferramentas` (5 utilitários portáteis)
 
 ---
 
 **Slide 6 — Gamificacao**
-- **76 badges** desbloqueáveis (69 comuns + 7 milestones com modal + confetti)
-- **214 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
-- **Linux Ninja** 🥷 → completar 75% dos checkpoints (160/214)
+- **77 badges** desbloqueáveis (70 comuns + 7 milestones com modal + confetti)
+- **217 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
+- **Linux Ninja** 🥷 → completar 75% dos checkpoints (162/217)
 - **Mestre do Curso** 🎯 → visitar todos os 25 módulos da trilha principal
 - **MilestoneCelebration** modal + canvas-confetti (lazy-loaded, 3KB gzip)
 
@@ -63,7 +64,7 @@
 - **Sprint I.7–I.11 ✅** DHCP · Samba · Apache · OpenVPN · Traefik
 - **Sprint I.12–I.13 ✅** LDAP · Pi-hole (v3.0 COMPLETO)
 - **Sprint I.14–I.25 ✅** Ansible · Prometheus+Grafana · Kubernetes · Terraform · Suricata · eBPF · Service Mesh · SRE · CI/CD · OPNsense · Nextcloud · eBPF Avançado (v4.0 + v5.0 COMPLETOS)
-- **Sprint JORNADA ✅** Rota `/jornada` — une as 3 trilhas numa linha do tempo única (77 módulos)
+- **Sprint JORNADA ✅** Rota `/jornada` — une as 3 trilhas numa linha do tempo única (78 módulos)
 - **Sprint CÓDICE ✅** `/resposta-incidentes` — DFIR seguindo o NIST SP 800-61 (capstone)
 - **Sprint FORTALEZA ✅** CrowdSec · Tailscale · Proxmox Backup Server (endurecimento do host)
 - **Sprint GPG ✅** `/gpg` — OpenPGP/GPG: chaves ECC, cifrar/assinar, commits Git assinados
@@ -71,6 +72,11 @@
 - **Sprint REDES-L23 ✅** Redes Camada 2/3 · Alta Disponibilidade (VLANs, bonding, VRRP, Pacemaker)
 - **Sprint CARREIRA ✅** Cloud Pública (AWS) · Git · Carreira (Fase 3 do Diagnóstico Curricular)
 - **Sprint APROF ✅** Aprofundamento de 7 módulos: shell-script, apache, samba, ldap, kubernetes, ansible, terraform
+- **Sprint TRILHA-GUIADA ✅** Handoff fim-de-trilha no `ModuleNav` (TRAIL_HANDOFF) + nova rota `/comece-aqui` + sync `/evolucao`
+- **Sprint UX-FIX ✅** BadgeContext merge + hidratação `mounted` no toggle + correção de contagem em `/avancados`
+- **Sprint HEADER-FOOTER ✅** Header reorganizado (8 itens + dropdown "Estudo") · footer com hubs clicáveis · Coluna 4 "🚀 Trilha Avançada"
+- **Sprint SEGURANCA-PRO ✅** `/seguranca-avancada` — SELinux (MAC com labels), LUKS (criptografia de disco), auditd (audit do kernel) · badge 🛡️ `seguranca-pro-master`
+- **Sprint COMANDOS-GLOSSARIO ✅** `/comandos` enriquecido (awk/sed/xargs/aliases/history) + glossário em 136 termos (+22 essenciais do shell)
 - **Hub `/ferramentas` ✅** 5 utilitários portáteis: CIDR · Regex · iptables · PS1 · Base64
 
 ---
