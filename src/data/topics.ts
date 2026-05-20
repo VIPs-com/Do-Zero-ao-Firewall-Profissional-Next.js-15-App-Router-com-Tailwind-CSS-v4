@@ -168,6 +168,7 @@ export const TOPICS: Topic[] = [
   { id: 'c15', num: 'C15', title: 'Cloud Pública (AWS): fundamentos de cloud — IAM (usuários, grupos, políticas), VPC (sub-redes, security groups), EC2 e deploy de aplicações.', layer: 'Cloud · IaaS', layerClass: 'l7', href: '/cloud-publica', group: 'Cloud & Platform Engineering' },
   { id: 'c16', num: 'C16', title: 'Git — Controle de Versão: commits, branches, merge, resolução de conflitos e fluxo colaborativo (feature branch, pull request).', layer: 'Infra · DevOps', layerClass: 'l6', href: '/git', group: 'Cloud & Platform Engineering' },
   { id: 'c17', num: 'C17', title: 'Carreira: preparação para o mercado — certificações (LPIC-1, CompTIA Linux+), portfólio técnico e entrevista de SysAdmin/DevOps.', layer: 'Carreira', layerClass: 'l7', href: '/carreira', group: 'Cloud & Platform Engineering' },
+  { id: 'c18', num: 'C18', title: 'Segurança Avançada: SELinux (MAC com labels), criptografia de disco com LUKS (dm-crypt + header backup) e auditoria de sistema com auditd.', layer: 'Segurança · Hardening', layerClass: 'l3', href: '/seguranca-avancada', group: 'Cloud & Platform Engineering' },
 ];
 
 // ─── Metadados de módulo (slug → label + ícone + trilha) ─────────────────────
@@ -250,6 +251,7 @@ export const MODULE_META: Record<string, ModuleMeta> = {
   '/cloud-publica':         { label: 'Cloud Pública (AWS)',         icon: '☁️', trail: 'avancados' },
   '/git':                   { label: 'Git — Controle de Versão',    icon: '🔀', trail: 'avancados' },
   '/carreira':              { label: 'Carreira',                    icon: '🎖️', trail: 'avancados' },
+  '/seguranca-avancada':    { label: 'Segurança Avançada',          icon: '🛡️', trail: 'avancados' },
 };
 
 // Ordem dos módulos por trilha (segue COURSE_ORDER / FUNDAMENTOS_ORDER / ADVANCED_ORDER)
@@ -275,7 +277,7 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
     '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg',
     '/lvm-raid', '/banco-de-dados', '/mail-server',
     '/redes-l2-l3', '/alta-disponibilidade',
-    '/cloud-publica', '/git', '/carreira', '/resposta-incidentes',
+    '/cloud-publica', '/git', '/carreira', '/seguranca-avancada', '/resposta-incidentes',
   ],
 };
 

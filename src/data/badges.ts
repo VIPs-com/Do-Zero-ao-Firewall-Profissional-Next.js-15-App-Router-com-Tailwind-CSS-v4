@@ -72,7 +72,8 @@ export type BadgeId =
   | 'ha-master'
   | 'cloud-master'
   | 'git-master'
-  | 'carreira-master';
+  | 'carreira-master'
+  | 'seguranca-pro-master';
 
 export interface BadgeDef {
   icon: string;
@@ -157,4 +158,5 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'cloud-master':           { icon: '☁️', title: 'Cloud Master',              desc: 'Domina os fundamentos de cloud pública AWS: IAM, VPC e deploy de aplicações' },
   'git-master':             { icon: '🔀', title: 'Git Master',                desc: 'Domina o controle de versão com Git: commits, branches, merge e fluxo colaborativo' },
   'carreira-master':        { icon: '🎖️', title: 'Carreira Master',           desc: 'Preparou-se para o mercado: certificações, portfólio e entrevista técnica' },
+  'seguranca-pro-master':   { icon: '🛡️', title: 'Segurança Pro Master',      desc: 'Domina SELinux (MAC), criptografia de disco com LUKS e auditoria de sistema com auditd' },
 };

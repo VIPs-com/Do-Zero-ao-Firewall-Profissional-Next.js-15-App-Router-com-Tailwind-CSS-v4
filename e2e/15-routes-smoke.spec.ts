@@ -4,7 +4,7 @@ import { ROUTE_SEO } from '../src/lib/seo';
 /**
  * Sprint E2E-FULL — Smoke test de todas as rotas do ROUTE_SEO
  *
- * Objetivo: garantir que TODAS as 89 rotas registradas renderizam sem crash.
+ * Objetivo: garantir que TODAS as 90 rotas registradas renderizam sem crash.
  * Diferente dos specs de feature (badges, busca, etc.), este spec é puramente
  * estrutural — varre o ecossistema inteiro e pega regressões silenciosas que
  * o build não detecta (crash em runtime, error boundary acionado, página sem
@@ -27,8 +27,8 @@ const ALL_ROUTES = Object.keys(ROUTE_SEO);
 const ERROR_BOUNDARY_HEADING = 'Algo deu errado por aqui';
 
 test.describe('Smoke — todas as rotas renderizam sem crash', () => {
-  test('ROUTE_SEO contém as 89 rotas esperadas', () => {
-    expect(ALL_ROUTES.length).toBe(89);
+  test('ROUTE_SEO contém as 90 rotas esperadas', () => {
+    expect(ALL_ROUTES.length).toBe(90);
   });
 
   for (const route of ALL_ROUTES) {

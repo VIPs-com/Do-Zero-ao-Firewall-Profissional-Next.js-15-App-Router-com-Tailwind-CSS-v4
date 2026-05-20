@@ -79,6 +79,7 @@ const SECTIONS: Section[] = [
       { path: '/cloud-publica',         num: 'C15', title: 'Cloud Pública (AWS)',          icon: '☁️', checkpoint: 'cloud-iam',         desc: 'Fundamentos de cloud AWS — IAM, VPC, security groups, EC2 e deploy de aplicações' },
       { path: '/git',                   num: 'C16', title: 'Git — Controle de Versão',     icon: '🔀', checkpoint: 'git-branch',        desc: 'Commits, branches, merge, resolução de conflitos e fluxo colaborativo' },
       { path: '/carreira',              num: 'C17', title: 'Carreira',                     icon: '🎖️', checkpoint: 'simulado-completo', desc: 'Certificações LPIC-1/CompTIA Linux+, portfólio técnico e entrevista de SysAdmin/DevOps' },
+      { path: '/seguranca-avancada',    num: 'C18', title: 'Segurança Avançada',           icon: '🛡️', checkpoint: 'selinux-configurado', desc: 'SELinux (MAC com labels), LUKS (criptografia de disco) e auditd (auditoria do kernel)' },
     ],
   },
 ];

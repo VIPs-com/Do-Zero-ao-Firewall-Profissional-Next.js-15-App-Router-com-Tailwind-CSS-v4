@@ -143,7 +143,9 @@ export const ALL_CHECKLIST_IDS = [
   'git-branch', 'git-merge', 'git-fluxo',
   // Sprint CARREIRA (3)
   'simulado-completo', 'portfolio-montado', 'entrevista-praticada',
-]; // 214 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint SEGURANCA-PRO — SELinux, LUKS, auditd (3)
+  'selinux-configurado', 'luks-criado', 'auditd-regras',
+]; // 217 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO — base do badge 'deep-diver' (Mergulhador).
@@ -350,6 +352,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['cloud-iam'] && checklist['cloud-vpc'] && checklist['cloud-deploy']) unlockBadge('cloud-master');
     if (checklist['git-branch'] && checklist['git-merge'] && checklist['git-fluxo']) unlockBadge('git-master');
     if (checklist['simulado-completo'] && checklist['portfolio-montado'] && checklist['entrevista-praticada']) unlockBadge('carreira-master');
+    if (checklist['selinux-configurado'] && checklist['luks-criado'] && checklist['auditd-regras']) unlockBadge('seguranca-pro-master');
     // Sprint SSH-PROXY — SSH como Proxy SOCKS
     if (checklist['ssh-dinamico'] && checklist['ssh-local'] && checklist['ssh-jump']) unlockBadge('ssh-proxy-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
@@ -401,8 +404,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['ssh-dinamico'] && checklist['trouble-conectividade']
     ) unlockBadge('ground-zero');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (floor(214*0.75) = 160).
-    if (Object.values(checklist).filter(v => v).length >= 160) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (floor(217*0.75) = 162).
+    if (Object.values(checklist).filter(v => v).length >= 162) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

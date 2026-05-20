@@ -435,7 +435,7 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
               ))}
               <li className="pt-1">
                 <Link href="/avancados" className="text-xs text-info hover:opacity-80 transition-opacity">
-                  Ver os 35 módulos →
+                  Ver os 36 módulos →
                 </Link>
               </li>
             </ul>
@@ -447,10 +447,10 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
           <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex flex-wrap justify-center sm:justify-start gap-5">
               {[
-                { value: '77', label: 'módulos' },
-                { value: '326', label: 'questões' },
-                { value: '76', label: 'conquistas' },
-                { value: '214', label: 'checkpoints' },
+                { value: '78', label: 'módulos' },
+                { value: '330', label: 'questões' },
+                { value: '77', label: 'conquistas' },
+                { value: '217', label: 'checkpoints' },
               ].map(stat => (
                 <div key={stat.label} className="flex items-baseline gap-1">
                   <span className="text-sm font-bold text-accent">{stat.value}</span>

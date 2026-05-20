@@ -5,8 +5,8 @@ import { test, expect } from './fixtures';
  *
  * Constantes em app/dashboard/page.tsx:
  *   totalTopics = 103         (Sprint CLOUD/GIT/CARREIRA: +C15/C16/C17)
- *   checklistItemsCount = 214 (Sprint CLOUD/GIT/CARREIRA: +9 checkpoints)
- *   BADGE_DEFS tem 76 chaves  (Sprint CLOUD/GIT/CARREIRA: +cloud/git/carreira-master)
+ *   checklistItemsCount = 217 (Sprint SEGURANCA-PRO: +3 checkpoints)
+ *   BADGE_DEFS tem 77 chaves  (Sprint SEGURANCA-PRO: +seguranca-pro-master)
  *
  * ATENÇÃO — visitedPages tracking é inconsistente no código:
  *   ClientLayout chama trackPageVisit('/dashboard')  — com barra
@@ -37,20 +37,20 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos: 3/214 (seed exato — não muda com o load)
-  await expect(page.getByText('3/214', { exact: true })).toBeVisible();
+  // Labs Concluídos: 3/217 (seed exato — não muda com o load)
+  await expect(page.getByText('3/217', { exact: true })).toBeVisible();
 
   // Melhor Quiz: 75% — exact evita colidir com "Complete 75% do checklist (...)"
   await expect(page.getByText('75%', { exact: true })).toBeVisible();
 });
 
-test('dashboard exibe 0/76 badges para usuário sem progresso', async ({ page }) => {
+test('dashboard exibe 0/77 badges para usuário sem progresso', async ({ page }) => {
   // Sem seed — estado completamente limpo (fixture já limpou)
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Sem nenhum badge desbloqueado — 76 badges total (Sprint CLOUD/GIT/CARREIRA)
-  await expect(page.getByText('0/76')).toBeVisible();
+  // Sem nenhum badge desbloqueado — 77 badges total (Sprint CLOUD/GIT/CARREIRA)
+  await expect(page.getByText('0/77')).toBeVisible();
 });
 
 test('dashboard exibe o card de Ferramentas com link para /ferramentas', async ({ page }) => {

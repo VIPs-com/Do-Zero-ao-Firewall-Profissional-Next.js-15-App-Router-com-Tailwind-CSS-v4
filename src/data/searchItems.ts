@@ -308,6 +308,11 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'g-carreira-lpic', category: 'Glossário', title: 'Certificação LPIC-1', description: 'Certificação Linux neutra de fornecedor — duas provas (101/102) que validam administração de sistema no nível júnior', href: '/carreira', icon: Award },
   { id: 'g-carreira-portfolio', category: 'Glossário', title: 'Portfólio Técnico', description: 'Reúne projetos práticos (scripts, labs, configs no GitHub) que comprovam competência além do currículo', href: '/carreira', icon: Award },
 
+  // Sprint SEGURANCA-PRO — Hardening avançado (/seguranca-avancada)
+  { id: 'p-seguranca-avancada', title: 'Segurança Avançada — Hardening Pro', description: 'SELinux (MAC com labels), criptografia de disco com LUKS e auditoria de sistema com auditd', category: 'Página', href: '/seguranca-avancada', icon: Shield },
+  { id: 'g-selinux-mac', category: 'Glossário', title: 'SELinux & MAC', description: 'Mandatory Access Control com contextos user_u:role_r:type_t:level, booleans e audit2allow — paralelo ao AppArmor mas baseado em labels do kernel', href: '/seguranca-avancada', icon: Shield },
+  { id: 'g-luks-disk-encryption', category: 'Glossário', title: 'LUKS & dm-crypt', description: 'Criptografia de disco no Linux: cryptsetup luksFormat, key slots, header backup obrigatório, /etc/crypttab e FDE em VPS via dropbear-initramfs', href: '/seguranca-avancada', icon: Lock },
+
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },
   { id: 'vault-approle',    title: 'Vault AppRole — Autenticação para Máquinas',   description: 'role-id + secret-id geram token com TTL — o método correto para apps e pipelines CI/CD',                  category: 'Tópico', href: '/vault', icon: Shield },

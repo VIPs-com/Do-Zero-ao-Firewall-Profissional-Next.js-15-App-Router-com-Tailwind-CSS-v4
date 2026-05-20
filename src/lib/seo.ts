@@ -523,6 +523,12 @@ export const ROUTE_SEO = {
       'Prepare-se para o mercado de TI: certificações LPIC-1 e CompTIA Linux+, simulado cronometrado, montagem de portfólio técnico e roteiro para a entrevista de SysAdmin/DevOps.',
     keywords: ['carreira', 'certificação Linux', 'LPIC-1', 'CompTIA Linux+', 'portfólio', 'entrevista técnica', 'SysAdmin', 'DevOps', 'mercado de trabalho', 'simulado', 'currículo TI'],
   },
+  '/seguranca-avancada': {
+    title: 'Segurança Avançada | SELinux, LUKS e auditd no Linux',
+    description:
+      'Hardening nível pro: SELinux (Mandatory Access Control com contextos e booleans), criptografia de disco com LUKS (dm-crypt, key slots, backup do header) e auditoria de sistema com auditd (regras, ausearch, integração com SIEM).',
+    keywords: ['SELinux', 'AppArmor', 'MAC', 'mandatory access control', 'LUKS', 'cryptsetup', 'dm-crypt', 'disk encryption', 'auditd', 'ausearch', 'aureport', 'hardening Linux', 'CompTIA Security+'],
+  },
   '/resposta-incidentes': {
     title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
     description:

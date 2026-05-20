@@ -120,6 +120,7 @@ const JOURNEY_META: Record<string, JourneyMetaEntry> = {
   '/cloud-publica':         { difficulty: 'avancado', estMin: 45 },
   '/git':                   { difficulty: 'avancado', estMin: 45 },
   '/carreira':              { difficulty: 'avancado', estMin: 45 },
+  '/seguranca-avancada':    { difficulty: 'avancado', estMin: 50 },
   '/resposta-incidentes': { difficulty: 'avancado', estMin: 50 },
 };
 
@@ -142,7 +143,7 @@ function buildPhase(
   });
 }
 
-/** A jornada completa: 77 módulos em ordem pedagógica (Fundamentos → Firewall → Avançados). */
+/** A jornada completa: 78 módulos em ordem pedagógica (Fundamentos → Firewall → Avançados). */
 export const JOURNEY: JourneyModule[] = [
   ...buildPhase(FUNDAMENTOS_ORDER, 'fundamentos'),
   ...buildPhase(COURSE_ORDER, 'firewall'),

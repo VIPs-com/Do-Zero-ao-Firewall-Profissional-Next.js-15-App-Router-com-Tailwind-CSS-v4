@@ -326,6 +326,8 @@ html.light {
   .module-accent-cloud-publica         { --mod: #ff9900; }
   .module-accent-git                   { --mod: #f05133; }
   .module-accent-carreira              { --mod: #14b8a6; }
+  /* Sprint SEGURANCA-PRO — Hardening avançado (SELinux/LUKS/auditd) */
+  .module-accent-seguranca-avancada    { --mod: #b91c1c; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
   .module-accent-usuarios           { --mod: #6366f1; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */

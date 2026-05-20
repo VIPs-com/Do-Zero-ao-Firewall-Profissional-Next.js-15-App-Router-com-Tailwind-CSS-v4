@@ -62,8 +62,8 @@ export default function DashboardPage() {
   }, [trackPageVisit]);
 
   // Total de tópicos cobertos — deve bater com o array TOPICS em app/topicos/page.tsx.
-  // Counter-Sync: TOPICS.length=103 (Sprint CLOUD/GIT/CARREIRA: +C15/C16/C17)
-  const totalTopics = 103;
+  // Counter-Sync: TOPICS.length=104 (Sprint SEGURANCA-PRO: +C18)
+  const totalTopics = 104;
   const topicsProgress = Math.round((visitedPages.size / totalTopics) * 100);
 
   // Total de checkpoints — deve bater com ALL_CHECKLIST_IDS.length em BadgeContext.tsx.
@@ -72,7 +72,8 @@ export default function DashboardPage() {
   // Sprint PILARES: +9 checkpoints LVM-RAID/Banco/Mail → 190+9 = 199
   // Sprint REDES-L23: +6 checkpoints Redes L2/L3 + Alta Disponibilidade → 199+6 = 205
   // Sprint CLOUD/GIT/CARREIRA: +9 checkpoints Cloud/Git/Carreira → 205+9 = 214
-  const checklistItemsCount = 214;
+  // Sprint SEGURANCA-PRO: +3 checkpoints SELinux/LUKS/auditd → 214+3 = 217
+  const checklistItemsCount = 217;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 
@@ -118,10 +119,10 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  // linux-ninja threshold = floor(214 * 0.75) = 160
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 160) {
-    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (160/214 checkpoints)',
-      current: checklistCompleted, total: 160, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  // linux-ninja threshold = floor(217 * 0.75) = 162
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 162) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (162/217 checkpoints)',
+      current: checklistCompleted, total: 162, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
   } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 25) {
     nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 25 módulos do curso',
       current: visitedModulesCount, total: 25,

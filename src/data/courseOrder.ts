@@ -41,7 +41,7 @@ export const COURSE_ORDER: CourseModule[] = [
 ];
 
 // ── Módulos Avançados (v3.0 → v5.0) — Servidores, Infraestrutura e Cloud ──────
-// 35 módulos — usados no índice /avancados e na navegação ModuleNav (prev/next
+// 36 módulos — usados no índice /avancados e na navegação ModuleNav (prev/next
 // derivados do índice). Badge: advanced-master.
 export interface SimpleModule {
   path: string;
@@ -91,6 +91,8 @@ export const ADVANCED_ORDER: SimpleModule[] = [
   { path: '/cloud-publica',         title: 'Cloud Pública (AWS)' },
   { path: '/git',                   title: 'Git — Controle de Versão' },
   { path: '/carreira',              title: 'Carreira' },
+  // Sprint SEGURANCA-PRO — Hardening nível pro
+  { path: '/seguranca-avancada',    title: 'Segurança Avançada (SELinux/LUKS/auditd)' },
   // Capstone — Resposta a Incidentes (Sprint CÓDICE)
   { path: '/resposta-incidentes', title: 'Resposta a Incidentes (DFIR)' },
 ];
