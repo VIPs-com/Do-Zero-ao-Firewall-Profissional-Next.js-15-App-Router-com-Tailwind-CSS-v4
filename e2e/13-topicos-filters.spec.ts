@@ -180,7 +180,7 @@ test('clicar no módulo expande o accordion (aria-expanded=true)', async ({ page
 
   // Localiza o botão de accordion do primeiro módulo da trilha Firewall
   // (Instalação & Lab — primeiro em TRAIL_MODULES.firewall = /instalacao)
-  const moduleBtn = page.locator('button[aria-expanded]').first();
+  const moduleBtn = page.locator('main button[aria-expanded]').first();
   await expect(moduleBtn).toBeVisible();
   await expect(moduleBtn).toHaveAttribute('aria-expanded', 'false');
 
@@ -195,7 +195,7 @@ test('clicar no módulo expandido recolhe o accordion (aria-expanded=false)', as
   await page.goto('/topicos');
   await page.waitForLoadState('networkidle');
 
-  const moduleBtn = page.locator('button[aria-expanded]').first();
+  const moduleBtn = page.locator('main button[aria-expanded]').first();
 
   // Expande
   await moduleBtn.click();
