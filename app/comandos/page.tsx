@@ -415,14 +415,179 @@ which comando                   # localiza o executável`}
           </InfoBox>
         </section>
 
-        {/* ── HighlightBox expansão futura ── */}
-        <HighlightBox title="🔜 Próxima versão deste módulo">
-          <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
-            <li><code>awk</code> e <code>sed</code> — processamento avançado de texto</li>
-            <li><code>xargs</code> — passar saída como argumentos</li>
-            <li>Aliases e funções no <code>~/.bashrc</code></li>
-            <li>Histórico avançado: <code>history | grep iptables</code></li>
-          </ul>
+        {/* ── Processamento avançado de texto e produtividade no terminal ── */}
+        <section id="processamento-avancado" className="mt-12 mb-8">
+          <h2 className="text-2xl font-bold mb-2">🔬 Processamento avançado de texto</h2>
+          <p className="text-text-2 mb-6">
+            <code>grep</code> filtra, mas <strong>awk</strong> processa colunas, <strong>sed</strong>
+            edita e <strong>xargs</strong> encadeia. Juntos transformam logs de gigabytes em
+            relatórios em segundos — sem abrir um único editor.
+          </p>
+        </section>
+
+        {/* awk */}
+        <section id="awk" className="mb-10">
+          <h3 className="text-xl font-bold mb-3">🔍 awk — colunas e logs gigantes</h3>
+          <p className="text-text-2 mb-4">
+            <code>awk</code> trata cada linha como uma sequência de <strong>campos</strong>
+            (<code>$1</code>, <code>$2</code>, <code>$NF</code>…). Lê em <em>streaming</em> — não
+            carrega o arquivo na RAM —, então analisa logs de <strong>vários gigabytes</strong>
+            sem suar. É o canivete suíço para extrair, agrupar e somar dados de texto.
+          </p>
+          <CodeBlock lang="bash" code={`# Top 10 IPs com mais hits no access.log do Nginx (qualquer tamanho — até GB+)
+awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -rn | head -10
+
+# Total de bytes servidos por dia
+awk '{bytes[$4] += $10} END {for (d in bytes) print d, bytes[d]}' access.log
+
+# Filtrar status 5xx e mostrar URL + status
+awk '$9 ~ /^5/ {print $9, $7}' access.log | sort | uniq -c | sort -rn
+
+# Soma de RSS por usuário (saída de ps aux)
+ps aux | awk 'NR>1 {mem[$1] += $6} END {for (u in mem) print u, mem[u]/1024 " MB"}'
+
+# Print só linhas onde 3ª coluna > 10 (CPU alta) — Get-Process | Where CPU -gt 10 (PS)
+ps aux | awk '$3 > 10'`} />
+          <InfoBox title="Por que awk vence o grep em logs gigantes" className="mt-4">
+            <code>grep</code> só FILTRA linhas. <code>awk</code> permite somar, agrupar, calcular
+            médias e formatar a saída no mesmo passe — sem precisar de um segundo comando. Em
+            arquivos de muitos GB isso evita reler o disco várias vezes (cache cold = lentidão).
+          </InfoBox>
+        </section>
+
+        {/* sed */}
+        <section id="sed" className="mb-10">
+          <h3 className="text-xl font-bold mb-3">✂️ sed — substituição e edição não-interativa</h3>
+          <p className="text-text-2 mb-4">
+            <code>sed</code> aplica transformações em fluxo. É o que você usa em script para mudar
+            <code> /etc/ssh/sshd_config</code> de <code>PermitRootLogin yes</code> para
+            <code> no</code> em 50 servidores via Ansible — sem abrir vim em nenhum.
+          </p>
+          <CodeBlock lang="bash" code={`# Substituir em todas as linhas, in-place (com backup .bak)
+sudo sed -i.bak 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+
+# Apagar linhas que casam com padrão
+sudo sed -i '/^#/d' arquivo.conf        # remove linhas que começam com #
+
+# Trocar só na linha 10
+sed -i '10s/foo/bar/' arquivo.txt
+
+# Múltiplas substituições num só comando (-e)
+sed -e 's/\\bdebian\\b/Debian/g' -e 's/\\bubuntu\\b/Ubuntu/g' notas.md
+
+# Imprimir só intervalo de linhas (linhas 100–200 de um log)
+sed -n '100,200p' /var/log/syslog`} />
+          <WarnBox title="O -i.bak salva sua vida" className="mt-4">
+            <code>sed -i</code> edita o arquivo no lugar. Sem <code>.bak</code> não há volta. Em
+            produção, SEMPRE use <code>sed -i.bak</code> para gerar uma cópia <code>arquivo.bak</code>
+            e teste o resultado antes de descartá-la. Para um teste sem risco use
+            <code> diff &lt;(sed 's/x/y/' arq) arq</code>.
+          </WarnBox>
+        </section>
+
+        {/* xargs */}
+        <section id="xargs" className="mb-10">
+          <h3 className="text-xl font-bold mb-3">🔗 xargs — saída de um comando vira argumento de outro</h3>
+          <p className="text-text-2 mb-4">
+            Nem todo comando aceita stdin via pipe. <code>xargs</code> resolve isso: pega a saída
+            do comando anterior e a injeta como <strong>argumentos</strong> do próximo. Bônus: o
+            <code> -P</code> roda em paralelo — pesquisa de 1000 hosts em segundos.
+          </p>
+          <CodeBlock lang="bash" code={`# Deletar todos os .tmp antigos (find lista, xargs entrega ao rm)
+find /var/tmp -name "*.tmp" -mtime +7 -print0 | xargs -0 rm -v
+
+# Ping em paralelo em 8 hosts — -P 8 = 8 processos simultâneos
+cat hosts.txt | xargs -P 8 -n 1 -I {} ping -c 1 -W 1 {}
+
+# Atualizar todos os repositórios git de uma pasta
+ls -d ~/projetos/*/ | xargs -n 1 -I {} git -C {} pull
+
+# Quantas linhas no total em todos os .conf de /etc?
+find /etc -name "*.conf" | xargs wc -l | tail -1`} />
+          <InfoBox title="-print0 + -0 para nomes com espaços" className="mt-4">
+            Arquivos com espaço quebram pipes ingênuos. <code>find ... -print0</code> separa os
+            paths por byte zero em vez de quebra de linha, e <code>xargs -0</code> entende esse
+            formato. Use sempre que processar arquivos arbitrários.
+          </InfoBox>
+        </section>
+
+        {/* Aliases e funções */}
+        <section id="aliases" className="mb-10">
+          <h3 className="text-xl font-bold mb-3">⚡ Aliases e funções no ~/.bashrc</h3>
+          <p className="text-text-2 mb-4">
+            Não decore comando — APELIDE. Aliases trocam um nome curto por uma linha; funções
+            aceitam argumentos e fazem coisas mais ricas. Tudo vive em <code>~/.bashrc</code>
+            (ou <code>~/.bash_aliases</code>, carregado pelo bashrc).
+          </p>
+          <CodeBlock lang="bash" title="~/.bashrc (trechos úteis)" code={`# Aliases — apelidos para comandos longos
+alias ll='ls -lah --color=auto'
+alias ..='cd ..'
+alias gs='git status -sb'
+alias ipt='sudo iptables -L -n -v --line-numbers'
+alias ports='sudo ss -tulpn'
+alias myip="curl -s ifconfig.me"
+
+# Função — apelido COM argumento
+mkcd() { mkdir -p "$1" && cd "$1"; }       # cria e entra na pasta
+extract() {                                # extrai qualquer compactado
+  case "$1" in
+    *.tar.gz|*.tgz)  tar xzf "$1" ;;
+    *.tar.bz2)       tar xjf "$1" ;;
+    *.tar.xz)        tar xJf "$1" ;;
+    *.zip)           unzip "$1" ;;
+    *) echo "Formato desconhecido: $1" ;;
+  esac
+}
+backup() { cp "$1"{,.bak.$(date +%F)}; }    # arquivo.txt → arquivo.txt.bak.2026-05-20
+
+# Aplicar mudanças sem abrir nova sessão
+# source ~/.bashrc   (ou:  . ~/.bashrc)`} />
+          <InfoBox title="alias vs função — quando usar cada um" className="mt-4">
+            <strong>Alias</strong>: substituição de texto pura, sem argumentos no meio
+            (ex.: <code>alias ll='ls -lah'</code>). <strong>Função</strong>: precisa de
+            <code> $1</code>/<code>$@</code>, lógica condicional ou múltiplos comandos
+            (ex.: <code>mkcd</code> acima). Regra prática: se você quer interpolar argumentos
+            no meio do comando, é função.
+          </InfoBox>
+        </section>
+
+        {/* Histórico avançado */}
+        <section id="historico" className="mb-12">
+          <h3 className="text-xl font-bold mb-3">📜 Histórico avançado — pare de digitar o mesmo</h3>
+          <p className="text-text-2 mb-4">
+            Bash guarda os últimos comandos em <code>~/.bash_history</code>. Dominar essa memória
+            poupa horas por mês.
+          </p>
+          <CodeBlock lang="bash" code={`# Procurar comando antigo (substring)
+history | grep iptables                  # lista todas as ocorrências
+history | grep -i wireguard | tail -20   # case-insensitive, últimas 20
+
+# Executar comando do histórico pelo número
+!1234                                    # roda o comando linha 1234
+
+# Repetir o último comando (ou com sudo)
+!!                                       # último comando
+sudo !!                                  # último comando com sudo na frente
+
+# Reverse-search interativa — Ctrl+R no terminal
+# (digite parte do comando; Ctrl+R de novo navega; Enter executa)
+
+# Não gravar comandos sensíveis (export SENHA=...)
+export HISTCONTROL=ignoreboth            # ignora duplicados + linhas iniciadas com espaço
+#  comando-secreto   ← com espaço NA FRENTE, não entra no histórico
+
+# Histórico maior + timestamp
+export HISTSIZE=10000
+export HISTFILESIZE=20000
+export HISTTIMEFORMAT='%F %T  '          # data/hora em cada linha do history`} />
+        </section>
+
+        <HighlightBox title="💡 Próximos passos">
+          Para shell scripting de verdade (loops, funções, traps, set -euo pipefail, getopts),
+          siga para o módulo <Link href="/shell-script" className="text-accent hover:underline">📜 Shell Script</Link>.
+          Para comandos mais específicos (sed in-place, dd, nc, ln, gzip/tar/zip), o módulo{' '}
+          <Link href="/comandos-avancados" className="text-accent hover:underline">🔧 Comandos Avançados</Link>{' '}
+          aprofunda cada um.
         </HighlightBox>
 
         {/* ── Checkpoint ── */}
