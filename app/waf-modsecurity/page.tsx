@@ -48,7 +48,7 @@ export default function WafModsecurityPage() {
           <div className="section-label mb-3">Avançados · Web Application Firewall</div>
           <h1 className="text-4xl font-bold mb-4">🧱 WAF — ModSecurity + OWASP CRS</h1>
           <p className="text-text-2 text-lg mb-6">
-            O <Link href="/iptables" className="text-accent hover:underline">iptables</Link> filtra
+            O <Link href="/nftables" className="text-accent hover:underline">iptables/nftables</Link> filtra
             pacotes na camada 4 (IP/porta); o{' '}
             <Link href="/suricata" className="text-accent hover:underline">Suricata</Link> inspeciona
             payload mas opera de lado, passivo. O <strong>WAF</strong> é diferente: vive{' '}
