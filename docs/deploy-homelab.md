@@ -51,6 +51,9 @@ superfície externa — o cenário mais alinhado ao espírito do projeto.
 **Vantagens:** zero exposição, sem depender do provedor, sem CGNAT, sem Certbot.
 **Limite:** só acessível de dentro da rede (ou via VPN — ver Tailscale).
 
+> **Artefato pronto:** [`infra/nginx/workshop-linux.lan.conf`](../infra/nginx/workshop-linux.lan.conf)
+> — Nginx LAN-only com mkcert, sem ACME. Instale e `nginx -t && systemctl reload nginx`.
+
 > O CSP do app inclui `upgrade-insecure-requests`. Em **HTTP puro na LAN** isso é inofensivo
 > (não há subrecursos externos); se quiser HTTPS limpo, use mkcert.
 
@@ -84,6 +87,15 @@ Cloudflare. **Zero portas abertas** no UniFi; resolve **CGNAT**; o TLS é gerenc
 Cloudflare na borda (fim do Certbot local).
 
 **Fluxo:** Cliente → (HTTPS) Cloudflare Edge → (túnel) `cloudflared` → (HTTP) Nginx local → Next.js.
+
+> **Artefatos prontos:**
+> - **Docker (recomendado):** [`docker-compose.yml`](../docker-compose.yml) sobe
+>   `app + nginx + cloudflared` (método token) usando
+>   [`infra/nginx/compose-tunnel.conf`](../infra/nginx/compose-tunnel.conf) — zero portas
+>   publicadas no host. Defina `CF_TUNNEL_TOKEN` e `NEXT_PUBLIC_SITE_URL` no `.env` e
+>   `docker compose up -d --build`.
+> - **Host/systemd:** [`infra/cloudflared/config.yml`](../infra/cloudflared/config.yml)
+>   (abaixo está a versão comentada).
 
 ```yaml
 # ~/.cloudflared/config.yml

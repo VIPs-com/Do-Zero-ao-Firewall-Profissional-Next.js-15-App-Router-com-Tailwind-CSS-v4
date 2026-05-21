@@ -1,0 +1,51 @@
+# ============================================================================
+# Workshop Linux — Stack de produção via Cloudflare Tunnel (Home Lab)
+# Cenário §3 do docs/deploy-homelab.md: exposição pública SEM abrir portas
+# no roteador/UniFi. Resolve CGNAT. TLS gerenciado pela borda da Cloudflare.
+#
+# Fluxo: Internet → (HTTPS) Cloudflare Edge → (túnel) cloudflared → nginx → app
+#
+# Setup:
+#   1. Cloudflare Zero Trust → Networks → Tunnels → Create a tunnel (Cloudflared).
+#   2. Copie o TOKEN do túnel e coloque em .env:  CF_TUNNEL_TOKEN=eyJ...
+#   3. No painel do túnel, em "Public Hostname", aponte
+#      workshop.seudominio.com  →  Service: http://nginx:80
+#   4. defina NEXT_PUBLIC_SITE_URL=https://workshop.seudominio.com em .env
+#   5. docker compose up -d --build
+#
+# Nenhuma porta é publicada no host — só o cloudflared fala com o mundo,
+# por uma conexão de SAÍDA. nginx e app ficam na rede interna do Compose.
+# ============================================================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://workshop.seudominio.com}
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+    expose:
+      - "3000"          # interno à rede do Compose — NÃO publicado no host
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    depends_on:
+      - app
+    volumes:
+      - ./infra/nginx/compose-tunnel.conf:/etc/nginx/conf.d/default.conf:ro
+    expose:
+      - "80"            # só o cloudflared acessa — NÃO publicado no host
+    restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+    depends_on:
+      - nginx
+    restart: unless-stopped
+
+# Rede default do Compose: os serviços se resolvem por nome (app, nginx).

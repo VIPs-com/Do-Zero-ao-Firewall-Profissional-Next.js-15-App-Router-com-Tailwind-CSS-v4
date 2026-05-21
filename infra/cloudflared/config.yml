@@ -1,0 +1,33 @@
+# ============================================================================
+# Workshop Linux — Cloudflare Tunnel (cloudflared rodando como serviço systemd)
+# Cenário §3 do docs/deploy-homelab.md — exposição pública SEM abrir portas.
+#
+# Para Docker, prefira o método por TOKEN no docker-compose.yml (não precisa
+# deste arquivo). Use este config.yml quando rodar cloudflared direto no host.
+#
+# Passo a passo (host):
+#   cloudflared tunnel login
+#   cloudflared tunnel create workshop          # gera o <TUNNEL_ID> e o .json de credenciais
+#   cloudflared tunnel route dns workshop workshop.seudominio.com
+#   # copie este arquivo para ~/.cloudflared/config.yml e ajuste os campos abaixo
+#   cloudflared tunnel run workshop             # ou: sudo cloudflared service install
+#
+# Fluxo: Cliente → (HTTPS) Cloudflare Edge → (túnel saída) cloudflared →
+#        (HTTP) Nginx local :80 → Next.js :3000
+# ============================================================================
+
+tunnel: SUBSTITUA_PELO_TUNNEL_ID
+credentials-file: /root/.cloudflared/SUBSTITUA_PELO_TUNNEL_ID.json
+
+# Regras de ingresso: o que entra pelo túnel e para onde vai
+ingress:
+  - hostname: workshop.seudominio.com
+    # Aponte para o Nginx local (recomendado) — ele faz cache de /_next/static.
+    # Se for direto ao app Next, troque para http://127.0.0.1:3000.
+    service: http://127.0.0.1:80
+  # Regra catch-all obrigatória (sempre por último)
+  - service: http_status:404
+
+# Opcional: métricas Prometheus do próprio cloudflared
+metrics: 127.0.0.1:60123
+no-autoupdate: true
