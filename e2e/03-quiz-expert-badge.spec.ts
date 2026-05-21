@@ -55,7 +55,15 @@ test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é d
   // Tela de resultado
   await expect(page.getByText('Seu Resultado')).toBeVisible({ timeout: 5_000 });
 
-  // Badge quiz-beginner sempre desbloqueado ao finalizar
+  // Badge quiz-beginner sempre desbloqueado ao finalizar.
+  // O unlock grava no localStorage via useEffect assíncrono — ler imediatamente
+  // com page.evaluate é uma corrida (falha intermitente no CI). waitForFunction
+  // aguarda a gravação concluir (padrão de hardening já usado no spec 06).
+  await page.waitForFunction(
+    () => (localStorage.getItem('workshop-badges') ?? '').includes('quiz-beginner'),
+    undefined,
+    { timeout: 5_000 },
+  );
   const badges = await page.evaluate(() => localStorage.getItem('workshop-badges'));
   expect(badges).toContain('quiz-beginner');
 });
