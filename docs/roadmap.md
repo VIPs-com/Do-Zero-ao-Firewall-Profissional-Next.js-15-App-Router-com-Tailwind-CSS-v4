@@ -1274,11 +1274,44 @@ Sprint COMANDOS-GLOSSARIO ✅ Enriquecimento de shell e glossário
   │   curl/wget) — total 114→136 termos
   └── +10 searchItems do shell (297→307)
 
-Estado atual ✅ 77 badges · 217 checkpoints · 104 tópicos · 307 searchItems
-  · 90 rotas (build 95) · 330 questões · 136 termos no glossário
-  · 19 suítes/258 testes vitest · 25 specs E2E
-  · 78 módulos (25 Firewall + 17 Fundamentos + 36 Avançados)
-  · Trilhas: v1.0 (25) · v2.0 (17) · v3.0 (9) · v4.0 (9) · v5.0 (18)
+Sprint TRILHA-GUIADA ✅ Navegação & orientação do aluno
+  ├── ModuleNav: card de handoff no fim de cada trilha (TRAIL_HANDOFF)
+  ├── /comece-aqui — guia de entrada (trilhas, jornada, checkpoints, SRS)
+  └── /evolucao sincronizada + limpeza de números obsoletos
+
+Sprint OBSERVABILIDADE-WAF ✅ 2 módulos avançados (antes do capstone)
+  ├── /observabilidade-stack (📊 observability-stack-master) — Loki + ELK
+  ├── /waf-modsecurity (🧱 waf-master) — ModSecurity + OWASP CRS
+  └── ADVANCED_ORDER 36→38 · checkpoints 217→223 · tópicos 104→106
+      badges 77→79 · searchItems 297→313 · quiz 330→338 · rotas 90→92
+
+Sprint A11Y ✅ Baseline axe zerado (5 rotas-chave)
+  ├── color-contrast: token --color-accent-strong p/ botões · text-3 elevado
+  ├── nested-interactive: SVG topologia role=group · accordions /topicos
+  └── aria-required-children: TroubleshootingCard role=list correto
+
+Sprint A11Y-EXT ✅ Baseline axe em TODO o site
+  ├── spec 25 cobre as 92 rotas do ROUTE_SEO (KNOWN_BASELINE vazio = exige zero)
+  ├── CodeBlock (.code-lang + <pre> focável), abas role=tablist, links sublinhados
+  └── 0 violações axe-core WCAG 2.1 AA nas 92 rotas
+
+Sprint ARTEFATOS-INFRA / Go-Live ✅ Infraestrutura turn-key
+  ├── output: 'standalone' + Dockerfile multi-stage (non-root, healthcheck)
+  ├── infra/nginx (TLS Certbot + LAN mkcert + compose-tunnel) · infra/systemd blindado
+  └── docs/deploy.md — Operação Go-Live (Nginx, TLS, headers sem duplicar CSP)
+
+Sprint HOME-LAB ✅ Variantes de exposição/proteção
+  ├── docs/deploy-homelab.md — LAN-only · Tailscale · Cloudflare Tunnel · CGNAT · DNS-01
+  ├── docker-compose.yml (app + nginx + cloudflared, método token, zero portas)
+  └── infra/cloudflared/config.yml · infra/README.md (mapa por cenário)
+
+Estado atual ✅ 79 badges · 223 checkpoints · 106 tópicos · 313 searchItems
+  · 92 rotas (build ~97) · 338 questões · 136 termos no glossário
+  · 19 suítes/258 testes vitest · 25 specs E2E (inclui baseline a11y axe nas 92 rotas)
+  · 80 módulos (25 Firewall + 17 Fundamentos + 38 Avançados)
+  · Trilhas: v1.0 (25) · v2.0 (17) · v3.0 (9) · v4.0 (9) · v5.0 (20)
+  · Acessibilidade: 0 violações axe WCAG 2.1 AA (todas as rotas)
+  · Infra: output standalone · Dockerfile + infra/ versionados (VPS / Home Lab / Cloudflare Tunnel)
   · Next 16.2.6 · TypeScript strict · CI verde · 0 vulnerabilidades
 
 ❌ Backend/Supabase — DESCARTADO

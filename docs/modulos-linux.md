@@ -3,8 +3,8 @@
 *Para cada módulo: Conceito → Por que importa → Exemplo real → Checklist → Erros comuns*
 
 > **Navegação unificada:** a rota `/jornada` (Jornada Unificada) une as 3 trilhas
-> — Fundamentos (17) → Firewall (25) → Avançados (36) — numa linha do tempo única
-> de 78 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
+> — Fundamentos (17) → Firewall (25) → Avançados (38) — numa linha do tempo única
+> de 80 módulos, com nível de dificuldade, tempo estimado e o "próximo passo"
 > destacado. A rota `/comece-aqui` é o guia de entrada (explica trilhas, jornada,
 > checkpoints, SRS e certificado). O hub `/ferramentas` reúne 5 utilitários
 > portáteis (Calculadora CIDR, Validador de Regex, Gerador de iptables,
@@ -413,7 +413,7 @@ Gestão de segredos: Unseal com Shamir Secret Sharing, secret engines (KV e Data
 
 ---
 
-## Trilha v5.0 — Cloud & Platform Engineering (18 módulos) ✅ COMPLETA
+## Trilha v5.0 — Cloud & Platform Engineering (20 módulos) ✅ COMPLETA
 
 *Nível sênior: pilares de SysAdmin, automação de plataforma, redes avançadas, alta disponibilidade, cloud, carreira e resposta a incidentes.*
 
@@ -468,7 +468,13 @@ Preparação para o mercado: trilha de certificações (LPIC-1, CompTIA Linux+),
 ### C17 — Segurança Avançada · `/seguranca-avancada` *(Sprint SEGURANCA-PRO)*
 Segurança em camadas profundas do Linux: **SELinux** (MAC com labels e contextos, `getenforce`/`setenforce`, `audit2allow` para policies customizadas) — alternativa ao AppArmor; **LUKS** (criptografia de disco com `cryptsetup`, partições/containers, integração com `/etc/crypttab` e desbloqueio no boot); **auditd** (audit do kernel via `auditctl`, regras `-w`/`-a`, leitura com `ausearch`/`aureport`, integração com SIEM). Pré-requisito recomendado: Hardening (Sprint I.3). Badge 🛡️ `seguranca-pro-master`.
 
-### C18 — Resposta a Incidentes (DFIR) · `/resposta-incidentes`
+### C18 — Observabilidade Stack (Loki + ELK) · `/observabilidade-stack` *(Sprint OBSERVABILIDADE-WAF)*
+Stack moderno de logs: **Loki + Promtail + Grafana** (indexação por labels, LogQL, barato e escalável) vs **ELK clássico** (Elasticsearch full-text + Logstash + Kibana + Filebeat), com tabela comparativa de quando escolher cada um. Pipeline de coleta, queries `rate({app="api"} |= "panic" [5m])`, dashboards e alertas. Badge 📊 `observability-stack-master`.
+
+### C19 — WAF — ModSecurity + OWASP CRS · `/waf-modsecurity` *(Sprint OBSERVABILIDADE-WAF)*
+Web Application Firewall na camada 7: **ModSecurity** + **OWASP Core Rule Set** protegendo contra o OWASP Top 10 (SQLi, XSS, LFI, command injection). Anomaly scoring, paranoia level (1–4), fluxo `DetectionOnly → On` para tuning de falsos positivos, `SecRuleRemoveById`, alternativa Coraza. Diferença para iptables (L3/L4 não enxerga payload HTTP). Badge 🧱 `waf-master`.
+
+### C20 — Resposta a Incidentes (DFIR) · `/resposta-incidentes`
 Capstone do curso — Resposta a Incidentes seguindo o NIST SP 800-61: ciclo de 8 fases (detecção → contenção → preservação → timeline → análise → erradicação → recuperação → pós-incidente), script `ir_collect.sh`, os 7 Mandamentos do DFIR, tabletop exercises. O que fazer quando, mesmo com firewall/hardening/Fail2ban, algo deu errado.
 
 ---

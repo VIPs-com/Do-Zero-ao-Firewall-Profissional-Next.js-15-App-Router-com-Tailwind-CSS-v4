@@ -1,11 +1,11 @@
 # 🔬 Diagnóstico Curricular — Workshop Linux
 
-> Avaliação do projeto (**78 módulos**) contra o currículo de um **profissional Linux /
+> Avaliação do projeto (**80 módulos**) contra o currículo de um **profissional Linux /
 > Redes / Segurança empregável**. Referência: LPIC‑1/2, CompTIA Linux+ / Network+ /
 > Security+ e a prática real de SysAdmin, DevOps e SRE.
 >
-> **Estado atual:** 77 badges · 217 checkpoints · 104 tópicos · 330 questões · 90 rotas.
-> **Roadmap de evolução (Fases 0 → 3): ✅ CONCLUÍDO.**
+> **Estado atual:** 79 badges · 223 checkpoints · 106 tópicos · 338 questões · 92 rotas.
+> **Roadmap de evolução (Fases 0 → 3): ✅ CONCLUÍDO** (+ extensões SEGURANCA-PRO, OBSERVABILIDADE-WAF e a Operação Go-Live de infraestrutura).
 
 ---
 
@@ -65,7 +65,7 @@ Legenda: 🟢 Excelente · 🟩 Forte · 🟡 Parcial · 🔴 Ausente
   todas atingem o nível Excelente, com módulos dedicados e conteúdo de produção.
 - **Progressão honesta:** Fundamentos → Firewall → Servidores → Infra → Cloud → Carreira
   → Capstone DFIR.
-- **Gamificação madura:** 217 checkpoints, 77 badges, SRS (`/treino`), 330 questões,
+- **Gamificação madura:** 223 checkpoints, 79 badges, SRS (`/treino`), 338 questões,
   certificado verificável.
 - **Recursos pedagógicos de elite:** `WindowsComparisonBox`, `HorizonteBox`
   (clássico ↔ estado da arte), `/jornada` unificada, `/cheat-sheet`, `/ferramentas`.
@@ -111,24 +111,27 @@ escolha pedagógica deliberada, não uma lacuna de conteúdo.
 
 **Resultado:** 9 módulos novos + 7 módulos aprofundados · 69 → 78 módulos · 68 → 77
 badges · 190 → 217 checkpoints · 95 → 104 tópicos · 294 → 330 questões · 80 → 90 rotas.
-**Fase 4 (extra — Sprint SEGURANCA-PRO)** trouxe `/seguranca-avancada` (SELinux, LUKS, auditd).
+**Extensões pós-Fase 3:** Sprint **SEGURANCA-PRO** (`/seguranca-avancada` — SELinux, LUKS,
+auditd) e Sprint **OBSERVABILIDADE-WAF** (`/observabilidade-stack` Loki+ELK · `/waf-modsecurity`
+ModSecurity+OWASP CRS) levaram a trilha Avançados a 38 módulos.
 
-### Polimento contínuo (opcional, baixo esforço)
-- deep‑diver por `Set` de paths obrigatórios — honestidade pedagógica.
-- Baseline axe/Lighthouse em `/`, `/topicos`, `/quiz`, `/cheat-sheet`, `/dashboard`.
-- Módulo dedicado de observabilidade com stack Loki/ELK.
+### Polimento contínuo — ✅ concluído
+- ✅ deep‑diver por `Set` de paths obrigatórios (Sprint POLIMENTO) — honestidade pedagógica.
+- ✅ Baseline axe em runtime — **todas as 92 rotas** com zero violações WCAG 2.1 AA (Sprints A11Y + A11Y-EXT).
+- ✅ Módulo dedicado de observabilidade com stack Loki/ELK (`/observabilidade-stack`).
+- ✅ Operação Go-Live: infraestrutura turn-key versionada (`Dockerfile`, `infra/`, Cloudflare Tunnel / Home Lab).
 
 ---
 
 ## 7. 🗺️ Jornada do aluno
 
 **Trilha completa (rota `/jornada`):** Fundamentos *(17 módulos — inclui scripting
-avançado)* → Firewall *(25 módulos)* → Avançados *(35 módulos — servidores, banco de
+avançado)* → Firewall *(25 módulos)* → Avançados *(38 módulos — servidores, banco de
 dados, e‑mail, armazenamento, redes L2/L3, alta disponibilidade, infraestrutura
-moderna, cloud, Git, carreira)* → Capstone DFIR → Certificado.
+moderna, observabilidade, WAF, segurança avançada, cloud, Git, carreira)* → Capstone DFIR → Certificado.
 
 Do `pwd` ao cluster de alta disponibilidade na AWS, com preparação de carreira e
-simulado de certificação — uma linha do tempo única de 78 módulos.
+simulado de certificação — uma linha do tempo única de 80 módulos.
 
 ---
 [← Voltar ao indice](README.md)
