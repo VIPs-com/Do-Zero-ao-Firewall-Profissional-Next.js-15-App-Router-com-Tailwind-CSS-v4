@@ -139,7 +139,7 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'nextcloud-master':       { icon: '☁️', title: 'Nextcloud Master',        desc: 'Nuvem pessoal self-hosted operacional — Docker Compose com MariaDB+Redis, HTTPS via Traefik, apps CalDAV/CardDAV e backup automatizado' },
   'ebpf-avancado-master':   { icon: '🧬', title: 'eBPF Avançado Master',    desc: 'Cilium CNI substituindo kube-proxy, Hubble para observabilidade de fluxos L7, CiliumNetworkPolicy DNS/HTTP e Tetragon detectando anomalias runtime' },
   'ssh-proxy-master':       { icon: '🚇', title: 'SSH Tunnel Master',       desc: 'Dominou SSH como proxy SOCKS5 (-D), port forwarding local/remoto (-L/-R) e Jump Hosts para acesso seguro a redes privadas' },
-  'advanced-master':        { icon: '🌐', title: 'Advanced Master',         desc: 'Explorou todos os 22 módulos avançados — Servidores (v3.0), Infraestrutura (v4.0) e Cloud & Platform Engineering (v5.0)' },
+  'advanced-master':        { icon: '🌐', title: 'Advanced Master',         desc: 'Explorou todos os 38 módulos avançados — Servidores (v3.0), Infraestrutura (v4.0) e Cloud & Platform Engineering (v5.0)' },
   'srs-streak-7':           { icon: '🔥', title: 'Streak 7 Dias',           desc: '7 dias consecutivos de Treinamento Tático — a repetição espaçada funciona!' },
   'nfs-master':             { icon: '🗂️', title: 'NFS Master',             desc: 'Configurou servidor NFS com /etc/exports, montou cliente e configurou /etc/fstab com opções seguras' },
   'vault-master':           { icon: '🔐', title: 'Vault Sentinel',          desc: 'Dominou gestão de segredos com HashiCorp Vault — Unseal, políticas HCL, AppRole para máquinas e segredos dinâmicos com Database engine' },

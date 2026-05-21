@@ -284,7 +284,7 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       return visitedPages.has(m.path) || visitedPages.has(slug);
     });
     if (allVisited) unlockBadge('course-master');
-    // Advanced Master: todos os 19 módulos avançados (v3.0→v5.0) visitados
+    // Advanced Master: todos os 38 módulos avançados (v3.0→v5.0) visitados
     const allAdvancedVisited = ADVANCED_ORDER.every(m => {
       const slug = m.path.slice(1);
       return visitedPages.has(m.path) || visitedPages.has(slug);

@@ -405,7 +405,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
 
   // Sprint AVANCADOS-INDEX — índice da trilha avançada (/avancados)
   { id: 't-avancados',      category: 'Tópico',    title: 'Trilha Avançada — 19 Módulos v3.0→v5.0',                description: 'Índice da trilha avançada: DHCP, Samba, Apache, OpenVPN, Traefik, LDAP, Pi-hole, Ansible, Prometheus, Kubernetes, Terraform, Suricata, eBPF, Service Mesh, SRE, CI/CD, Nextcloud', href: '/avancados', icon: Server },
-  { id: 'g-advanced-trail', category: 'Tópico',    title: 'Servidores e Serviços (v3.0) — Progresso da Trilha',    description: 'Acompanhe o progresso em todos os 19 módulos avançados com indicadores de conclusão por checkpoint — DHCP a eBPF Avançado', href: '/avancados', icon: Globe },
+  { id: 'g-advanced-trail', category: 'Tópico',    title: 'Servidores e Serviços (v3.0) — Progresso da Trilha',    description: 'Acompanhe o progresso em todos os 38 módulos avançados com indicadores de conclusão por checkpoint — de DHCP a Resposta a Incidentes', href: '/avancados', icon: Globe },
 
   // Sprint SEARCH-GLOSSARY — termos avançados do glossário
   { id: 'g-mtls',           category: 'Glossário', title: 'mTLS — Mutual TLS',                                     description: 'Autenticação bidirecional onde cliente E servidor trocam certificados. Istio aplica mTLS automaticamente entre serviços via sidecar Envoy — sem alterar o código da aplicação', href: '/service-mesh', icon: Lock },

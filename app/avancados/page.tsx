@@ -7,7 +7,7 @@ import { CheckCircle2, Circle, ArrowRight, Server, Award } from 'lucide-react';
 import { useBadges } from '@/context/BadgeContext';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
 
-/* Sprint AVANCADOS-INDEX — índice da trilha avançada (v3.0→v5.0, 22 módulos).
+/* Sprint AVANCADOS-INDEX — índice da trilha avançada (v3.0→v5.0, 38 módulos).
    Espelha a estrutura de /fundamentos. */
 
 type Section = {
