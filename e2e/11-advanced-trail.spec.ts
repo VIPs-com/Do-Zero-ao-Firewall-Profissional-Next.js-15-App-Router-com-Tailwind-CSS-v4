@@ -1,7 +1,7 @@
 import { test, expect } from './fixtures';
 
 /**
- * Sprint Advanced-E2E — E2E da Trilha Avançada (36 módulos v3.0→v5.0)
+ * Sprint Advanced-E2E — E2E da Trilha Avançada (38 módulos v3.0→v5.0)
  *
  * Espelha 10-fundamentos-trail.spec.ts para a trilha avançada.
  *
@@ -17,11 +17,11 @@ import { test, expect } from './fixtures';
  *   2. Visitar /dhcp registra a visita no localStorage
  *   3. Badge advanced-master seeded aparece no dashboard
  *   4. ModuleNav em /dhcp: sem Anterior (1º da trilha), Próximo → /samba
- *   5. ModuleNav em /resposta-incidentes: Anterior → /seguranca-avancada, sem Próximo (último)
- *   6. advanced-master desbloqueado ao visitar todos os 36 módulos
+ *   5. ModuleNav em /resposta-incidentes: Anterior → /waf-modsecurity, sem Próximo (último)
+ *   6. advanced-master desbloqueado ao visitar todos os 38 módulos
  */
 
-/** Todos os paths da ADVANCED_ORDER (36 módulos) */
+/** Todos os paths da ADVANCED_ORDER (38 módulos) */
 const ALL_ADVANCED_PATHS = [
   '/dhcp', '/samba', '/apache', '/openvpn', '/traefik', '/ldap', '/pihole', '/nfs',
   '/haproxy', '/ansible', '/monitoring', '/kubernetes', '/terraform', '/suricata', '/ebpf',
@@ -29,7 +29,9 @@ const ALL_ADVANCED_PATHS = [
   '/crowdsec', '/tailscale', '/proxmox-backup-server', '/gpg',
   '/lvm-raid', '/banco-de-dados', '/mail-server',
   '/redes-l2-l3', '/alta-disponibilidade',
-  '/cloud-publica', '/git', '/carreira', '/seguranca-avancada', '/resposta-incidentes',
+  '/cloud-publica', '/git', '/carreira', '/seguranca-avancada',
+  '/observabilidade-stack', '/waf-modsecurity',
+  '/resposta-incidentes',
 ];
 
 // ── 1. Índice /avancados ──────────────────────────────────────────────────
@@ -100,24 +102,24 @@ test('ModuleNav em /dhcp: sem Anterior, Próximo aponta para /samba', async ({ p
   await expect(next).toHaveAttribute('href', '/samba');
 });
 
-// ── 5. ModuleNav em /resposta-incidentes: Anterior → /ebpf-avancado, sem Próximo ───
+// ── 5. ModuleNav em /resposta-incidentes: Anterior → /waf-modsecurity, sem Próximo ───
 
-test('ModuleNav em /resposta-incidentes: Anterior aponta para /ebpf-avancado, sem Próximo', async ({ page }) => {
+test('ModuleNav em /resposta-incidentes: Anterior aponta para /waf-modsecurity, sem Próximo', async ({ page }) => {
   await page.goto('/resposta-incidentes');
   await page.waitForLoadState('networkidle');
 
-  // Anterior aponta para /seguranca-avancada (penúltimo)
+  // Anterior aponta para /waf-modsecurity (penúltimo)
   const prev = page.getByRole('link', { name: /^módulo anterior:/i });
   await expect(prev).toBeVisible();
-  await expect(prev).toHaveAttribute('href', '/seguranca-avancada');
+  await expect(prev).toHaveAttribute('href', '/waf-modsecurity');
 
   // Último módulo da trilha: sem botão Próximo
   await expect(page.getByRole('link', { name: /^próximo módulo:/i })).not.toBeVisible();
 });
 
-// ── 6. Desbloqueio real do badge ao visitar todos os 36 módulos ──────────
+// ── 6. Desbloqueio real do badge ao visitar todos os 38 módulos ──────────
 
-test('advanced-master é desbloqueado ao visitar todos os 36 módulos', async ({ page }) => {
+test('advanced-master é desbloqueado ao visitar todos os 38 módulos', async ({ page }) => {
   // Seed via addInitScript — injeta o localStorage ANTES dos scripts da página,
   // evitando a corrida de hidratação do BadgeContext (o save effect inicial
   // sobrescreveria um seed feito via page.evaluate).

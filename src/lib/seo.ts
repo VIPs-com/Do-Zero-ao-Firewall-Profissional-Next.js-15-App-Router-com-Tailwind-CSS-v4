@@ -529,6 +529,18 @@ export const ROUTE_SEO = {
       'Hardening nível pro: SELinux (Mandatory Access Control com contextos e booleans), criptografia de disco com LUKS (dm-crypt, key slots, backup do header) e auditoria de sistema com auditd (regras, ausearch, integração com SIEM).',
     keywords: ['SELinux', 'AppArmor', 'MAC', 'mandatory access control', 'LUKS', 'cryptsetup', 'dm-crypt', 'disk encryption', 'auditd', 'ausearch', 'aureport', 'hardening Linux', 'CompTIA Security+'],
   },
+  '/observabilidade-stack': {
+    title: 'Observabilidade Stack | Loki, Grafana e ELK no Linux',
+    description:
+      'Stack moderno de logs: Loki + Promtail + Grafana (indexa labels, leve e barato) vs ELK clássico (Elasticsearch + Logstash + Kibana, full-text search poderoso). LogQL, dashboards prontos, Loki Ruler e quando escolher cada um.',
+    keywords: ['Loki', 'Promtail', 'Grafana', 'ELK', 'Elasticsearch', 'Logstash', 'Kibana', 'observabilidade', 'logs centralizados', 'LogQL', 'Filebeat', 'OpenSearch', 'SRE'],
+  },
+  '/waf-modsecurity': {
+    title: 'WAF | ModSecurity + OWASP CRS no Nginx/Apache',
+    description:
+      'Web Application Firewall com ModSecurity e o OWASP Core Rule Set — protege contra SQLi, XSS, LFI/RFI e o OWASP Top 10. Anomaly scoring, paranoia level, tuning de falsos positivos, integração com Fail2ban e alternativa moderna com Coraza.',
+    keywords: ['WAF', 'ModSecurity', 'OWASP CRS', 'OWASP Top 10', 'SQLi', 'XSS', 'LFI', 'firewall L7', 'segurança aplicacional', 'Nginx', 'Coraza', 'CompTIA Security+'],
+  },
   '/resposta-incidentes': {
     title: 'Resposta a Incidentes (DFIR) | O Ciclo NIST SP 800-61 na Prática',
     description:

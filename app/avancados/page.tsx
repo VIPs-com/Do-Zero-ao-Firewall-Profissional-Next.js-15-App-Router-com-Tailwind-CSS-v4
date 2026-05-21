@@ -80,6 +80,8 @@ const SECTIONS: Section[] = [
       { path: '/git',                   num: 'C16', title: 'Git — Controle de Versão',     icon: '🔀', checkpoint: 'git-branch',        desc: 'Commits, branches, merge, resolução de conflitos e fluxo colaborativo' },
       { path: '/carreira',              num: 'C17', title: 'Carreira',                     icon: '🎖️', checkpoint: 'simulado-completo', desc: 'Certificações LPIC-1/CompTIA Linux+, portfólio técnico e entrevista de SysAdmin/DevOps' },
       { path: '/seguranca-avancada',    num: 'C18', title: 'Segurança Avançada',           icon: '🛡️', checkpoint: 'selinux-configurado', desc: 'SELinux (MAC com labels), LUKS (criptografia de disco) e auditd (auditoria do kernel)' },
+      { path: '/observabilidade-stack', num: 'C19', title: 'Observabilidade Stack',        icon: '📊', checkpoint: 'loki-instalado',      desc: 'Loki + Promtail + Grafana (logs por labels) e ELK clássico (Elasticsearch + Logstash + Kibana)' },
+      { path: '/waf-modsecurity',       num: 'C20', title: 'WAF — ModSecurity',            icon: '🧱', checkpoint: 'modsec-instalado',    desc: 'ModSecurity + OWASP Core Rule Set: protege contra SQLi, XSS, LFI/RFI e o OWASP Top 10' },
     ],
   },
 ];

@@ -121,6 +121,8 @@ const JOURNEY_META: Record<string, JourneyMetaEntry> = {
   '/git':                   { difficulty: 'avancado', estMin: 45 },
   '/carreira':              { difficulty: 'avancado', estMin: 45 },
   '/seguranca-avancada':    { difficulty: 'avancado', estMin: 50 },
+  '/observabilidade-stack': { difficulty: 'avancado', estMin: 45 },
+  '/waf-modsecurity':       { difficulty: 'avancado', estMin: 45 },
   '/resposta-incidentes': { difficulty: 'avancado', estMin: 50 },
 };
 
@@ -143,7 +145,7 @@ function buildPhase(
   });
 }
 
-/** A jornada completa: 78 módulos em ordem pedagógica (Fundamentos → Firewall → Avançados). */
+/** A jornada completa: 80 módulos em ordem pedagógica (Fundamentos → Firewall → Avançados). */
 export const JOURNEY: JourneyModule[] = [
   ...buildPhase(FUNDAMENTOS_ORDER, 'fundamentos'),
   ...buildPhase(COURSE_ORDER, 'firewall'),

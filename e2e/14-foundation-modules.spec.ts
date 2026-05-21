@@ -81,7 +81,7 @@ test('visitar /usuarios registra a visita no localStorage', async ({ page }) => 
 
 // ── 3. Checkpoint /usuarios refletido no dashboard ────────────────────────────
 
-test('checkpoint usuario-criado é contabilizado no dashboard (1/217)', async ({ page }) => {
+test('checkpoint usuario-criado é contabilizado no dashboard (1/223)', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('workshop-checklist-v2', JSON.stringify({ 'usuario-criado': true }));
   });
@@ -89,7 +89,7 @@ test('checkpoint usuario-criado é contabilizado no dashboard (1/217)', async ({
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByText('1/217', { exact: true })).toBeVisible();
+  await expect(page.getByText('1/223', { exact: true })).toBeVisible();
 });
 
 // ── 4. Badge usuarios-master seeded aparece no dashboard ─────────────────────
@@ -178,7 +178,7 @@ test('checkpoint trouble-conectividade é contabilizado no dashboard', async ({ 
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByText('2/217', { exact: true })).toBeVisible();
+  await expect(page.getByText('2/223', { exact: true })).toBeVisible();
 });
 
 // ── 9. Badge troubleshooting-master seeded aparece no dashboard ───────────────

@@ -92,6 +92,8 @@ const PATH_TO_QUIZ_BADGE: Record<string, string> = {
   '/git':                 '🔀 Git',
   '/carreira':            '🎖️ Carreira',
   '/seguranca-avancada':  '🛡️ Segurança Avançada',
+  '/observabilidade-stack': '📊 Observabilidade',
+  '/waf-modsecurity':     '🧱 WAF',
 };
 
 type AnyModule = CourseModule | SimpleModule;

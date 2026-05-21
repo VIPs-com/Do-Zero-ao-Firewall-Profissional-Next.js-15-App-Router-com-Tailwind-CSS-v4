@@ -145,7 +145,11 @@ export const ALL_CHECKLIST_IDS = [
   'simulado-completo', 'portfolio-montado', 'entrevista-praticada',
   // Sprint SEGURANCA-PRO — SELinux, LUKS, auditd (3)
   'selinux-configurado', 'luks-criado', 'auditd-regras',
-]; // 217 checkpoints — deve bater com checklistItemsCount no dashboard
+  // Sprint OBSERVABILIDADE — Loki + Promtail + Grafana + ELK (3)
+  'loki-instalado', 'elk-stack', 'dashboards-prontos',
+  // Sprint WAF — ModSecurity + OWASP CRS (3)
+  'modsec-instalado', 'crs-configurado', 'regras-custom',
+]; // 223 checkpoints — deve bater com checklistItemsCount no dashboard
 
 /*
  * PÁGINAS DE CONTEÚDO — base do badge 'deep-diver' (Mergulhador).
@@ -353,6 +357,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (checklist['git-branch'] && checklist['git-merge'] && checklist['git-fluxo']) unlockBadge('git-master');
     if (checklist['simulado-completo'] && checklist['portfolio-montado'] && checklist['entrevista-praticada']) unlockBadge('carreira-master');
     if (checklist['selinux-configurado'] && checklist['luks-criado'] && checklist['auditd-regras']) unlockBadge('seguranca-pro-master');
+    if (checklist['loki-instalado'] && checklist['elk-stack'] && checklist['dashboards-prontos']) unlockBadge('observability-stack-master');
+    if (checklist['modsec-instalado'] && checklist['crs-configurado'] && checklist['regras-custom']) unlockBadge('waf-master');
     // Sprint SSH-PROXY — SSH como Proxy SOCKS
     if (checklist['ssh-dinamico'] && checklist['ssh-local'] && checklist['ssh-jump']) unlockBadge('ssh-proxy-master');
     if (checklist['proxmox-iso'] && checklist['proxmox-bridges'] && checklist['proxmox-vms'] && checklist['proxmox-snapshot']) unlockBadge('proxmox-pioneer');
@@ -404,8 +410,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['ssh-dinamico'] && checklist['trouble-conectividade']
     ) unlockBadge('ground-zero');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (floor(217*0.75) = 162).
-    if (Object.values(checklist).filter(v => v).length >= 162) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (floor(223*0.75) = 167).
+    if (Object.values(checklist).filter(v => v).length >= 167) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

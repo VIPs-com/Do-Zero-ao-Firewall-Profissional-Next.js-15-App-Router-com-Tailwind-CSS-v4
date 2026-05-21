@@ -73,7 +73,9 @@ export type BadgeId =
   | 'cloud-master'
   | 'git-master'
   | 'carreira-master'
-  | 'seguranca-pro-master';
+  | 'seguranca-pro-master'
+  | 'observability-stack-master'
+  | 'waf-master';
 
 export interface BadgeDef {
   icon: string;
@@ -159,4 +161,6 @@ export const BADGE_DEFS: Record<BadgeId, BadgeDef> = {
   'git-master':             { icon: '🔀', title: 'Git Master',                desc: 'Domina o controle de versão com Git: commits, branches, merge e fluxo colaborativo' },
   'carreira-master':        { icon: '🎖️', title: 'Carreira Master',           desc: 'Preparou-se para o mercado: certificações, portfólio e entrevista técnica' },
   'seguranca-pro-master':   { icon: '🛡️', title: 'Segurança Pro Master',      desc: 'Domina SELinux (MAC), criptografia de disco com LUKS e auditoria de sistema com auditd' },
+  'observability-stack-master': { icon: '📊', title: 'Observability Stack Master', desc: 'Domina o stack moderno de observabilidade: Loki + Promtail + Grafana e o ELK clássico (Elasticsearch + Logstash + Kibana)' },
+  'waf-master':             { icon: '🧱', title: 'WAF Master',                  desc: 'Configurou ModSecurity com OWASP Core Rule Set protegendo aplicações web do OWASP Top 10' },
 };

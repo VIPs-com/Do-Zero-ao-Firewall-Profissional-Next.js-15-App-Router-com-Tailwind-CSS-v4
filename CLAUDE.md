@@ -125,13 +125,13 @@ Esses valores DEVEM ser consistentes. Bugs surgem quando divergem:
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 77 — DERIVADO de `CONTENT_PAGE_PATHS` (FUNDAMENTOS+COURSE+ADVANCED_ORDER); cresce sozinho |
-| `totalTopics` | `app/dashboard/page.tsx` | 104 (Sprint SEGURANCA-PRO: +C18) |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | 217 (Sprint SEGURANCA-PRO: +3 SELinux/LUKS/auditd) |
-| Texto na Home | `app/page.tsx` | "104 tópicos práticos" + stats: 104/78/77/7 |
-| Badges | `src/data/badges.ts` | 77 (Sprint SEGURANCA-PRO: +seguranca-pro-master) |
-| searchItems | `src/data/searchItems.ts` | 297 (Sprint SEGURANCA-PRO: +3) |
-| linux-ninja threshold | `src/context/BadgeContext.tsx` | 162 (floor(217 × 0.75)) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | 80 — DERIVADO de `CONTENT_PAGE_PATHS` (FUNDAMENTOS+COURSE+ADVANCED_ORDER); cresce sozinho |
+| `totalTopics` | `app/dashboard/page.tsx` | 106 (Sprint OBSERVABILIDADE-WAF: +C19/C20) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | 223 (Sprint OBSERVABILIDADE-WAF: +6 Loki/ELK/WAF) |
+| Texto na Home | `app/page.tsx` | "106 tópicos práticos" + stats: 106/80/79/7 |
+| Badges | `src/data/badges.ts` | 79 (Sprint OBSERVABILIDADE-WAF: +observability-stack-master +waf-master) |
+| searchItems | `src/data/searchItems.ts` | 313 (Sprint OBSERVABILIDADE-WAF: +6) |
+| linux-ninja threshold | `src/context/BadgeContext.tsx` | 167 (floor(223 × 0.75)) |
 
 ---
 
@@ -552,6 +552,7 @@ Conformidade implementada no Sprint C:
 - ✅ **Sprint POLIMENTO:** (1) **deep-diver honesto** — o badge Mergulhador deixou de desbloquear com "N rotas quaisquer"; agora `CONTENT_PAGE_PATHS` é derivado dos 3 course orders e o badge exige visitar TODAS as 77 páginas de conteúdo reais (`CONTENT_PAGES_COUNT` virou derivado). (2) **Baseline axe-core** — `e2e/25-a11y-baseline.spec.ts` roda axe em 5 rotas-chave (WCAG 2.1 A/AA) como guarda de regressão com `KNOWN_BASELINE` documentado (dívida de a11y rastreada: color-contrast, aria-required-children, nested-interactive, no-focusable-content). `@axe-core/playwright` adicionado como devDependency (0 vulnerabilidades). 25 specs E2E · 258 testes vitest.
 - 🎯 **Roadmap do Diagnóstico Curricular concluído** — Fases 0, 1, 2, 3 + Polimento entregues.
 - ✅ **Sprint SEGURANCA-PRO:** novo módulo `/seguranca-avancada` na trilha Avançados (antes do capstone) — fecha os gaps de hardening pro identificados na revisão do usuário: SELinux (MAC com labels, contextos, audit2allow), LUKS (dm-crypt, key slots, backup do header, /etc/crypttab, dropbear-initramfs), auditd (regras file watch/syscall, ausearch/aureport, integração com SIEM). Badge 🛡️ `seguranca-pro-master` (77º) · checkpoints `selinux-configurado`, `luks-criado`, `auditd-regras` · module-accent #b91c1c · WindowsComparisonBox (Mandatory Integrity Control ↔ MAC; BitLocker ↔ LUKS; Event Log/Sysmon ↔ auditd). ADVANCED_ORDER 35→36, CONTENT_PAGES_COUNT 77→78 (derivado), checklistItemsCount 214→217, totalTopics 103→104, JOURNEY 77→78, badges 76→77, linux-ninja 160→162, searchItems 294→297, quiz avancados 153→157 (QUIZ_QUESTIONS 330), ROUTE_SEO 89→90; tópico C18; stats home (104/78/77) e rodapé (78/330/77/217) sincronizadas; e2e 07/10/11/14/15/16 atualizados (handoff `/resposta-incidentes` Anterior → `/seguranca-avancada`); lint ✓ · eslint ✓ · 258 testes ✓ · check-constants 7/7 ✓ · build 95 rotas · E2E (123/123). Estado: **78 módulos · 77 badges · 217 checkpoints · 104 tópicos · 330 questões · 90 rotas**.
-- ⏳ **Refinamento futuro (opcional):** sprint dedicado de a11y para zerar o `KNOWN_BASELINE` do axe · módulo de observabilidade com stack Loki/ELK real · laboratório executável embarcado.
+- ✅ **Sprint OBSERVABILIDADE-WAF:** 2 módulos novos na trilha Avançados (antes do capstone) — `/observabilidade-stack` (badge 📊 `observability-stack-master` 78º — Loki + Promtail + Grafana e ELK clássico, com tabela comparativa de quando escolher cada um) e `/waf-modsecurity` (badge 🧱 `waf-master` 79º — ModSecurity + OWASP Core Rule Set, paranoia level, anomaly scoring, DetectionOnly → On, alternativa Coraza). 3 abas cada · FluxoCard · WindowsComparisonBox (Event Log/Sysmon ↔ Loki/ELK; ASP.NET Request Filtering ↔ ModSecurity). Checkpoints `loki-instalado`, `elk-stack`, `dashboards-prontos`, `modsec-instalado`, `crs-configurado`, `regras-custom`. ADVANCED_ORDER 36→38, CONTENT_PAGES_COUNT 78→80 (derivado), checklistItemsCount 217→223, totalTopics 104→106, JOURNEY 78→80, badges 77→79, linux-ninja 162→167, searchItems 297→313 (auditoria de cobertura aproveitada para fechar gaps), quiz avancados 157→165 (QUIZ_QUESTIONS 330→338), ROUTE_SEO 90→92; tópicos C19/C20; stats home (106/80/79) e rodapé (80/338/79/223) sincronizadas; e2e 07/10/11/14/15/16 atualizados (handoff `/resposta-incidentes` Anterior → `/waf-modsecurity`); lint ✓ · eslint ✓ · 258 testes ✓ · check-constants 7/7 ✓ · build 97 rotas. Estado: **80 módulos · 79 badges · 223 checkpoints · 106 tópicos · 338 questões · 92 rotas**.
+- ⏳ **Refinamento futuro (opcional):** sprint dedicado de a11y para zerar o `KNOWN_BASELINE` do axe · laboratório executável embarcado.
 
 Para detalhes completos: docs/ (índice em docs/README.md) · QUICKSTART.md · README.md

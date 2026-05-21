@@ -313,6 +313,16 @@ export const SEARCH_ITEMS: SearchItem[] = [
   { id: 'g-selinux-mac', category: 'Glossário', title: 'SELinux & MAC', description: 'Mandatory Access Control com contextos user_u:role_r:type_t:level, booleans e audit2allow — paralelo ao AppArmor mas baseado em labels do kernel', href: '/seguranca-avancada', icon: Shield },
   { id: 'g-luks-disk-encryption', category: 'Glossário', title: 'LUKS & dm-crypt', description: 'Criptografia de disco no Linux: cryptsetup luksFormat, key slots, header backup obrigatório, /etc/crypttab e FDE em VPS via dropbear-initramfs', href: '/seguranca-avancada', icon: Lock },
 
+  // Sprint OBSERVABILIDADE — Loki + ELK (/observabilidade-stack)
+  { id: 'p-observabilidade-stack', title: 'Observabilidade Stack — Loki + ELK', description: 'Stack moderno de logs: Loki + Promtail + Grafana (indexa labels, leve) vs ELK clássico (Elasticsearch full-text search). LogQL, dashboards prontos, Loki Ruler', category: 'Página', href: '/observabilidade-stack', icon: Activity },
+  { id: 'g-loki-vs-elk', category: 'Glossário', title: 'Loki vs ELK', description: 'Loki indexa só LABELS (cheap, escala fácil); ELK indexa TUDO via Elasticsearch (full-text poderoso, RAM-hungry). Regra: logs de aplicação + métricas já em Prometheus → Loki; SIEM/full-text → ELK', href: '/observabilidade-stack', icon: Activity },
+  { id: 'g-logql', category: 'Glossário', title: 'LogQL — query language do Loki', description: 'Mistura PromQL com filtros de log. {job="nginx"} |= "ERROR" filtra; rate({app="api"} |= "panic" [5m]) calcula taxa de panic. Loki Ruler permite alertas baseados em logs', href: '/observabilidade-stack', icon: Activity },
+
+  // Sprint WAF — ModSecurity + OWASP CRS (/waf-modsecurity)
+  { id: 'p-waf-modsecurity', title: 'WAF — ModSecurity + OWASP CRS', description: 'Web Application Firewall L7 que protege contra SQLi, XSS, LFI/RFI e o OWASP Top 10 com anomaly scoring e paranoia level', category: 'Página', href: '/waf-modsecurity', icon: Shield },
+  { id: 'g-owasp-crs', category: 'Glossário', title: 'OWASP Core Rule Set (CRS)', description: 'Conjunto de ~3000 regras prontas para ModSecurity cobrindo o OWASP Top 10. Faixas numéricas: 920k protocolo, 930k LFI, 941k XSS, 942k SQLi. Usa anomaly scoring (regras somam pontos, threshold dispara block)', href: '/waf-modsecurity', icon: Shield },
+  { id: 'g-modsec-paranoia', category: 'Glossário', title: 'Paranoia Level (ModSecurity/CRS)', description: 'Quanto maior, mais regras agressivas: 1 = padrão produção, 2 = sites sensíveis, 3 = bancos, 4 = paranoia máxima (mais falsos positivos). Configurado em crs-setup.conf', href: '/waf-modsecurity', icon: Shield },
+
   // Sprint VAULT — HashiCorp Vault (/vault)
   { id: 'vault-conceito',   title: 'HashiCorp Vault — Gestão de Segredos',         description: 'Cofre centralizado: KV v2, Unseal com Shamir Secret Sharing, audit log completo e políticas HCL',         category: 'Tópico', href: '/vault', icon: Lock },
   { id: 'vault-approle',    title: 'Vault AppRole — Autenticação para Máquinas',   description: 'role-id + secret-id geram token com TTL — o método correto para apps e pipelines CI/CD',                  category: 'Tópico', href: '/vault', icon: Shield },
