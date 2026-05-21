@@ -50,8 +50,13 @@ NODE_ENV=production
 
 ## 2. Rodar a aplicação (escolha uma)
 
+> **Artefatos versionados** (Sprint ARTEFATOS-INFRA): os arquivos abaixo existem
+> prontos no repositório — `Dockerfile` (raiz), `infra/systemd/workshop-linux.service`
+> e `infra/nginx/workshop-linux.conf`. Os blocos abaixo são a referência comentada deles.
+
 ### 2a. systemd (recomendado para VPS própria)
 
+Arquivo versionado: **`infra/systemd/workshop-linux.service`** → instalar em
 `/etc/systemd/system/workshop-linux.service`:
 
 ```ini
@@ -93,34 +98,32 @@ pm2 start npm --name workshop-linux -- run start
 pm2 save && pm2 startup            # restart no boot
 ```
 
-### 2c. Docker (sem Dockerfile no repo — exemplo de referência)
+### 2c. Docker (build standalone — `Dockerfile` na raiz)
 
-```dockerfile
-FROM node:22-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+O `Dockerfile` versionado é multi-stage (`deps → build → runner`) e usa o
+**output standalone** do Next (`output: 'standalone'` em `next.config.ts`): a imagem
+final roda `node server.js` com apenas as dependências rastreadas — sem o
+`node_modules` completo, como usuário não-root, com `HEALTHCHECK` embutido.
 
-FROM node:22-alpine AS run
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package.json ./package.json
-EXPOSE 3000
-CMD ["npm", "run", "start"]
+```bash
+docker build -t workshop-linux:latest .
+docker run -d --name workshop-linux \
+  --env-file .env.production \
+  -p 127.0.0.1:3000:3000 \
+  --restart unless-stopped \
+  workshop-linux:latest
 ```
 
-> A porta **3000 nunca é exposta diretamente** — só o Nginx fala com ela (`localhost:3000`).
+> A porta **3000 só escuta em `127.0.0.1`** — quem fala com o mundo é o Nginx.
+> O `.dockerignore` mantém o contexto enxuto (sem `node_modules`, `.next`, `e2e`, `docs`).
 
 ---
 
 ## 3. Nginx — proxy reverso + TLS + cache
 
-`/etc/nginx/sites-available/workshop-linux.conf`:
+Arquivo versionado: **`infra/nginx/workshop-linux.conf`** → instalar em
+`/etc/nginx/sites-available/workshop-linux.conf` (inclui `upstream` com keepalive,
+`stub_status` para métricas e cache imutável de `/_next/static`):
 
 ```nginx
 # Redireciona todo HTTP para HTTPS

@@ -1,0 +1,50 @@
+# ============================================================================
+# Workshop Linux — unidade systemd (produção)
+# Instalar em: /etc/systemd/system/workshop-linux.service
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now workshop-linux
+#   journalctl -u workshop-linux -f
+#
+# Assume o build standalone copiado para /opt/workshop-linux (server.js na raiz).
+# Para rodar via `next start` em vez do standalone, troque ExecStart por:
+#   ExecStart=/usr/bin/npm run start
+# ============================================================================
+
+[Unit]
+Description=Workshop Linux (Next.js) — Do Zero ao Firewall Profissional
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=deploy
+Group=deploy
+WorkingDirectory=/opt/workshop-linux
+EnvironmentFile=/opt/workshop-linux/.env.production
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=127.0.0.1
+# server.js é o servidor standalone gerado por `next build` (output: standalone)
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+
+# ── Hardening do serviço (defesa em profundidade) ───────────────────────────
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+# O Next escreve cache em .next/cache — único caminho com escrita
+ReadWritePaths=/opt/workshop-linux/.next
+# Limita a superfície de rede (IPv4/IPv6 + unix sockets)
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target

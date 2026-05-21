@@ -71,6 +71,14 @@ const nextConfig: NextConfig = {
    * Use `npm run lint` (tsc --noEmit) para checar antes do build.
    */
 
+  /*
+   * Sprint ARTEFATOS-INFRA — build standalone para Docker.
+   * Gera `.next/standalone/server.js` com apenas as dependências rastreadas
+   * (imagem Docker enxuta, sem o node_modules completo). `next start` continua
+   * funcionando normalmente (standalone é aditivo) — o CI/systemd não muda.
+   */
+  output: 'standalone',
+
   // Remove header "X-Powered-By: Next.js" — não vaza versão do framework
   poweredByHeader: false,
 
