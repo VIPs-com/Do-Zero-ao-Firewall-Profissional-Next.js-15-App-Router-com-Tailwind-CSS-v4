@@ -62,7 +62,7 @@ export default function PacotesPage() {
           {/* Manual render — WindowsComparisonBox não tem prop windowsLabel/linuxLabel genérico acessível, usar inline */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-lg overflow-hidden border border-border my-6">
             <div className="bg-[rgba(0,120,212,0.06)] border-r border-border p-5">
-              <p className="font-mono text-xs font-bold mb-3 text-[#0078d4] uppercase tracking-wider">
+              <p className="font-mono text-xs font-bold mb-3 text-[#3b9eff] uppercase tracking-wider">
                 Windows — Instalar Programas
               </p>
               <pre className="font-mono text-xs text-text-2 whitespace-pre-wrap leading-relaxed">{`Baixar .exe do site → clicar em instalar

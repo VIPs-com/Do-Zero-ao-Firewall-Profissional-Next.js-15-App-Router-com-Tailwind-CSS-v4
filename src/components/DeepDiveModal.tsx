@@ -129,7 +129,7 @@ export const DeepDiveModal: React.FC<DeepDiveModalProps> = ({ dive, onClose }) =
               <button
                 onClick={handleShare}
                 aria-label={shared ? 'Link copiado' : 'Compartilhar este mergulho profundo'}
-                className="flex items-center gap-2 text-[10px] font-bold text-accent hover:underline uppercase tracking-wider transition-all active:scale-95"
+                className="flex items-center gap-2 text-[10px] font-bold text-accent underline uppercase tracking-wider transition-all active:scale-95"
               >
                 {shared ? <Check size={12} /> : <Share2 size={12} />}
                 {shared ? 'Link copiado!' : 'Compartilhar'}

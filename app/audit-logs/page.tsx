@@ -54,7 +54,7 @@ export default function AuditLogsPage() {
       </p>
 
       {/* Tabs de navegação */}
-      <div className="flex gap-2 mb-10 border-b border-border">
+      <div role="tablist" className="flex gap-2 mb-10 border-b border-border">
         {[
           { id: 'anatomia',   label: '📋 Anatomia & Análise' },
           { id: 'forense',    label: '🔍 Forense & Port Knocking' },
@@ -65,7 +65,7 @@ export default function AuditLogsPage() {
             {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               isActive(tab.id)
-                ? 'border-[var(--mod)] text-[var(--mod)]'
+                ? 'border-[var(--mod)] text-text'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
           >
@@ -196,7 +196,7 @@ export default function AuditLogsPage() {
                           {log.type === 'legit' ? (
                             <span className="text-ok flex items-center gap-1">✓ Legítimo</span>
                           ) : (
-                            <span className="text-err flex items-center gap-1">⚠️ Ataque</span>
+                            <span className="text-[#ff7b72] flex items-center gap-1">⚠️ Ataque</span>
                           )}
                         </td>
                       </tr>

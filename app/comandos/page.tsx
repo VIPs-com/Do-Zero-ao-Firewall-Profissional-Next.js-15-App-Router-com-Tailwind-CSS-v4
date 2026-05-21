@@ -584,9 +584,9 @@ export HISTTIMEFORMAT='%F %T  '          # data/hora em cada linha do history`} 
 
         <HighlightBox title="💡 Próximos passos">
           Para shell scripting de verdade (loops, funções, traps, set -euo pipefail, getopts),
-          siga para o módulo <Link href="/shell-script" className="text-accent hover:underline">📜 Shell Script</Link>.
+          siga para o módulo <Link href="/shell-script" className="text-accent underline">📜 Shell Script</Link>.
           Para comandos mais específicos (sed in-place, dd, nc, ln, gzip/tar/zip), o módulo{' '}
-          <Link href="/comandos-avancados" className="text-accent hover:underline">🔧 Comandos Avançados</Link>{' '}
+          <Link href="/comandos-avancados" className="text-accent underline">🔧 Comandos Avançados</Link>{' '}
           aprofunda cada um.
         </HighlightBox>
 

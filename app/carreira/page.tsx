@@ -79,7 +79,7 @@ export default function CarreiraPage() {
                 onClick={() => setActiveTab(tab.id as CarreiraTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >
@@ -133,7 +133,7 @@ export default function CarreiraPage() {
           </div>
           <p className="text-text-2 mb-4">
             O curso já mapeia o núcleo comum dessas provas aos seus módulos — veja o hub{' '}
-            <Link href="/certificacoes" className="text-accent hover:underline">/certificacoes</Link>,
+            <Link href="/certificacoes" className="text-accent underline">/certificacoes</Link>,
             que liga cada tópico de prova aos comandos e módulos correspondentes.
           </p>
           <WarnBox title="Não persiga certificado sem prática">
@@ -155,14 +155,14 @@ export default function CarreiraPage() {
             <li><strong>Trilha Avançados</strong> — servidores, containers, observabilidade, HA: terreno de LPIC-2 e da prática DevOps/SRE.</li>
           </ul>
           <p className="text-text-2 mb-4">
-            Use a <Link href="/jornada" className="text-accent hover:underline">/jornada</Link>{' '}
+            Use a <Link href="/jornada" className="text-accent underline">/jornada</Link>{' '}
             como linha do tempo única — ela compõe as três trilhas em ordem de dificuldade e
             marca o seu próximo módulo. Estude um bloco, faça o quiz dele, só então avance.
           </p>
           <InfoBox title="Ritmo realista">
             Melhor 45 minutos por dia, todo dia, do que uma maratona de fim de semana esquecida
             na segunda. A consistência é o que constrói retenção — e é também o que a revisão
-            espaçada do <Link href="/treino" className="text-accent hover:underline">/treino</Link> reforça.
+            espaçada do <Link href="/treino" className="text-accent underline">/treino</Link> reforça.
           </InfoBox>
         </section>
 
@@ -180,10 +180,10 @@ export default function CarreiraPage() {
           </ul>
           <p className="text-text-2 mb-4">
             Treine isso com um <strong>simulado cronometrado</strong>. No{' '}
-            <Link href="/quiz" className="text-accent hover:underline">/quiz</Link>, escolha o
+            <Link href="/quiz" className="text-accent underline">/quiz</Link>, escolha o
             modo <strong>&quot;Completo&quot;</strong>, abra um cronômetro ao lado e responda
             sem pausar — simule a pressão real. Depois, leve os erros para o{' '}
-            <Link href="/treino" className="text-accent hover:underline">/treino</Link>, que usa
+            <Link href="/treino" className="text-accent underline">/treino</Link>, que usa
             <strong> revisão espaçada (SRS)</strong> para reapresentar exatamente o que você
             errou, nos intervalos certos para fixar.
           </p>
@@ -490,11 +490,11 @@ tráfego entre elas com iptables, expondo só os serviços da DMZ.
             <div className="p-5 rounded-lg bg-bg-2 border border-border">
               <p className="font-bold text-text mb-2"><span aria-hidden="true"><Briefcase size={16} className="inline" /></span> Lab 1 — Simulado cronometrado completo</p>
               <p className="text-sm text-text-2 mb-3">
-                Escolha a trilha alvo da sua certificação e abra o <Link href="/quiz" className="text-accent hover:underline">/quiz</Link>{' '}
+                Escolha a trilha alvo da sua certificação e abra o <Link href="/quiz" className="text-accent underline">/quiz</Link>{' '}
                 no modo <strong>&quot;Completo&quot;</strong>. Ponha um cronômetro ao lado, dê a
                 si mesmo cerca de 1 a 1,5 minuto por questão e responda <strong>sem pausar</strong>,
                 simulando a pressão da prova. Ao terminar, anote a nota e os tópicos fracos; leve
-                os erros para o <Link href="/treino" className="text-accent hover:underline">/treino</Link>{' '}
+                os erros para o <Link href="/treino" className="text-accent underline">/treino</Link>{' '}
                 e repita o simulado dali a alguns dias.
               </p>
               <CodeBlock lang="bash" code={`# Abra no navegador, em sequência:

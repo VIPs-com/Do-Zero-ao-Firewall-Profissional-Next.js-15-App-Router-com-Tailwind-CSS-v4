@@ -465,7 +465,7 @@ docker compose down`}
         </section>
 
         {/* Tabs de navegação */}
-        <div className="flex gap-2 border-b border-border">
+        <div role="tablist" className="flex gap-2 border-b border-border">
           {[
             { id: 'conceito', label: '📦 Conceito & yml' },
             { id: 'redes',    label: '🌐 Redes & Volumes' },
@@ -476,7 +476,7 @@ docker compose down`}
               {...tabButtonProps(tab.id)}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
                 isActive(tab.id)
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
             >
@@ -520,7 +520,7 @@ docker compose down`}
                 { key: 'configs', desc: 'Arquivos de configuração (nginx.conf, etc.) injetados de forma controlada.' },
               ].map(s => (
                 <div key={s.key} className="flex gap-3">
-                  <code className="font-mono text-[var(--mod)] text-sm shrink-0 pt-0.5">{s.key}:</code>
+                  <code className="font-mono text-accent-2 text-sm shrink-0 pt-0.5">{s.key}:</code>
                   <p className="text-text-2 text-xs leading-relaxed">{s.desc}</p>
                 </div>
               ))}

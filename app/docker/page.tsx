@@ -222,7 +222,7 @@ export default function DockerPage() {
       />
 
       {/* Tabs de navegação */}
-      <div className="flex gap-2 mb-10 border-b border-border">
+      <div role="tablist" className="flex gap-2 mb-10 border-b border-border">
         {[
           { id: 'conceito',    label: '🐳 Conceito & Drivers' },
           { id: 'redes',       label: '⚙️ iptables & Segurança' },
@@ -233,7 +233,7 @@ export default function DockerPage() {
             {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               isActive(tab.id)
-                ? 'border-[var(--mod)] text-[var(--mod)]'
+                ? 'border-[var(--mod)] text-text'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
           >
@@ -684,15 +684,15 @@ docker network rm backend-net`} />
             <div className="space-y-2 text-xs text-text-2">
               <div className="flex gap-2">
                 <span className="text-accent shrink-0">→</span>
-                <span><Link href="/dnat" className="text-accent hover:underline">DNAT</Link> — port mapping é DNAT automático</span>
+                <span><Link href="/dnat" className="text-accent underline">DNAT</Link> — port mapping é DNAT automático</span>
               </div>
               <div className="flex gap-2">
                 <span className="text-accent shrink-0">→</span>
-                <span><Link href="/wan-nat" className="text-accent hover:underline">NAT</Link> — containers usam MASQUERADE para sair</span>
+                <span><Link href="/wan-nat" className="text-accent underline">NAT</Link> — containers usam MASQUERADE para sair</span>
               </div>
               <div className="flex gap-2">
                 <span className="text-accent shrink-0">→</span>
-                <span><Link href="/hardening" className="text-accent hover:underline">Hardening</Link> — AppArmor também afeta containers</span>
+                <span><Link href="/hardening" className="text-accent underline">Hardening</Link> — AppArmor também afeta containers</span>
               </div>
             </div>
           </div>

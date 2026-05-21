@@ -128,7 +128,7 @@ export function HorizonteBox({
         </div>
         {/* O Horizonte — o moderno */}
         <div className="p-4 bg-accent/5">
-          <span className="text-[10px] font-bold text-accent uppercase tracking-widest">
+          <span className="text-[10px] font-bold text-accent-2 uppercase tracking-widest">
             O Horizonte · O Estado da Arte
           </span>
           <p className="text-sm font-bold text-text mt-1 mb-2">{modernoLabel}</p>

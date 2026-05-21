@@ -95,7 +95,7 @@ export default function NftablesPage() {
       />
 
       {/* Tabs de navegação */}
-      <div className="flex gap-2 mb-10 border-b border-border">
+      <div role="tablist" className="flex gap-2 mb-10 border-b border-border">
         {[
           { id: 'conceito',    label: '📖 Conceito' },
           { id: 'config',      label: '⚙️ Configuração' },

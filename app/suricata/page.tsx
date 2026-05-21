@@ -95,7 +95,7 @@ export default function SuricataPage() {
 
       {/* Tabs de navegação */}
       <div className="max-w-4xl mx-auto px-4 border-b border-border">
-        <div className="flex gap-2">
+        <div role="tablist" className="flex gap-2">
           {[
             { id: 'conceito',   label: '📖 Conceito & Regras' },
             { id: 'config',     label: '⚙️ Configuração' },
@@ -106,7 +106,7 @@ export default function SuricataPage() {
               {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                 isActive(tab.id)
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
             >
@@ -151,7 +151,7 @@ export default function SuricataPage() {
                   <td className="p-3 text-text-2 font-mono text-xs">Suricata af-packet</td>
                 </tr>
                 <tr>
-                  <td className="p-3 font-mono text-[var(--mod)] font-semibold">IPS</td>
+                  <td className="p-3 font-mono text-text font-semibold">IPS</td>
                   <td className="p-3 text-text-2">Payload (L7), assinaturas, anomalias</td>
                   <td className="p-3 text-ok font-medium">✅ Bloqueia inline</td>
                   <td className="p-3 text-text-2 font-mono text-xs">Suricata NFQUEUE</td>

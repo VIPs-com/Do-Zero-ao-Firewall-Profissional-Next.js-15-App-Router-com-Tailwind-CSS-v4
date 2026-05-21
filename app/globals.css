@@ -98,7 +98,7 @@
   --module-docker:           #2496ed;  /* azul Docker oficial    */
   --module-ssh-2fa:          #f59e0b;  /* âmbar — autenticação/OTP */
   --module-compose:          #1d63ed;  /* azul escuro — Docker Compose */
-  --module-fundamentos:      #6366f1;  /* indigo — trilha iniciante */
+  --module-fundamentos:      #818cf8;  /* indigo (AA: 4.5:1 como texto em fundo escuro) — trilha iniciante */
   --module-pacotes:          #22c55e;  /* verde — instalado com sucesso */
 
   /* Auras/brilhos cyber — sombras suaves reutilizáveis */
@@ -151,6 +151,14 @@ html.light {
   code, pre {
     @apply font-mono;
   }
+
+  /* Links dentro de texto corrido (<p>/<li>) precisam de distinção além da
+     cor — WCAG 1.4.1 / regra axe link-in-text-block. Sublinhado permanente.
+     Sprint A11Y-EXT. */
+  p a, li a {
+    text-decoration-line: underline;
+    text-underline-offset: 2px;
+  }
 }
 
 /* ============================================================
@@ -194,7 +202,7 @@ html.light {
   }
 
   .code-lang {
-    @apply font-mono text-[11px] font-semibold px-2 py-1 rounded bg-accent-bg text-accent border border-accent-bd;
+    @apply font-mono text-[11px] font-semibold px-2 py-1 rounded bg-accent-bg text-accent-2 border border-accent-bd;
   }
 
   .code-block pre {
@@ -286,7 +294,7 @@ html.light {
   .module-accent-terraform          { --mod: var(--color-layer-6); }
 
   /* Sprint I.18 — Suricata IDS/IPS */
-  .module-accent-suricata           { --mod: #dc2626; }
+  .module-accent-suricata           { --mod: #f87171; }
 
   /* Sprint I.19 — eBPF & XDP */
   .module-accent-ebpf               { --mod: #8b5cf6; }
@@ -338,7 +346,7 @@ html.light {
   .module-accent-observabilidade-stack { --mod: #ec5b1c; }
   .module-accent-waf-modsecurity       { --mod: #c2410c; }
   /* Sprint FOUNDATION — Usuários e Grupos (indigo trilha Fundamentos) */
-  .module-accent-usuarios           { --mod: #6366f1; }
+  .module-accent-usuarios           { --mod: #818cf8; }
   /* Sprint FOUNDATION — Troubleshooting de Rede (sky blue) */
   .module-accent-troubleshooting    { --mod: #0ea5e9; }
 

@@ -88,7 +88,7 @@ export default function JornadaPage() {
             className="mt-4 flex items-center justify-between gap-3 p-3 rounded-xl border border-accent/40 bg-accent/10 hover:bg-accent/20 transition-colors"
           >
             <span className="min-w-0">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-accent">Continue aqui</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-accent-2">Continue aqui</span>
               <span className="block text-sm font-bold text-text truncate">{next.title}</span>
             </span>
             <ArrowRight size={18} className="text-accent shrink-0" aria-hidden="true" />

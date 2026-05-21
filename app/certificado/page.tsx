@@ -504,7 +504,7 @@ export default function CertificatePage() {
             Acompanhe badges desbloqueados, progresso do checklist e pontuação do quiz.
             O badge <strong>Course Master</strong> aguarda quem visita todos os 25 módulos.
           </p>
-          <Link href="/dashboard" className="mt-auto inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline">
+          <Link href="/dashboard" className="mt-auto inline-flex items-center gap-1.5 text-xs font-bold text-accent underline">
             Ver Dashboard →
           </Link>
         </div>

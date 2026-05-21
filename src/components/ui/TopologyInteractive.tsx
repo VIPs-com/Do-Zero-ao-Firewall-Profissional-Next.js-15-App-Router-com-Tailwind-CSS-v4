@@ -515,7 +515,7 @@ export const TopologyInteractive: React.FC = memo(() => {
             )}
           </div>
           
-          <Link href="/dashboard" className="flex items-center justify-center gap-2 text-[10px] font-bold text-accent hover:underline mt-2">
+          <Link href="/dashboard" className="flex items-center justify-center gap-2 text-[10px] font-bold text-accent underline mt-2">
             Ver todas as conquistas
             <ArrowRight size={12} />
           </Link>

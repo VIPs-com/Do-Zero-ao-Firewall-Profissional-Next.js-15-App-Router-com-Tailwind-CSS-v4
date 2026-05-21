@@ -50,7 +50,7 @@ export default function NginxSslPage() {
       />
 
       {/* Tabs de navegação */}
-      <div className="flex gap-2 mb-10 border-b border-border">
+      <div role="tablist" className="flex gap-2 mb-10 border-b border-border">
         {[
           { id: 'conceito',   label: '🌐 Reverse Proxy & SSL' },
           { id: 'config',     label: '🔒 Certbot & Headers' },
@@ -61,7 +61,7 @@ export default function NginxSslPage() {
             {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               isActive(tab.id)
-                ? 'border-[var(--mod)] text-[var(--mod)]'
+                ? 'border-[var(--mod)] text-text'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
           >
@@ -100,7 +100,7 @@ export default function NginxSslPage() {
                   <div className="text-[10px] text-text-3">:443 (HTTPS)</div>
                 </div>
                 <ArrowRight size={16} className="text-border shrink-0" />
-                <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg text-accent font-bold text-center">
+                <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg text-accent-2 font-bold text-center">
                   <div>NGINX</div>
                   <div className="text-[10px] font-normal text-accent-2">DMZ · SSL termination</div>
                 </div>

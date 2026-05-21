@@ -231,7 +231,7 @@ export default function HardeningPage() {
       />
 
       {/* Tabs de navegação */}
-      <div className="flex gap-2 mb-10 border-b border-border">
+      <div role="tablist" className="flex gap-2 mb-10 border-b border-border">
         {[
           { id: 'conceito',   label: '🔐 SSH & sysctl' },
           { id: 'apparmor',   label: '🛡️ AppArmor' },
@@ -242,7 +242,7 @@ export default function HardeningPage() {
             {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               isActive(tab.id)
-                ? 'border-[var(--mod)] text-[var(--mod)]'
+                ? 'border-[var(--mod)] text-text'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
           >

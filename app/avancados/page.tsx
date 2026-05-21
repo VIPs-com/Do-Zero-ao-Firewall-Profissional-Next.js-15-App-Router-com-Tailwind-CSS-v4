@@ -44,7 +44,7 @@ const SECTIONS: Section[] = [
   {
     version: 'v4.0',
     label: 'Infraestrutura Moderna',
-    color: 'text-accent',
+    color: 'text-accent-2',
     modules: [
       { path: '/ansible',       num: 'I01', title: 'Ansible para SysAdmins',    icon: '⚙️', checkpoint: 'ansible-instalado',       desc: 'Inventário, playbooks, roles, Ansible Galaxy e Vault' },
       { path: '/monitoring',    num: 'I02', title: 'Prometheus + Grafana',       icon: '📊', checkpoint: 'monitoring-instalado',     desc: 'node_exporter, PromQL, dashboards, Alertmanager' },
@@ -160,7 +160,7 @@ export default function AvancadosPage() {
             <p className="text-sm text-ok font-semibold flex items-center gap-2">
               <CheckCircle2 size={14} /> Trilha concluída! Badge 🌐 Advanced Master desbloqueado. Você é um SysAdmin profissional.
             </p>
-            <Link href="/jornada" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline">
+            <Link href="/jornada" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent underline">
               🧭 Veja sua Jornada Unificada completa
             </Link>
           </div>
@@ -237,7 +237,7 @@ export default function AvancadosPage() {
           <p className="text-xs text-text-3 mb-3">
             Antes dos módulos avançados, domine iptables, NAT, DNS e VPN.
           </p>
-          <Link href="/instalacao" className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent hover:underline">
+          <Link href="/instalacao" className="inline-flex items-center gap-1.5 text-xs font-semibold text-accent underline">
             Ir para o Firewall <ArrowRight size={12} />
           </Link>
         </div>

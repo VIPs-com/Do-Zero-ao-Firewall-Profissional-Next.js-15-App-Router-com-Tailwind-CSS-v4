@@ -113,7 +113,7 @@ export default function ComeceAquiPage() {
           <p className="text-text-2 mb-4">
             As 3 trilhas se encadeiam numa única linha do tempo de <strong>77 módulos</strong>,
             do primeiro comando no terminal até a cloud. A página{' '}
-            <Link href="/jornada" className="text-accent hover:underline">/jornada</Link>{' '}
+            <Link href="/jornada" className="text-accent underline">/jornada</Link>{' '}
             é o seu mapa: ela mostra <strong>onde você está</strong>, marca o que já foi
             concluído e destaca sempre o <strong>próximo passo</strong> com um botão
             &quot;Continue aqui&quot;.
@@ -148,7 +148,7 @@ export default function ComeceAquiPage() {
             ))}
           </div>
           <InfoBox title="Onde acompanhar tudo" className="mt-4">
-            O <Link href="/dashboard" className="text-accent hover:underline">Dashboard</Link>{' '}
+            O <Link href="/dashboard" className="text-accent underline">Dashboard</Link>{' '}
             reúne seu progresso: módulos visitados, checkpoints concluídos, badges, pontuação
             do quiz e a próxima conquista a mirar. Volte a ele sempre que quiser uma visão geral.
           </InfoBox>
@@ -165,7 +165,7 @@ export default function ComeceAquiPage() {
             <li>Leia o módulo e entenda o <em>porquê</em>, não só o comando.</li>
             <li>Reproduza os exemplos numa VM real (veja a trilha Fundamentos / Laboratório).</li>
             <li>Marque os <strong>checkpoints</strong> conforme executa de verdade.</li>
-            <li>Faça o <strong>quiz do módulo</strong> e revise os erros no <Link href="/treino" className="text-accent hover:underline">Treino</Link>.</li>
+            <li>Faça o <strong>quiz do módulo</strong> e revise os erros no <Link href="/treino" className="text-accent underline">Treino</Link>.</li>
             <li>Siga para o próximo módulo pelo botão no rodapé.</li>
           </ol>
         </section>

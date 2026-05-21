@@ -81,7 +81,7 @@ export default function GitPage() {
                 onClick={() => setActiveTab(tab.id as GitTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >

@@ -86,7 +86,7 @@ export default function TroubleshootingPage() {
               {...tabButtonProps('conectividade')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'conectividade'
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-3 hover:text-text-2'
               }`}
             >
@@ -96,7 +96,7 @@ export default function TroubleshootingPage() {
               {...tabButtonProps('servicos')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'servicos'
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-3 hover:text-text-2'
               }`}
             >
@@ -106,7 +106,7 @@ export default function TroubleshootingPage() {
               {...tabButtonProps('diagnostico')}
               className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'diagnostico'
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-3 hover:text-text-2'
               }`}
             >

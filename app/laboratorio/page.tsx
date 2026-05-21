@@ -52,7 +52,7 @@ export default function LaboratorioPage() {
 
       {/* Tabs de navegação */}
       <div className="border-b border-border mt-8 mb-8">
-        <div className="flex gap-2">
+        <div role="tablist" className="flex gap-2">
           {[
             { id: 'conceito',   label: '🧪 VirtualBox & Escolha' },
             { id: 'kvm',        label: '🔧 KVM / libvirt' },
@@ -63,7 +63,7 @@ export default function LaboratorioPage() {
               {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                 isActive(tab.id)
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
             >
@@ -85,7 +85,7 @@ export default function LaboratorioPage() {
                 <th className="text-left px-4 py-3 font-bold text-text-2 w-32">Critério</th>
                 <th className="text-left px-4 py-3 font-bold text-blue-400">VirtualBox</th>
                 <th className="text-left px-4 py-3 font-bold text-purple-400">KVM / libvirt</th>
-                <th className="text-left px-4 py-3 font-bold text-accent">Proxmox VE</th>
+                <th className="text-left px-4 py-3 font-bold text-accent-2">Proxmox VE</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -441,7 +441,7 @@ virsh snapshot-revert Firewall snap-base`}
                 </div>
               </div>
               <p className="text-xs text-text-3 flex-1">{item.when}</p>
-              <Link href={item.where} className="text-xs text-accent hover:underline flex items-center gap-1 mt-auto">
+              <Link href={item.where} className="text-xs text-accent underline flex items-center gap-1 mt-auto">
                 <Terminal size={12} /> {item.label}
               </Link>
             </div>

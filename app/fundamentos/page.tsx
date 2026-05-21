@@ -109,7 +109,7 @@ export default function FundamentosPage() {
             <p className="text-sm text-ok font-semibold flex items-center gap-2">
               <CheckCircle2 size={14} /> Trilha 100% concluída! Badges 🐧 Fundamentos Master e 🏁 Ground Zero desbloqueados.
             </p>
-            <Link href="/jornada" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline">
+            <Link href="/jornada" className="inline-flex items-center gap-1.5 text-xs font-bold text-accent underline">
               🧭 Trilha concluída — continue na sua Jornada Unificada
             </Link>
           </div>

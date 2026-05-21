@@ -210,12 +210,12 @@ export default function UsuariosPage() {
   return (
     <div
       className="max-w-4xl mx-auto px-4 py-12"
-      style={{ '--mod': '#6366f1' } as React.CSSProperties}
+      style={{ '--mod': '#818cf8' } as React.CSSProperties}
     >
       {/* Header ──────────────────────────────────────────────── */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
-          <span className="section-label" style={{ color: 'var(--mod)' }}>
+          <span className="section-label" style={{ color: '#a5b4fc' }}>
             Fundamentos Linux · Módulo 05-B
           </span>
         </div>

@@ -62,7 +62,7 @@ export default function WanNatPage() {
       </p>
 
       {/* Tabs de navegação */}
-      <div className="flex gap-2 mb-10 border-b border-border">
+      <div role="tablist" className="flex gap-2 mb-10 border-b border-border">
         {[
           { id: 'fundamentos', label: '🌐 SNAT & Fundamentos' },
           { id: 'servicos',    label: '⚙️ Persistência & Serviços' },
@@ -73,7 +73,7 @@ export default function WanNatPage() {
             {...tabButtonProps(tab.id)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               isActive(tab.id)
-                ? 'border-[var(--mod)] text-[var(--mod)]'
+                ? 'border-[var(--mod)] text-text'
                 : 'border-transparent text-text-2 hover:text-text'
             }`}
           >
@@ -154,7 +154,7 @@ export default function WanNatPage() {
                   <span>8.8.8.8 (Google)</span>
                 </div>
               </div>
-              <div className="text-center text-accent py-1">↓ Firewall aplica SNAT ↓</div>
+              <div className="text-center text-accent-2 py-1">↓ Firewall aplica SNAT ↓</div>
               <div>
                 <div className="text-text-3 uppercase tracking-widest text-[10px] mb-2">📦 Pacote saindo pela WAN</div>
                 <div className="flex justify-between">
@@ -423,7 +423,7 @@ export default function WanNatPage() {
             <InfoBox title="Onde ver os logs?" className="mt-4">
               <p className="text-xs text-text-3 leading-relaxed">
                 Os logs aparecem em <code>/var/log/syslog</code> ou via <code>journalctl -k | grep &quot;Acesso-80&quot;</code>.
-                Veja como analisar na página <Link href="/audit-logs" className="text-accent hover:underline">Auditoria &amp; Logs</Link>.
+                Veja como analisar na página <Link href="/audit-logs" className="text-accent underline">Auditoria &amp; Logs</Link>.
               </p>
             </InfoBox>
           </section>

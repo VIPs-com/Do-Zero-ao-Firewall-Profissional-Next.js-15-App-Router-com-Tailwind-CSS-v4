@@ -51,7 +51,7 @@ export default function MonitoringPage() {
 
       {/* Tabs de navegação */}
       <div className="max-w-4xl mx-auto px-6 border-b border-border">
-        <div className="flex gap-2">
+        <div role="tablist" className="flex gap-2">
           {([
             { id: 'conceito',   label: '📖 Conceito' },
             { id: 'config',     label: '⚙️ Stack & Dashboards' },
@@ -62,7 +62,7 @@ export default function MonitoringPage() {
               {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                 isActive(tab.id)
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
             >
@@ -118,7 +118,7 @@ export default function MonitoringPage() {
           </p>
 
           {/* Diagrama de arquitetura em ASCII/JSX */}
-          <div className="bg-bg-2 border border-border rounded-xl p-6 font-mono text-sm mb-6 overflow-x-auto">
+          <div tabIndex={0} role="region" aria-label="Diagrama de arquitetura" className="bg-bg-2 border border-border rounded-xl p-6 font-mono text-sm mb-6 overflow-x-auto">
             <div className="text-text-2 space-y-2">
               <div className="text-info font-bold mb-3">Arquitetura Prometheus</div>
               <div className="flex flex-col gap-1">

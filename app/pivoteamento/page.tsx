@@ -71,7 +71,7 @@ export default function PivotingPage() {
 
       {/* Tabs de navegação */}
       <div className="border-b border-border mt-10 mb-2">
-        <div className="flex gap-2">
+        <div role="tablist" className="flex gap-2">
           {[
             { id: 'ataque',    label: '🎭 Vetor de Ataque' },
             { id: 'defesa',    label: '🛡️ Egress & Evasão' },
@@ -82,7 +82,7 @@ export default function PivotingPage() {
               {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                 isActive(tab.id)
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
             >

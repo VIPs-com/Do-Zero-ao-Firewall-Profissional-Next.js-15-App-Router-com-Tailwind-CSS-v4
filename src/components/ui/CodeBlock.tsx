@@ -36,7 +36,9 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ code, lang = 'bash', title
           {copied ? <Check size={14} className="text-ok" /> : <Copy size={14} />}
         </button>
       </div>
-      <pre>
+      {/* tabIndex=0: torna a região rolável (overflow-x) acessível por teclado
+          — WCAG scrollable-region-focusable. aria-label dá nome à região. */}
+      <pre tabIndex={0} role="region" aria-label={`Código${lang ? ` ${lang}` : ''}`}>
         <code>{code}</code>
       </pre>
     </div>

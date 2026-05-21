@@ -47,7 +47,7 @@ export default function LDAPPage() {
 
       {/* Tabs de navegação */}
       <div className="max-w-4xl mx-auto px-6 border-b border-border">
-        <div className="flex gap-2">
+        <div role="tablist" className="flex gap-2">
           {[
             { id: 'conceito',   label: '📖 Conceito & LDIF' },
             { id: 'config',     label: '⚙️ Operações & Grupos' },
@@ -58,7 +58,7 @@ export default function LDAPPage() {
               {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                 isActive(tab.id)
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
             >

@@ -48,9 +48,9 @@ export default function WafModsecurityPage() {
           <div className="section-label mb-3">Avançados · Web Application Firewall</div>
           <h1 className="text-4xl font-bold mb-4">🧱 WAF — ModSecurity + OWASP CRS</h1>
           <p className="text-text-2 text-lg mb-6">
-            O <Link href="/nftables" className="text-accent hover:underline">iptables/nftables</Link> filtra
+            O <Link href="/nftables" className="text-accent underline">iptables/nftables</Link> filtra
             pacotes na camada 4 (IP/porta); o{' '}
-            <Link href="/suricata" className="text-accent hover:underline">Suricata</Link> inspeciona
+            <Link href="/suricata" className="text-accent underline">Suricata</Link> inspeciona
             payload mas opera de lado, passivo. O <strong>WAF</strong> é diferente: vive{' '}
             <em>dentro</em> do servidor web, entende HTTP/HTTPS por inteiro — URI, headers, cookies,
             corpo da requisição — e decide o que entra <strong>antes</strong> de chegar à aplicação.
@@ -85,7 +85,7 @@ export default function WafModsecurityPage() {
                 onClick={() => setActiveTab(tab.id as WafTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >
@@ -116,7 +116,7 @@ export default function WafModsecurityPage() {
           </ul>
           <InfoBox title="WAF, IDS/IPS e Firewall — três coisas diferentes">
             O <strong>iptables</strong> bloqueia por IP/porta (L3/L4). O{' '}
-            <Link href="/suricata" className="text-accent hover:underline">Suricata IDS/IPS</Link>{' '}
+            <Link href="/suricata" className="text-accent underline">Suricata IDS/IPS</Link>{' '}
             (L4–L7) inspeciona payload de qualquer protocolo, mas geralmente fora do servidor web
             (passivo via af-packet ou inline via NFQUEUE). O <strong>WAF</strong> vive{' '}
             <em>dentro</em> do servidor web (módulo do Nginx/Apache), decodifica HTTP por inteiro
@@ -504,7 +504,7 @@ SecRule GEO:COUNTRY_CODE "@pm CN RU KP" \\
           <h2 className="text-2xl font-bold mb-6">13. Integração com Fail2ban</h2>
           <p className="text-text-2 mb-4">
             ModSecurity bloqueia <em>uma requisição</em>; o{' '}
-            <Link href="/fail2ban" className="text-accent hover:underline">Fail2ban</Link> bane{' '}
+            <Link href="/fail2ban" className="text-accent underline">Fail2ban</Link> bane{' '}
             <em>o IP</em> reincidente direto no iptables. Combiná-los transforma uma série de
             ataques em <strong>5 min de ban</strong> (ou mais), sem onerar o WAF a cada hit:
           </p>
@@ -528,7 +528,7 @@ port     = http,https`} />
           <p className="text-text-2 mb-4">
             ModSecurity v2 (Apache) e v3 (libmodsecurity) carregam décadas de C/C++ e atritam com
             proxies modernos.{' '}
-            <strong>Coraza</strong> (<a href="https://coraza.io" className="text-accent hover:underline" target="_blank" rel="noopener noreferrer">coraza.io</a>) é uma reimplementação em <strong>Go</strong>,{' '}
+            <strong>Coraza</strong> (<a href="https://coraza.io" className="text-accent underline" target="_blank" rel="noopener noreferrer">coraza.io</a>) é uma reimplementação em <strong>Go</strong>,{' '}
             <strong>compatível com a linguagem SecRule do CRS</strong>, que embarca como biblioteca
             em qualquer proxy (Caddy, Traefik, Envoy, Gateway API). Vantagens: zero dependência
             externa, melhor performance, projeto OWASP top-level moderno.

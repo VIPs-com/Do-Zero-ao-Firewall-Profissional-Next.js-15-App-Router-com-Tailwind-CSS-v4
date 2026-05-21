@@ -79,7 +79,7 @@ export default function RedesL2L3Page() {
                 onClick={() => setActiveTab(tab.id as RedesTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >
@@ -162,7 +162,7 @@ ip -br addr show`} />
           <WarnBox title="VLAN não é firewall">
             VLAN <strong>segmenta</strong>, não <strong>filtra</strong>. Hosts de VLANs diferentes
             só se falam por um roteador — e é <em>nele</em> que você aplica
-            <Link href="/nftables" className="text-accent hover:underline"> nftables</Link>.
+            <Link href="/nftables" className="text-accent underline"> nftables</Link>.
             Sem regras, um roteador inter-VLAN simplesmente reconecta tudo o que a VLAN separou.
           </WarnBox>
 
@@ -254,9 +254,9 @@ sudo ip link set br0 up
 bridge link show
 ip -br link show type bridge`} />
           <InfoBox title="Você já viu bridges sem saber">
-            O <Link href="/proxmox" className="text-accent hover:underline">Proxmox</Link> usa
+            O <Link href="/proxmox" className="text-accent underline">Proxmox</Link> usa
             bridges <code>vmbr0</code> para ligar VMs à rede; o
-            <Link href="/docker" className="text-accent hover:underline"> Docker</Link> cria a
+            <Link href="/docker" className="text-accent underline"> Docker</Link> cria a
             <code> docker0</code> automaticamente. Entender a bridge crua é entender o que essas
             ferramentas montam por baixo. E sim — uma bridge pode ter VLANs: é assim que um host
             de virtualização entrega VLANs diferentes a VMs diferentes.

@@ -12,7 +12,7 @@ const PHASE_V2 = {
   version: 'v2.0',
   name: 'Fundamentos Linux',
   color: 'border-accent/40 bg-accent/5',
-  badgeColor: 'bg-accent/15 text-accent border-accent/30',
+  badgeColor: 'bg-accent/15 text-accent-2 border-accent/30',
   status: '16 disponíveis · completo!',
   modules: [
     { name: 'Estrutura do Sistema (FHS)',   slug: '/fhs',               available: true,  icon: '🐧', tags: ['/etc', '/var', 'mapa do sistema'] },

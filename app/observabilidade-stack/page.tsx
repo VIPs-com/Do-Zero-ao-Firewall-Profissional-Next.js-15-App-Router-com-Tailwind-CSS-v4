@@ -59,7 +59,7 @@ export default function ObservabilidadeStackPage() {
           <div className="section-label mb-3">Avançados · Logs em Escala</div>
           <h1 className="text-4xl font-bold mb-4">📊 Observabilidade Stack — Loki + ELK</h1>
           <p className="text-text-2 text-lg mb-6">
-            O módulo <Link href="/rsyslog" className="text-accent hover:underline">/rsyslog</Link>{' '}
+            O módulo <Link href="/rsyslog" className="text-accent underline">/rsyslog</Link>{' '}
             ensinou a centralizar logs com a fundação que todo Linux carrega. Quando a frota cresce
             — dezenas de servidores, contêineres efêmeros, microsserviços — o syslog puro vira um
             cemitério de arquivos <code>.gz</code>. Este módulo apresenta as <strong>duas grandes
@@ -96,7 +96,7 @@ export default function ObservabilidadeStackPage() {
                 onClick={() => setActiveTab(tab.id as OsTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >
@@ -126,7 +126,7 @@ export default function ObservabilidadeStackPage() {
             dos chunks que casaram pelos labels.
           </p>
           <InfoBox title="Loki + Prometheus = par natural">
-            Se você já roda <Link href="/monitoring" className="text-accent hover:underline">
+            Se você já roda <Link href="/monitoring" className="text-accent underline">
             Prometheus + Grafana</Link> para métricas, Loki encaixa sem fricção: mesmos labels,
             mesmo Grafana, mesma sintaxe de seletor (<code>{`{job="nginx",env="prod"}`}</code>).
             Você navega de uma métrica de erro para os logs correlacionados em um clique no Explore.
@@ -287,7 +287,7 @@ quantile_over_time(0.99,
           <h2 className="text-2xl font-bold mb-6">6. Integração com /rsyslog — sem reescrever nada</h2>
           <p className="text-text-2 mb-4">
             Se a infra já manda tudo para um servidor central via{' '}
-            <Link href="/rsyslog" className="text-accent hover:underline">rsyslog</Link>, você{' '}
+            <Link href="/rsyslog" className="text-accent underline">rsyslog</Link>, você{' '}
             <em>não precisa</em> instalar Promtail em cada host. Basta apontar o rsyslog do
             servidor central para o Promtail (que escuta syslog) — ou usar o driver de log{' '}
             <code>syslog</code> direto do Docker.
@@ -525,7 +525,7 @@ output {
           <p className="text-text-2 mb-4">
             O Filebeat tem um <strong>módulo &quot;auditd&quot;</strong> que lê o{' '}
             <code>/var/log/audit/audit.log</code> gerado pelo{' '}
-            <Link href="/seguranca-avancada" className="text-accent hover:underline">auditd</Link>{' '}
+            <Link href="/seguranca-avancada" className="text-accent underline">auditd</Link>{' '}
             e empurra cada evento já estruturado (JSON com <code>event.action</code>,{' '}
             <code>file.path</code>, <code>user.name</code>) para o Elasticsearch — e ganha um
             dashboard de segurança pronto no Kibana.
@@ -619,12 +619,12 @@ sudo systemctl restart filebeat
           <h2 className="text-2xl font-bold mb-6">17. Diferença entre /monitoring, /rsyslog e este módulo</h2>
           <ul className="text-text-2 space-y-2 mb-4 list-disc pl-5">
             <li>
-              <Link href="/monitoring" className="text-accent hover:underline">/monitoring</Link>{' '}
+              <Link href="/monitoring" className="text-accent underline">/monitoring</Link>{' '}
               cobre <strong>métricas</strong> (Prometheus + Grafana + Alertmanager) — o{' '}
               <em>primeiro pilar</em> da observabilidade.
             </li>
             <li>
-              <Link href="/rsyslog" className="text-accent hover:underline">/rsyslog</Link>{' '}
+              <Link href="/rsyslog" className="text-accent underline">/rsyslog</Link>{' '}
               cobre <strong>logs locais e centralização clássica</strong> — a fundação que todo
               Linux carrega, perfeita para um servidor ou pequena frota.
             </li>
@@ -662,7 +662,7 @@ sudo systemctl restart filebeat
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">19. Roteiro de migração — syslog clássico → Loki sem trauma</h2>
           <p className="text-text-2 mb-4">
-            A virada do <Link href="/rsyslog" className="text-accent hover:underline">rsyslog</Link>{' '}
+            A virada do <Link href="/rsyslog" className="text-accent underline">rsyslog</Link>{' '}
             para Loki não exige reescrever a configuração dos servidores — eles continuam mandando
             para o servidor central. O que muda é o que o servidor central <em>faz</em> com os
             logs:

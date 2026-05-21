@@ -79,7 +79,7 @@ export default function AltaDisponibilidadePage() {
                 onClick={() => setActiveTab(tab.id as HaTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >
@@ -132,7 +132,7 @@ export default function AltaDisponibilidadePage() {
             <li><strong>Ativo-ativo</strong> — todos os nós atendem ao mesmo tempo, com a carga dividida. Aproveita 100% do hardware e ainda balanceia, mas exige que a aplicação tolere rodar em paralelo (estado compartilhado, sessões).</li>
           </ul>
           <InfoBox title="HA não é balanceamento de carga — mas anda com ele">
-            O <Link href="/haproxy" className="text-accent hover:underline">HAProxy</Link> distribui
+            O <Link href="/haproxy" className="text-accent underline">HAProxy</Link> distribui
             requisições entre vários backends (escalabilidade). Mas o próprio HAProxy vira um SPOF.
             A receita clássica é <strong>dois HAProxy</strong> num par VRRP: o balanceador fica
             altamente disponível, e ele balanceia o resto. HA cuida do balanceador; o balanceador

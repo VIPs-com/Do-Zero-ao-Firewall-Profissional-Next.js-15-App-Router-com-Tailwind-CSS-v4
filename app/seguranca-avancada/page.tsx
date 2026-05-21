@@ -80,7 +80,7 @@ export default function SegurancaAvancadaPage() {
                 onClick={() => setActiveTab(tab.id as SaTab)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >
@@ -457,7 +457,7 @@ sudo mkfs.ext4 /dev/vg_dados/lv_data
 sudo mkswap    /dev/vg_dados/lv_swap`} />
           <p className="text-text-2 mt-3">
             Veja o módulo{' '}
-            <Link href="/lvm-raid" className="text-accent hover:underline">LVM / RAID</Link>{' '}
+            <Link href="/lvm-raid" className="text-accent underline">LVM / RAID</Link>{' '}
             para o lado LVM dessa pilha (PVs, VGs, LVs, snapshots).
           </p>
 
@@ -502,7 +502,7 @@ sudo cryptsetup luksHeaderBackup /dev/sdb1 \\
           <h2 className="text-2xl font-bold mb-6">13. journalctl e iptables LOG não bastam</h2>
           <p className="text-text-2 mb-4">
             O <code>journalctl</code> mostra <em>o que os serviços decidiram contar</em>; o{' '}
-            <Link href="/audit-logs" className="text-accent hover:underline">iptables LOG</Link>{' '}
+            <Link href="/audit-logs" className="text-accent underline">iptables LOG</Link>{' '}
             mostra o que passou pelo firewall. Nenhum dos dois responde:{' '}
             <em>&quot;quem executou <code>/bin/passwd</code> às 03:14?&quot;</em>,{' '}
             <em>&quot;quem leu <code>/etc/shadow</code> ontem?&quot;</em>,{' '}
@@ -512,7 +512,7 @@ sudo cryptsetup luksHeaderBackup /dev/sdb1 \\
             arquivos sensíveis.
           </p>
           <p className="text-text-2 mb-4">
-            Importante separar do <Link href="/audit-logs" className="text-accent hover:underline">{' '}
+            Importante separar do <Link href="/audit-logs" className="text-accent underline">{' '}
             módulo /audit-logs</Link> do curso: aquele cobre <em>logs do firewall</em> (prefixos
             iptables + journald). Este é o <strong>audit do kernel</strong> — outra camada,
             complementar.
@@ -639,7 +639,7 @@ admin_space_left   = 50          # MB livres antes da emergência
 admin_space_left_action = SUSPEND  # para de auditar (ou HALT em ambientes paranoicos)`} />
           <p className="text-text-2 my-4">
             Para mandar tudo a um SIEM central, ative o plugin <code>audisp-syslog</code> e
-            deixe o <Link href="/rsyslog" className="text-accent hover:underline">rsyslog</Link>{' '}
+            deixe o <Link href="/rsyslog" className="text-accent underline">rsyslog</Link>{' '}
             (ou um pipeline com Loki/ELK) levar os eventos adiante:
           </p>
           <CodeBlock lang="bash" code={`# Habilitar o plugin que despeja o audit no syslog

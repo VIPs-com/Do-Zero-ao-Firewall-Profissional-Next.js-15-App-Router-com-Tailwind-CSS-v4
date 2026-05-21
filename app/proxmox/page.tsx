@@ -45,7 +45,7 @@ export default function ProxmoxPage() {
 
       {/* Tabs de navegação */}
       <div className="border-b border-border mt-8 mb-8">
-        <div className="flex gap-2">
+        <div role="tablist" className="flex gap-2">
           {[
             { id: 'conceito',   label: '🖥️ Instalação & Rede' },
             { id: 'config',     label: '⚙️ VMs & Snapshots' },
@@ -56,7 +56,7 @@ export default function ProxmoxPage() {
               {...tabButtonProps(tab.id)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                 isActive(tab.id)
-                  ? 'border-[var(--mod)] text-[var(--mod)]'
+                  ? 'border-[var(--mod)] text-text'
                   : 'border-transparent text-text-2 hover:text-text'
               }`}
             >
@@ -472,9 +472,9 @@ qm migrate 100 node2 --online`}
           <div>
             <p className="font-semibold text-text-2 mb-2">Configurar o laboratório</p>
             <ul className="space-y-1">
-              <li><Link href="/wan-nat" className="text-accent hover:underline">→ WAN e NAT com iptables</Link></li>
-              <li><Link href="/dns" className="text-accent hover:underline">→ DNS BIND9 na DMZ</Link></li>
-              <li><Link href="/nginx-ssl" className="text-accent hover:underline">→ Nginx com SSL/TLS</Link></li>
+              <li><Link href="/wan-nat" className="text-accent underline">→ WAN e NAT com iptables</Link></li>
+              <li><Link href="/dns" className="text-accent underline">→ DNS BIND9 na DMZ</Link></li>
+              <li><Link href="/nginx-ssl" className="text-accent underline">→ Nginx com SSL/TLS</Link></li>
             </ul>
           </div>
         </div>

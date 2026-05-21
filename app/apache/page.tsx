@@ -61,7 +61,7 @@ export default function ApachePage() {
 
         {/* Tabs de navegação */}
         <div className="max-w-4xl mx-auto border-b border-border mb-8">
-          <div className="flex gap-2">
+          <div role="tablist" className="flex gap-2">
             {[
               { id: 'conceito',   label: '🌍 Instalação & VirtualHost' },
               { id: 'config',     label: '🔒 HTTPS & Proxy Reverso' },
@@ -72,7 +72,7 @@ export default function ApachePage() {
                 {...tabButtonProps(tab.id)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors -mb-px ${
                   isActive(tab.id)
-                    ? 'border-[var(--mod)] text-[var(--mod)]'
+                    ? 'border-[var(--mod)] text-text'
                     : 'border-transparent text-text-2 hover:text-text'
                 }`}
               >
