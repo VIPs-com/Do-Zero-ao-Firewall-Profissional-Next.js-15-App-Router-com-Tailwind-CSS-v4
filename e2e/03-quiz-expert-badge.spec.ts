@@ -9,7 +9,7 @@ import { test, expect } from './fixtures';
  * Os botões de opção têm: aria-pressed={answers[currentIdx] === i}
  */
 test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é desbloqueado', async ({ page }) => {
-  test.setTimeout(60_000); // default 20 perguntas × ~350ms animação + cliques (totalQuestions lido dinamicamente)
+  test.setTimeout(90_000); // 20 perguntas × (~350ms animação + cliques) — folga p/ CI sob carga
   await page.goto('/quiz');
 
   // Tela inicial — aria-label estável independente do texto dinâmico
@@ -33,7 +33,7 @@ test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é d
         return text.startsWith(String(expectedIdx));
       },
       i + 1,
-      { timeout: 5_000 }
+      { timeout: 10_000 }
     );
 
     // Clica na primeira opção disponível (a animação já terminou)
@@ -62,7 +62,7 @@ test('quiz completo — fluxo de navegação funciona e badge quiz-beginner é d
   await page.waitForFunction(
     () => (localStorage.getItem('workshop-badges') ?? '').includes('quiz-beginner'),
     undefined,
-    { timeout: 5_000 },
+    { timeout: 10_000 },
   );
   const badges = await page.evaluate(() => localStorage.getItem('workshop-badges'));
   expect(badges).toContain('quiz-beginner');

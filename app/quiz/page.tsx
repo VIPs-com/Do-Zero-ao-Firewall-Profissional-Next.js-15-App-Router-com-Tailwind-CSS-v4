@@ -70,7 +70,7 @@ export default function QuizPage() {
   // QUIZ-v2: histórico e erros
   const [sessionHistory, setSessionHistory] = useState<SessionRecord[]>([]);
   const [wrongCount, setWrongCount] = useState(0);
-  const { updateQuizScore, trackPageVisit } = useBadges();
+  const { updateQuizScore, trackPageVisit, unlockBadge } = useBadges();
 
   // Módulos disponíveis para a trilha selecionada (derivado, ordenado a-z)
   const moduleOptions = useMemo(() => {
@@ -144,8 +144,11 @@ export default function QuizPage() {
   const finishQuiz = useCallback(() => {
     setShowResult(true);
     // updateQuizScore() já dispara o useEffect no BadgeContext que desbloqueia
-    // 'quiz-beginner' (>0), 'quiz-expert' (≥80) e 'quiz-master' (===100).
+    // 'quiz-expert' (≥80) e 'quiz-master' (===100). 'quiz-beginner' é por
+    // CONCLUSÃO (qualquer tentativa, mesmo 0%) — o gate quizScore>0 do contexto
+    // não cobre quem zera, então desbloqueamos aqui explicitamente.
     updateQuizScore(percentage);
+    unlockBadge('quiz-beginner');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // ── QUIZ-v2: salva questões erradas ──────────────────────────────────
@@ -182,7 +185,7 @@ export default function QuizPage() {
     const next = [record, ...prev].slice(0, 3);
     localStorage.setItem(LS_HISTORY, JSON.stringify(next));
     setSessionHistory(next);
-  }, [percentage, score, QUESTIONS, answers, selectedTrail, sessionSize, updateQuizScore]);
+  }, [percentage, score, QUESTIONS, answers, selectedTrail, sessionSize, updateQuizScore, unlockBadge]);
 
   const resetQuiz = useCallback(() => {
     setAnswers({});
