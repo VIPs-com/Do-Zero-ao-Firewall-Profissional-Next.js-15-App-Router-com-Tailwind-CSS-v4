@@ -127,7 +127,7 @@ export default function AvancadosPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href={nextModule?.path ?? lastCompleted?.path ?? '/dhcp'}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-info text-white font-semibold hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#2563eb] text-white font-semibold hover:opacity-90 transition-opacity"
             >
               {completed === 0 ? '🚀 Começar agora' : allDone ? '✅ Revisar trilha' : '▶ Continuar de onde parei'}
               <ArrowRight size={14} />
@@ -246,7 +246,7 @@ export default function AvancadosPage() {
           <p className="text-xs text-text-3 mb-3">
             Comece pela Trilha Fundamentos — 17 módulos do zero ao SysAdmin.
           </p>
-          <Link href="/fundamentos" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6366f1] hover:underline">
+          <Link href="/fundamentos" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#818cf8] hover:underline">
             Ir para Fundamentos <ArrowRight size={12} />
           </Link>
         </div>

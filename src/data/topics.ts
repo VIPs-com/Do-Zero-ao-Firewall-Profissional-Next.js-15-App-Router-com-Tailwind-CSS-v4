@@ -289,6 +289,6 @@ export const TRAIL_MODULES: Record<TrailTab, string[]> = {
 // Configuração visual por trilha
 export const TRAIL_CONFIG = {
   firewall:    { label: '🔥 Firewall',    color: 'border-accent',      barColor: 'bg-accent',      activeTab: 'border-accent text-accent',         hrefStart: '/instalacao', desc: 'Do zero ao firewall profissional' },
-  fundamentos: { label: '🐧 Fundamentos', color: 'border-[#6366f1]',   barColor: 'bg-[#6366f1]',   activeTab: 'border-[#6366f1] text-[#6366f1]',   hrefStart: '/fundamentos', desc: 'Base Linux sólida para SysAdmins' },
+  fundamentos: { label: '🐧 Fundamentos', color: 'border-[#6366f1]',   barColor: 'bg-[#6366f1]',   activeTab: 'border-[#6366f1] text-[#818cf8]',   hrefStart: '/fundamentos', desc: 'Base Linux sólida para SysAdmins' },
   avancados:   { label: '🚀 Avançados',   color: 'border-info',        barColor: 'bg-info',        activeTab: 'border-info text-info',              hrefStart: '/avancados',  desc: 'Servidores, IaC e Cloud' },
 } as const;

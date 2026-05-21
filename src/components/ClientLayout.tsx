@@ -379,7 +379,7 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
 
           {/* Coluna 3 — Fundamentos v2.0 */}
           <div className="space-y-3">
-            <Link href="/fundamentos" className="text-[11px] font-semibold uppercase tracking-widest text-[#6366f1] hover:opacity-80 transition-opacity inline-block">
+            <Link href="/fundamentos" className="text-[11px] font-semibold uppercase tracking-widest text-[#818cf8] hover:opacity-80 transition-opacity inline-block">
               🐧 Fundamentos Linux →
             </Link>
             <ul className="space-y-1.5">
@@ -402,7 +402,7 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
                 </li>
               ))}
               <li className="pt-1">
-                <Link href="/fundamentos" className="text-xs text-[#6366f1] hover:opacity-80 transition-opacity">
+                <Link href="/fundamentos" className="text-xs text-[#818cf8] hover:opacity-80 transition-opacity">
                   Ver os 17 módulos →
                 </Link>
               </li>
@@ -458,7 +458,7 @@ export const ClientLayout: React.FC<{ children: React.ReactNode }> = ({ children
                 </div>
               ))}
             </div>
-            <p className="text-[11px] text-text-3 uppercase tracking-widest opacity-50 text-center">
+            <p className="text-[11px] text-text-3 uppercase tracking-widest text-center">
               © 2026 · Desenvolvido com ❤️ para a comunidade Linux
             </p>
           </div>

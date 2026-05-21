@@ -102,7 +102,7 @@ export default function LanProxyPage() {
                     'Resposta volta via ESTABLISHED — sem precisar de nova regra'
                   ].map((step, i) => (
                     <div key={i} className="flex gap-4 items-start">
-                      <div className="w-6 h-6 rounded-full bg-accent text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</div>
+                      <div className="w-6 h-6 rounded-full bg-accent-strong text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</div>
                       <p className="text-sm text-text-2">{step}</p>
                     </div>
                   ))}

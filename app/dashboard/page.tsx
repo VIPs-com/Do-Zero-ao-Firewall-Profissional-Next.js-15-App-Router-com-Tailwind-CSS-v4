@@ -323,10 +323,10 @@ export default function DashboardPage() {
           <section>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold flex items-center gap-2">
-                <span aria-hidden="true" className="text-[#6366f1]">🐧</span>
+                <span aria-hidden="true" className="text-[#818cf8]">🐧</span>
                 Trilha Fundamentos Linux
               </h2>
-              <Link href="/fundamentos" className="text-xs font-mono text-[#6366f1] hover:underline">
+              <Link href="/fundamentos" className="text-xs font-mono text-[#818cf8] hover:underline">
                 {visitedFundamentosCount} de {FUNDAMENTOS_ORDER.length}
               </Link>
             </div>
@@ -357,7 +357,7 @@ export default function DashboardPage() {
                   >
                     <span className={cn(
                       'w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0',
-                      visited ? 'bg-[#6366f1]/20 text-[#6366f1]' : 'bg-bg-3 text-text-3'
+                      visited ? 'bg-[#6366f1]/20 text-[#818cf8]' : 'bg-bg-3 text-text-3'
                     )}>
                       {visited ? '✓' : `F${String(idx + 1).padStart(2, '0')}`}
                     </span>
@@ -436,10 +436,10 @@ export default function DashboardPage() {
                       "p-6 rounded-xl border text-center transition-all",
                       isUnlocked
                         ? "bg-bg-2 border-accent/30 shadow-sm"
-                        : "bg-bg-2/50 border-border opacity-40 grayscale"
+                        : "bg-bg-2/50 border-border grayscale"
                     )}
                   >
-                    <div className="text-4xl mb-3">{badge.icon}</div>
+                    <div className={cn('text-4xl mb-3', !isUnlocked && 'opacity-50')}>{badge.icon}</div>
                     <div className="text-xs font-bold mb-1">{badge.title}</div>
                     <div className="text-[9px] text-text-3 leading-tight">{badge.desc}</div>
                   </div>
@@ -513,7 +513,7 @@ export default function DashboardPage() {
               {overallProgress < 100 ? (
                 <>
                   <div className="p-3 rounded-lg bg-bg-3 border border-border text-[11px] leading-relaxed">
-                    <strong className="text-accent block mb-1">Dica do Mestre:</strong>
+                    <strong className="text-accent-2 block mb-1">Dica do Mestre:</strong>
                     {visitedPages.size < 10
                       ? 'Explore mais tópicos técnicos para entender a teoria por trás das regras.'
                       : checklistProgress < 100

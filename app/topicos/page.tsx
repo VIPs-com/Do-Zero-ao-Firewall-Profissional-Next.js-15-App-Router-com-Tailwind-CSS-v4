@@ -238,7 +238,7 @@ export default function TopicsPage() {
               )}
             >
               {cfg.label}
-              <span className="text-[11px] font-mono opacity-60 tabular-nums">
+              <span className="text-[11px] font-mono tabular-nums">
                 {s.visited}/{s.total}
               </span>
             </button>
@@ -268,7 +268,7 @@ export default function TopicsPage() {
           </div>
           <Link
             href={tc.hrefStart}
-            className="shrink-0 text-xs font-bold px-4 py-2 rounded-lg bg-accent text-white hover:bg-accent/80 transition-colors"
+            className="shrink-0 text-xs font-bold px-4 py-2 rounded-lg bg-accent-strong text-white hover:bg-accent/80 transition-colors"
           >
             {ts.visited === 0 ? 'Começar →' : ts.visited === ts.total ? 'Revisar →' : 'Continuar →'}
           </Link>
@@ -371,46 +371,50 @@ export default function TopicsPage() {
                   isOpen && 'border-accent/30'
                 )}
               >
-                {/* Cabeçalho do módulo */}
-                <button
+                {/* Cabeçalho do módulo — o toggle (button) e o link "Abrir"
+                    são IRMÃOS, nunca aninhados (WCAG nested-interactive). */}
+                <div
                   className={cn(
-                    'w-full flex items-center gap-3 px-4 text-left hover:bg-bg-3 transition-colors',
+                    'w-full flex items-center gap-3 px-4 hover:bg-bg-3 transition-colors',
                     intentMode === 'incendio' ? 'py-2.5' : 'py-3.5'
                   )}
-                  onClick={() => toggleModule(modulePath)}
-                  aria-expanded={isOpen}
                 >
-                  <span className="text-base shrink-0">{meta.icon}</span>
-                  <span className={cn(
-                    'flex-1 text-sm font-semibold leading-snug',
-                    visited ? 'text-text' : 'text-text-2',
-                    intentMode === 'incendio' && 'truncate'
-                  )}>
-                    {meta.label}
-                  </span>
-                  {topics.length > 0 && (
-                    <span className="text-[10px] text-text-3 font-mono tabular-nums shrink-0">
-                      {topics.length} tópico{topics.length !== 1 ? 's' : ''}
+                  <button
+                    className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                    onClick={() => toggleModule(modulePath)}
+                    aria-expanded={isOpen}
+                  >
+                    <span className="text-base shrink-0">{meta.icon}</span>
+                    <span className={cn(
+                      'flex-1 text-sm font-semibold leading-snug',
+                      visited ? 'text-text' : 'text-text-2',
+                      intentMode === 'incendio' && 'truncate'
+                    )}>
+                      {meta.label}
                     </span>
-                  )}
-                  {visited && (
-                    <span className="text-ok text-[11px] font-bold shrink-0 ml-1">✓</span>
-                  )}
+                    {topics.length > 0 && (
+                      <span className="text-[10px] text-text-3 font-mono tabular-nums shrink-0">
+                        {topics.length} tópico{topics.length !== 1 ? 's' : ''}
+                      </span>
+                    )}
+                    {visited && (
+                      <span className="text-ok text-[11px] font-bold shrink-0 ml-1">✓</span>
+                    )}
+                    {topics.length > 0 ? (
+                      isOpen
+                        ? <ChevronDown size={14} className="text-text-3 shrink-0" />
+                        : <ChevronRight size={14} className="text-text-3 shrink-0" />
+                    ) : (
+                      <span className="w-3.5 shrink-0" />
+                    )}
+                  </button>
                   <Link
                     href={modulePath}
-                    onClick={e => e.stopPropagation()}
                     className="text-[11px] text-accent hover:text-accent-2 font-bold px-2.5 py-1 rounded-lg hover:bg-accent/10 transition-colors shrink-0"
                   >
                     Abrir →
                   </Link>
-                  {topics.length > 0 ? (
-                    isOpen
-                      ? <ChevronDown size={14} className="text-text-3 shrink-0" />
-                      : <ChevronRight size={14} className="text-text-3 shrink-0" />
-                  ) : (
-                    <span className="w-3.5 shrink-0" />
-                  )}
-                </button>
+                </div>
 
                 {/* Lista de tópicos (expandida) — TopicRow memoizado */}
                 {isOpen && topics.length > 0 && (

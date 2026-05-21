@@ -8,31 +8,23 @@ import AxeBuilder from '@axe-core/playwright';
  * RUNTIME: roda o motor axe-core nas 5 rotas-chave do workshop sob as tags
  * WCAG 2.1 A/AA.
  *
- * MODELO DE BASELINE (regressão, não perfeição):
- * o spec NÃO exige zero violações — exige que NENHUMA violação NOVA, fora do
- * conjunto `KNOWN_BASELINE` documentado abaixo, apareça. Assim:
- *   • estabelece cobertura axe real onde antes só havia lint estático;
- *   • trava regressões — qualquer regra WCAG nova quebra o CI na hora;
- *   • é honesto — a dívida de a11y pré-existente fica explícita e rastreável,
- *     não escondida.
- *
- * KNOWN_BASELINE — dívida de acessibilidade conhecida (alvo de um sprint
- * dedicado de a11y no futuro):
- *   - color-contrast        (serious)  contraste de tokens do tema
- *   - aria-required-children(critical) papéis ARIA a revisar
- *   - nested-interactive    (serious)  controles interativos aninhados
- *   - no-focusable-content  (minor)    elemento com role sem conteúdo focável
- * Ao corrigir qualquer uma, remova-a deste conjunto — o spec passa a protegê-la.
+ * MODELO: ZERO violações (Sprint A11Y — baseline zerado).
+ * O `KNOWN_BASELINE` ficou VAZIO: o spec agora exige zero violações WCAG
+ * 2.1 A/AA nas 5 rotas-chave. Qualquer violação (existente ou nova) quebra
+ * o CI. A dívida de a11y que antes era tolerada foi eliminada:
+ *   - color-contrast        → tokens ajustados (accent-strong p/ botões,
+ *                             text-3 elevado, indigo/info/rodapé corrigidos)
+ *   - aria-required-children → TroubleshootingCard: role="list" só com listitems
+ *   - nested-interactive     → SVG da topologia role="group"; accordions /topicos
+ *                              com toggle e link como irmãos (não aninhados)
+ *   - no-focusable-content   → sem ocorrências
+ * Se uma regressão futura introduzir dívida temporária, adicione o id ao
+ * conjunto abaixo COM um comentário e um issue — nunca silenciosamente.
  */
 
 const KEY_ROUTES = ['/', '/topicos', '/quiz', '/cheat-sheet', '/dashboard'];
 
-const KNOWN_BASELINE = new Set<string>([
-  'color-contrast',
-  'aria-required-children',
-  'nested-interactive',
-  'no-focusable-content',
-]);
+const KNOWN_BASELINE = new Set<string>([]);
 
 for (const route of KEY_ROUTES) {
   test(`a11y baseline — ${route} sem violações WCAG novas`, async ({ page }) => {

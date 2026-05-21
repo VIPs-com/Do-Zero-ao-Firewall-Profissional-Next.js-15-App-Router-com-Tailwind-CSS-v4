@@ -191,7 +191,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
                         >
                           <div className={cn(
                             "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 transition-colors",
-                            isSelected ? "bg-accent text-white" : "bg-bg-3 text-text-3 group-hover:bg-bg-2 group-hover:text-accent"
+                            isSelected ? "bg-accent-strong text-white" : "bg-bg-3 text-text-3 group-hover:bg-bg-2 group-hover:text-accent"
                           )}>
                             <Icon size={20} aria-hidden="true" />
                           </div>

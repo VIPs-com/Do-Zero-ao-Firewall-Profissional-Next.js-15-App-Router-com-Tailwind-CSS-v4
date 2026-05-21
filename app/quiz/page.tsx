@@ -35,7 +35,7 @@ function safeReadLS<T>(key: string, fallback: T): T {
 const TRAIL_OPTIONS: Array<{ value: QuizTrail | 'all'; label: string; count: number; color: string }> = [
   { value: 'all',         label: 'Todas as Trilhas', count: QUIZ_QUESTIONS.length,                                         color: 'border-accent text-accent' },
   { value: 'firewall',    label: '🔥 Firewall',       count: QUIZ_QUESTIONS.filter(q => q.trail === 'firewall').length,    color: 'border-[#e05a2b] text-[#e05a2b]' },
-  { value: 'fundamentos', label: '🐧 Fundamentos',    count: QUIZ_QUESTIONS.filter(q => q.trail === 'fundamentos').length, color: 'border-[#6366f1] text-[#6366f1]' },
+  { value: 'fundamentos', label: '🐧 Fundamentos',    count: QUIZ_QUESTIONS.filter(q => q.trail === 'fundamentos').length, color: 'border-[#6366f1] text-[#818cf8]' },
   { value: 'avancados',   label: '🚀 Avançados',      count: QUIZ_QUESTIONS.filter(q => q.trail === 'avancados').length,   color: 'border-info text-info' },
 ];
 
@@ -233,7 +233,7 @@ export default function QuizPage() {
                 className={cn(
                   'p-4 rounded-xl border-2 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
                   selectedTrail === opt.value
-                    ? cn('bg-bg-3', opt.color)
+                    ? cn('bg-bg', opt.color)
                     : 'border-border text-text-2 hover:border-accent/50',
                   opt.value === 'all' && 'col-span-2',
                 )}
@@ -257,7 +257,7 @@ export default function QuizPage() {
                   className={cn(
                     'p-3 rounded-xl border-2 text-center transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
                     sessionSize === opt.value
-                      ? 'bg-bg-3 border-accent text-accent'
+                      ? 'bg-bg border-accent text-accent'
                       : 'border-border text-text-2 hover:border-accent/50',
                   )}
                 >
@@ -523,7 +523,7 @@ export default function QuizPage() {
                 >
                   <div className={cn(
                     "w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all",
-                    !hasAnswered && (isSelected ? "border-accent bg-accent text-white" : "border-border"),
+                    !hasAnswered && (isSelected ? "border-accent bg-accent-strong text-white" : "border-border"),
                     hasAnswered && isThisCorrect && "border-ok bg-ok text-white",
                     hasAnswered && isSelected && !isThisCorrect && "border-err bg-err text-white",
                     hasAnswered && !isThisCorrect && !isSelected && "border-border",

@@ -175,7 +175,7 @@ export default function ComeceAquiPage() {
           <div className="grid sm:grid-cols-2 gap-4">
             <Link
               href="/jornada"
-              className="flex items-center justify-between gap-3 p-5 rounded-xl bg-accent text-white font-semibold hover:bg-accent-2 transition-colors"
+              className="flex items-center justify-between gap-3 p-5 rounded-xl bg-accent-strong text-white font-semibold hover:bg-accent-2 transition-colors"
             >
               <span className="flex items-center gap-2"><MapPin size={18} /> Ver minha Jornada</span>
               <ArrowRight size={18} aria-hidden="true" />

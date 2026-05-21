@@ -28,6 +28,19 @@ const layerColor: Record<number, string> = {
   7: 'border-[var(--color-layer-7)] text-[var(--color-layer-7)] bg-[var(--color-layer-7)]/10',
 };
 
+// Badge "Lx": borda colorida da camada OSI (codificação visual preservada) +
+// texto em token de alto contraste — as cores de camada 1/2/5 falham WCAG AA
+// a 10px. Sprint A11Y.
+const layerBadge: Record<number, string> = {
+  1: 'border-[var(--color-layer-1)] bg-[var(--color-layer-1)]/10',
+  2: 'border-[var(--color-layer-2)] bg-[var(--color-layer-2)]/10',
+  3: 'border-[var(--color-layer-3)] bg-[var(--color-layer-3)]/10',
+  4: 'border-[var(--color-layer-4)] bg-[var(--color-layer-4)]/10',
+  5: 'border-[var(--color-layer-5)] bg-[var(--color-layer-5)]/10',
+  6: 'border-[var(--color-layer-6)] bg-[var(--color-layer-6)]/10',
+  7: 'border-[var(--color-layer-7)] bg-[var(--color-layer-7)]/10',
+};
+
 export const TroubleshootingCard: React.FC<TroubleshootingCardProps> = ({
   title = 'SOS Troubleshooting — Escada OSI',
   steps,
@@ -36,20 +49,17 @@ export const TroubleshootingCard: React.FC<TroubleshootingCardProps> = ({
   const [expanded, setExpanded] = useState<number | null>(null);
 
   return (
-    <div
-      className={cn('rounded-xl border border-border bg-bg-2 p-6 my-8', className)}
-      role="list"
-      aria-label={title}
-    >
+    <div className={cn('rounded-xl border border-border bg-bg-2 p-6 my-8', className)}>
       {title && (
         <h4 className="text-xs font-bold text-text-3 uppercase tracking-widest mb-6">
           {title}
         </h4>
       )}
-      <div className="space-y-2">
+      <div className="space-y-2" role="list" aria-label={title}>
         {steps.map((step) => {
           const isOpen = expanded === step.layer;
           const colors = layerColor[step.layer] ?? layerColor[7];
+          const badge = layerBadge[step.layer] ?? layerBadge[7];
           return (
             <div key={step.layer} role="listitem">
               <button
@@ -63,8 +73,8 @@ export const TroubleshootingCard: React.FC<TroubleshootingCardProps> = ({
               >
                 <span
                   className={cn(
-                    'shrink-0 w-8 h-8 rounded-md border flex items-center justify-center text-[10px] font-bold',
-                    colors
+                    'shrink-0 w-8 h-8 rounded-md border flex items-center justify-center text-[10px] font-bold text-text',
+                    badge
                   )}
                   aria-hidden="true"
                 >

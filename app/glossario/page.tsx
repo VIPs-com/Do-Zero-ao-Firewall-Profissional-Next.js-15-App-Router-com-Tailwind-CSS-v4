@@ -273,7 +273,7 @@ export default function GlossaryPage() {
               className={cn(
                 "px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border",
                 activeCategory === cat 
-                  ? "bg-accent border-accent text-white" 
+                  ? "bg-accent-strong border-accent-strong text-white" 
                   : "bg-bg-2 border-border text-text-3 hover:border-accent hover:text-accent"
               )}
             >

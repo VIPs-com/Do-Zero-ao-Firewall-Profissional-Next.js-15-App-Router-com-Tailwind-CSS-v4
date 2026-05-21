@@ -203,7 +203,7 @@ du -sh /home/*
                 >
                   {checklist[item.id]
                     ? <CheckCircle2 size={18} className="text-ok shrink-0" />
-                    : <Circle size={18} className="text-text-3 shrink-0 group-hover:text-[#6366f1] transition-colors" />
+                    : <Circle size={18} className="text-text-3 shrink-0 group-hover:text-[#818cf8] transition-colors" />
                   }
                   <span className={cn('text-sm', checklist[item.id] && 'line-through text-text-3')}>
                     {item.text}

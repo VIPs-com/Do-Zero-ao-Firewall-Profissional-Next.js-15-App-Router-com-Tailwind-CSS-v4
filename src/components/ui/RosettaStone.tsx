@@ -114,7 +114,7 @@ export function RosettaStone({ onFirstInteraction }: RosettaStoneProps) {
               aria-pressed={category === cat}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors flex items-center gap-1.5 ${
                 category === cat
-                  ? 'bg-accent text-white'
+                  ? 'bg-accent-strong text-white'
                   : 'bg-bg-3 text-text-2 hover:bg-bg-2 border border-border'
               }`}
             >

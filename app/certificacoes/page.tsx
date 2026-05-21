@@ -205,7 +205,7 @@ export default function CertificacoesPage() {
 
       {/* Hero */}
       <div className="bg-gradient-to-br from-bg-2 to-[rgba(99,102,241,0.08)] border border-[rgba(99,102,241,0.25)] rounded-2xl p-8 md:p-10 mb-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[rgba(99,102,241,0.3)] text-[#6366f1] text-[10px] font-bold uppercase tracking-wider mb-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[rgba(99,102,241,0.3)] text-[#818cf8] text-[10px] font-bold uppercase tracking-wider mb-4">
           <ShieldCheck size={11} />
           Trilha de Certificação
         </div>
@@ -243,7 +243,7 @@ export default function CertificacoesPage() {
                       <Link
                         key={m.href}
                         href={m.href}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[rgba(99,102,241,0.3)] bg-[rgba(99,102,241,0.06)] text-[#6366f1] text-xs font-bold hover:bg-[rgba(99,102,241,0.14)] transition-colors"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-[rgba(99,102,241,0.3)] bg-[rgba(99,102,241,0.06)] text-[#818cf8] text-xs font-bold hover:bg-[rgba(99,102,241,0.14)] transition-colors"
                       >
                         {m.label}
                         <ArrowRight size={12} aria-hidden="true" />
@@ -284,12 +284,12 @@ export default function CertificacoesPage() {
           href="/quiz?trail=fundamentos"
           className="p-6 rounded-xl bg-[rgba(99,102,241,0.07)] border border-[rgba(99,102,241,0.25)] flex flex-col gap-2 hover:bg-[rgba(99,102,241,0.12)] transition-colors"
         >
-          <p className="font-bold text-sm text-[#6366f1]">🎯 Simulado da Fundação</p>
+          <p className="font-bold text-sm text-[#818cf8]">🎯 Simulado da Fundação</p>
           <p className="text-xs text-text-2 leading-relaxed">
             Teste o núcleo comum com o quiz da trilha Fundamentos — questões no estilo
             LPIC-1 / CompTIA Linux+.
           </p>
-          <span className="mt-auto inline-flex items-center gap-1 text-xs font-bold text-[#6366f1]">
+          <span className="mt-auto inline-flex items-center gap-1 text-xs font-bold text-[#818cf8]">
             Fazer o simulado <ArrowRight size={12} aria-hidden="true" />
           </span>
         </Link>

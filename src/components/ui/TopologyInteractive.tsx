@@ -192,7 +192,7 @@ export const TopologyInteractive: React.FC = memo(() => {
           viewBox="0 0 760 900"
           className="min-w-[600px] w-full h-auto"
           xmlns="http://www.w3.org/2000/svg"
-          role="img"
+          role="group"
           aria-labelledby="topology-title"
           aria-describedby="topology-desc"
         >

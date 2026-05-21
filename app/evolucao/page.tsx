@@ -139,7 +139,7 @@ export default function EvolutionPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <div className="bg-gradient-to-br from-bg-2 to-accent-bg/20 border border-border rounded-2xl p-12 mb-12 relative overflow-hidden">
         <div className="relative z-10">
-          <div className="inline-block bg-accent text-white font-mono text-[10px] font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-widest">
+          <div className="inline-block bg-accent-strong text-white font-mono text-[10px] font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-widest">
             Pós-Workshop · O Futuro é Agora
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-6">🚀 A Evolução Natural</h1>
@@ -149,7 +149,7 @@ export default function EvolutionPage() {
           </p>
           <Link
             href="/avancados"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-accent-2 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent-strong text-white font-semibold hover:bg-accent-2 transition-colors"
           >
             🚀 Explorar Trilha Avançada (35 módulos)
           </Link>
@@ -198,7 +198,7 @@ export default function EvolutionPage() {
               className={
                 interested
                   ? 'flex items-center gap-2 px-5 py-2.5 rounded-xl bg-ok/15 border border-ok/40 text-ok font-semibold text-sm cursor-default'
-                  : 'flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white font-semibold text-sm hover:bg-accent-2 transition-colors'
+                  : 'flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent-strong text-white font-semibold text-sm hover:bg-accent-2 transition-colors'
               }
               aria-live="polite"
             >

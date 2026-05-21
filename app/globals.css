@@ -25,6 +25,10 @@
   /* Accent (laranja — invariante entre temas) */
   --color-accent:    #e05a2b;
   --color-accent-2:  #ff8c5a;
+  /* accent-strong: laranja mais escuro p/ FUNDOS de botão — texto branco atinge
+     contraste WCAG AA 4.5:1 (white-on-#c2511f ≈ 4.69). O accent base permanece
+     para TEXTO/borda (text-accent em fundo escuro). Sprint A11Y. */
+  --color-accent-strong: #c2511f;
   --color-accent-bg: rgba(224, 90, 43, 0.10);
   --color-accent-bd: rgba(224, 90, 43, 0.28);
 
@@ -46,7 +50,9 @@
   /* Textos */
   --color-text:   #e6edf3;
   --color-text-2: #8b949e;
-  --color-text-3: #7d8590;
+  /* text-3 elevado de #7d8590 (4.08:1 em bg-3) para #8b949e — atinge AA 4.5:1
+     em todos os fundos escuros (≈4.84 em bg-3). Sprint A11Y. */
+  --color-text-3: #8b949e;
 
   /* Radii */
   --radius-sm: 6px;
@@ -196,7 +202,7 @@ html.light {
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 bg-accent text-white font-semibold px-5 py-2 rounded-md border border-accent transition-all hover:bg-accent-2 hover:border-accent-2 hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(224,90,43,0.35)];
+    @apply inline-flex items-center gap-2 bg-accent-strong text-white font-semibold px-5 py-2 rounded-md border border-accent-strong transition-all hover:bg-accent hover:border-accent hover:-translate-y-0.5 hover:shadow-[0_4px_16px_rgba(224,90,43,0.35)];
   }
 
   .btn-outline {

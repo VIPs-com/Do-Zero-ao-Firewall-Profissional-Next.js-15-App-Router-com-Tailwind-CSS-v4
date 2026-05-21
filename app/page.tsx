@@ -163,13 +163,13 @@ export default function Home() {
           <div className="flex items-center gap-3 text-center sm:text-left">
             <span className="text-2xl" aria-hidden="true">🧭</span>
             <div>
-              <p className="font-bold text-sm text-[#6366f1]">Não sabe por onde começar?</p>
+              <p className="font-bold text-sm text-[#818cf8]">Não sabe por onde começar?</p>
               <p className="text-xs text-text-2">O guia <strong>Comece Aqui</strong> explica as 3 trilhas, a Jornada Unificada e como o curso funciona — em 2 minutos.</p>
             </div>
           </div>
           <Link
             href="/comece-aqui"
-            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#6366f1] text-white font-semibold text-sm hover:bg-[#4f46e5] transition-colors"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#4f46e5] text-white font-semibold text-sm hover:bg-[#4f46e5] transition-colors"
           >
             Comece aqui
             <ArrowRight size={14} aria-hidden="true" />
@@ -191,7 +191,7 @@ export default function Home() {
           </div>
           <Link
             href="/avancados"
-            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-info text-white font-semibold text-sm hover:opacity-90 transition-opacity"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#2563eb] text-white font-semibold text-sm hover:opacity-90 transition-opacity"
           >
             Explorar
             <ArrowRight size={14} aria-hidden="true" />

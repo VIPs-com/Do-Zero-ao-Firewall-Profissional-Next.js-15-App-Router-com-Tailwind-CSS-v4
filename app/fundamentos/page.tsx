@@ -62,7 +62,7 @@ export default function FundamentosPage() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-bg-2 to-[rgba(99,102,241,0.08)] border border-[rgba(99,102,241,0.25)] rounded-2xl p-10 mb-10 relative overflow-hidden">
         <div className="relative z-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[rgba(99,102,241,0.3)] text-[#6366f1] text-[10px] font-bold uppercase tracking-wider mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[rgba(99,102,241,0.3)] text-[#818cf8] text-[10px] font-bold uppercase tracking-wider mb-4">
             <Terminal size={11} />
             Trilha v2.0 · 17 Módulos
           </div>
@@ -76,7 +76,7 @@ export default function FundamentosPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href={nextModule?.path ?? lastCompleted?.path ?? '/fhs'}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#6366f1] text-white font-semibold hover:bg-[#4f46e5] transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#4f46e5] text-white font-semibold hover:bg-[#4f46e5] transition-colors"
             >
               {completed === 0 ? '🚀 Começar agora' : allDone ? '✅ Revisar trilha' : '▶ Continuar de onde parei'}
               <ArrowRight size={14} />
@@ -86,17 +86,17 @@ export default function FundamentosPage() {
             </Link>
           </div>
         </div>
-        <BookOpen className="absolute -bottom-8 -right-8 text-[#6366f1]/5 w-52 h-52" />
+        <BookOpen className="absolute -bottom-8 -right-8 text-[#818cf8]/5 w-52 h-52" />
       </div>
 
       {/* Progress Bar */}
       <div className="mb-10 p-6 rounded-xl bg-bg-2 border border-border">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Award size={16} className="text-[#6366f1]" />
+            <Award size={16} className="text-[#818cf8]" />
             <span className="font-bold text-sm">Progresso da Trilha</span>
           </div>
-          <span className="font-mono font-bold text-sm text-[#6366f1]">{completed}/{MODULES.length}</span>
+          <span className="font-mono font-bold text-sm text-[#818cf8]">{completed}/{MODULES.length}</span>
         </div>
         <div className="h-3 bg-bg-3 rounded-full overflow-hidden">
           <div
@@ -160,7 +160,7 @@ export default function FundamentosPage() {
       {/* Hub de Quiz — Ground Zero (Sprint QUIZ-GROUND-ZERO) */}
       <section className="mt-14" aria-labelledby="hub-quiz-heading">
         <div className="flex items-center gap-2 mb-2">
-          <Target size={18} className="text-[#6366f1]" />
+          <Target size={18} className="text-[#818cf8]" />
           <h2 id="hub-quiz-heading" className="text-2xl font-bold">Hub de Quiz — Teste a Fundação</h2>
         </div>
         <p className="text-text-2 text-sm leading-relaxed mb-6 max-w-2xl">
@@ -174,7 +174,7 @@ export default function FundamentosPage() {
           href="/quiz?trail=fundamentos"
           className="flex items-center gap-4 p-5 rounded-xl border border-[rgba(99,102,241,0.4)] bg-[rgba(99,102,241,0.06)] hover:bg-[rgba(99,102,241,0.12)] transition-colors"
         >
-          <div className="shrink-0 w-12 h-12 rounded-lg bg-[#6366f1] text-white flex items-center justify-center text-xl">
+          <div className="shrink-0 w-12 h-12 rounded-lg bg-[#4f46e5] text-white flex items-center justify-center text-xl">
             🎯
           </div>
           <div className="min-w-0 flex-1">
@@ -183,7 +183,7 @@ export default function FundamentosPage() {
               Todas as {FUNDAMENTOS_QUESTIONS.length} questões dos 17 módulos · escolha o tamanho da sessão
             </p>
           </div>
-          <ArrowRight size={16} className="shrink-0 text-[#6366f1]" />
+          <ArrowRight size={16} className="shrink-0 text-[#818cf8]" />
         </Link>
 
         {/* Ground Zero desbloqueado */}
@@ -237,7 +237,7 @@ export default function FundamentosPage() {
 
       {/* Info sobre a trilha */}
       <div className="mt-6 p-4 rounded-xl bg-[rgba(99,102,241,0.05)] border border-[rgba(99,102,241,0.2)] text-xs text-text-3 flex items-start gap-2">
-        <Terminal size={13} className="shrink-0 mt-0.5 text-[#6366f1]" />
+        <Terminal size={13} className="shrink-0 mt-0.5 text-[#818cf8]" />
         <span>
           Esta trilha usa <strong className="text-text-2">Ubuntu Server 22.04 LTS</strong>.
           Todos os comandos funcionam também no Debian, Fedora e derivados.

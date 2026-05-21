@@ -378,7 +378,7 @@ export default function CheatSheetPage() {
               className={cn(
                 "px-3 py-1.5 rounded-full text-xs font-bold transition-all border",
                 activeTrail === t.id
-                  ? "bg-accent border-accent text-white"
+                  ? "bg-accent-strong border-accent-strong text-white"
                   : "bg-bg-2 border-border text-text-2 hover:border-accent hover:text-accent"
               )}
             >
@@ -407,7 +407,7 @@ export default function CheatSheetPage() {
               className={cn(
                 "px-4 py-2 rounded-full text-xs font-bold transition-all border",
                 activeFilter === filter.id
-                  ? "bg-accent border-accent text-white"
+                  ? "bg-accent-strong border-accent-strong text-white"
                   : "bg-bg-2 border-border text-text-2 hover:border-accent hover:text-accent"
               )}
             >
@@ -687,7 +687,7 @@ export default function CheatSheetPage() {
             className={cn(
               "px-3 py-1.5 rounded-full text-xs font-bold border transition-all",
               activeWorkflowSection === s.id
-                ? "bg-accent border-accent text-white"
+                ? "bg-accent-strong border-accent-strong text-white"
                 : "bg-bg-2 border-border text-text-2 hover:border-accent hover:text-accent"
             )}
           >

@@ -204,7 +204,7 @@ export const ProgressDropdown: React.FC = () => {
                           m.visited
                             ? 'bg-ok/20 text-ok'
                             : isCurrent
-                              ? 'bg-accent text-white'
+                              ? 'bg-accent-strong text-white'
                               : 'bg-bg-3 text-text-3',
                         )}
                         aria-hidden="true"
