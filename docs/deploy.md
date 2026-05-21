@@ -3,6 +3,10 @@
 > Guia de produção real para o **Workshop Linux** (Next.js 16 · App Router · CSP nonce
 > per-request). O app é **100% dinâmico** (todas as rotas `ƒ`) — `output: 'export'` não
 > é viável (o root layout lê `headers()` para o nonce do CSP, ver `proxy.ts`).
+>
+> **Onde hospedar?** Para escolher entre Home Lab (LAN-only, Tailscale, Cloudflare Tunnel)
+> e VPS — e como lidar com CGNAT, portas bloqueadas e TLS sem expor a porta 80 — veja
+> **[Exposição & Proteção (Home Lab → Produção)](deploy-homelab.md)**.
 
 ---
 

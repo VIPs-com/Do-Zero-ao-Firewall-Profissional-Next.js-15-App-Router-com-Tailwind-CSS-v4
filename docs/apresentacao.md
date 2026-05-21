@@ -8,14 +8,14 @@
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
 - **Stack:** Next.js 16.2.6, Tailwind CSS v4, TypeScript 5.8 (strict), React 19
 - **Missao:** Democratizar infraestrutura Linux com experiencia gamificada e imersiva
-- **Escopo:** 104 tópicos, 95 rotas, 77 badges, 217 checkpoints de validação · 330 questões de quiz
+- **Escopo:** 106 tópicos, ~97 rotas, 79 badges, 223 checkpoints de validação · 338 questões de quiz
 
 ---
 
 **Slide 2 — Arquitetura**
 - **Frontend:** Client + Server Components hibridos (estado reativo + metadata SEO)
 - **Persistencia:** `localStorage` como fonte unica (Backend descartado — escopo educacional)
-- **Build:** Turbopack · 95 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
+- **Build:** Turbopack · ~97 rotas · proxy.ts torna tudo dynamic (trade-off CSP)
 - **Infraestrutura:** Nginx como Proxy Reverso + PM2 para alta disponibilidade
 
 ---
@@ -29,7 +29,7 @@
 ---
 
 **Slide 4 — SEO & Performance (Sprint B)**
-- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (90 rotas) e `buildMetadata()`
+- **Fonte unica:** `src/lib/seo.ts` com `ROUTE_SEO` (92 rotas) e `buildMetadata()`
 - **Geracao automatica:** sitemap, robots, OG image, favicon, apple-icon, manifest — todos via `next/og` edge
 - **Fontes:** `next/font` self-hospedado (zero CLS, LGPD-safe)
 - **JSON-LD:** `LearningResource` no root layout
@@ -47,9 +47,9 @@
 ---
 
 **Slide 6 — Gamificacao**
-- **77 badges** desbloqueáveis (70 comuns + 7 milestones com modal + confetti)
-- **217 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
-- **Linux Ninja** 🥷 → completar 75% dos checkpoints (162/217)
+- **79 badges** desbloqueáveis (72 comuns + 7 milestones com modal + confetti)
+- **223 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
+- **Linux Ninja** 🥷 → completar 75% dos checkpoints (167/223)
 - **Mestre do Curso** 🎯 → visitar todos os 25 módulos da trilha principal
 - **MilestoneCelebration** modal + canvas-confetti (lazy-loaded, 3KB gzip)
 

@@ -65,11 +65,11 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 cheat-sheet/              ← Referência rápida de comandos
 │   ├── 📁 wireguard/                ← Módulo 10: WireGuard VPN (Sprint I.1)
 │   ├── 📁 fail2ban/                 ← Módulo 11: Fail2ban (Sprint I.2)
-│   ├── 📁 topicos/                  ← Índice dos 104 tópicos práticos
+│   ├── 📁 topicos/                  ← Índice dos 106 tópicos práticos
 │   ├── 📁 jornada/                  ← Jornada Unificada — as 3 trilhas em 78 módulos
 │   ├── 📁 comece-aqui/              ← Guia de entrada (suporte) — trilhas, jornada, checkpoints, SRS, certificado
 │   ├── 📁 ferramentas/              ← Hub de 5 utilitários (CIDR/Regex/iptables/PS1/Base64)
-│   ├── 📁 quiz/                     ← Avaliação gamificada (330 perguntas)
+│   ├── 📁 quiz/                     ← Avaliação gamificada (338 perguntas)
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   ├── 📁 certificado/              ← Certificado de conclusão
 │   │
@@ -107,7 +107,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 04-global-search.spec.ts     ← ⌘K abre, navega, ESC fecha
 │   ├── 05-theme-persistence.spec.ts ← Toggle dark/light + badge night-owl
 │   ├── 06-export-import-time-traveler.spec.ts ← Download + upload + badge
-│   ├── 07-dashboard-counters.spec.ts ← 3/214 checklist, 75% quiz, 0/76 badges
+│   ├── 07-dashboard-counters.spec.ts ← 3/223 checklist, 75% quiz, 0/79 badges
 │   ├── 08-module-nav.spec.ts         ← Navegação sequencial Anterior/Próximo
 │   └── 09-milestone-celebration.spec.ts ← Modal de conquista + confetti
 │
@@ -135,8 +135,8 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (330) de quiz/{firewall,fundamentos,avancados}.ts
-    │   ├── searchItems.ts           ← Índice da busca global (307 itens)
+    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (338) de quiz/{firewall,fundamentos,avancados}.ts
+    │   ├── searchItems.ts           ← Índice da busca global (313 itens)
     │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (36) + TRAIL_HANDOFF (fim-de-trilha)
     │   ├── journey.ts               ← Jornada Unificada: JOURNEY (78), getNextJourneyModule()
     │   └── deepDives.tsx            ← Conteúdo dos modais avançados
@@ -156,13 +156,13 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 
 | Constante | Arquivo | Valor |
 |-----------|---------|-------|
-| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **78** (derivado de `CONTENT_PAGE_PATHS`, base do badge deep-diver) |
-| `totalTopics` | `app/dashboard/page.tsx` | **104** |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | **217** (igual a `ALL_CHECKLIST_IDS.length`) |
-| Badges | `src/data/badges.ts` | **77** |
-| searchItems | `src/data/searchItems.ts` | **307** |
-| Texto na Home | `app/page.tsx` | "104 tópicos práticos" + stats: 104/78/77/7 |
-| `linux-ninja` threshold | `src/context/BadgeContext.tsx` | **162** (floor(217 × 0.75)) |
+| `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **80** (derivado de `CONTENT_PAGE_PATHS`, base do badge deep-diver) |
+| `totalTopics` | `app/dashboard/page.tsx` | **106** |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **223** (igual a `ALL_CHECKLIST_IDS.length`) |
+| Badges | `src/data/badges.ts` | **79** |
+| searchItems | `src/data/searchItems.ts` | **313** |
+| Texto na Home | `app/page.tsx` | "106 tópicos práticos" + stats: 106/80/79/7 |
+| `linux-ninja` threshold | `src/context/BadgeContext.tsx` | **167** (floor(223 × 0.75)) |
 
 Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.
 

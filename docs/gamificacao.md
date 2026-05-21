@@ -3,14 +3,14 @@
 ## Arquivo central: `src/context/BadgeContext.tsx`
 
 Gerencia quatro dimensões de progresso:
-- **Badges** — 77 conquistas desbloqueáveis (7 são milestones com modal de celebração)
+- **Badges** — 79 conquistas desbloqueáveis (7 são milestones com modal de celebração)
 - **Páginas visitadas** — para badges de exploração e course-master
-- **Checkpoints** — 217 validações técnicas concluídas (ALL_CHECKLIST_IDS)
+- **Checkpoints** — 223 validações técnicas concluídas (ALL_CHECKLIST_IDS)
 - **Quiz score** — 0–100, persiste em localStorage
 
 ---
 
-## Tabela de badges (77 total)
+## Tabela de badges (79 total)
 
 | Ícone | Título | ID | Como desbloquear |
 |---|---|---|---|
@@ -18,7 +18,7 @@ Gerencia quatro dimensões de progresso:
 | 🥇 | Expert | `quiz-expert` | Score ≥ 80% no quiz |
 | **🏆** | **Mestre** | **`quiz-master`** | **Score 100% no quiz** ★ milestone |
 | 🗺️ | Explorador | `explorer` | Visitar 5+ páginas |
-| 🤿 | Mergulhador | `deep-diver` | Visitar todas as 78 páginas de conteúdo |
+| 🤿 | Mergulhador | `deep-diver` | Visitar todas as 80 páginas de conteúdo |
 | 🦉 | Coruja Noturna | `night-owl` | Ativar o dark mode |
 | 🔍 | Investigador | `searcher` | Usar a busca global (⌘K / Ctrl+K) |
 | 🖧 | Topólogo | `topology-pro` | Clicar em 5+ elementos da topologia interativa |
@@ -29,7 +29,7 @@ Gerencia quatro dimensões de progresso:
 | 🚪 | Proxy Master | `proxy-master` | proxy-funciona + proxy-bloqueio |
 | 🔑 | Knocking Master | `knocking-master` | port-knocking |
 | **🎓** | **Graduado** | **`certificado`** | **Gerar o certificado de conclusão** ★ milestone |
-| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 162 checkpoints (75% dos 217)** ★ milestone |
+| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 167 checkpoints (75% dos 223)** ★ milestone |
 | 💀 | Pivoting Master | `pivoting-master` | pivoting-risk |
 | 🛡️ | Defensor da Topologia | `defensor-topologia` | Clicar em 3+ riscos da topologia |
 | ⏳ | Viajante do Tempo | `time-traveler` | Importar progresso via JSON |
@@ -101,7 +101,7 @@ Gerencia quatro dimensões de progresso:
 
 | Tier | Badges | Feedback |
 |------|--------|----------|
-| **Comum** | 70 badges | Toast slide-in 4s (canto inferior direito, z-50) |
+| **Comum** | 72 badges | Toast slide-in 4s (canto inferior direito, z-50) |
 | **Milestone** | 7 badges | Modal centralizado full-screen (z-200) + confetti para os 2 maiores |
 
 ```typescript
@@ -140,7 +140,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
 
 ---
 
-## Checkpoints de validação (217 IDs — ALL_CHECKLIST_IDS)
+## Checkpoints de validação (223 IDs — ALL_CHECKLIST_IDS)
 
 ```typescript
 // src/context/BadgeContext.tsx
@@ -281,7 +281,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
   // Sprint SEGURANCA-PRO — Segurança Avançada (SELinux/LUKS/auditd) (3)
   'selinux-configurado', 'luks-criado', 'auditd-regras',
 ]
-// Total: 217 checkpoints
+// Total: 223 checkpoints
 ```
 
 ---
@@ -310,7 +310,7 @@ button > svg.text-ok {
 ## Linux Ninja — Threshold
 
 ```typescript
-// 75% de 217 checkpoints = 162 (floor)
+// 75% de 223 checkpoints = 167 (floor)
 if (Object.values(checklist).filter(v => v).length >= 162) unlockBadge('linux-ninja');
 ```
 
