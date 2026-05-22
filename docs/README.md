@@ -2,6 +2,11 @@
 
 > Indice completo da documentacao do projeto.
 > Para onboarding rapido: [QUICKSTART.md](../QUICKSTART.md) · Para visao geral: [README.md](../README.md)
+>
+> 🏁 **Status (Maio 2026): projeto completo.** A trilha do zero ao avançado está inteira
+> (Fundamentos → Firewall → Avançados → Capstone DFIR, 80 módulos em `/jornada`), com
+> acessibilidade WCAG 2.1 AA validada em 100% das rotas e infraestrutura turn-key
+> versionada. Daqui em diante é **perfumaria** — melhorias opcionais, não requisitos.
 
 ---
 

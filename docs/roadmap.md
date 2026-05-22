@@ -1320,6 +1320,14 @@ Estado atual ✅ 79 badges · 223 checkpoints · 106 tópicos · 313 searchItems
 
 ⏸️ Service Worker offline — AVALIAR DEPOIS
    Complexidade desproporcional ao caso de uso.
+
+🏁 MARCO — Projeto completo (Maio 2026)
+   Trilha do zero ao avançado INTEIRA e estável:
+   Fundamentos (17) → Firewall (25) → Avançados (38) → Capstone DFIR · /jornada (80 módulos).
+   Infra turn-key (Docker standalone + infra/ VPS/Home Lab/Cloudflare Tunnel),
+   0 violações axe WCAG 2.1 AA (92 rotas), npm audit limpo, TS strict, CI verde, docs auditados.
+   → Daqui em diante é PERFUMARIA (melhorias opcionais, não requisitos):
+     lab executável embarcado · service worker · baseline AAA/teclado · i18n.
 ```
 
 ---
