@@ -258,6 +258,18 @@ O próprio curso ensina o stack (módulo `/monitoring`). Para o Go-Live:
   pluge um Sentry self-hosted ou GlitchTip.
 - **Web Vitals:** rode o Lighthouse CI contra a URL pública e acompanhe LCP/CLS/INP.
 
+### Crescimento de disco em produção (os 3 vetores)
+
+O app **não grava estado em disco** (tudo é `localStorage` no navegador) — `.next/cache`
+fica em centenas de KB e o cache de dev (`.next/dev`) **não existe em produção**. O que
+pode crescer são os **logs**:
+
+| Vetor | Controle |
+|---|---|
+| Nginx (`/var/log/nginx/*.log`) | `logrotate` — já vem instalado no Debian/Ubuntu (`/etc/logrotate.d/nginx`) |
+| journald (systemd) | auto-limitado (vacuum); opcional `SystemMaxUse=500M` em `/etc/systemd/journald.conf` |
+| **Docker `json-file`** (Compose) | **cresce sem limite por padrão** — o `docker-compose.yml` já aplica `max-size: 10m` + `max-file: 3` por serviço (teto de 30 MB cada) |
+
 ---
 
 ## 7. Vercel (alternativa zero-config)

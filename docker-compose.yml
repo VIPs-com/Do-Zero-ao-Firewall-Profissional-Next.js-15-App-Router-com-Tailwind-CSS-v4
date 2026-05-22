@@ -17,6 +17,15 @@
 # por uma conexão de SAÍDA. nginx e app ficam na rede interna do Compose.
 # ============================================================================
 
+# Rotação de logs do Docker (json-file) — SEM isto os logs de stdout dos
+# containers crescem SEM LIMITE em /var/lib/docker/.../*-json.log. Teto: 30 MB
+# por serviço (3 arquivos × 10 MB), rotação automática. Aplicado a todos abaixo.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   app:
     build:
@@ -29,6 +38,7 @@ services:
       - PORT=3000
     expose:
       - "3000"          # interno à rede do Compose — NÃO publicado no host
+    logging: *default-logging
     restart: unless-stopped
 
   nginx:
@@ -39,6 +49,7 @@ services:
       - ./infra/nginx/compose-tunnel.conf:/etc/nginx/conf.d/default.conf:ro
     expose:
       - "80"            # só o cloudflared acessa — NÃO publicado no host
+    logging: *default-logging
     restart: unless-stopped
 
   cloudflared:
@@ -46,6 +57,7 @@ services:
     command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
     depends_on:
       - nginx
+    logging: *default-logging
     restart: unless-stopped
 
 # Rede default do Compose: os serviços se resolvem por nome (app, nginx).
