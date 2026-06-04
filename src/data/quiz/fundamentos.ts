@@ -550,6 +550,40 @@ export const FUNDAMENTOS_QUESTIONS: QuizQuestion[] = [
       trail: 'fundamentos',
     },
   {
+      text: 'Qual comando ativa um arquivo de SWAP imediatamente, sem necessidade de reiniciar o sistema?',
+      badge: '💾 Discos',
+      options: ['mkswap /swapfile', 'swapon /swapfile', 'mount -t swap /swapfile /swap', 'systemctl start swap'],
+      correct: 1,
+      explanation: 'swapon ativa o SWAP imediatamente. O fluxo completo é: fallocate -l 2G /swapfile → chmod 600 /swapfile → mkswap /swapfile (formata) → swapon /swapfile (ativa). Para persistir entre reboots, adicione "/swapfile none swap sw 0 0" ao /etc/fstab.',
+      trail: 'fundamentos',
+    },
+  {
+      text: 'Por que o Kubernetes recomenda desabilitar o SWAP em todos os nós do cluster?',
+      badge: '💾 Discos',
+      options: [
+        'SWAP é incompatível com o kernel Linux 5.x ou superior',
+        'O scheduler do kubelet assume latência de memória previsível — SWAP introduz latência variável de I/O que quebra essa premissa',
+        'SWAP consome inodes e impede o containerd de criar containers',
+        'SWAP exige permissão root que o kubelet não possui por padrão',
+      ],
+      correct: 1,
+      explanation: 'O kubelet (agente do K8s em cada nó) toma decisões de agendamento assumindo comportamento previsível de memória. Com SWAP ativo, um processo pode parecer usar mais RAM do que realmente usa (parte está no swap), distorcendo o scheduler. O comando para desabilitar é: swapoff -a && sed -i "/swap/d" /etc/fstab.',
+      trail: 'fundamentos',
+    },
+  {
+      text: 'No output de `vmstat 1 5`, as colunas `si` e `so` estão consistentemente acima de zero. O que isso indica?',
+      badge: '💾 Discos',
+      options: [
+        'O sistema está com I/O de disco saudável — si/so são contadores normais de leitura/escrita',
+        'O servidor está em thrashing — trocando páginas entre RAM e SWAP continuamente, indicando falta de RAM',
+        'O filesystem está fragmentado e precisa de fsck',
+        'O SWAP está inativo — si/so mostram tentativas bloqueadas',
+      ],
+      correct: 1,
+      explanation: 'si (swap-in) = páginas lidas do disco para RAM; so (swap-out) = páginas escritas da RAM para disco. Valores acima de zero indicam que o sistema está usando SWAP ativamente. Se constantes e altos, o sistema está em thrashing — trocar páginas ininterruptamente torna tudo lento. Solução real: adicionar RAM, não mais SWAP.',
+      trail: 'fundamentos',
+    },
+  {
       text: 'Qual a diferença entre `journalctl -b` e `journalctl -b -1`?',
       badge: '📋 Logs',
       options: [

@@ -51,7 +51,7 @@ export const ALL_CHECKLIST_IDS = [
   'docker-installed', 'docker-bridge', 'docker-iptables',
   // Sprint F1-F3 — Trilha Fundamentos Linux (v2.0)
   'fhs-explorado', 'comandos-praticados', 'editores-usados',
-  'processos-controlados', 'permissoes-configuradas', 'discos-mapeados',
+  'processos-controlados', 'permissoes-configuradas', 'discos-mapeados', 'swap-criado', 'swappiness-ajustado',
   'logs-lidos', 'backup-criado', 'script-escrito', 'tarefa-agendada',
   // Sprint I.5 — SSH com 2FA (TOTP)
   'totp-instalado', 'pam-configurado', 'ssh-2fa-testado',
@@ -410,8 +410,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['ssh-dinamico'] && checklist['trouble-conectividade']
     ) unlockBadge('ground-zero');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (floor(223*0.75) = 167).
-    if (Object.values(checklist).filter(v => v).length >= 167) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (floor(225*0.75) = 168).
+    if (Object.values(checklist).filter(v => v).length >= 168) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {
