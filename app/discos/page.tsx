@@ -23,6 +23,8 @@ const CHECKLIST = [
   { id: 'discos-mapeados',      text: 'Identifiquei discos com lsblk, verifiquei espaço com df -h e entendi o conceito de mount' },
   { id: 'swap-criado',          text: 'Criei arquivo de SWAP, ativei com swapon e persisti no fstab' },
   { id: 'swappiness-ajustado',  text: 'Ajustei vm.swappiness e entendi quando não usar SWAP' },
+  { id: 'filesystem-escolhido', text: 'Formatei uma partição escolhendo o filesystem (ext4/xfs/btrfs) conscientemente' },
+  { id: 'quota-configurada',    text: 'Ativei quotas no fstab, defini limite com edquota e verifiquei com repquota' },
 ];
 
 // ── Aba 1 — Discos & Partições ──────────────────────────────────────────────
@@ -46,6 +48,15 @@ sudo umount /mnt/dados
 
 # Ver o que está montado atualmente
 mount | grep /dev/sd`;
+
+const MKFS_CMDS = `# Ao formatar você ESCOLHE o filesystem — a decisão fica gravada na partição
+sudo mkfs.ext4 /dev/sdb1      # ext4 — padrão seguro, uso geral
+sudo mkfs.xfs  /dev/sdb1      # xfs  — arquivos grandes, alta performance
+sudo mkfs.btrfs /dev/sdb1     # btrfs — snapshots e checksums nativos
+
+# Confirmar o tipo gravado:
+sudo blkid /dev/sdb1          # TYPE="ext4" | "xfs" | "btrfs"
+lsblk -f                      # coluna FSTYPE`;
 
 // ── Aba 2 — SWAP & Memória Virtual ──────────────────────────────────────────
 const FREE_H = `free -h
@@ -182,6 +193,31 @@ sudo blkid /dev/sdb1    # obter UUID do disco
 sudo nano /etc/fstab    # editar
 sudo mount -a           # testar sem reiniciar (monta tudo do fstab)`;
 
+const QUOTA_FSTAB = `# 1) Habilitar quotas na partição via /etc/fstab (opções usrquota / grpquota)
+UUID=abc123  /home  ext4  defaults,usrquota,grpquota  0  2
+
+# Remontar para aplicar sem reboot:
+sudo mount -o remount /home`;
+
+const QUOTA_SETUP = `# 2) Criar os arquivos de controle (aquota.user / aquota.group) e ligar
+sudo quotacheck -cum /home     # -c cria, -u usuário, -m sem remontar read-only
+sudo quotaon -v /home          # ativar quotas na partição
+sudo quotaon -p /home          # -p só mostra o estado (on/off)`;
+
+const QUOTA_EDIT = `# 3) Definir limites — edquota abre o editor (blocks em KB, mais limite de inodes)
+sudo edquota -u maria
+#   Filesystem  blocks  soft     hard    inodes  soft  hard
+#   /dev/sdb1   4500    500000   600000  120     0     0
+#   soft = aviso + grace period · hard = bloqueio absoluto
+
+# Versão não-interativa (scripts/Ansible):
+sudo setquota -u maria 500000 600000 0 0 /home   # softBlk hardBlk softInode hardInode
+
+# 4) Relatórios e verificação
+sudo repquota -a               # relatório de TODOS os usuários
+quota -u maria                 # o próprio usuário vê seu uso
+sudo edquota -t                # ajustar o grace period (prazo após o soft)`;
+
 export default function DiscosPage() {
   const { trackPageVisit, checklist, updateChecklist } = useBadges();
   const { activeTab, tabButtonProps, isActive } = useTabFilter<DiscosTab>('discos');
@@ -290,6 +326,79 @@ sudo mount /dev/sdb1 /mnt/dados
               O maior consumidor geralmente é <code>/var/log</code> — verifique com <code>du -sh /var/log/*</code>.
             </p>
           </InfoBox>
+        </section>
+
+        <section id="filesystems">
+          <h2 className="text-2xl font-bold mb-2">Formatar &amp; Escolher o Filesystem</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Antes de montar, a partição precisa de um <strong>sistema de arquivos</strong>. Ao rodar
+            <code> mkfs</code> você decide qual usar — e essa escolha define recursos como snapshots,
+            compressão e a capacidade de encolher o volume depois.
+          </p>
+          <CodeBlock code={MKFS_CMDS} lang="bash" title="mkfs — formatar com cada filesystem" />
+
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left p-2 text-text-2 font-medium">Critério</th>
+                  <th className="text-left p-2 text-text-2 font-medium">ext4</th>
+                  <th className="text-left p-2 text-text-2 font-medium">xfs</th>
+                  <th className="text-left p-2 text-text-2 font-medium">btrfs</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ['Maturidade',         'Altíssima (padrão)', 'Alta (RHEL default)', 'Boa (em evolução)'],
+                  ['Redimensionar',      'Cresce e encolhe',   'Só cresce ⚠️',        'Cresce e encolhe'],
+                  ['Snapshots nativos',  'Não',                'Não',                 'Sim (CoW)'],
+                  ['Checksums de dados', 'Só metadados',       'Só metadados',        'Dados + metadados'],
+                  ['Compressão',         'Não',                'Não',                 'Sim (zstd/lzo)'],
+                  ['Caso de uso ideal',  'Root, uso geral',    'Arquivos grandes, BD','NAS, snapshots'],
+                ].map(([crit, e, x, b]) => (
+                  <tr key={crit} className="hover:bg-bg-2 transition-colors">
+                    <td className="p-2 text-text-2 font-medium">{crit}</td>
+                    <td className="p-2 text-text">{e}</td>
+                    <td className="p-2 text-text">{x}</td>
+                    <td className="p-2 text-text">{b}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <InfoBox className="mt-4" title="Qual escolher?">
+            <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
+              <li><strong>ext4</strong> — a escolha segura. Padrão no Debian/Ubuntu, ideal para o filesystem raiz e uso geral.</li>
+              <li><strong>xfs</strong> — alta performance com arquivos grandes e paralelismo (default do RHEL/Rocky). Ótimo para bancos de dados e mídia.</li>
+              <li><strong>btrfs</strong> — quando você quer snapshots, subvolumes e integridade de dados (default do openSUSE, base do Synology/NAS).</li>
+            </ul>
+          </InfoBox>
+
+          <WarnBox className="mt-4" title="xfs só cresce, nunca encolhe">
+            <p className="text-sm text-text-2">
+              <code>xfs_growfs</code> aumenta um filesystem xfs online, mas <strong>não existe</strong>
+              operação para reduzi-lo. Se há chance de precisar encolher a partição depois, prefira
+              <code> ext4</code> (com <code>resize2fs</code>) ou <code>btrfs</code>. Para flexibilidade
+              total de redimensionamento, combine qualquer um deles com <strong>LVM</strong> (veja
+              &quot;Para ir além&quot; na aba fstab).
+            </p>
+          </WarnBox>
+
+          <WindowsComparisonBox
+            className="mt-4"
+            windowsCode={`NTFS  → filesystem padrão do Windows
+ReFS  → Resilient FS (Server/Pro) com
+        checksums e integridade de dados
+# Formatar: format F: /FS:NTFS
+# Escolha feita no assistente de formatação`}
+            linuxCode={`# Linux: você escolhe explicitamente no mkfs
+mkfs.ext4  /dev/sdb1   # ~ NTFS (uso geral)
+mkfs.btrfs /dev/sdb1   # ~ ReFS (checksums, snapshots)
+mkfs.xfs   /dev/sdb1   # alta performance`}
+            windowsLabel="Windows — NTFS / ReFS"
+            linuxLabel="Linux — ext4 / xfs / btrfs"
+          />
         </section>
 
         <section id="mount">
@@ -548,14 +657,74 @@ swapon /swapfile   -p 0   # disco (fallback)`}
           </WarnBox>
         </section>
 
-        <HighlightBox title="🔜 Próxima versão deste módulo">
-          <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
-            <li>LVM — Logical Volume Manager para redimensionar partições online</li>
-            <li>RAID com mdadm — redundância de dados sem hardware especial</li>
-            <li>ext4 vs xfs vs btrfs — quando usar cada filesystem</li>
-            <li>quotas de disco por usuário (edquota)</li>
-            <li>dd — clonar discos e criar imagens byte a byte</li>
-          </ul>
+        <section id="quotas">
+          <h2 className="text-2xl font-bold mb-2">Quotas de Disco por Usuário</h2>
+          <p className="text-text-2 text-sm mb-4">
+            Em servidores multiusuário (estações compartilhadas, <code>/home</code> de várias contas),
+            quotas impedem que um único usuário encha o disco. Você define limites <strong>soft</strong>
+            (aviso) e <strong>hard</strong> (bloqueio) por espaço e por número de arquivos (inodes).
+          </p>
+
+          <FluxoCard
+            title="Fluxo: ativar quotas em /home"
+            steps={[
+              { label: 'fstab usrquota', sub: 'opção de montagem', icon: <Database size={14} />, color: 'border-info/50' },
+              { label: 'quotacheck',     sub: 'criar aquota.*',     icon: <Search size={14} />,   color: 'border-accent/50' },
+              { label: 'quotaon',        sub: 'ativar na partição', icon: <HardDrive size={14} />, color: 'border-warn/50' },
+              { label: 'edquota',        sub: 'definir limites',    icon: <Link2 size={14} />,    color: 'border-ok/50' },
+              { label: 'repquota',       sub: 'relatório de uso',   icon: <MemoryStick size={14} />, color: 'border-ok/70' },
+            ]}
+          />
+
+          <CodeBlock code={QUOTA_FSTAB} lang="bash" title="1) Habilitar no /etc/fstab" />
+          <CodeBlock code={QUOTA_SETUP} lang="bash" title="2) quotacheck + quotaon" className="mt-4" />
+          <CodeBlock code={QUOTA_EDIT} lang="bash" title="3) edquota / setquota / repquota" className="mt-4" />
+
+          <InfoBox className="mt-4" title="soft vs hard vs grace period">
+            <p className="text-sm text-text-2">
+              O limite <strong>soft</strong> pode ser ultrapassado temporariamente durante o
+              <strong> grace period</strong> (padrão 7 dias, ajustável com <code>edquota -t</code>).
+              Passado o prazo, o soft passa a se comportar como hard. O limite <strong>hard</strong>
+              nunca pode ser excedido — a escrita falha na hora com &quot;disk quota exceeded&quot;.
+            </p>
+          </InfoBox>
+
+          <WindowsComparisonBox
+            className="mt-4"
+            windowsCode={`Cotas de Disco (NTFS)
+  → Propriedades do volume → aba Cota
+  → "Negar espaço a usuários que excedam"
+  → Nível de aviso + limite de cota
+FSRM (File Server Resource Manager)
+  → cotas por pasta com templates`}
+            linuxCode={`# Linux: quota por usuário/grupo na partição
+edquota -u maria        # editar limites
+setquota -u maria 500000 600000 0 0 /home
+repquota -a             # relatório geral
+quota -u maria          # uso do usuário`}
+            windowsLabel="Windows — Cotas NTFS / FSRM"
+            linuxLabel="Linux — quota / edquota"
+          />
+        </section>
+
+        <HighlightBox title="🚀 Para ir além">
+          <p className="text-sm text-text-2 mb-3">
+            Estes tópicos avançados de armazenamento têm módulos dedicados no Workshop:
+          </p>
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Link href="/lvm-raid" className="block p-3 rounded-lg bg-bg-3 border border-border hover:border-accent/50 transition-colors no-underline">
+              <p className="font-bold text-sm text-text">💽 LVM &amp; RAID</p>
+              <p className="text-xs text-text-2 mt-1">Redimensionar volumes online e redundância com mdadm</p>
+            </Link>
+            <Link href="/comandos-avancados" className="block p-3 rounded-lg bg-bg-3 border border-border hover:border-accent/50 transition-colors no-underline">
+              <p className="font-bold text-sm text-text">🔧 dd</p>
+              <p className="text-xs text-text-2 mt-1">Clonar discos e criar imagens byte a byte</p>
+            </Link>
+            <Link href="/seguranca-avancada" className="block p-3 rounded-lg bg-bg-3 border border-border hover:border-accent/50 transition-colors no-underline">
+              <p className="font-bold text-sm text-text">🔒 LUKS</p>
+              <p className="text-xs text-text-2 mt-1">Criptografia de disco com dm-crypt</p>
+            </Link>
+          </div>
         </HighlightBox>
 
         {/* ── Erros Comuns Discos ── */}
@@ -636,6 +805,36 @@ ps aux --sort=-%mem | head -10
 
 # Verificar /proc/meminfo completo
 cat /proc/meminfo`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 4 — Formatar e Comparar Filesystems</p>
+              <CodeBlock lang="bash" code={`# Em um disco de teste (NUNCA o do sistema!) — ex: loop device
+sudo dd if=/dev/zero of=/tmp/fs-lab.img bs=1M count=200
+
+# Formatar com cada filesystem e comparar:
+mkfs.ext4 /tmp/fs-lab.img    && blkid /tmp/fs-lab.img
+mkfs.xfs -f /tmp/fs-lab.img  && blkid /tmp/fs-lab.img
+mkfs.btrfs -f /tmp/fs-lab.img && blkid /tmp/fs-lab.img
+# Repare como a coluna TYPE muda. Qual deles permite snapshots?
+
+rm /tmp/fs-lab.img`} />
+            </div>
+            <div className="p-4 rounded-xl bg-bg-2 border border-border">
+              <p className="font-bold text-sm mb-2">Lab 5 — Configurar Quota de Disco</p>
+              <CodeBlock lang="bash" code={`sudo apt install quota -y
+
+# Habilitar usrquota no /etc/fstab (ex: na partição /home) e remontar
+sudo nano /etc/fstab        # adicionar ,usrquota nas opções
+sudo mount -o remount /home
+
+# Criar arquivos de controle e ativar
+sudo quotacheck -cum /home
+sudo quotaon -v /home
+
+# Definir limite para um usuário e verificar
+sudo edquota -u $USER       # ajustar soft/hard
+sudo repquota -a            # relatório
+quota -u $USER              # ver seu próprio uso`} />
             </div>
           </div>
         </section>

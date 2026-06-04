@@ -53,7 +53,7 @@ describe('FIREWALL_QUESTIONS', () => {
 
 // ── FUNDAMENTOS ───────────────────────────────────────────────────────────
 describe('FUNDAMENTOS_QUESTIONS', () => {
-  it('tem exatamente 71 questões', () => { expect(FUNDAMENTOS_QUESTIONS).toHaveLength(71); });
+  it('tem exatamente 75 questões', () => { expect(FUNDAMENTOS_QUESTIONS).toHaveLength(75); });
   it("todas têm trail: 'fundamentos'", () => {
     FUNDAMENTOS_QUESTIONS.forEach((q, i) => expect(q.trail, `questão ${i}`).toBe('fundamentos'));
   });
@@ -71,7 +71,7 @@ describe('AVANCADOS_QUESTIONS', () => {
 
 // ── BARREL ────────────────────────────────────────────────────────────────
 describe('QUIZ_QUESTIONS (barrel)', () => {
-  it('total = 341 (105 + 71 + 165)', () => { expect(QUIZ_QUESTIONS).toHaveLength(341); });
+  it('total = 345 (105 + 75 + 165)', () => { expect(QUIZ_QUESTIONS).toHaveLength(345); });
 
   it('nenhuma text duplicada em todo o array', () => {
     const texts = QUIZ_QUESTIONS.map(q => q.text);
@@ -84,13 +84,13 @@ describe('QUIZ_QUESTIONS (barrel)', () => {
       expect(QUIZ_QUESTIONS[i].trail, `[${i}]`).toBe('firewall');
   });
 
-  it('ordem: segundo bloco é fundamentos (índices 105..175)', () => {
-    for (let i = 105; i < 176; i++)
+  it('ordem: segundo bloco é fundamentos (índices 105..179)', () => {
+    for (let i = 105; i < 180; i++)
       expect(QUIZ_QUESTIONS[i].trail, `[${i}]`).toBe('fundamentos');
   });
 
-  it('ordem: terceiro bloco é avancados (índices 176..340)', () => {
-    for (let i = 176; i < 341; i++)
+  it('ordem: terceiro bloco é avancados (índices 180..344)', () => {
+    for (let i = 180; i < 345; i++)
       expect(QUIZ_QUESTIONS[i].trail, `[${i}]`).toBe('avancados');
   });
 });
