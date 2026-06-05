@@ -8,7 +8,7 @@
 - **Projeto:** Workshop Linux — Do Zero ao Firewall Profissional
 - **Stack:** Next.js 16.2.6, Tailwind CSS v4, TypeScript 5.8 (strict), React 19
 - **Missao:** Democratizar infraestrutura Linux com experiencia gamificada e imersiva
-- **Escopo:** 106 tópicos, ~97 rotas, 79 badges, 223 checkpoints de validação · 338 questões de quiz
+- **Escopo:** 106 tópicos, ~97 rotas, 79 badges, 227 checkpoints de validação · 345 questões de quiz
 
 ---
 
@@ -48,8 +48,8 @@
 
 **Slide 6 — Gamificacao**
 - **79 badges** desbloqueáveis (72 comuns + 7 milestones com modal + confetti)
-- **223 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
-- **Linux Ninja** 🥷 → completar 75% dos checkpoints (167/223)
+- **227 checkpoints** técnicos de validação (ALL_CHECKLIST_IDS)
+- **Linux Ninja** 🥷 → completar 75% dos checkpoints (170/227)
 - **Mestre do Curso** 🎯 → visitar todos os 25 módulos da trilha principal
 - **MilestoneCelebration** modal + canvas-confetti (lazy-loaded, 3KB gzip)
 

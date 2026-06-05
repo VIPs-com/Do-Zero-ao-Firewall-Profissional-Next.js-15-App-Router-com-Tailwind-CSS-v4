@@ -1305,8 +1305,8 @@ Sprint HOME-LAB ✅ Variantes de exposição/proteção
   ├── docker-compose.yml (app + nginx + cloudflared, método token, zero portas)
   └── infra/cloudflared/config.yml · infra/README.md (mapa por cenário)
 
-Estado atual ✅ 79 badges · 223 checkpoints · 106 tópicos · 313 searchItems
-  · 92 rotas (build ~97) · 338 questões · 136 termos no glossário
+Estado atual ✅ 79 badges · 227 checkpoints · 106 tópicos · 319 searchItems
+  · 92 rotas (build ~97) · 345 questões · 136 termos no glossário
   · 19 suítes/258 testes vitest · 25 specs E2E (inclui baseline a11y axe nas 92 rotas)
   · 80 módulos (25 Firewall + 17 Fundamentos + 38 Avançados)
   · Trilhas: v1.0 (25) · v2.0 (17) · v3.0 (9) · v4.0 (9) · v5.0 (20)

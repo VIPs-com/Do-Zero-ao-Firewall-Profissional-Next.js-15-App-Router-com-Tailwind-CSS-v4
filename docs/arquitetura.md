@@ -135,9 +135,9 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │   └── setup.ts                ← Setup global: jest-dom, localStorage.clear()
     │
     ├── 📁 data/
-    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (338) de quiz/{firewall,fundamentos,avancados}.ts
-    │   ├── searchItems.ts           ← Índice da busca global (313 itens)
-    │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (36) + TRAIL_HANDOFF (fim-de-trilha)
+    │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (345) de quiz/{firewall,fundamentos,avancados}.ts
+    │   ├── searchItems.ts           ← Índice da busca global (319 itens)
+    │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (38) + TRAIL_HANDOFF (fim-de-trilha)
     │   ├── journey.ts               ← Jornada Unificada: JOURNEY (78), getNextJourneyModule()
     │   └── deepDives.tsx            ← Conteúdo dos modais avançados
     │
