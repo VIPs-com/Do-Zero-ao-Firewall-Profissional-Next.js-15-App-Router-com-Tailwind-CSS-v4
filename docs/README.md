@@ -19,8 +19,8 @@
 
 ## Funcionalidades
 
-- [Gamificacao & Badges](gamificacao.md) — 79 badges · 227 checkpoints · 7 milestones · como adicionar
-- [Busca Global](busca-global.md) — CMD+K, searchItems (319 itens), deep dives
+- [Gamificacao & Badges](gamificacao.md) — 79 badges · 228 checkpoints · 7 milestones · como adicionar
+- [Busca Global](busca-global.md) — CMD+K, searchItems (321 itens), deep dives
 - [SEO — Fonte Unica](seo.md) — ROUTE_SEO (92 rotas), buildMetadata(), sitemap, OG image, JSON-LD
 - [Acessibilidade — WCAG 2.1 AA](acessibilidade.md) — modais, focus trap, reduced motion, ESLint jsx-a11y
 - [PWA Lite & Boundaries](pwa-boundaries.md) — manifest.ts, error/not-found/loading boundaries
@@ -53,9 +53,9 @@
 | ROUTE_SEO | 92 rotas |
 | Tópicos | 106 |
 | Badges | 79 (7 milestones) |
-| Checkpoints | 227 |
+| Checkpoints | 228 |
 | Quiz (perguntas) | 345 |
-| searchItems | 319 |
+| searchItems | 321 |
 | Glossário | 136 termos |
 | v1.0 Firewall | 25 módulos ✅ |
 | v2.0 Fundamentos | 17 módulos ✅ |

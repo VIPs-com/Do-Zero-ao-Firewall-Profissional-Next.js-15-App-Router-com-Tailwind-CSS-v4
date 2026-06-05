@@ -136,7 +136,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
     │
     ├── 📁 data/
     │   ├── quizQuestions.ts         ← barrel: QUIZ_QUESTIONS (345) de quiz/{firewall,fundamentos,avancados}.ts
-    │   ├── searchItems.ts           ← Índice da busca global (319 itens)
+    │   ├── searchItems.ts           ← Índice da busca global (321 itens)
     │   ├── courseOrder.ts           ← COURSE_ORDER (25) + FUNDAMENTOS_ORDER (17) + ADVANCED_ORDER (38) + TRAIL_HANDOFF (fim-de-trilha)
     │   ├── journey.ts               ← Jornada Unificada: JOURNEY (78), getNextJourneyModule()
     │   └── deepDives.tsx            ← Conteúdo dos modais avançados

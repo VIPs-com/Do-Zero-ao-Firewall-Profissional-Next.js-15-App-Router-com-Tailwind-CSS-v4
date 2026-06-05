@@ -146,6 +146,8 @@ export const ALL_CHECKLIST_IDS = [
   'simulado-completo', 'portfolio-montado', 'entrevista-praticada',
   // Sprint SEGURANCA-PRO — SELinux, LUKS, auditd (3)
   'selinux-configurado', 'luks-criado', 'auditd-regras',
+  // Sprint LUKS-MIDIAS — LUKS em mídia removível (pen drive/SD) (1)
+  'luks-removivel',
   // Sprint OBSERVABILIDADE — Loki + Promtail + Grafana + ELK (3)
   'loki-instalado', 'elk-stack', 'dashboards-prontos',
   // Sprint WAF — ModSecurity + OWASP CRS (3)
@@ -411,8 +413,8 @@ export const BadgeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       checklist['ssh-dinamico'] && checklist['trouble-conectividade']
     ) unlockBadge('ground-zero');
 
-    // Linux Ninja: desbloqueado com 75% do checklist (floor(227*0.75) = 170).
-    if (Object.values(checklist).filter(v => v).length >= 170) unlockBadge('linux-ninja');
+    // Linux Ninja: desbloqueado com 75% do checklist (floor(228*0.75) = 171).
+    if (Object.values(checklist).filter(v => v).length >= 171) unlockBadge('linux-ninja');
   }, [checklist]);
 
   useEffect(() => {

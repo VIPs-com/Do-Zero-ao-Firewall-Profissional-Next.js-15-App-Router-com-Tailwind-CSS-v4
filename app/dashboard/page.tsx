@@ -76,7 +76,8 @@ export default function DashboardPage() {
   // Sprint OBSERVABILIDADE-WAF: +6 checkpoints Loki/ELK/WAF → 217+6 = 223
   // Sprint SWAP: +2 checkpoints swap-criado/swappiness-ajustado → 223+2 = 225
   // Sprint DISCOS-COMPLETO: +2 checkpoints filesystem-escolhido/quota-configurada → 225+2 = 227
-  const checklistItemsCount = 227;
+  // Sprint LUKS-MIDIAS: +1 checkpoint luks-removivel → 227+1 = 228
+  const checklistItemsCount = 228;
   const checklistCompleted = Object.values(checklist).filter(v => v).length;
   const checklistProgress = Math.round((checklistCompleted / checklistItemsCount) * 100);
 
@@ -122,10 +123,10 @@ export default function DashboardPage() {
     current: number; total: number; href: string; cta: string;
   };
   let nextMilestone: NextMilestone | null = null;
-  // linux-ninja threshold = floor(227 * 0.75) = 170
-  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 170) {
-    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (170/227 checkpoints)',
-      current: checklistCompleted, total: 170, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
+  // linux-ninja threshold = floor(228 * 0.75) = 171
+  if (!unlockedBadges.has('linux-ninja') && checklistCompleted < 171) {
+    nextMilestone = { emoji: '🥷', label: 'Linux Ninja', description: 'Complete 75% do checklist (171/228 checkpoints)',
+      current: checklistCompleted, total: 171, href: '/instalacao#checklist', cta: 'Ir para o Lab' };
   } else if (!unlockedBadges.has('course-master') && visitedModulesCount < 25) {
     nextMilestone = { emoji: '🎯', label: 'Mestre do Curso', description: 'Visite todos os 25 módulos do curso',
       current: visitedModulesCount, total: 25,

@@ -7,7 +7,7 @@ import { InfoBox, WarnBox, WindowsComparisonBox } from '@/components/ui/Boxes';
 import { FluxoCard } from '@/components/ui/FluxoCard';
 import { ModuleNav } from '@/components/ui/ModuleNav';
 import { ADVANCED_ORDER } from '@/data/courseOrder';
-import { ShieldCheck, Lock, FileSearch, AlertOctagon, CheckCircle, AlertTriangle, HardDrive, KeyRound, Eye } from 'lucide-react';
+import { ShieldCheck, Lock, FileSearch, AlertOctagon, CheckCircle, AlertTriangle, HardDrive, KeyRound, Eye, Usb } from 'lucide-react';
 import { useTabFilter } from '@/hooks/useTabFilter';
 
 /* Sprint SEGURANCA-AVANCADA — Hardening Nível Pro.
@@ -20,6 +20,7 @@ const CHECKLIST_ITEMS = [
   { id: 'selinux-configurado', label: 'Diagnostiquei uma negação AVC do SELinux, gerei política com audit2allow ou ajustei o contexto com semanage fcontext + restorecon' },
   { id: 'luks-criado',         label: 'Criei um volume LUKS, fiz backup do header com luksHeaderBackup e adicionei uma 2ª passphrase com luksAddKey' },
   { id: 'auditd-regras',       label: 'Configurei regras de auditd persistentes em /etc/audit/rules.d e li eventos com ausearch -k' },
+  { id: 'luks-removivel',      label: 'Criei um volume LUKS em mídia removível (pen drive/SD), identifiquei o device com lsblk e abri sob demanda sem crypttab' },
 ];
 
 export default function SegurancaAvancadaPage() {
@@ -362,7 +363,171 @@ sudo cryptsetup luksDump /dev/sdb1`} />
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">9. O header — backup obrigatório</h2>
+          <h2 className="text-2xl font-bold mb-6">9. Cada mídia tem seu nome — NVMe, SATA, USB e cartão SD</h2>
+          <p className="text-text-2 mb-4">
+            O fluxo do <code>cryptsetup</code> é <strong>idêntico em qualquer mídia</strong>. O que
+            muda são três coisas: (1) o <strong>nome do dispositivo</strong>, (2) se ele vai abrir no
+            boot (disco <em>fixo</em>) ou sob demanda (mídia <em>removível</em>), e (3) algumas flags
+            de durabilidade. O erro mais caro aqui é apontar o <code>luksFormat</code> para o disco
+            errado — então o primeiro passo é sempre <strong>identificar o device com certeza</strong>.
+          </p>
+
+          <WarnBox title="Confirme o dispositivo ANTES do luksFormat">
+            <code>luksFormat</code> destrói tudo no alvo. Rode <code>lsblk</code> primeiro e confira o{' '}
+            <strong>tamanho (SIZE)</strong> e o <strong>modelo (MODEL)</strong> — nunca confie só na
+            letra. Plugar/desplugar um pen drive pode trocar <code>sdb</code> por <code>sdc</code>.
+          </WarnBox>
+
+          <CodeBlock lang="bash" code={`# A coluna TRAN revela o transporte: nvme / sata / usb
+lsblk -o NAME,SIZE,TYPE,TRAN,MODEL,MOUNTPOINT
+
+# Exemplo de saída em uma máquina com as 4 mídias:
+# NAME         SIZE TYPE TRAN  MODEL              MOUNTPOINT
+# nvme0n1      476G disk nvme  Samsung SSD 980
+# └─nvme0n1p1  476G part
+# sda          931G disk sata  WDC WD10EZEX
+# └─sda1       931G part
+# sdb           29G disk usb   SanDisk Ultra        <- pen drive
+# └─sdb1        29G part
+# mmcblk0       59G disk       SD64G                <- cartão SD
+# └─mmcblk0p1   59G part
+
+# Já é um volume LUKS? (não reformatar sem querer)
+sudo cryptsetup isLuks /dev/sdb1 && echo "JÁ é LUKS"`} />
+
+          <div className="overflow-x-auto my-6">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left p-2 text-text-2 font-medium">Mídia</th>
+                  <th className="text-left p-2 text-text-2 font-medium">Disco</th>
+                  <th className="text-left p-2 text-text-2 font-medium">1ª partição</th>
+                  <th className="text-left p-2 text-text-2 font-medium">TRAN</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ['💽 NVMe SSD',      '/dev/nvme0n1', '/dev/nvme0n1p1', 'nvme'],
+                  ['💾 SATA (HD/SSD)', '/dev/sda',     '/dev/sda1',      'sata'],
+                  ['🔌 Pen drive USB', '/dev/sdb',     '/dev/sdb1',      'usb'],
+                  ['🗂️ Cartão SD',     '/dev/mmcblk0', '/dev/mmcblk0p1', 'mmc'],
+                ].map(([midia, disco, part, tran]) => (
+                  <tr key={disco} className="hover:bg-bg-2 transition-colors">
+                    <td className="p-2 text-text">{midia}</td>
+                    <td className="p-2 font-mono text-text-2">{disco}</td>
+                    <td className="p-2 font-mono text-accent">{part}</td>
+                    <td className="p-2 font-mono text-text-3">{tran}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <InfoBox title="A regra do «p»">
+            Dispositivos cujo nome <strong>termina em dígito</strong> (<code>nvme0n1</code>,{' '}
+            <code>mmcblk0</code>) recebem um <strong>p</strong> antes do número da partição:{' '}
+            <code>nvme0n1<strong>p1</strong></code>, <code>mmcblk0<strong>p1</strong></code>. Os{' '}
+            <code>sd*</code> (SATA e USB) não: <code>sda<strong>1</strong></code>,{' '}
+            <code>sdb<strong>1</strong></code>. Trocar isso é o erro de digitação clássico.
+          </InfoBox>
+
+          <h3 className="text-lg font-bold mt-8 mb-3 flex items-center gap-2">
+            <HardDrive size={18} className="text-info" /> Discos fixos — NVMe e SSD SATA internos
+          </h3>
+          <CodeBlock lang="bash" code={`# NVMe ou SSD SATA interno — LUKS2 com alinhamento de setor de 4 KB
+sudo cryptsetup luksFormat --type luks2 --sector-size 4096 /dev/nvme0n1p1
+sudo cryptsetup luksOpen /dev/nvme0n1p1 cofre
+sudo mkfs.ext4 /dev/mapper/cofre
+
+# SSD: habilitar TRIM/discard (trade-off de segurança — veja abaixo)
+sudo cryptsetup --allow-discards --persistent refresh cofre
+
+# CPU moderna acelera a cifra por hardware (AES-NI):
+sudo cryptsetup benchmark            # veja a vazão de aes-xts
+
+# Disco fixo → entra no /etc/crypttab para abrir no boot (próxima seção)`} />
+          <WarnBox title="TRIM no SSD: conveniência × privacidade">
+            <code>--allow-discards</code> deixa o SSD reciclar blocos apagados (mais vida útil e
+            performance), mas <strong>revela quais setores estão em uso</strong> — um atacante com
+            acesso físico vê o &quot;mapa de ocupação&quot; e o tamanho real dos dados. Para a maioria
+            é um trade-off aceitável; sob ameaça alta, deixe desligado (padrão).
+          </WarnBox>
+
+          <h3 className="text-lg font-bold mt-8 mb-3 flex items-center gap-2">
+            <Usb size={18} className="text-accent" /> Mídia removível — pen drive USB e cartão SD 🎯
+          </h3>
+          <p className="text-text-2 mb-3">
+            Receita de um <strong>pen drive (ou cartão SD) criptografado e portátil</strong>. Use o
+            device certo: <code>/dev/sdb1</code> para USB, <code>/dev/mmcblk0p1</code> para SD.
+          </p>
+          <CodeBlock lang="bash" code={`# 1) (1ª vez, opcional) preencher com aleatório esconde o quanto está em uso
+sudo dd if=/dev/urandom of=/dev/sdb bs=4M status=progress
+
+# 2) LUKS2 na partição da mídia removível
+sudo cryptsetup luksFormat --type luks2 /dev/sdb1
+sudo cryptsetup luksOpen /dev/sdb1 pendrive
+sudo mkfs.ext4 -L COFRE /dev/mapper/pendrive
+
+# 3) montar, usar e LACRAR ao terminar
+sudo mount /dev/mapper/pendrive /mnt/pendrive
+#   ... copia seus arquivos sensíveis ...
+sudo umount /mnt/pendrive
+sudo cryptsetup luksClose pendrive`} />
+          <InfoBox title="Removível NÃO vai no /etc/crypttab">
+            Se você puser um pen drive no <code>/etc/crypttab</code>, o boot <strong>trava</strong>{' '}
+            esperando a mídia que talvez não esteja plugada. Mídia removível abre <em>sob demanda</em>.
+            No desktop, o GNOME Disks / Nautilus já reconhece o LUKS e pede a senha; no terminal:{' '}
+            <code>udisksctl unlock -b /dev/sdb1</code> e depois{' '}
+            <code>udisksctl mount -b /dev/mapper/luks-…</code>. Evite <code>--allow-discards</code>{' '}
+            agressivo em SD/USB baratos — acelera o desgaste das células de memória.
+          </InfoBox>
+
+          <InfoBox title="Abrir em outra máquina — e o Windows?">
+            LUKS é um padrão aberto: o <strong>mesmo pen drive abre em qualquer Linux</strong> — leve
+            para outra distro e <code>cryptsetup luksOpen</code> (ou o gerenciador de arquivos) destranca
+            com a passphrase. O <strong>Windows não lê LUKS</strong> nativamente: se precisa de um pen
+            drive que abra nos dois mundos, use o <strong>VeraCrypt</strong> (multiplataforma). Para o
+            caminho inverso — ler um disco <strong>BitLocker</strong> dentro do Linux — use o{' '}
+            <strong>dislocker</strong>.
+          </InfoBox>
+
+          <div className="overflow-x-auto my-6">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left p-2 text-text-2 font-medium"></th>
+                  <th className="text-left p-2 text-text-2 font-medium">NVMe / SATA interno (fixo)</th>
+                  <th className="text-left p-2 text-text-2 font-medium">USB / SD (removível)</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {[
+                  ['Abre no boot (crypttab)', 'Sim', 'Não — sob demanda'],
+                  ['--allow-discards',        'Ok (TRIM do SSD)', 'Evitar (desgaste)'],
+                  ['--sector-size 4096',      'Recomendado', 'Opcional'],
+                  ['Uso típico',             'FDE do sistema / dados', 'Dados portáteis'],
+                ].map(([criterio, fixo, rem]) => (
+                  <tr key={criterio} className="hover:bg-bg-2 transition-colors">
+                    <td className="p-2 text-text-2 font-medium">{criterio}</td>
+                    <td className="p-2 text-text">{fixo}</td>
+                    <td className="p-2 text-text">{rem}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <label className="flex items-start gap-3 p-4 bg-bg-2 border border-border rounded-lg cursor-pointer hover:border-accent/50 transition-colors mt-6">
+            <input type="checkbox" checked={!!checklist['luks-removivel']} onChange={e => updateChecklist('luks-removivel', e.target.checked)} className="mt-0.5 accent-[var(--color-accent)]" />
+            <div className="flex items-start gap-2">
+              {checklist['luks-removivel'] ? <CheckCircle size={16} className="text-ok mt-0.5 shrink-0" /> : <AlertTriangle size={16} className="text-warn mt-0.5 shrink-0" />}
+              <span className="text-sm text-text-2">{CHECKLIST_ITEMS[3].label}</span>
+            </div>
+          </label>
+        </section>
+
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">10. O header — backup obrigatório</h2>
           <WarnBox title="Perdeu o header LUKS? Perdeu o disco.">
             O header guarda a <strong>chave mestra cifrada</strong> — sem ele, nem a passphrase
             certa abre o volume. Corrupção dos primeiros megabytes (gravação acidental, partição
@@ -383,7 +548,7 @@ sudo cryptsetup luksHeaderRestore /dev/sdb1 \\
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">10. Key slots — rotação de passphrase</h2>
+          <h2 className="text-2xl font-bold mb-6">11. Key slots — rotação de passphrase</h2>
           <p className="text-text-2 mb-4">
             O LUKS tem até <strong>8 slots</strong>: cada slot guarda uma cópia da chave mestra
             cifrada por uma passphrase (ou keyfile) diferente. Você adiciona uma nova senha,
@@ -409,7 +574,7 @@ sudo cryptsetup luksAddKey /dev/sdb1 /root/cofre.key`} />
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">11. Montagem no boot — crypttab + fstab</h2>
+          <h2 className="text-2xl font-bold mb-6">12. Montagem no boot — crypttab + fstab</h2>
           <p className="text-text-2 mb-4">
             Para o sistema abrir o LUKS sozinho a cada boot, você combina dois arquivos:{' '}
             <code>/etc/crypttab</code> diz <em>como destrancar</em> (mapper, dispositivo, fonte
@@ -433,7 +598,7 @@ cofre       UUID=11111111-2222-3333-4444-555555555555  none            luks
         </section>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">12. LUKS + LVM — empilhamento clássico</h2>
+          <h2 className="text-2xl font-bold mb-6">13. LUKS + LVM — empilhamento clássico</h2>
           <p className="text-text-2 mb-4">
             A receita mais comum em produção é <strong>LUKS embaixo, LVM em cima</strong>: cifra
             a partição inteira uma vez só, e depois fatia em vários LVs (raiz, /home, swap)
