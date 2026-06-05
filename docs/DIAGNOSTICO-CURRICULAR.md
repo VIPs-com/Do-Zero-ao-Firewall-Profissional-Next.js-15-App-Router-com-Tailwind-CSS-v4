@@ -4,7 +4,7 @@
 > Redes / Segurança empregável**. Referência: LPIC‑1/2, CompTIA Linux+ / Network+ /
 > Security+ e a prática real de SysAdmin, DevOps e SRE.
 >
-> **Estado atual:** 79 badges · 227 checkpoints · 106 tópicos · 345 questões · 92 rotas.
+> **Estado atual:** 79 badges · 228 checkpoints · 106 tópicos · 345 questões · 92 rotas.
 > **Roadmap de evolução (Fases 0 → 3): ✅ CONCLUÍDO** (+ extensões SEGURANCA-PRO, OBSERVABILIDADE-WAF e a Operação Go-Live de infraestrutura).
 
 ---
@@ -65,7 +65,7 @@ Legenda: 🟢 Excelente · 🟩 Forte · 🟡 Parcial · 🔴 Ausente
   todas atingem o nível Excelente, com módulos dedicados e conteúdo de produção.
 - **Progressão honesta:** Fundamentos → Firewall → Servidores → Infra → Cloud → Carreira
   → Capstone DFIR.
-- **Gamificação madura:** 227 checkpoints, 79 badges, SRS (`/treino`), 345 questões,
+- **Gamificação madura:** 228 checkpoints, 79 badges, SRS (`/treino`), 345 questões,
   certificado verificável.
 - **Recursos pedagógicos de elite:** `WindowsComparisonBox`, `HorizonteBox`
   (clássico ↔ estado da arte), `/jornada` unificada, `/cheat-sheet`, `/ferramentas`.
