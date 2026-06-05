@@ -69,7 +69,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 📁 jornada/                  ← Jornada Unificada — as 3 trilhas em 78 módulos
 │   ├── 📁 comece-aqui/              ← Guia de entrada (suporte) — trilhas, jornada, checkpoints, SRS, certificado
 │   ├── 📁 ferramentas/              ← Hub de 5 utilitários (CIDR/Regex/iptables/PS1/Base64)
-│   ├── 📁 quiz/                     ← Avaliação gamificada (338 perguntas)
+│   ├── 📁 quiz/                     ← Avaliação gamificada (345 perguntas)
 │   ├── 📁 dashboard/                ← Progresso + badges desbloqueados
 │   ├── 📁 certificado/              ← Certificado de conclusão
 │   │
@@ -107,7 +107,7 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 │   ├── 04-global-search.spec.ts     ← ⌘K abre, navega, ESC fecha
 │   ├── 05-theme-persistence.spec.ts ← Toggle dark/light + badge night-owl
 │   ├── 06-export-import-time-traveler.spec.ts ← Download + upload + badge
-│   ├── 07-dashboard-counters.spec.ts ← 3/223 checklist, 75% quiz, 0/79 badges
+│   ├── 07-dashboard-counters.spec.ts ← 3/227 checklist, 75% quiz, 0/79 badges
 │   ├── 08-module-nav.spec.ts         ← Navegação sequencial Anterior/Próximo
 │   └── 09-milestone-celebration.spec.ts ← Modal de conquista + confetti
 │
@@ -158,11 +158,11 @@ Usuário → Nginx (Proxy Reverso) → Next.js Server (porta 3000)
 |-----------|---------|-------|
 | `CONTENT_PAGES_COUNT` | `src/context/BadgeContext.tsx` | **80** (derivado de `CONTENT_PAGE_PATHS`, base do badge deep-diver) |
 | `totalTopics` | `app/dashboard/page.tsx` | **106** |
-| `checklistItemsCount` | `app/dashboard/page.tsx` | **223** (igual a `ALL_CHECKLIST_IDS.length`) |
+| `checklistItemsCount` | `app/dashboard/page.tsx` | **227** (igual a `ALL_CHECKLIST_IDS.length`) |
 | Badges | `src/data/badges.ts` | **79** |
-| searchItems | `src/data/searchItems.ts` | **313** |
+| searchItems | `src/data/searchItems.ts` | **319** |
 | Texto na Home | `app/page.tsx` | "106 tópicos práticos" + stats: 106/80/79/7 |
-| `linux-ninja` threshold | `src/context/BadgeContext.tsx` | **167** (floor(223 × 0.75)) |
+| `linux-ninja` threshold | `src/context/BadgeContext.tsx` | **170** (floor(227 × 0.75)) |
 
 Bugs surgem quando esses valores divergem — sempre revalidar ao alterar conteúdo.
 

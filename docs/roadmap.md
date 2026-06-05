@@ -1285,6 +1285,20 @@ Sprint OBSERVABILIDADE-WAF ✅ 2 módulos avançados (antes do capstone)
   └── ADVANCED_ORDER 36→38 · checkpoints 217→223 · tópicos 104→106
       badges 77→79 · searchItems 297→313 · quiz 330→338 · rotas 90→92
 
+Sprint SWAP ✅ Enriquecimento /discos — aba SWAP & Memória Virtual
+  ├── /discos migrado para 3 abas (useTabFilter) + nova aba SWAP completa
+  ├── FluxoCard RAM→Pressão→Swap→Thrashing→OOM Killer
+  ├── monitoramento (free/vmstat/smem), criar SWAP arquivo+partição, swappiness
+  └── +2 checkpoints (swap-criado/swappiness-ajustado) · +3 searchItems · +3 quiz fundamentos
+      checkpoints 223→225 · searchItems 313→316 · quiz 338→341
+
+Sprint DISCOS-COMPLETO ✅ Conclui o módulo /discos (filesystems + quotas)
+  ├── Aba 1: seção "Formatar & Escolher o Filesystem" (ext4/xfs/btrfs, mkfs.*, quando usar)
+  ├── Aba 3: seção "Quotas de Disco por Usuário" (usrquota, edquota, repquota, grace)
+  ├── HighlightBox "Próxima versão" → "Para ir além" com cross-links (sem duplicar)
+  └── +2 checkpoints (filesystem-escolhido/quota-configurada) · +3 searchItems · +4 quiz fundamentos
+      checkpoints 225→227 · searchItems 316→319 · quiz 341→345 · linux-ninja 168→170
+
 Sprint A11Y ✅ Baseline axe zerado (5 rotas-chave)
   ├── color-contrast: token --color-accent-strong p/ botões · text-3 elevado
   ├── nested-interactive: SVG topologia role=group · accordions /topicos

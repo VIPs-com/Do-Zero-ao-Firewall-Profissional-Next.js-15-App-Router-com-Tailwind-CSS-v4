@@ -40,8 +40,8 @@ npm audit                    # alvo: 0 vulnerabilidades
 ```
 
 Constantes esperadas (ou rode `check-constants`): `ROUTE_SEO = 92` · `CONTENT_PAGES_COUNT = 80`
-· `totalTopics = 106` · `checklistItemsCount = 223` · `badges = 79` · `searchItems = 313`
-· `QUIZ_QUESTIONS = 338`.
+· `totalTopics = 106` · `checklistItemsCount = 227` · `badges = 79` · `searchItems = 319`
+· `QUIZ_QUESTIONS = 345`.
 
 `.env.production` mínimo:
 
