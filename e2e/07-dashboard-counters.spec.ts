@@ -5,7 +5,7 @@ import { test, expect } from './fixtures';
  *
  * Constantes em app/dashboard/page.tsx:
  *   totalTopics = 106         (Sprint OBSERVABILIDADE-WAF: +C19/C20)
- *   checklistItemsCount = 223 (Sprint OBSERVABILIDADE-WAF: +6 checkpoints)
+ *   checklistItemsCount = 227 (Sprint DISCOS-COMPLETO: +filesystem-escolhido/quota-configurada)
  *   BADGE_DEFS tem 79 chaves  (Sprint OBSERVABILIDADE-WAF: +observability-stack-master +waf-master)
  *
  * ATENÇÃO — visitedPages tracking é inconsistente no código:
@@ -37,8 +37,8 @@ test('dashboard exibe contadores de checklist e quiz corretamente', async ({ pag
   await page.goto('/dashboard');
   await page.waitForLoadState('networkidle');
 
-  // Labs Concluídos: 3/223 (seed exato — não muda com o load)
-  await expect(page.getByText('3/223', { exact: true })).toBeVisible();
+  // Labs Concluídos: 3/227 (seed exato — não muda com o load)
+  await expect(page.getByText('3/227', { exact: true })).toBeVisible();
 
   // Melhor Quiz: 75% — exact evita colidir com "Complete 75% do checklist (...)"
   await expect(page.getByText('75%', { exact: true })).toBeVisible();

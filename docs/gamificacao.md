@@ -5,7 +5,7 @@
 Gerencia quatro dimensões de progresso:
 - **Badges** — 79 conquistas desbloqueáveis (7 são milestones com modal de celebração)
 - **Páginas visitadas** — para badges de exploração e course-master
-- **Checkpoints** — 223 validações técnicas concluídas (ALL_CHECKLIST_IDS)
+- **Checkpoints** — 227 validações técnicas concluídas (ALL_CHECKLIST_IDS)
 - **Quiz score** — 0–100, persiste em localStorage
 
 ---
@@ -29,7 +29,7 @@ Gerencia quatro dimensões de progresso:
 | 🚪 | Proxy Master | `proxy-master` | proxy-funciona + proxy-bloqueio |
 | 🔑 | Knocking Master | `knocking-master` | port-knocking |
 | **🎓** | **Graduado** | **`certificado`** | **Gerar o certificado de conclusão** ★ milestone |
-| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 167 checkpoints (75% dos 223)** ★ milestone |
+| **🥷** | **Linux Ninja** | **`linux-ninja`** | **≥ 170 checkpoints (75% dos 227)** ★ milestone |
 | 💀 | Pivoting Master | `pivoting-master` | pivoting-risk |
 | 🛡️ | Defensor da Topologia | `defensor-topologia` | Clicar em 3+ riscos da topologia |
 | ⏳ | Viajante do Tempo | `time-traveler` | Importar progresso via JSON |
@@ -140,7 +140,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
 
 ---
 
-## Checkpoints de validação (223 IDs — ALL_CHECKLIST_IDS)
+## Checkpoints de validação (227 IDs — ALL_CHECKLIST_IDS)
 
 ```typescript
 // src/context/BadgeContext.tsx
@@ -281,7 +281,7 @@ const MILESTONE_BADGES = new Set<BadgeId>([
   // Sprint SEGURANCA-PRO — Segurança Avançada (SELinux/LUKS/auditd) (3)
   'selinux-configurado', 'luks-criado', 'auditd-regras',
 ]
-// Total: 223 checkpoints
+// Total: 227 checkpoints
 ```
 
 ---
@@ -310,7 +310,7 @@ button > svg.text-ok {
 ## Linux Ninja — Threshold
 
 ```typescript
-// 75% de 223 checkpoints = 167 (floor)
+// 75% de 227 checkpoints = 170 (floor)
 if (Object.values(checklist).filter(v => v).length >= 162) unlockBadge('linux-ninja');
 ```
 

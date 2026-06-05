@@ -584,6 +584,38 @@ export const FUNDAMENTOS_QUESTIONS: QuizQuestion[] = [
       trail: 'fundamentos',
     },
   {
+      text: 'Você precisa REDUZIR o tamanho de uma partição já formatada e cheia de dados. Qual filesystem NÃO permite essa operação?',
+      badge: '💾 Discos',
+      options: ['ext4 (com resize2fs)', 'xfs', 'btrfs', 'Todos permitem encolher igualmente'],
+      correct: 1,
+      explanation: 'xfs só pode CRESCER (xfs_growfs) — não existe ferramenta para reduzi-lo. ext4 encolhe com resize2fs (partição desmontada) e btrfs com btrfs filesystem resize. Por isso, se há chance de precisar reduzir, evite xfs ou combine com LVM para flexibilidade.',
+      trail: 'fundamentos',
+    },
+  {
+      text: 'Qual filesystem Linux oferece snapshots e checksums de DADOS (não só metadados) nativamente, via Copy-on-Write?',
+      badge: '💾 Discos',
+      options: ['ext4', 'xfs', 'btrfs', 'vfat'],
+      correct: 2,
+      explanation: 'btrfs (B-tree FS) usa Copy-on-Write, permitindo snapshots instantâneos, subvolumes, compressão transparente e checksums de dados+metadados. ext4 e xfs só fazem checksum de metadados. É o default do openSUSE e base de muitos NAS (Synology).',
+      trail: 'fundamentos',
+    },
+  {
+      text: 'Qual comando abre um editor para definir os limites de quota (soft/hard) de um usuário específico?',
+      badge: '💾 Discos',
+      options: ['quotaon -u maria', 'edquota -u maria', 'repquota -u maria', 'quotacheck -u maria'],
+      correct: 1,
+      explanation: 'edquota -u maria abre o editor (vi por padrão) com os limites de blocos e inodes do usuário. quotaon apenas ativa o sistema de quotas na partição; repquota gera relatórios; quotacheck cria/verifica os arquivos de controle. Para definir sem editor: setquota -u maria softBlk hardBlk softInode hardInode /home.',
+      trail: 'fundamentos',
+    },
+  {
+      text: 'Para ativar quotas de disco em uma partição, qual opção deve ser adicionada à entrada dela no /etc/fstab?',
+      badge: '💾 Discos',
+      options: ['quota=on', 'usrquota (e/ou grpquota)', 'enable_quota', 'defaults,quota'],
+      correct: 1,
+      explanation: 'As opções de montagem usrquota (por usuário) e grpquota (por grupo) habilitam o suporte a quotas. Ex: UUID=... /home ext4 defaults,usrquota,grpquota 0 2. Depois é preciso remontar (mount -o remount /home), rodar quotacheck e quotaon.',
+      trail: 'fundamentos',
+    },
+  {
       text: 'Qual a diferença entre `journalctl -b` e `journalctl -b -1`?',
       badge: '📋 Logs',
       options: [
