@@ -39,7 +39,7 @@ export default function LaboratorioPage() {
           { label: 'VirtualBox',  sub: 'Windows/macOS host, GUI', icon: <Layers size={14} />, color: 'border-blue-500/40' },
           { label: 'KVM / libvirt', sub: 'Linux host, virsh CLI', icon: <Cpu size={14} />, color: 'border-purple-500/40' },
           { label: 'Proxmox VE', sub: 'bare-metal, Web UI 8006', icon: <Server size={14} />, color: 'border-accent/40' },
-          { label: 'Cluster HA', sub: 'corosync + pacemaker', icon: <Zap size={14} />, color: 'border-ok/40' },
+          { label: 'Cluster HA', sub: 'corosync + pve-ha-manager', icon: <Zap size={14} />, color: 'border-ok/40' },
         ]}
       />
 
@@ -503,7 +503,7 @@ virsh snapshot-revert Firewall snap-base`}
             fix: 'Verificar se a CPU suporta virtualização: egrep -c "(vmx|svm)" /proc/cpuinfo (> 0 = ok). Se 0, habilitar VT-x/AMD-V na BIOS. Em VM dentro de VM (nested): habilitar nested virtualization no hypervisor host: modprobe kvm_intel nested=1.',
           },
           {
-            err: 'virsh domstart vm-firewall falha: Cannot access storage file — permission denied',
+            err: 'virsh start vm-firewall falha: Cannot access storage file — permission denied',
             fix: 'O arquivo de disco qcow2 não está acessível pelo usuário libvirt-qemu. Corrigir: chown libvirt-qemu:libvirt-qemu /caminho/disco.qcow2 ou chmod o+r /caminho/. Alternativa: mover o disco para /var/lib/libvirt/images/ (pasta padrão com permissões corretas).',
           },
           {
@@ -594,11 +594,12 @@ virsh net-define /dev/stdin << 'EOF'
 <network>
   <name>lab-dmz</name>
   <bridge name='virbr2'/>
-  <ip address='192.168.100.1' netmask='255.255.255.0'/>
+  <ip address='192.168.56.1' netmask='255.255.255.0'/>
 </network>
 EOF
 
 virsh net-start lab-dmz
+virsh net-autostart lab-dmz
 
 # Listar todas as redes virtuais
 virsh net-list --all

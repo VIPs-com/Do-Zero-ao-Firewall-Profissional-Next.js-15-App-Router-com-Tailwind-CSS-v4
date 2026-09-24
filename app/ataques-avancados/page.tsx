@@ -42,7 +42,7 @@ iptables -A INPUT -p tcp --syn -m hashlimit \\
 
 # DEFESA — Fail2ban com filtro para nmap:
 # /etc/fail2ban/filter.d/portscan.conf
-# failregex = <HOST> .*SYN.*
+# failregex = SRC=<HOST> .*SYN
 # bantime = 3600`,
   },
   {
@@ -50,7 +50,7 @@ iptables -A INPUT -p tcp --syn -m hashlimit \\
     title: 'Fragmentação de Pacotes',
     icon: <Bug className="text-err" />,
     concept: 'Dividir um pacote malicioso em fragmentos tão pequenos que o IDS/Firewall não consegue remontar para analisar a assinatura — mas o destino final remonta e executa o payload.',
-    mitigation: 'Ativar remontagem de fragmentos antes da inspeção (net.ipv4.ipfrag_high_thresh). O conntrack/netfilter do Linux já remonta automaticamente para firewall stateful. Firewalls legacy sem estado são vulneráveis.',
+    mitigation: 'Inspecionar só depois da remontagem: no Linux ela é feita pelo conntrack (nf_defrag_ipv4) antes das regras stateful; net.ipv4.ipfrag_high_thresh apenas limita a memória reservada para fragmentos pendentes. Firewalls legacy sem estado são vulneráveis.',
     code: `# ATAQUE — nmap com fragmentação:
 nmap -f --mtu 8 192.168.57.10
 
@@ -96,7 +96,7 @@ watch -n1 'netstat -an | grep SYN_RECV | wc -l'`,
     title: 'ARP Spoofing / MITM na LAN',
     icon: <Network className="text-warn" />,
     concept: 'Na mesma LAN, o atacante envia respostas ARP forjadas afirmando que seu MAC é o do gateway. O tráfego da vítima passa pelo atacante antes do roteador — MITM completo sem quebrar criptografia fraca.',
-    mitigation: 'Entradas ARP estáticas para hosts críticos (gateway, servidor DNS). arptables para bloquear respostas ARP não solicitadas. Switches gerenciados com Dynamic ARP Inspection (DAI). 802.1X para autenticação de porta.',
+    mitigation: 'Entradas ARP estáticas para hosts críticos (gateway, servidor DNS). arptables para descartar ARP que se apresenta com o IP do gateway mas com MAC diferente. Switches gerenciados com Dynamic ARP Inspection (DAI). 802.1X para autenticação de porta.',
     code: `# ATAQUE — envenenar cache ARP (requer arping ou arpspoof):
 # arpspoof -i eth0 -t 192.168.1.10 192.168.1.1
 # (dizendo para 192.168.1.10 que o IP .1 tem nosso MAC)
@@ -108,9 +108,10 @@ ip neigh add 192.168.1.1 lladdr aa:bb:cc:dd:ee:ff \\
 # Listar entradas ARP estáticas configuradas:
 ip neigh show
 
-# DEFESA — arptables para bloquear ARP não solicitado:
+# DEFESA — arptables: descartar ARP que diz ser o gateway (.1)
+# mas vem de outro MAC (os demais hosts da LAN continuam a falar):
 apt install arptables -y
-arptables -A INPUT -s 0.0.0.0/0 \\
+arptables -A INPUT --source-ip 192.168.1.1 \\
   ! --source-mac aa:bb:cc:dd:ee:ff -j DROP
 
 # Detectar ARP spoofing em progresso:
@@ -123,15 +124,15 @@ tcpdump -i eth0 arp        # capturar pacotes ARP`,
     title: 'Timing Attack no Port Knocking',
     icon: <Clock className="text-warn" />,
     concept: 'Análise do tempo de resposta do firewall para diferentes sequências de knock. Portas em estado "escutando" respondem diferente de portas completamente descartadas — vaza informação da sequência válida.',
-    mitigation: 'Garantir tempo de processamento constante para todas as tentativas (Constant Time). Usar SPA (Single Packet Authorization) com HMAC em vez de sequência simples. Janela de tempo mínima (1-2 segundos entre knocks).',
-    code: `# DEFESA — Port Knocking com HMAC via knockd:
-# /etc/knockd.conf com SHA-256 HMAC
+    mitigation: 'Garantir tempo de processamento constante para todas as tentativas (Constant Time). Usar SPA (Single Packet Authorization, fwknop) com HMAC em vez de sequência simples. Janela de tempo mínima (1-2 segundos entre knocks).',
+    code: `# Port Knocking clássico via knockd (sequência simples, sem HMAC):
+# /etc/knockd.conf
 [options]
   logfile = /var/log/knockd.log
 
 [openSSH]
   sequence = 7000,8000,9000
-  seq_timeout = 5         # máximo 5s entre cada knock
+  seq_timeout = 5         # tempo máximo para completar a sequência inteira
   command = /sbin/iptables -A INPUT -s %IP% -p tcp --dport 22 -j ACCEPT
   tcpflags = syn
 
@@ -145,7 +146,7 @@ apt install fwknop-server fwknop-client`,
     title: 'DNS Rebinding',
     icon: <Globe className="text-accent" />,
     concept: 'Site malicioso usa TTL de 1 segundo: primeiro resolve para o IP do atacante, depois muda para 127.0.0.1 ou IP da LAN. O browser do usuário passa a fazer requisições para a rede interna — bypass do same-origin policy.',
-    mitigation: 'Validar o header "Host" no proxy e no web server. DNS Pinning no browser. Configurar resolvers locais para não resolver IPs privados em respostas externas (rebind-localhost-ok=no no dnsmasq). Pi-hole bloqueia muitos domínios de rebinding.',
+    mitigation: 'Validar o header "Host" no proxy e no web server. DNS Pinning no browser. Configurar resolvers locais para não resolver IPs privados em respostas externas (stop-dns-rebind no dnsmasq). Pi-hole bloqueia muitos domínios de rebinding.',
     code: `# DEFESA — dnsmasq com bloqueio de DNS rebinding:
 # /etc/dnsmasq.conf
 stop-dns-rebind             # bloqueia IPs RFC1918 de servidores externos
@@ -364,8 +365,9 @@ export default function AdvancedAttacksPage() {
                 <CodeBlock lang="bash" code={`# Entradas ARP estáticas para gateways críticos:
 arp -s 192.168.1.1 aa:bb:cc:dd:ee:ff
 
-# arptables — bloquear ARP replies não solicitados:
-arptables -A INPUT --opcode Reply \\
+# arptables — descartar ARP replies que dizem ser o gateway
+# mas vêm de outro MAC:
+arptables -A INPUT --opcode Reply --source-ip 192.168.1.1 \\
   ! --source-mac aa:bb:cc:dd:ee:ff -j DROP
 
 # Dynamic ARP Inspection (switches gerenciados):
@@ -377,8 +379,9 @@ arptables -A INPUT --opcode Reply \\
                 </p>
                 <CodeBlock lang="bash" code={`# Pi-hole / dnsmasq — bloquear IPs privados em domínios externos:
 # /etc/dnsmasq.conf
+stop-dns-rebind
 rebind-localhost-ok
-# (apenas localhost é exceção)
+# (stop-dns-rebind bloqueia; apenas localhost é exceção)
 # domínios externos não podem resolver para RFC1918
 
 # Verificar configuração:
@@ -541,6 +544,10 @@ nmap -sV -O 192.168.57.10
 # Scan furtivo com timing lento (T1)
 nmap -sS -T1 --max-retries 1 192.168.57.10
 
+# No firewall: registrar o que chega ao fim da chain INPUT
+# (antes da policy DROP) com um prefixo próprio
+iptables -A INPUT -m limit --limit 10/min -j LOG --log-prefix "IPTables-DROP: "
+
 # Ver no firewall o que chegou nos logs
 journalctl -k | grep "IPTables-DROP" | tail -20`} />
               </div>
@@ -577,9 +584,9 @@ arpwatch -i eth1 -f /var/lib/arpwatch/arp.dat
 # Ver log de mudanças de MAC
 journalctl -u arpwatch -f
 
-# Proteção estática via arptables
+# Proteção estática via arptables (IP do gateway + MAC legítimo)
 apt install arptables -y
-arptables -A INPUT --source-mac ! aa:bb:cc:dd:ee:ff -j DROP
+arptables -A INPUT --source-ip 192.168.1.1 ! --source-mac aa:bb:cc:dd:ee:ff -j DROP
 
 # Verificar regras arptables
 arptables -L -n`} />

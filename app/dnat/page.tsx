@@ -544,20 +544,20 @@ iptables -t nat -L PREROUTING -n -v`} />
           </div>
           <div className="p-4 rounded-xl bg-bg-2 border border-border">
             <p className="font-bold text-sm mb-2">Lab 2 — DNAT com porta personalizada (segurança por obscuridade)</p>
-            <CodeBlock lang="bash" code={`# Expor SSH interno na porta 2222 externamente
-# (SSH real está na porta 22 do servidor 192.168.57.100)
+            <CodeBlock lang="bash" code={`# Expor o SSH do servidor da DMZ na porta 2222 externamente
+# (SSH real está na porta 22 do servidor 192.168.56.250 — DMZ)
 
 iptables -t nat -A PREROUTING \\
   -i eth0 -p tcp --dport 2222 \\
-  -j DNAT --to-destination 192.168.57.100:22
+  -j DNAT --to-destination 192.168.56.250:22
 
-iptables -A FORWARD -i eth0 -o eth2 \\
+iptables -A FORWARD -i eth0 -o eth1 \\
   -p tcp --dport 22 \\
   -m state --state NEW,ESTABLISHED -j ACCEPT
 
 # Testar:
 # ssh -p 2222 usuario@IP-WAN-FIREWALL
-# (isso se conecta na verdade ao servidor .100:22)
+# (isso se conecta na verdade ao servidor .250:22 da DMZ)
 
 # Ver NAT em ação — conexões ativas:
 conntrack -L | grep dport=22`} />

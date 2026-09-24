@@ -144,7 +144,7 @@ trap cleanup EXIT INT TERM
 # Trabalho real usando o diretório temporário
 touch "\${LOCKFILE}"
 echo "dados" > "\${TMPDIR}/relatorio.txt"
-process "\${TMPDIR}/relatorio.txt"
+wc -l "\${TMPDIR}/relatorio.txt"   # processe o arquivo aqui
 
 # Não precisa apagar nada no fim — o trap garante a limpeza`;
 
@@ -223,7 +223,7 @@ export default function ShellScriptPage() {
         <span className="text-text-2">Shell Script</span>
       </div>
 
-      <div className="section-label">Módulo 09 · Trilha Fundamentos</div>
+      <div className="section-label">Módulo 10 · Trilha Fundamentos</div>
       <h1 className="section-title">📜 Shell Script</h1>
       <p className="section-sub">
         Shell script transforma comandos manuais em automações. Um sysadmin que sabe bash pode
@@ -410,9 +410,6 @@ Batch (.bat / .cmd):
 
         <HighlightBox title="🔜 Próxima versão deste módulo">
           <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
-            <li>Arrays e associative arrays (declare -A)</li>
-            <li>getopts — flags de linha de comando (-v, --verbose)</li>
-            <li>trap — captura de erros e sinais (SIGTERM, SIGINT)</li>
             <li>heredoc — gerar arquivos de configuração inline</li>
             <li>shellcheck — ferramenta de lint para bash</li>
           </ul>
@@ -468,7 +465,7 @@ chmod +x /tmp/disco.sh && /tmp/disco.sh`} lang="bash" />
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <span>📋</span> Checkpoint do Módulo 09
+              <span>📋</span> Checkpoint do Módulo 10
             </h3>
             <div className="space-y-3">
               {CHECKLIST.map(item => (
@@ -489,7 +486,7 @@ chmod +x /tmp/disco.sh && /tmp/disco.sh`} lang="bash" />
             </div>
             {allDone && (
               <div className="mt-4 p-3 rounded-lg bg-ok/10 border border-ok/30 text-ok text-sm font-semibold text-center">
-                ✅ Módulo 09 concluído! Próximo: Agendamento de Tarefas →
+                ✅ Módulo 10 concluído! Próximo: Agendamento de Tarefas →
               </div>
             )}
           </div>

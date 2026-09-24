@@ -317,17 +317,17 @@ export const FUNDAMENTOS_QUESTIONS: QuizQuestion[] = [
   {
       text: 'Para instalar um pacote .deb baixado manualmente (fora de repositório), qual comando usar?',
       badge: '📦 Pacotes',
-      options: ['apt install ./pacote.deb', 'dpkg -i pacote.deb', 'pkg install pacote.deb', 'rpm -ivh pacote.deb'],
+      options: ['apt-get download pacote.deb', 'dpkg -i pacote.deb', 'pkg install pacote.deb', 'rpm -ivh pacote.deb'],
       correct: 1,
-      explanation: 'dpkg -i instala pacotes .deb diretamente. Se houver dependências faltando, rode "apt --fix-broken install" logo depois. Alternativamente, "apt install ./pacote.deb" (com ./) resolve dependências automaticamente.',
+      explanation: 'dpkg -i instala pacotes .deb diretamente (apt-get download apenas baixa um .deb do repositório, não instala). Se houver dependências faltando, rode "apt --fix-broken install" logo depois. Alternativamente, "apt install ./pacote.deb" (com ./) resolve dependências automaticamente.',
       trail: 'fundamentos',
     },
   {
       text: 'Qual comando lista todos os pacotes instalados no sistema com dpkg?',
       badge: '📦 Pacotes',
-      options: ['dpkg --list', 'dpkg -l', 'apt list --installed', 'dpkg -q all'],
+      options: ['dpkg -L', 'dpkg -l', 'apt list --installed', 'dpkg -q all'],
       correct: 1,
-      explanation: 'dpkg -l lista todos os pacotes com status (ii = instalado, rc = removido com config restante). A coluna de status indica: primeiro char = desejado, segundo = atual, terceiro = erro.',
+      explanation: 'dpkg -l (forma longa: dpkg --list) lista todos os pacotes com status (ii = instalado, rc = removido com config restante). A coluna de status indica: primeiro char = desejado, segundo = atual, terceiro = erro. Cuidado: dpkg -L (maiúsculo) lista os ARQUIVOS instalados por UM pacote, não os pacotes do sistema.',
       trail: 'fundamentos',
     },
   {
@@ -729,7 +729,7 @@ export const FUNDAMENTOS_QUESTIONS: QuizQuestion[] = [
         'Habilita X11 forwarding automático em todas as conexões',
       ],
       correct: 1,
-      explanation: 'ControlMaster auto + ControlPath ~/.ssh/cm-%r@%h:%p + ControlPersist 10m criam um socket de multiplexação. Segunda conexão ao mesmo host em 10 minutos é instantânea (sem handshake TLS). Essencial para scripts que abrem múltiplas conexões sequenciais e para git push via SSH em repositórios remotos.',
+      explanation: 'ControlMaster auto + ControlPath ~/.ssh/cm-%r@%h:%p + ControlPersist 10m criam um socket de multiplexação. Segunda conexão ao mesmo host em 10 minutos é instantânea (sem novo handshake SSH). Essencial para scripts que abrem múltiplas conexões sequenciais e para git push via SSH em repositórios remotos.',
       trail: 'fundamentos',
     },
   // ── F16 · Gerenciamento de Usuários (Sprint QUIZ-GROUND-ZERO) ─────────────

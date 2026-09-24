@@ -31,7 +31,7 @@ export default function PacotesPage() {
         {/* ── Hero ────────────────────────────────────────────────────────────── */}
         <div className="module-hero mb-10 pt-4">
           <div className="flex items-center gap-2 mb-3">
-            <span className="section-label">Fundamentos Linux · Módulo F11</span>
+            <span className="section-label">Fundamentos Linux · Módulo 12</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-3 flex items-center gap-3">
             <Package size={36} className="text-ok" />
@@ -260,10 +260,11 @@ deactivate                     # sai do ambiente`} />
             <CodeBlock lang="bash" code={`# 1. Quantos pacotes estão instalados?
 dpkg -l | grep "^ii" | wc -l
 
-# 2. Quando o nginx foi instalado?
+# 2. O nginx está instalado? Em que versão?
 dpkg -l nginx
+#    (para a data de instalação: grep " install nginx" /var/log/dpkg.log)
 
-# 3. Qual arquivo pertence ao pacote openssh-server?
+# 3. A que pacote pertence o arquivo /usr/sbin/sshd?
 dpkg -S /usr/sbin/sshd`} />
           </div>
 
@@ -336,16 +337,21 @@ apt-cache show nginx | grep Version`} />
 
         {/* ── Próximo módulo ────────────────────────────────────────────────────── */}
         <div className="mt-12 p-6 bg-bg-2 border border-border rounded-lg">
-          <p className="text-sm text-text-3 mb-1">Você concluiu o Módulo F11</p>
-          <h3 className="font-bold text-lg mb-2">Trilha Fundamentos Linux completa!</h3>
+          <p className="text-sm text-text-3 mb-1">Você concluiu o Módulo 12/17</p>
+          <h3 className="font-bold text-lg mb-2">Próximo: Processo de Boot</h3>
           <p className="text-text-2 text-sm mb-4">
-            Parabéns! Você dominou os fundamentos essenciais do Linux — do sistema de arquivos
-            até a gestão de pacotes. Agora você está pronto para avançar para os módulos de
-            segurança e firewall do curso principal.
+            Parabéns! Você já percorreu os fundamentos do Linux — do sistema de arquivos
+            até a gestão de pacotes. Ainda faltam 5 módulos na Trilha Fundamentos: continue
+            com o Processo de Boot (BIOS/UEFI, GRUB2 e systemd).
           </p>
-          <Link href="/fundamentos" className="btn-outline text-sm">
-            Ver Trilha Fundamentos
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/boot" className="btn-primary text-sm">
+              Próximo: Processo de Boot →
+            </Link>
+            <Link href="/fundamentos" className="btn-outline text-sm">
+              Ver Trilha Fundamentos
+            </Link>
+          </div>
         </div>
 
         {/* ── Erros Comuns ── */}

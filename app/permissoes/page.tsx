@@ -187,7 +187,6 @@ sudo comando       # executar como root`}
         <HighlightBox title="🔜 Próxima versão deste módulo">
           <ul className="text-sm text-text-2 space-y-1 list-disc list-inside">
             <li>ACLs com getfacl/setfacl — permissões granulares por usuário</li>
-            <li>SUID/SGID bits — executar como dono do arquivo</li>
             <li>chattr +i — tornar arquivo imutável mesmo para root</li>
             <li>PAM modules — autenticação plugável (2FA, LDAP)</li>
           </ul>
@@ -243,7 +242,7 @@ sudo grep "sudo" /var/log/auth.log | tail -5
             </div>
             {allDone && (
               <div className="mt-4 p-3 rounded-lg bg-ok/10 border border-ok/30 text-ok text-sm font-semibold text-center">
-                ✅ Módulo 05 concluído! Próximo: Discos e Partições →
+                ✅ Módulo 05 concluído! Próximo: Gerenciamento de Usuários →
               </div>
             )}
           </div>

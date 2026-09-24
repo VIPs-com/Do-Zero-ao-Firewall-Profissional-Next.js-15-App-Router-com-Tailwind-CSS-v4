@@ -358,7 +358,7 @@ sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' \\
           },
           {
             err: 'Saí do vim sem salvar — como recuperar?',
-            fix: 'Se existir arquivo de swap (.arquivo.swp), abrir o arquivo e pressionar R (recover). Sem swap: a alteração foi perdida. Hábito preventivo: :w frequentemente. Configurar salvamento automático: set updatetime=300 no ~/.vimrc.',
+            fix: 'Se existir arquivo de swap (.arquivo.swp), abrir o arquivo e pressionar R (recover). Sem swap: a alteração foi perdida. Hábito preventivo: :w frequentemente. Atenção: set updatetime=300 no ~/.vimrc só controla com que frequência o arquivo de swap (.swp) é gravado — NÃO salva o arquivo editado. Para salvamento automático de verdade, use um autocmd (ex.: autocmd CursorHold * update) ou um plugin.',
           },
           {
             err: 'Editei o arquivo de configuração mas o serviço não mudou o comportamento',

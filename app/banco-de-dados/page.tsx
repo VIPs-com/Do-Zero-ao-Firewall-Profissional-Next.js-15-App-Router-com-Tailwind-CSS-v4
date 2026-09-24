@@ -354,6 +354,8 @@ sudo -u postgres psql -c "CREATE ROLE replicador WITH REPLICATION LOGIN PASSWORD
 
 # ── No STANDBY — clonar o primário ──
 sudo systemctl stop postgresql
+# pg_basebackup EXIGE diretório de dados vazio (ou inexistente):
+sudo mv /var/lib/postgresql/16/main /var/lib/postgresql/16/main.old
 sudo -u postgres pg_basebackup -h 10.0.0.10 -U replicador \\
      -D /var/lib/postgresql/16/main -Fp -Xs -P -R
 # A flag -R já grava standby.signal + primary_conninfo
@@ -378,10 +380,21 @@ sudo mysql <<'SQL'
 CREATE USER 'replica'@'10.0.0.%' IDENTIFIED BY 'senha';
 GRANT REPLICATION SLAVE ON *.* TO 'replica'@'10.0.0.%';
 FLUSH PRIVILEGES;
-SHOW MASTER STATUS;   -- anote File e Position
 SQL
 
+# ── Cópia inicial dos dados (no MASTER) ──
+# Sem ela a réplica começa vazia e diverge. --master-data=2 grava no
+# topo do dump o File/Position exatos do momento do snapshot.
+# (Bancos grandes: prefira mariabackup para a cópia física.)
+sudo mysqldump --all-databases --single-transaction --master-data=2 > inicial.sql
+grep -m1 'CHANGE MASTER' inicial.sql   # anote MASTER_LOG_FILE e MASTER_LOG_POS
+scp inicial.sql admin@10.0.0.20:/tmp/
+
 # ── Na REPLICA (50-server.cnf: server-id = 2) ──
+# 1) Restaurar a cópia inicial ANTES de apontar para o master
+sudo mysql < /tmp/inicial.sql
+
+# 2) Apontar para o master usando o File/Position do dump
 sudo mysql <<'SQL'
 CHANGE MASTER TO
   MASTER_HOST='10.0.0.10',

@@ -37,7 +37,7 @@ const checklistItems = [
 const commonErrors = [
   {
     title: 'Web UI inacessível após instalação',
-    detail: 'Por padrão a Web UI responde apenas na interface LAN (192.168.1.1). Se sua VM não tem a interface LAN corretamente mapeada para uma rede interna, você não acessa. Verifique a ordem das NICs no VirtualBox/KVM: em0 = WAN, em1 = LAN. No console do OPNsense, opção 2 "Set interface IP address" permite resetar o IP da LAN.',
+    detail: 'Por padrão a Web UI responde apenas na interface LAN (192.168.1.1). Se sua VM não tem a interface LAN corretamente mapeada para uma rede interna, você não acessa. Verifique a ordem das NICs no VirtualBox/KVM — neste módulo: em0 = WAN, em1 = DMZ, em2 = LAN. Como a numeração pode variar, confira pelo MAC address (o console do OPNsense mostra o MAC de cada emX; compare com o adaptador da VM). No console do OPNsense, opção 2 "Set interface IP address" permite resetar o IP da LAN.',
   },
   {
     title: 'Regra criada mas tráfego ainda bloqueado',
@@ -499,9 +499,15 @@ pfctl -sn        # ver tabela NAT`}
 # Download: config-opnsense-20260427.xml
 # Restore: upload do XML → Apply
 
-# Backup automático via cron (System → Cron):
-# 0 3 * * * /usr/local/opnsense/scripts/
-#           menu.sh backup backup`} />
+# Toda a configuração fica em /conf/config.xml
+# e o OPNsense guarda o histórico de versões em
+# /conf/backup/ (System → Configuration → History)
+
+# Cópia automática FORA do firewall:
+# crontab de um servidor Linux, chamando a API
+# (endpoint core/backup/download/this — ver Lab 3)
+# ou copiando o XML via SSH/scp:
+# 0 3 * * * scp root@192.168.1.1:/conf/config.xml /backup/opnsense.xml`} />
             </div>
             <div className="p-4 rounded-lg border border-border bg-bg-2 space-y-2">
               <h3 className="font-semibold text-text text-sm">API REST — automação com Ansible/Terraform</h3>

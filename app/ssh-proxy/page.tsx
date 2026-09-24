@@ -70,7 +70,7 @@ export default function SshProxyPage() {
         <div className="flex items-center gap-3 mb-4">
           <span className="text-4xl">🚇</span>
           <div>
-            <p className="section-label">Serviços Avançados</p>
+            <p className="section-label">Módulo 16 · Fundamentos Linux</p>
             <h1 className="text-3xl md:text-4xl font-bold text-text">SSH como Proxy SOCKS</h1>
           </div>
         </div>

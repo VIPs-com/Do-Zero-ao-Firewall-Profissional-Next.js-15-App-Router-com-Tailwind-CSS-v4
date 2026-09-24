@@ -27,7 +27,7 @@ const checklistItems = [
   {
     id: 'sre-error-budget',
     text: 'Calcular error budget e criar alerta de burn rate no Alertmanager',
-    sub: 'Error budget 43.8 min/mês → alerta quando burn rate > 14.4× (consumo 1h = 2% do budget mensal)',
+    sub: 'Error budget 43.2 min/mês → alerta quando burn rate > 14.4× (consumo 1h = 2% do budget mensal)',
   },
   {
     id: 'sre-postmortem',
@@ -194,7 +194,7 @@ export default function SrePage() {
             steps={[
               { label: 'Medir (SLI)', sub: 'requests bem-sucedidos / total', icon: <Activity size={14} />, color: 'border-info/50' },
               { label: 'Definir meta (SLO)', sub: '99.9% em 30 dias', icon: <Target size={14} />, color: 'border-accent/50' },
-              { label: 'Calcular budget', sub: '43.8 min de downtime/mês', icon: <Clock size={14} />, color: 'border-ok/50' },
+              { label: 'Calcular budget', sub: '43.2 min de downtime/mês', icon: <Clock size={14} />, color: 'border-ok/50' },
               { label: 'Monitorar burn', sub: 'Prometheus + Alertmanager', icon: <TrendingUp size={14} />, color: 'border-warn/50' },
               { label: 'Contrato (SLA)', sub: '99.5% com penalidade', icon: <FileText size={14} />, color: 'border-err/50' },
             ]}
@@ -236,10 +236,10 @@ export default function SrePage() {
                 <p className="text-text-2 text-sm mb-3">Tabela de noves:</p>
                 <div className="space-y-1 text-xs font-mono">
                   {[
-                    ['99%',    '1%',   '7h 18m / mês'],
-                    ['99.9%',  '0.1%', '43m 50s / mês'],
-                    ['99.95%', '0.05%','21m 54s / mês'],
-                    ['99.99%', '0.01%','4m 22s / mês'],
+                    ['99%',    '1%',   '7h 12m / mês'],
+                    ['99.9%',  '0.1%', '43m 12s / mês'],
+                    ['99.95%', '0.05%','21m 36s / mês'],
+                    ['99.99%', '0.01%','4m 19s / mês'],
                     ['99.999%','0.001%','26s / mês'],
                   ].map(([slo, err, budget]) => (
                     <div key={slo} className="grid grid-cols-3 gap-2 text-text-2">
@@ -249,6 +249,9 @@ export default function SrePage() {
                     </div>
                   ))}
                 </div>
+                <p className="text-text-3 text-xs mt-2">
+                  Mês de 30 dias (43.200 min). Com o mês médio de 30,44 dias (ano ÷ 12), 99.9% dá ~43,8 min (43m 50s).
+                </p>
               </div>
             </div>
           </HighlightBox>
@@ -819,7 +822,7 @@ groups:
 groups:
   - name: burn-rate-alerts
     rules:
-      # Alerta crítico: burn rate 14.4× (esgota budget em 1 hora)
+      # Alerta crítico: burn rate 14.4× (2% do budget por hora — esgota em ~2 dias)
       - alert: ErrorBudgetBurnRateCritico
         expr: |
           (
@@ -829,10 +832,10 @@ groups:
         labels:
           severity: page   # PagerDuty / acorda on-call
         annotations:
-          summary: "Burn rate crítico — error budget esgota em 1h"
+          summary: "Burn rate crítico — error budget esgota em ~2 dias"
           runbook: "https://wiki.empresa.com/runbooks/api-alta-taxa-erro"
 
-      # Alerta alto: burn rate 6× (esgota budget em 6 horas)
+      # Alerta alto: burn rate 6× (5% do budget em 6h — esgota em ~5 dias)
       - alert: ErrorBudgetBurnRateAlto
         expr: |
           (

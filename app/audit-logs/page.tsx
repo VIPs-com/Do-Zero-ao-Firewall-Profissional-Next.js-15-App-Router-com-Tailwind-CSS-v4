@@ -96,7 +96,7 @@ export default function AuditLogsPage() {
               </code>
               <ul className="mt-3 space-y-1 text-sm text-text-2">
                 <li><code className="text-xs text-accent-2">IN=enp0s3</code> → interface de entrada (WAN — veio da internet)</li>
-                <li><code className="text-xs text-accent-2">OUT=</code> → vazio = pacote DROP antes de rotear</li>
+                <li><code className="text-xs text-accent-2">OUT=</code> → vazio = pacote destinado ao próprio host (chain INPUT)</li>
                 <li><code className="text-xs text-accent-2">SRC=185.234.12.43</code> → IP do atacante</li>
                 <li><code className="text-xs text-accent-2">DST=192.168.56.250</code> → IP destino (firewall)</li>
                 <li><code className="text-xs text-accent-2">TTL=118</code> → fingerprint SO: ≈ Windows (128 - 10 hops)</li>
@@ -144,7 +144,7 @@ export default function AuditLogsPage() {
                 <ul className="text-xs text-text-3 space-y-3">
                   <li><code className="text-[10px] text-accent-2">tail -f /var/log/syslog | grep KNOCK</code></li>
                   <li><code className="text-[10px] text-accent-2">grep "Accepted" /var/log/auth.log</code></li>
-                  <li><code className="text-[10px] text-accent-2">{"awk '/SRC=/ {print $NF}' /var/log/syslog"}</code></li>
+                  <li><code className="text-[10px] text-accent-2">{'grep -oP "SRC=\\K[0-9.]+" /var/log/syslog'}</code></li>
                   <li><code className="text-[10px] text-accent-2">journalctl -k | grep KNOCK-59991</code></li>
                 </ul>
               </InfoBox>
@@ -314,7 +314,7 @@ tail -f /var/log/syslog | grep "KNOCK" \\
               <CodeBlock code={`# Top 10 IPs que mais bateram:
 grep "KNOCK-59991" /var/log/syslog \\
     | grep -oP "SRC=\\K[0-9.]+" \\
-    | sort | uniq -c | sort -rn | head 10
+    | sort | uniq -c | sort -rn | head -10
 # 43  192.168.57.50  ← admin legítimo
 #  3  192.168.57.100 ← outro admin?
 #  1  185.234.x.x    ← SUSPEITO!
@@ -343,7 +343,7 @@ grep "KNOCK-59991" /var/log/syslog \\
 
 # Extrair logins SSH bem-sucedidos:
 grep "Accepted" /var/log/auth.log \\
-    | awk '{print $(NF-3)}' > /tmp/logins.txt
+    | grep -oP 'Accepted \\S+ for \\S+ from \\K[0-9.]+' > /tmp/logins.txt
 
 # Correlacionar — quem bateu E logou?
 while read ip; do
@@ -361,7 +361,7 @@ done < /tmp/batidas.txt`} />
 #!/bin/bash
 LOGFILE="/var/log/syslog"
 AUTHLOG="/var/log/auth.log"
-DATA=$(date +"%Y-%m-%d")
+DATA=$(date +"%b %e")   # formato syslog tradicional: "Mar 17" / "Mar  7"
 
 echo "╔══════════════════════════════════════════╗"
 echo "║   RELATÓRIO DE AUDITORIA — PORT KNOCKING  ║"
@@ -369,17 +369,17 @@ echo "║   Gerado em: $(date)   ║"
 echo "╚══════════════════════════════════════════╝"
 
 echo "━━━ RESUMO DO DIA ━━━"
-echo "Batidas na porta 59991:     $(grep "KNOCK-59991" $LOGFILE | grep "$DATA" | wc -l)"
-echo "Tentativas SSH sem knock:   $(grep "SSH-SEM-KNOCK" $LOGFILE | grep "$DATA" | wc -l)"
-echo "Logins bem-sucedidos:       $(grep "Accepted" $AUTHLOG | grep "$DATA" | wc -l)"
+echo "Batidas na porta 59991:     $(grep "KNOCK-59991" $LOGFILE | grep "^$DATA" | wc -l)"
+echo "Tentativas SSH sem knock:   $(grep "SSH-SEM-KNOCK" $LOGFILE | grep "^$DATA" | wc -l)"
+echo "Logins bem-sucedidos:       $(grep "Accepted" $AUTHLOG | grep "^$DATA" | wc -l)"
 
 echo "━━━ TOP IPs QUE BATERAM ━━━"
-grep "KNOCK-59991" $LOGFILE | grep "$DATA" \\
+grep "KNOCK-59991" $LOGFILE | grep "^$DATA" \\
     | grep -oP "SRC=\\K[0-9.]+" \\
-    | sort | uniq -c | sort -rn | head 10
+    | sort | uniq -c | sort -rn | head -10
 
 echo "━━━ ATIVIDADE FORA DO HORÁRIO COMERCIAL ━━━"
-grep "KNOCK-59991" $LOGFILE | grep "$DATA" \\
+grep "KNOCK-59991" $LOGFILE | grep "^$DATA" \\
     | awk '{split($3,t,":"); h=t[1]+0; if(h<8||h>=20) print "⚠️ "$3, $0}' \\
     | grep -oP "⚠️ [0-9:]+ .*SRC=\\K[0-9.]+" \\
     | while read ip; do echo "  Batida suspeita de: $ip"; done
@@ -566,7 +566,7 @@ tail -f /var/log/auditoria/knock.log`} />
             <div className="space-y-2 text-[10px] font-mono text-text-3">
               <div><span className="text-accent-2">grep -c "Failed"</span> — conta tentativas</div>
               <div><span className="text-accent-2">sort | uniq -c | sort -rn</span> — ranking de IPs</div>
-              <div><span className="text-accent-2">awk &apos;{'{'}print $8{'}'}&apos;</span> — extrai campo SRC</div>
+              <div><span className="text-accent-2">grep -oP &quot;SRC=\K[0-9.]+&quot;</span> — extrai o IP de SRC</div>
               <div><span className="text-accent-2">journalctl --since &quot;-1h&quot;</span> — última hora</div>
             </div>
           </div>
@@ -687,7 +687,7 @@ lastb | head -20   # requer sudo
 
 # Detalhar uma sessão específica via auditd
 # Substituir SESSION_ID pelo ID encontrado no ausearch
-sudo ausearch -k sshd --start today | grep -A 5 "type=USER_LOGIN"
+sudo ausearch -m USER_LOGIN --start today
 
 # Linha do tempo de um usuário específico:
 sudo ausearch -ua $(id -u usuario) --start today

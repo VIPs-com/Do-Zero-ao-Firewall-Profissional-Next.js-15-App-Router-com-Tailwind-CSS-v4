@@ -73,7 +73,7 @@ export default function LogsBasicosPage() {
         <span className="text-text-2">Logs e Monitoramento</span>
       </div>
 
-      <div className="section-label">Módulo 07 · Trilha Fundamentos</div>
+      <div className="section-label">Módulo 08 · Trilha Fundamentos</div>
       <h1 className="section-title">📋 Logs e Monitoramento</h1>
       <p className="section-sub">
         Logs são a memória do sistema — todo problema tem um rastro.{' '}
@@ -199,7 +199,7 @@ ssh localhost
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <span>📋</span> Checkpoint do Módulo 07
+              <span>📋</span> Checkpoint do Módulo 08
             </h3>
             <div className="space-y-3">
               {CHECKLIST.map(item => (
@@ -220,7 +220,7 @@ ssh localhost
             </div>
             {allDone && (
               <div className="mt-4 p-3 rounded-lg bg-ok/10 border border-ok/30 text-ok text-sm font-semibold text-center">
-                ✅ Módulo 07 concluído! Próximo: Backup e Restauração →
+                ✅ Módulo 08 concluído! Próximo: Backup e Restauração →
               </div>
             )}
           </div>

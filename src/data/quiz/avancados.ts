@@ -97,7 +97,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         'Habilitar SSL/TLS no VirtualHost',
       ],
       correct: 1,
-      explanation: 'mod_rewrite é o módulo de manipulação de URLs do Apache. Permite redirecionar HTTP→HTTPS (RedirectMatch), criar URLs amigáveis (/produto/123 → /index.php?id=123) e bloquear requisições por padrão. É base de quase todo .htaccess.',
+      explanation: 'mod_rewrite é o módulo de manipulação de URLs do Apache. Permite redirecionar HTTP→HTTPS (RewriteCond + RewriteRule — o RedirectMatch é do mod_alias), criar URLs amigáveis (/produto/123 → /index.php?id=123) e bloquear requisições por padrão. É base de quase todo .htaccess.',
       trail: 'avancados',
     },
   {
@@ -277,7 +277,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         'Gerencia o acesso SSH aos hosts do inventário',
       ],
       correct: 1,
-      explanation: 'ansible-vault encrypt arquivo.yml criptografa com AES-256-CBC usando uma senha. O arquivo pode ser armazenado no git com segurança. Na execução, --ask-vault-pass ou --vault-password-file descriptografa na memória.',
+      explanation: 'ansible-vault encrypt arquivo.yml criptografa com AES-256 (modo CTR, com HMAC-SHA256 para integridade) usando uma senha. O arquivo pode ser armazenado no git com segurança. Na execução, --ask-vault-pass ou --vault-password-file descriptografa na memória.',
       trail: 'avancados',
     },
   {
@@ -298,7 +298,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       badge: '📊 Monitoring',
       options: ['increase(requests_total[5m])', 'rate(requests_total[5m])', 'delta(requests_total[5m])', 'sum(requests_total[5m])'],
       correct: 1,
-      explanation: 'rate() calcula a taxa por segundo de um counter usando regressão linear na janela de tempo. increase() dá o crescimento absoluto na janela (não por segundo). Use rate() para gráficos de throughput; irate() para detecção de picos.',
+      explanation: 'rate() calcula a taxa média por segundo de um counter usando as amostras da janela, com extrapolação nas bordas (e tratando resets do counter). increase() dá o crescimento absoluto na janela (não por segundo). Use rate() para gráficos de throughput; irate() para detecção de picos.',
       trail: 'avancados',
     },
   {
@@ -600,7 +600,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         'No roteador, antes de qualquer interface',
       ],
       correct: 2,
-      explanation: 'O pf (packet filter) do FreeBSD/OPNsense avalia regras no ingresso de cada interface. Uma regra na interface LAN bloqueia tráfego entrando pela LAN. Para bloquear tráfego saindo pela WAN, crie a regra na interface WAN.',
+      explanation: 'O pf (packet filter) do FreeBSD/OPNsense avalia regras no ingresso de cada interface. Uma regra na interface LAN bloqueia tráfego entrando pela LAN. Para bloquear tráfego da rede interna rumo à internet, crie a regra na interface LAN (onde o tráfego entra) — ou use uma regra floating com direção out, se precisar filtrar na saída da WAN.',
       trail: 'avancados',
     },
   {
@@ -715,7 +715,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         'Agrupa requisições HTTP por intervalos de 5 minutos',
       ],
       correct: 1,
-      explanation: 'rate() pega dois pontos dentro do range [5m] e calcula a variação por segundo. É preferível a irate() para gráficos contínuos pois é menos ruidosa. Para alertas de pico, irate() é mais sensível. Sempre use counter (sufixo _total) com rate(), nunca gauge.',
+      explanation: 'rate() usa todas as amostras dentro do range [5m], com extrapolação nas bordas, e dá a média de aumento por segundo (quem usa só os dois últimos pontos é o irate()). É preferível a irate() para gráficos contínuos pois é menos ruidosa. Para alertas de pico, irate() é mais sensível. Sempre use counter (sufixo _total) com rate(), nunca gauge.',
       trail: 'avancados',
     },
   {
@@ -871,7 +871,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         'Desativa o modo idempotente — tasks sempre executam mesmo se o estado já estiver correto',
       ],
       correct: 1,
-      explanation: 'gather_facts executa o módulo setup em cada host, coletando ~300 variáveis (ansible_os_family, ansible_memtotal_mb etc.). Em um inventário com 100 hosts, isso pode adicionar 30-60 segundos. Use gather_facts: false em playbooks de operações rápidas (restart de serviço, checar porta) onde facts não são usados. Para coletar facts parciais: gather_subset: [\'network\', \'hardware\'].',
+      explanation: 'gather_facts executa o módulo setup em cada host, coletando ~200 variáveis (ansible_os_family, ansible_memtotal_mb etc.), o que custa cerca de 2-5 segundos por host — em inventários grandes, isso se acumula. Use gather_facts: false em playbooks de operações rápidas (restart de serviço, checar porta) onde facts não são usados. Para coletar facts parciais: gather_subset: [\'network\', \'hardware\'].',
       trail: 'avancados',
     },
   {
@@ -922,8 +922,8 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         'O nftables assume as regras de filtragem como fallback',
         'Depende da configuração — padrão é fail-open, mas pode ser configurado para fail-closed via sysctl',
       ],
-      correct: 1,
-      explanation: 'NFQUEUE tem comportamento fail-open por padrão: se nenhum processo está consumindo a fila, o kernel libera os pacotes. Para fail-closed: use --queue-bypass no Suricata ou regras nftables com `queue bypass`. Em produção crítica, use fail-closed mas tenha um runbook para quando o IPS travar — bloqueio total da rede. Monitorar: suricata-stat.log + alertas sobre queue drops.',
+      correct: 0,
+      explanation: 'NFQUEUE é fail-closed por padrão: se nenhum processo está consumindo a fila, o kernel descarta os pacotes e a rede para. Para fail-open (tráfego passa sem inspeção enquanto o IPS está fora): use --queue-bypass na regra iptables ou a flag `bypass` na regra nftables (`queue num 0 bypass`). Em produção crítica, escolha conscientemente: fail-closed prioriza segurança, mas exige um runbook para quando o IPS travar — bloqueio total da rede. Monitorar: suricata-stat.log + alertas sobre queue drops.',
       trail: 'avancados',
     },
   {
@@ -970,12 +970,12 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       badge: '🎯 SRE',
       options: [
         'Burn rate 1x indica zero erros; burn rate 14.4x indica que todos os requests estão falhando',
-        'Burn rate 1x consome o error budget exatamente no prazo (ex: em 30 dias); burn rate 14.4x esgota o budget em 2 horas — requer alerta e ação imediata (page)',
+        'Burn rate 1x consome o error budget exatamente no prazo (ex: em 30 dias); burn rate 14.4x esgota o budget em ~50 horas (~2 dias) — requer alerta e ação imediata (page)',
         'Burn rate é uma métrica relativa sem valor absoluto — só importa a tendência',
         'Burn rate 14.4x significa 14.4% das requisições estão com erro',
       ],
       correct: 1,
-      explanation: 'Com SLO de 99.9% (budget = 0.1% = 43.2 min/mês): burn rate 1x gasta 1.44 min de budget/dia. Burn rate 14.4x gasta 20.7 min/hora — o budget acaba em 2 horas. Por isso alertas multi-window: 5% budget em 1h (burn_rate > 14.4) → page imediato; 10% em 6h (burn_rate > 6) → ticket urgente. A Google SRE Book recomenda essa abordagem para alertas com alta precisão e recall.',
+      explanation: 'Com SLO de 99.9% (budget = 0.1% = 43.2 min/mês): burn rate 1x gasta 1.44 min de budget/dia. Burn rate 14.4x gasta 20.7 min/dia (14.4 × 1.44) — o budget acaba em 720 h ÷ 14.4 = 50 h (~2 dias). Por isso alertas multi-window: 2% do budget em 1h (burn_rate > 14.4) → page imediato; 5% em 6h (burn_rate > 6) → ticket urgente. A Google SRE Book recomenda essa abordagem para alertas com alta precisão e recall.',
       trail: 'avancados',
     },
   {
@@ -1001,7 +1001,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         'CARP é uma feature comercial do pfSense não disponível no OPNsense open-source',
       ],
       correct: 1,
-      explanation: 'CARP + pfsync = HA sem interrupção. MASTER envia advertisements CARP a cada 1s. Se BACKUP não recebe por advskew × 0.25s, promove-se a MASTER. pfsync sincroniza tabela de estados conntrack entre os nós — conexões ativas sobrevivem ao failover. VIP configurado em Interfaces → Virtual IPs. Testar: systemctl stop php-fpm no MASTER e verificar se o BACKUP assume o VIP.',
+      explanation: 'CARP + pfsync = HA sem interrupção. MASTER envia advertisements CARP a cada advbase (padrão 1s). Se o BACKUP não recebe anúncios por ~3 × advbase + advskew/256 segundos, promove-se a MASTER. pfsync sincroniza a tabela de estados do pf entre os nós — conexões ativas sobrevivem ao failover. VIP configurado em Interfaces → Virtual IPs. Testar: no MASTER, ative o modo de manutenção CARP (Interfaces → Virtual IPs → Status) ou derrube a interface/desligue o nó, e verifique se o BACKUP assume o VIP. (OPNsense é FreeBSD — não há systemctl.)',
       trail: 'avancados',
     },
   {
@@ -1123,13 +1123,13 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
       text: 'CENÁRIO: Um serviço que usava 99.8% de disponibilidade no último mês vai receber um deploy arriscado. O SLO é 99.9% mensal (budget = 43.2 min). O que o SRE deve fazer?',
       badge: '🎯 SRE',
       options: [
-        'Cancelar o deploy — qualquer risco de downtime deve ser evitado',
-        'Calcular o error budget restante (43.2 min - 0.2% × 43200 min ≈ 29 min gastos → ~14 min restantes). Com apenas 14 min de budget, o deploy deve ter rollback automático e ser feito em horário de baixo tráfego com feature flag',
+        'Cancelar todos os deploys para sempre — qualquer risco de downtime deve ser evitado',
+        'Calcular o error budget: 0.2% × 43200 min ≈ 86.4 min de indisponibilidade — o dobro dos 43.2 min permitidos. O budget já estourou: adiar o deploy arriscado (freeze) e priorizar confiabilidade até o próximo período',
         'Aumentar o SLO para 99.5% para dar mais margem de manobra',
         'Deploy imediatamente — 99.8% é melhor que o SLO de 99.9% de qualquer forma',
       ],
       correct: 1,
-      explanation: 'Cálculo: 0.2% de indisponibilidade × 43200 min/mês ≈ 86 min gastos (ops, mais que o budget!). Na prática: 100% - 99.8% = 0.2%, budget mensal = 43.2 min, 0.2% × 43200 = 86.4 min — o budget já foi extrapolado! Com budget negativo, a decisão SRE é freeze de deploys arriscados e foco em confiabilidade. O deploy deve esperar o próximo período ou ser validado em staging por um período igual ao tempo máximo de rollback.',
+      explanation: 'Cálculo: 100% - 99.8% = 0.2% de indisponibilidade; 0.2% × 43200 min/mês = 86.4 min gastos, contra um budget mensal de 43.2 min — o budget já foi extrapolado (≈ -43 min). Com budget negativo, a decisão SRE é freeze de deploys arriscados e foco em confiabilidade. O deploy deve esperar o próximo período ou ser validado em staging por um período igual ao tempo máximo de rollback.',
       trail: 'avancados',
     },
   // ── HashiCorp Vault (Sprint Quiz Coverage Audit — /vault tinha 0 questões) ──
@@ -1957,7 +1957,7 @@ export const AVANCADOS_QUESTIONS: QuizQuestion[] = [
         '-r 100',
       ],
       correct: 1,
-      explanation: 'A regra correta intercepta a chamada de sistema execve filtrando pelo path do binário: -a always,exit -F arch=b64 -S execve -F path=/usr/bin/sudo -k sudo-exec. A opção -w (file watch) audita ACESSO ao arquivo (leitura/atributo), não a execução de processos. Depois você consulta com ausearch -k sudo-exec.',
+      explanation: 'A regra correta intercepta a chamada de sistema execve filtrando pelo path do binário: -a always,exit -F arch=b64 -S execve -F path=/usr/bin/sudo -k sudo-exec. A opção -w (file watch) com -p wa audita escrita (w) e mudança de atributo (a) no arquivo, não a execução (um watch com -p x também registraria execuções, mas a regra de syscall execve é a forma explícita). Depois você consulta com ausearch -k sudo-exec.',
       trail: 'avancados',
     },
   {

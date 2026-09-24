@@ -133,7 +133,7 @@ export default function WireGuardPage() {
       <p className="section-sub">
         <strong>WireGuard</strong> é um protocolo VPN de código aberto focado em simplicidade,
         alto desempenho e criptografia moderna. Com apenas ~4.000 linhas de código (contra
-        ~100.000 do OpenVPN), é mais fácil de auditar, configurar e manter.
+        ~70.000 do OpenVPN e ~400.000 de uma pilha IPSec), é mais fácil de auditar, configurar e manter.
       </p>
 
       <FluxoCard
@@ -194,7 +194,7 @@ export default function WireGuardPage() {
                 </thead>
                 <tbody className="divide-y divide-border">
                   {[
-                    ['Linhas de código', '~4.000', '~100.000', '~70.000'],
+                    ['Linhas de código', '~4.000', '~400.000', '~70.000'],
                     ['Criptografia', 'Curve25519 + ChaCha20', 'AES-256 / IKEv2', 'AES-256 / TLS'],
                     ['Transporte', 'UDP (fixo)', 'UDP / ESP', 'UDP / TCP'],
                     ['Configuração', 'Muito simples', 'Complexa', 'Moderada'],
@@ -624,8 +624,9 @@ wg genkey | tee /tmp/client_private.key | wg pubkey > /tmp/client_public.key
 wg set wg0 peer "$(cat /tmp/client_public.key)" \
   allowed-ips 10.100.0.2/32
 
-# Salvar configuração atual
-wg showconf wg0 > /etc/wireguard/wg0.conf
+# Salvar configuração atual (preserva Address, DNS, PostUp/PostDown)
+# NÃO use 'wg showconf wg0 > wg0.conf' — ele omite esses campos
+wg-quick save wg0
 
 # Verificar peers conectados
 wg show wg0 peers
@@ -681,7 +682,7 @@ systemctl enable wg-quick@wg0`} />
         </div>
         <h3 className="text-lg font-bold text-text mb-2">Noise Protocol — A Criptografia por Trás do WireGuard</h3>
         <p className="text-text-2 text-sm mb-4">
-          Por que Curve25519, ChaCha20-Poly1305 e BLAKE2s tornam o WireGuard mais rápido e seguro que IPSec com 150× menos código. Como o AllowedIPs funciona como filtro bidirecional automático.
+          Por que Curve25519, ChaCha20-Poly1305 e BLAKE2s tornam o WireGuard mais rápido e seguro que IPSec com ~100× menos código (~4.000 vs ~400.000 linhas). Como o AllowedIPs funciona como filtro bidirecional automático.
         </p>
         <button
           onClick={() => setActiveDeepDive(DEEP_DIVES.find(d => d.id === 'wireguard-noise-protocol') ?? null)}

@@ -42,10 +42,7 @@ ClientAliveCountMax 2
 MaxAuthTries 3
 
 # Número máximo de conexões simultâneas não autenticadas
-MaxStartups 10:30:60
-
-# Versão 2 do protocolo apenas
-Protocol 2`;
+MaxStartups 10:30:60`;
 
 const SSH_KEYGEN = `# ── No cliente (sua máquina local) ──────────────────────────────────
 # Gerar par de chaves Ed25519 (mais seguro que RSA 2048)
@@ -503,9 +500,9 @@ export default function HardeningPage() {
               Execute estes comandos em qualquer servidor Linux para verificar rapidamente o status das 3 camadas de hardening. Um resultado verde em todas indica configuração de produção.
             </p>
             <CodeBlock lang="bash" code={`# ── Camada 1: SSH ──────────────────────────────────────────
-sshd -T | grep -E 'passwordauth|pubkeyauth|permitrootlogin|protocol'
+sshd -T | grep -E 'passwordauth|pubkeyauth|permitrootlogin'
 # Esperado: passwordauthentication no | pubkeyauthentication yes
-#           permitrootlogin no | protocol 2
+#           permitrootlogin no
 
 # Verificar algoritmos de chave aceitos:
 sshd -T | grep hostkeyalgorithms

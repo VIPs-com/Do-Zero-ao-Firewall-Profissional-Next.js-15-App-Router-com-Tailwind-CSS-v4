@@ -385,7 +385,7 @@ vault secrets enable -path=secret kv-v2
 # Gravar um segredo
 vault kv put secret/app/database \\
   username="appuser" \\
-  password="S3cret@2024"
+  password="TROQUE-ME"
 
 # Ler o segredo
 vault kv get secret/app/database
@@ -429,7 +429,7 @@ vault audit list
 # Apenas senhas estáticas, sem rotação automática
 
 # Azure Key Vault — excelente para workloads Azure, vendor lock-in
-az keyvault secret set --vault-name MyVault --name dbpass --value "s3cr3t"
+az keyvault secret set --vault-name MyVault --name dbpass --value "EXEMPLO-NAO-USAR"
 
 # DPAPI — criptografia vinculada à conta Windows/AD
 [System.Security.Cryptography.ProtectedData]::Protect(...)
@@ -439,7 +439,7 @@ az keyvault secret set --vault-name MyVault --name dbpass --value "s3cr3t"
               linuxCode={`# HashiCorp Vault — API REST, multi-cloud, sem vendor lock-in
 
 # KV v2 — segredos estáticos versionados
-vault kv put secret/app/db username="app" password="s3cr3t"
+vault kv put secret/app/db username="app" password="EXEMPLO-NAO-USAR"
 
 # Transit engine — criptografia como serviço
 vault write transit/encrypt/app-data plaintext=$(echo -n "dado" | base64)
@@ -713,7 +713,7 @@ vault write pki/issue/internal-service \\
                 <div>
                   <h3 className="font-semibold mb-3">1. Preparar PostgreSQL para o Vault</h3>
                   <CodeBlock lang="sql" code={`-- No PostgreSQL: criar usuário com permissão para criar roles
-CREATE ROLE vault_admin LOGIN PASSWORD 'vaultpass' CREATEROLE;
+CREATE ROLE vault_admin LOGIN PASSWORD 'TROQUE-ME' CREATEROLE;
 GRANT CREATE ON DATABASE appdb TO vault_admin;
 
 -- O Vault vai usar vault_admin para criar/deletar usuários dinâmicos`} />
@@ -730,7 +730,7 @@ vault write database/config/appdb \\
   allowed_roles="app-role,readonly-role" \\
   connection_url="postgresql://{{username}}:{{password}}@postgres:5432/appdb?sslmode=disable" \\
   username="vault_admin" \\
-  password="vaultpass"
+  password="TROQUE-ME"
 
 # Rotacionar a senha inicial (o Vault passa a gerenciar vault_admin)
 vault write -force database/config/appdb/rotate-root`} />
@@ -931,7 +931,7 @@ export VAULT_TOKEN='root'
 # 2. Criar estrutura de segredos
 vault kv put secret/myapp/config \\
   api_key="key-abc123" \\
-  jwt_secret="supersecret"
+  jwt_secret="TROQUE-ME"
 
 # 3. Criar política restrita
 vault policy write myapp-policy - << 'EOF'
@@ -968,12 +968,12 @@ curl -s -H "X-Vault-Token: $APP_TOKEN" \\
                   </p>
                   <CodeBlock code={`# Pré-requisito: PostgreSQL rodando
 docker run -d --name postgres \\
-  -e POSTGRES_PASSWORD=pgpass \\
+  -e POSTGRES_PASSWORD=TROQUE-ME \\
   -p 5432:5432 postgres:16
 
 # Criar usuário vault no PostgreSQL
 docker exec -i postgres psql -U postgres << 'SQL'
-CREATE ROLE vault_admin LOGIN PASSWORD 'vaultpass' CREATEROLE;
+CREATE ROLE vault_admin LOGIN PASSWORD 'TROQUE-ME' CREATEROLE;
 CREATE DATABASE appdb;
 GRANT ALL PRIVILEGES ON DATABASE appdb TO vault_admin;
 SQL
@@ -986,7 +986,7 @@ vault write database/config/appdb \\
   connection_url="postgresql://{{username}}:{{password}}@localhost:5432/appdb?sslmode=disable" \\
   allowed_roles="app-role" \\
   username="vault_admin" \\
-  password="vaultpass"
+  password="TROQUE-ME"
 
 vault write database/roles/app-role \\
   db_name=appdb \\

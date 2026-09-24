@@ -236,7 +236,7 @@ nft list ruleset > /etc/nftables.conf`}
                 <CodeBlock
                   title="Blocklist com set nativo"
                   lang="bash"
-                  code={`# Criar set de IPs bloqueados\nnft add set ip filter blocklist { type ipv4_addr; flags interval; }\n\n# Adicionar IPs ao set\nnft add element ip filter blocklist { 1.2.3.4, 5.6.7.0/24 }\n\n# Regra que referencia o set\nnft add rule ip filter input ip saddr @blocklist drop\n\n# Ver conteúdo do set\nnft list set ip filter blocklist`}
+                  code={`# Criar set de IPs bloqueados\nnft add set ip filter blocklist '{ type ipv4_addr; flags interval; }'\n\n# Adicionar IPs ao set\nnft add element ip filter blocklist { 1.2.3.4, 5.6.7.0/24 }\n\n# Regra que referencia o set\nnft add rule ip filter input ip saddr @blocklist drop\n\n# Ver conteúdo do set\nnft list set ip filter blocklist`}
                 />
               </section>
             </div>
@@ -289,8 +289,8 @@ nft list ruleset > /etc/nftables.conf`}
               </InfoBox>
 
               <HighlightBox title="Dica de migração gradual">
-                Em ambientes existentes com iptables, você pode instalar o pacote
-                <code> iptables-translate</code> para converter regras automaticamente:
+                Em ambientes existentes com iptables, você pode usar o
+                <code> iptables-translate</code> (já vem no pacote <code>iptables</code>) para converter regras automaticamente:
                 <br /><br />
                 <code>iptables-translate -A INPUT -p tcp --dport 22 -j ACCEPT</code>
                 <br />
@@ -366,10 +366,10 @@ nft list ruleset`} />
                 <p className="text-sm text-text-2">Crie um set de IPs bloqueados e adicione/remova IPs em tempo real sem alterar as regras.</p>
                 <CodeBlock lang="bash" title="Exercício 2 — set blocklist" code={`# Criar tabela e set (se não existir)
 nft add table ip filter
-nft add set ip filter blocklist { type ipv4_addr; flags interval; }
+nft add set ip filter blocklist '{ type ipv4_addr; flags interval; }'
 
 # Criar regra que referencia o set
-nft add chain ip filter input { type filter hook input priority 0; policy accept; }
+nft add chain ip filter input '{ type filter hook input priority 0; policy accept; }'
 nft add rule ip filter input ip saddr @blocklist drop
 
 # Adicionar IPs ao set dinamicamente (sem reiniciar!)
@@ -380,7 +380,7 @@ nft add element ip filter blocklist { 10.0.0.0/8 }
 nft list set ip filter blocklist
 
 # Testar que o IP está bloqueado
-ping -c 2 1.2.3.4  # deve mostrar "Operation not permitted" no firewall
+ping -c 2 1.2.3.4  # deve dar timeout (100% packet loss): a resposta que chega de 1.2.3.4 é descartada na chain input
 
 # Remover IP do set
 nft delete element ip filter blocklist { 1.2.3.4 }`} />

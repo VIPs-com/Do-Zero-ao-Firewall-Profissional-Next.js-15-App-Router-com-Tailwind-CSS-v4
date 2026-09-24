@@ -87,7 +87,7 @@ export default function BackupPage() {
         <span className="text-text-2">Backup e Restauração</span>
       </div>
 
-      <div className="section-label">Módulo 08 · Trilha Fundamentos</div>
+      <div className="section-label">Módulo 09 · Trilha Fundamentos</div>
       <h1 className="section-title">🗄️ Backup e Restauração</h1>
       <p className="section-sub">
         Servidor sem backup é uma bomba-relógio. <strong>rsync</strong> e <strong>tar</strong> são as
@@ -210,7 +210,7 @@ cat /tmp/etc/hosts  # confirmar restauração`} lang="bash" />
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <span>📋</span> Checkpoint do Módulo 08
+              <span>📋</span> Checkpoint do Módulo 09
             </h3>
             <div className="space-y-3">
               {CHECKLIST.map(item => (
@@ -231,7 +231,7 @@ cat /tmp/etc/hosts  # confirmar restauração`} lang="bash" />
             </div>
             {allDone && (
               <div className="mt-4 p-3 rounded-lg bg-ok/10 border border-ok/30 text-ok text-sm font-semibold text-center">
-                ✅ Módulo 08 concluído! Próximo: Shell Script →
+                ✅ Módulo 09 concluído! Próximo: Shell Script →
               </div>
             )}
           </div>
@@ -246,8 +246,8 @@ cat /tmp/etc/hosts  # confirmar restauração`} lang="bash" />
         </h2>
         {[
           {
-            err: 'tar: /dev/sda: Cannot stat: No such file or directory',
-            fix: 'Confirmar o caminho correto do dispositivo: lsblk ou ls /dev/sd*. Caminhos de disco variam por sistema (sda, sdb, nvme0n1). Sempre fazer dd com status=progress para acompanhar o progresso.',
+            err: 'tar: /var/www: Cannot stat: No such file or directory',
+            fix: 'O caminho de origem passado ao tar não existe (erro de digitação ou diretório diferente neste servidor). Conferir antes de rodar o backup: ls -ld /var/www. Em scripts, testar a origem antes: [ -d "$ORIGEM" ] || { echo "Origem não existe"; exit 1; }.',
           },
           {
             err: 'rsync: [Errno 13] Permission denied — não copia arquivos do sistema',

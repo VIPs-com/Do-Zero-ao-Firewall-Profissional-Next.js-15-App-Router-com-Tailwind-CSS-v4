@@ -216,7 +216,7 @@ export default function UsuariosPage() {
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-4">
           <span className="section-label" style={{ color: '#a5b4fc' }}>
-            Fundamentos Linux · Módulo 05-B
+            Fundamentos Linux · Módulo 06
           </span>
         </div>
         <h1 className="text-4xl font-bold mb-4 flex items-center gap-3">
@@ -574,8 +574,12 @@ export default function UsuariosPage() {
                       solution: 'Desconecte o usuário antes de deletar: pkill -KILL -u joao. Em seguida, execute userdel -r joao.',
                     },
                     {
-                      title: 'sudo: command not found / usuário não pode executar sudo',
-                      solution: 'O usuário não está no grupo sudo. Verifique com groups joao. Corrija com: sudo usermod -aG sudo joao (precisa relogar para valer).',
+                      title: 'sudo: command not found',
+                      solution: 'O pacote sudo não está instalado (comum em instalações mínimas do Debian). Entre como root (su -) e instale: apt install sudo.',
+                    },
+                    {
+                      title: 'joao is not in the sudoers file. This incident will be reported.',
+                      solution: 'O usuário não está no grupo sudo. Verifique com groups joao. Como root (su -) ou com outro usuário administrador, corrija com: usermod -aG sudo joao (precisa relogar para valer).',
                     },
                     {
                       title: "usermod: group 'docker' does not exist",

@@ -443,8 +443,8 @@ google-authenticator -t -d -f -r 3 -R 30 -w 3
 # 4. Verificar o arquivo gerado
 cat ~/.google_authenticator
 
-# 5. Configurar PAM
-echo "auth required pam_google_authenticator.so" | sudo tee -a /etc/pam.d/sshd
+# 5. Configurar PAM — inserir na 1ª linha (antes de @include common-auth)
+sudo sed -i '1i auth required pam_google_authenticator.so' /etc/pam.d/sshd
 
 # 6. Habilitar no sshd_config
 sudo sed -i 's/KbdInteractiveAuthentication no/KbdInteractiveAuthentication yes/' /etc/ssh/sshd_config
@@ -657,8 +657,9 @@ cat ~/.google_authenticator | head -2`} />
 cp /etc/pam.d/sshd /etc/pam.d/sshd.bak
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 
-# Adicionar PAM do Google Authenticator
-echo "auth required pam_google_authenticator.so" >> /etc/pam.d/sshd
+# Adicionar PAM do Google Authenticator no INÍCIO (antes de @include common-auth)
+sed -i '1i auth required pam_google_authenticator.so' /etc/pam.d/sshd
+head -3 /etc/pam.d/sshd   # confirmar que a linha ficou no topo
 
 # Configurar SSH para usar autenticação por teclado (necessário para 2FA)
 sed -i 's/^#KbdInteractiveAuthentication.*/KbdInteractiveAuthentication yes/' /etc/ssh/sshd_config

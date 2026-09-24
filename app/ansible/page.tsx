@@ -722,7 +722,7 @@ ansible-vault create group_vars/all/vault.yml
 # Pede senha → abre editor → salva criptografado
 
 # Conteúdo do vault.yml (antes de criptografar):
-# vault_db_password: "S3cr3t@2024"
+# vault_db_password: "TROQUE-ME"
 # vault_api_key: "sk-abc123..."
 # vault_ssl_key: |
 #   -----BEGIN PRIVATE KEY-----
