@@ -98,12 +98,12 @@ export default function CronPage() {
         <span className="text-text-2">Agendamento de Tarefas</span>
       </div>
 
-      <div className="section-label">Módulo 10 · Trilha Fundamentos</div>
+      <div className="section-label">Módulo 11 · Trilha Fundamentos</div>
       <h1 className="section-title">🕐 Agendamento de Tarefas</h1>
       <p className="section-sub">
         Automatize manutenção sem intervenção manual. <strong>cron</strong> é o agendador de tarefas
         do Linux — execute qualquer comando por minuto, hora, dia, semana ou mês.
-        Combine com os scripts do Módulo 09 para automação completa.
+        Combine com os scripts do Módulo 10 para automação completa.
       </p>
 
       <FluxoCard
@@ -288,7 +288,7 @@ crontab -e  # apagar a linha e salvar`} lang="bash" />
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <span>📋</span> Checkpoint do Módulo 10 — Trilha Fundamentos Completa!
+              <span>📋</span> Checkpoint do Módulo 11
             </h3>
             <div className="space-y-3">
               {CHECKLIST.map(item => (
@@ -309,7 +309,7 @@ crontab -e  # apagar a linha e salvar`} lang="bash" />
             </div>
             {allDone && (
               <div className="mt-4 p-4 rounded-lg bg-[rgba(99,102,241,0.1)] border border-[rgba(99,102,241,0.3)] text-center">
-                <p className="text-lg font-bold mb-2">✅ Módulo 10/15 concluído!</p>
+                <p className="text-lg font-bold mb-2">✅ Módulo 11/17 concluído!</p>
                 <p className="text-sm text-text-2 mb-4">Ótimo progresso! Continue a trilha — próximo módulo: <strong>Instalação de Programas</strong>.</p>
                 <Link href="/pacotes" className="btn-primary px-6 py-2.5">
                   📦 Próximo: Instalação de Programas

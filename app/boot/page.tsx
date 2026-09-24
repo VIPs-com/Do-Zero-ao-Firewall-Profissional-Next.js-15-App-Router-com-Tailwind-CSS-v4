@@ -39,7 +39,7 @@ export default function BootPage() {
 
         {/* Hero */}
         <div className="mb-10">
-          <div className="section-label mb-3">Módulo F12 · Fundamentos Linux</div>
+          <div className="section-label mb-3">Módulo 13 · Fundamentos Linux</div>
           <h1 className="text-4xl font-bold mb-4">🖥️ Processo de Boot do Linux</h1>
           <p className="text-text-2 text-lg mb-6">
             Do botão Power até o prompt de login — entenda cada etapa do boot: BIOS/UEFI, GRUB2, kernel, initrd e systemd targets.
@@ -134,7 +134,7 @@ efibootmgr -v`} />
           </HighlightBox>
 
           <div className="mt-4">
-            <CodeBlock lang="bash" code={`# Arquivo de configuração do GRUB (NUNCA editar diretamente)
+            <CodeBlock lang="bash" code={`# Configuração do usuário — é AQUI que se edita (depois: sudo update-grub)
 cat /etc/default/grub
 
 # Opções importantes:

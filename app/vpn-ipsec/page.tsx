@@ -211,7 +211,7 @@ export default function VpnIpsecPage() {
                 />
                 <CodeBlock
                   title="/etc/ipsec.secrets — Chave PSK"
-                  code={`200.200.200.1 200.200.200.2 : PSK "ChaveSuperSecreta123!"`}
+                  code={`200.200.200.1 200.200.200.2 : PSK "TROQUE-ME-PSK-LONGA-E-ALEATORIA"`}
                   lang="secrets"
                 />
                 <WarnBox title="Segurança da PSK">
@@ -339,7 +339,7 @@ Add-VpnS2SInterface \\
   -Destination "200.200.200.2" \\
   -Protocol IKEv2 \\
   -AuthenticationMethod PSKOnly \\
-  -SharedSecret "ChaveSuperSecreta123!" \\
+  -SharedSecret "TROQUE-ME-PSK-LONGA-E-ALEATORIA" \\
   -IPv4Subnet "192.168.2.0/24:100"
 
 # 3. Iniciar o túnel:
@@ -376,7 +376,7 @@ apt install strongswan strongswan-pki -y
 #   auto=start
 
 # 3. /etc/ipsec.secrets:
-# 200.200.200.1 200.200.200.2 : PSK "ChaveSuperSecreta123!"
+# 200.200.200.1 200.200.200.2 : PSK "TROQUE-ME-PSK-LONGA-E-ALEATORIA"
 
 # 4. Iniciar e verificar:
 ipsec start
@@ -429,18 +429,18 @@ sudo ipsec start
                 <CodeBlock lang="bash" code={`# Com o túnel ativo, tráfego entre as redes vai criptografado
 
 # Testar ping através do túnel (deve funcionar):
-# Matriz: 192.168.57.0/24, Filial: 10.0.0.0/24
-ping -c 3 10.0.0.1   # de 192.168.57.x para a filial
+# Matriz: 192.168.1.0/24, Filial: 192.168.2.0/24 (leftsubnet/rightsubnet do ipsec.conf)
+ping -c 3 192.168.2.1   # de 192.168.1.x para a filial
 
-# Verificar rota: tráfego para 10.0.0.0/24 vai via túnel
-ip route get 10.0.0.1
+# Verificar rota: tráfego para 192.168.2.0/24 vai via túnel
+ip route get 192.168.2.1
 
 # Capturar na interface de saída — deve mostrar ESP (encriptado):
 sudo tcpdump -i eth0 -n esp &
-ping -c 3 10.0.0.1  # o ping gera tráfego ESP no tcpdump
+ping -c 3 192.168.2.1  # o ping gera tráfego ESP no tcpdump
 
 # Confirmar: pacotes ICMP viram ESP ao sair
-# O destino real (10.0.0.1) é invisível para observadores externos`} />
+# O destino real (192.168.2.1) é invisível para observadores externos`} />
               </div>
             </div>
           </section>

@@ -54,7 +54,7 @@ export default function TroubleshootingPage() {
 
         {/* Hero */}
         <div className="mb-10">
-          <div className="section-label mb-3">Módulo F16 · Fundamentos Linux</div>
+          <div className="section-label mb-3">Módulo 17 · Fundamentos Linux</div>
           <h1 className="text-4xl font-bold mb-4">🔎 Troubleshooting de Rede</h1>
           <p className="text-text-2 text-lg mb-6">
             ping · ip · ss · curl · journalctl — quando "o site não abre", você sabe o que fazer

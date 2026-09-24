@@ -3,6 +3,8 @@
 > **Plataforma interativa de aprendizado em segurança de redes e firewalls Linux**  
 > Construída com Next.js 16 · Tailwind CSS v4 · TypeScript · Gamificada com Badges
 
+> ℹ️ **Sobre o nome do repositório:** o nome menciona "Next.js 15" por razões históricas — o projeto começou nessa versão. Hoje ele usa **Next.js 16** (veja `package.json`). O nome foi mantido para não quebrar links e clones existentes.
+
 ---
 
 ## 📌 Visão Geral

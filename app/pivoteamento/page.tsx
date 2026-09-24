@@ -165,13 +165,15 @@ export default function PivotingPage() {
 # REGRAS ESSENCIAIS ANTI-PIVOTEAMENTO
 # ============================================================
 
-# 1. Bloquear QUALQUER nova conexão saindo da DMZ → LAN
+# 1. Logar tentativas de pivoteamento para análise forense
+#    (o LOG vem ANTES do DROP — depois do DROP nada mais é avaliado)
+iptables -A FORWARD -s 192.168.56.0/24 -d 192.168.57.0/24 \\
+  -m state --state NEW \\
+  -m limit --limit 3/min -j LOG --log-prefix "[PIVOT-ATTEMPT] "
+
+# Bloquear QUALQUER nova conexão saindo da DMZ → LAN
 iptables -A FORWARD -s 192.168.56.0/24 -d 192.168.57.0/24 \\
   -m state --state NEW -j DROP
-
-# Logar tentativas de pivoteamento para análise forense
-iptables -A FORWARD -s 192.168.56.0/24 -d 192.168.57.0/24 \\
-  -m limit --limit 3/min -j LOG --log-prefix "[PIVOT-ATTEMPT] "
 
 # 2. Permitir LAN → DMZ (usuários acessam o site normalmente)
 iptables -A FORWARD -s 192.168.57.0/24 -d 192.168.56.0/24 -j ACCEPT
@@ -184,7 +186,8 @@ iptables -L FORWARD -n -v | grep -E "DROP|ACCEPT"
 
 # Teste: do Web Server, tentar alcançar o cliente LAN (deve FALHAR):
 # web$ ping -c 3 192.168.57.50
-# PING 192.168.57.50: Destination Port Unreachable`} />
+# Sem resposta (DROP não devolve ICMP): timeout
+# 3 packets transmitted, 0 received, 100% packet loss`} />
 
             <InfoBox title="Por que --state NEW é a chave?">
               Sem <code>--state NEW</code>, você bloquearia também as respostas de
@@ -237,13 +240,17 @@ iptables -A FORWARD -s 192.168.56.0/24 -o eth0 -j DROP
 # Defesa contra DNS Tunneling — Forçar uso do seu DNS interno
 # ============================================================
 
-# Redirecionar DNS da DMZ para o seu resolver interno (não 8.8.8.8)
-iptables -t nat -A PREROUTING -s 192.168.56.0/24 \\
-  -p udp --dport 53 -j DNAT --to-destination 192.168.57.1:53
+# Resolver do próprio firewall (ex.: unbound escutando na eth1) —
+# fica fora da LAN, então não esbarra no DROP DMZ → LAN.
+# Redirecionar DNS da DMZ para ele (não 8.8.8.8):
+iptables -t nat -A PREROUTING -i eth1 -s 192.168.56.0/24 \\
+  -p udp --dport 53 -j REDIRECT --to-ports 53
 
-# Bloquear DNS direto para internet da DMZ (anti-tunneling)
-iptables -A FORWARD -s 192.168.56.0/24 -p udp --dport 53 \\
-  -d ! 192.168.57.1 -j DROP`} />
+# Permitir que o firewall receba essas consultas (policy INPUT DROP)
+iptables -A INPUT -i eth1 -s 192.168.56.0/24 -p udp --dport 53 -j ACCEPT
+
+# Bloquear qualquer DNS da DMZ que tente atravessar o firewall (anti-tunneling)
+iptables -A FORWARD -s 192.168.56.0/24 -p udp --dport 53 -j DROP`} />
 
             <WarnBox title="DNS Tunneling: a evasão mais silenciosa">
               Ferramentas como <code>iodine</code> e <code>dnscat2</code> codificam dados
@@ -369,6 +376,9 @@ iptables -P OUTPUT  ACCEPT
 # Loopback sempre livre
 iptables -A INPUT -i lo -j ACCEPT
 
+# Respostas às conexões do próprio firewall (ex.: resolver consultando a internet)
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
 # FORWARD: estado estabelecido passa (respostas legítimas)
 iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
@@ -388,9 +398,10 @@ iptables -A FORWARD -s 192.168.56.0/24 -o eth0 \\
   -p udp --dport 123 -j ACCEPT
 iptables -A FORWARD -s 192.168.56.0/24 -o eth0 -j DROP
 
-# Forçar DNS da DMZ para resolver interno
+# Forçar DNS da DMZ para o resolver do próprio firewall (fora da LAN)
 iptables -t nat -A PREROUTING -i eth1 -p udp --dport 53 \\
-  -j DNAT --to-destination 192.168.57.1:53
+  -j REDIRECT --to-ports 53
+iptables -A INPUT -i eth1 -s 192.168.56.0/24 -p udp --dport 53 -j ACCEPT
 
 echo "Regras anti-pivoteamento ativas."
 iptables -L FORWARD -n --line-numbers`} />
@@ -420,19 +431,20 @@ az network nsg rule create \\
 #   localip=192.168.57.0/24`}
               linuxCode={`# Linux iptables — FORWARD DROP anti-pivoteamento
 
+# Log tentativas para análise forense (ANTES do DROP)
+iptables -A FORWARD \\
+  -s 192.168.56.0/24 \\
+  -d 192.168.57.0/24 \\
+  -m state --state NEW \\
+  -m limit --limit 3/min \\
+  -j LOG --log-prefix "[PIVOT] "
+
 # DMZ (eth1 / 192.168.56.0/24) nunca inicia conexões → LAN
 iptables -A FORWARD \\
   -s 192.168.56.0/24 \\
   -d 192.168.57.0/24 \\
   -m state --state NEW \\
   -j DROP
-
-# Log tentativas para análise forense
-iptables -A FORWARD \\
-  -s 192.168.56.0/24 \\
-  -d 192.168.57.0/24 \\
-  -m limit --limit 3/min \\
-  -j LOG --log-prefix "[PIVOT] "
 
 # Verificar regras ativas:
 iptables -L FORWARD -n -v --line-numbers`}
@@ -540,7 +552,7 @@ iptables -L FORWARD -n -v --line-numbers`}
             </p>
             <div className="p-3 rounded-lg bg-err/5 border border-err/20 text-xs font-mono text-text-3">
               web$ ping 192.168.57.50<br />
-              <span className="text-err">PING: Destination Unreachable</span>
+              <span className="text-err">3 packets transmitted, 0 received, 100% packet loss</span>
             </div>
           </div>
 
@@ -596,7 +608,7 @@ iptables -L FORWARD -n -v --line-numbers`}
           },
           {
             err: 'Regras anti-DNS-tunneling bloqueiam resolução DNS legítima',
-            fix: 'O DNAT força todo DNS para o resolver interno (192.168.57.254), mas o resolver interno pode não estar respondendo. Verificar: dig @192.168.57.254 google.com. Se falhar, o problema é no servidor DNS interno, não nas regras iptables.',
+            fix: 'O REDIRECT força todo DNS da DMZ para o resolver do próprio firewall, mas ele pode não estar respondendo (ou não escutar na eth1). Verificar no firewall: dig @127.0.0.1 google.com e ss -ulpn | grep :53. Se falhar, o problema é no resolver, não nas regras iptables — confira também a regra INPUT que aceita UDP 53 vinda da eth1.',
           },
           {
             err: 'iptables LOG não aparece no syslog após adicionar a regra',
@@ -629,7 +641,7 @@ iptables -P FORWARD DROP
 iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 # Logar tentativas de pivoteamento
-iptables -A FORWARD -s 192.168.100.0/24 -d 192.168.57.0/24 \
+iptables -A FORWARD -s 192.168.56.0/24 -d 192.168.57.0/24 \\
   -j LOG --log-prefix "PIVOTE-TENTATIVA: " --log-level 4
 
 # Verificar regras
@@ -643,20 +655,21 @@ journalctl -k | grep "PIVOTE-TENTATIVA" -f &`} />
             <CodeBlock lang="bash" code={`# Ver tráfego de saída atual da DMZ
 iptables -L OUTPUT -n -v
 
-# Permitir apenas DNS (53 UDP/TCP) e HTTP/HTTPS da DMZ
-iptables -A FORWARD -s 192.168.100.0/24 -p udp --dport 53 -j ACCEPT
-iptables -A FORWARD -s 192.168.100.0/24 -p tcp --dport 53 -j ACCEPT
-iptables -A FORWARD -s 192.168.100.0/24 -p tcp --dport 80 -j ACCEPT
-iptables -A FORWARD -s 192.168.100.0/24 -p tcp --dport 443 -j ACCEPT
+# Permitir apenas HTTP/HTTPS e NTP da DMZ (eth1) para a internet (eth0)
+iptables -A FORWARD -s 192.168.56.0/24 -o eth0 -p tcp --dport 80 -j ACCEPT
+iptables -A FORWARD -s 192.168.56.0/24 -o eth0 -p tcp --dport 443 -j ACCEPT
+iptables -A FORWARD -s 192.168.56.0/24 -o eth0 -p udp --dport 123 -j ACCEPT
+iptables -A FORWARD -s 192.168.56.0/24 -o eth0 -j DROP
 
-# Bloquear DNS tuneling — forçar uso do DNS interno
-iptables -t nat -A PREROUTING -i eth2 -p udp --dport 53 \
-  ! -d 192.168.57.1 -j DNAT --to-destination 192.168.57.1:53
+# Bloquear DNS tunneling — forçar uso do resolver do próprio firewall
+iptables -t nat -A PREROUTING -i eth1 -p udp --dport 53 \\
+  -j REDIRECT --to-ports 53
+iptables -A INPUT -i eth1 -s 192.168.56.0/24 -p udp --dport 53 -j ACCEPT
 
 # Listar regras de forwarding
 iptables -L FORWARD -n -v
 
-# Testar da DMZ (deve funcionar só DNS e HTTP/HTTPS)
+# Testar da DMZ (deve funcionar só DNS via firewall, HTTP/HTTPS e NTP)
 # ping 8.8.8.8 → deve falhar (ICMP bloqueado)
 # curl http://google.com → deve funcionar`} />
           </div>

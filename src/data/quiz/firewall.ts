@@ -5,13 +5,13 @@ export const FIREWALL_QUESTIONS: QuizQuestion[] = [
       text: 'Qual comando habilita o roteamento IP (ip_forward) temporariamente?',
       badge: '🌐 Camada 3',
       options: [
-        'echo 1 > /proc/sys/net/ipv4/ip_forward',
+        'modprobe ip_forward',
         'sysctl -w net.ipv4.ip_forward=1',
         'iptables -A FORWARD -j ACCEPT',
         'ip route add default',
       ],
       correct: 1,
-      explanation: 'sysctl -w net.ipv4.ip_forward=1 ativa o roteamento IP até o próximo reboot.',
+      explanation: 'sysctl -w net.ipv4.ip_forward=1 ativa o roteamento IP até o próximo reboot (equivale a echo 1 > /proc/sys/net/ipv4/ip_forward). ip_forward não é um módulo do kernel — modprobe não serve. Para persistir, grave em /etc/sysctl.conf ou /etc/sysctl.d/.',
       trail: 'firewall',
     },
   {
@@ -238,7 +238,7 @@ export const FIREWALL_QUESTIONS: QuizQuestion[] = [
         'Camada 7 (DNS)',
       ],
       correct: 3,
-      explanation: 'Ping por IP funciona, mas por nome não → o DNS está quebrado. Elimina Camadas 1-4 de uma vez!',
+      explanation: 'Ping por IP funciona, mas por nome não → o DNS está quebrado. Elimina as Camadas 1 a 3 de uma vez (o ping é ICMP, camada 3 — não testa TCP/UDP)!',
       trail: 'firewall',
     },
   {
@@ -991,16 +991,16 @@ export const FIREWALL_QUESTIONS: QuizQuestion[] = [
       trail: 'firewall',
     },
   {
-      text: 'Por que o WireGuard não tem um processo de handshake explícito visível como o IPSec?',
+      text: 'Como funciona o handshake do WireGuard, comparado às fases IKE do IPSec?',
       badge: '🔐 WireGuard',
       options: [
-        'Porque WireGuard não usa criptografia de chave pública',
-        'Porque usa o protocolo Noise Framework que faz o handshake no primeiro pacote de dados — silencioso e sem estado pré-conexão',
-        'Porque funciona apenas em redes locais sem handshake',
-        'Porque o handshake é feito fora de banda via API REST',
+        'Não há handshake: WireGuard não usa criptografia de chave pública',
+        'Usa o Noise Protocol Framework (padrão IK): um handshake 1-RTT (Initiation → Response), sem negociação de algoritmos e silencioso para quem não tem a chave',
+        'Só funciona em redes locais, onde o handshake é dispensado',
+        'O handshake é feito fora de banda via API REST',
       ],
       correct: 1,
-      explanation: 'WireGuard usa Noise Protocol Framework — o handshake é transparente e ocorre no primeiro pacote. Sem estado de "conexão estabelecida" visível: ou o pacote é válido (decripta com chave do peer) ou é descartado silenciosamente. Isso o torna menos detectável e mais difícil de fingerprinting.',
+      explanation: 'WireGuard usa o Noise Protocol Framework (padrão IK): o handshake é 1-RTT — o iniciador envia Handshake Initiation, o peer responde com Handshake Response e já há chaves de sessão (renovadas a cada ~2 min). Não há fases IKE nem negociação de cifras, e pacotes que não autenticam com a chave de um peer são descartados silenciosamente — por isso é difícil de detectar. O handshake existe e aparece como "latest handshake" no wg show.',
       trail: 'firewall',
     },
   {
@@ -1199,16 +1199,16 @@ export const FIREWALL_QUESTIONS: QuizQuestion[] = [
       trail: 'firewall',
     },
   {
-      text: 'No laboratório de virtualização, o que é "CPU nested virtualization" e por que é necessário para rodar K3s/Kubernetes dentro de uma VM?',
+      text: 'No laboratório de virtualização, o que é "CPU nested virtualization" e quando ela é realmente necessária?',
       badge: '🧪 Laboratório',
       options: [
         'Nested virtualization permite que uma VM use mais de uma vCPU simultaneamente — necessário para containers multi-threaded',
-        'Nested virtualization expõe as extensões de virtualização de hardware (VMX/SVM) para dentro da VM, permitindo que ela rode um hypervisor ou containers que dependem de namespaces do kernel — sem isso, ferramentas como kind e alguns CNIs não funcionam',
+        'Nested virtualization expõe as extensões de virtualização de hardware (VMX/SVM) para dentro da VM, permitindo que ela rode um hypervisor próprio (KVM, VirtualBox, Proxmox aninhado) — containers, Docker, K3s e kind NÃO precisam dela, pois namespaces e cgroups não usam VT-x/AMD-V',
         'É um recurso para melhorar a performance de I/O de disco dentro de VMs — reduz latência de acesso a imagens de container',
         'Nested virtualization permite snapshots mais rápidos de VMs que executam containers',
       ],
       correct: 1,
-      explanation: 'Para VirtualBox: Configurações → Sistema → Processador → Habilitar PAE/NX + VT-x aninhado. Para KVM: virsh edit vm e adicionar <cpu mode="host-passthrough"/>. Verificar dentro da VM: grep -E "(vmx|svm)" /proc/cpuinfo. Necessário para: kind (K8s em Docker), minikube com driver Docker, containerd com alguns network plugins. Em produção, K3s em bare metal ou cloud não precisa — apenas em labs de lab-dentro-de-lab.',
+      explanation: 'Para VirtualBox: Configurações → Sistema → Processador → Habilitar PAE/NX + VT-x aninhado. Para KVM: virsh edit vm e adicionar <cpu mode="host-passthrough"/>. Verificar dentro da VM: grep -E "(vmx|svm)" /proc/cpuinfo. Necessário apenas para rodar um hypervisor dentro da VM: KVM/libvirt, Proxmox aninhado, minikube com driver kvm2/virtualbox. Docker, K3s e kind rodam normalmente numa VM comum — namespaces e cgroups são recursos do kernel, não da extensão de virtualização do CPU.',
       trail: 'firewall',
     },
   {
@@ -1234,7 +1234,7 @@ export const FIREWALL_QUESTIONS: QuizQuestion[] = [
         'O cabo de rede está com defeito',
       ],
       correct: 1,
-      explanation: 'Diagnóstico em camadas: ping 8.8.8.8 OK → camadas 1-4 funcionando. ping google.com FALHA → problema EXCLUSIVAMENTE no DNS (camada de aplicação). curl por IP funciona → serviço web OK. Próximos passos: verificar /etc/resolv.conf, testar dig @8.8.8.8 google.com (DNS externo funciona?), verificar se o serviço DNS local está rodando e se a porta 53 UDP está aberta no firewall.',
+      explanation: 'Diagnóstico em camadas: ping 8.8.8.8 OK → camadas 1 a 3 funcionando (ICMP não testa a camada 4). ping google.com FALHA → problema EXCLUSIVAMENTE no DNS (camada de aplicação). curl por IP funciona → camada 4 (TCP) e serviço web OK. Próximos passos: verificar /etc/resolv.conf, testar dig @8.8.8.8 google.com (DNS externo funciona?), verificar se o serviço DNS local está rodando e se a porta 53 UDP está aberta no firewall.',
       trail: 'firewall',
     },
   {

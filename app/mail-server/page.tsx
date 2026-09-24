@@ -260,9 +260,11 @@ sudo apt install -y dovecot-core dovecot-imapd dovecot-pop3d
 sudo systemctl status dovecot
 ss -tlnp | grep -E ':143|:993|:110|:995'`} />
           <p className="text-text-2 mt-4 mb-4">
-            A configuração é dividida em arquivos sob <code>/etc/dovecot/conf.d/</code>:
+            A configuração é dividida em arquivos sob <code>/etc/dovecot/conf.d/</code>.
+            A sintaxe abaixo é a do <strong>Dovecot 2.3</strong> (confira a sua com <code>dovecot --version</code>):
           </p>
-          <CodeBlock lang="bash" code={`# /etc/dovecot/conf.d/10-mail.conf
+          <CodeBlock lang="bash" code={`# Sintaxe do Dovecot 2.3 — ver aviso sobre o 2.4 logo abaixo
+# /etc/dovecot/conf.d/10-mail.conf
 # Apontar para o MESMO formato que o Postfix usa (Maildir)
 mail_location = maildir:~/Maildir
 
@@ -285,6 +287,15 @@ sudo doveconf -n        # mostra a config efetiva (só o que mudou do padrão)`}
             <code>tmp/</code> — robusto, sem lock, e o padrão recomendado. Postfix e Dovecot
             <strong> precisam apontar para o mesmo formato</strong>.
           </InfoBox>
+          <WarnBox title="Dovecot 2.4 mudou nomes de opções" className="mt-4">
+            O exemplo acima segue o <strong>Dovecot 2.3</strong> (Debian 12, Ubuntu 24.04). O
+            <strong> Dovecot 2.4</strong> (distribuições mais novas) renomeou várias opções — entre
+            elas <code>mail_location</code>, <code>disable_plaintext_auth</code> e
+            <code>ssl_cert</code>/<code>ssl_key</code> — e a configuração 2.3 copiada sem ajuste
+            faz o serviço falhar ao iniciar. Se <code>dovecot --version</code> mostrar 2.4, siga o
+            guia oficial de atualização 2.3 → 2.4 da documentação do Dovecot e valide com
+            <code>doveconf -n</code>.
+          </WarnBox>
         </section>
 
         <section className="mb-12">
@@ -396,6 +407,7 @@ sudo chown opendkim:opendkim mail.private
 #   Domain      exemplo.com.br
 #   Selector    mail
 #   KeyFile     /etc/opendkim/keys/exemplo.com.br/mail.private
+#   Socket      inet:8891@localhost   # SEM isso o Postfix não alcança o milter
 
 # /etc/postfix/main.cf — plugar o milter no Postfix
 milter_default_action = accept

@@ -239,7 +239,7 @@ export default function DiscosPage() {
         <span className="text-text-2">Discos e Partições</span>
       </div>
 
-      <div className="section-label">Módulo 06 · Trilha Fundamentos</div>
+      <div className="section-label">Módulo 07 · Trilha Fundamentos</div>
       <h1 className="section-title">💾 Discos, Partições e SWAP</h1>
       <p className="section-sub">
         No Linux não existe <code>D:\</code>. Discos e partições são <strong>montados</strong> em diretórios
@@ -308,7 +308,7 @@ sudo mount /dev/sdb1 /mnt/dados
             <p className="text-sm text-text-2">
               <code>/dev/sda</code> = primeiro disco SATA/SCSI · <code>/dev/sda1</code> = primeira partição ·
               <code> /dev/nvme0n1</code> = disco NVMe · <code>/dev/vda</code> = disco virtual (VirtualBox/KVM).
-              O sistema de arquivos raiz (<code>/</code>) é sempre o primeiro disco.
+              Normalmente o sistema de arquivos raiz (<code>/</code>) está no primeiro disco, mas isso não é garantido (pode estar em outro disco, NVMe ou LVM) — confira com <code>lsblk</code> ou <code>findmnt /</code>.
             </p>
           </InfoBox>
         </section>
@@ -322,7 +322,7 @@ sudo mount /dev/sdb1 /mnt/dados
           <InfoBox className="mt-4" title="Disco cheio trava o servidor">
             <p className="text-sm text-text-2">
               Quando uma partição chega a 100%, serviços param de escrever logs e podem travar.
-              Configure alertas para avisar aos 80%: <code>df -h | grep -E &apos;[89][0-9]%&apos;</code>.
+              Configure alertas para avisar aos 80%: <code>df -h | grep -E &apos;([89][0-9]|100)%&apos;</code>.
               O maior consumidor geralmente é <code>/var/log</code> — verifique com <code>du -sh /var/log/*</code>.
             </p>
           </InfoBox>
@@ -843,7 +843,7 @@ quota -u $USER              # ver seu próprio uso`} />
         <section id="checkpoint">
           <div className="p-6 rounded-xl bg-bg-2 border border-border">
             <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-              <span>📋</span> Checkpoint do Módulo 06
+              <span>📋</span> Checkpoint do Módulo 07
             </h3>
             <div className="space-y-3">
               {CHECKLIST.map(item => (
@@ -864,7 +864,7 @@ quota -u $USER              # ver seu próprio uso`} />
             </div>
             {allDone && (
               <div className="mt-4 p-3 rounded-lg bg-ok/10 border border-ok/30 text-ok text-sm font-semibold text-center">
-                ✅ Módulo 06 concluído! Próximo: Logs e Monitoramento →
+                ✅ Módulo 07 concluído! Próximo: Logs e Monitoramento →
               </div>
             )}
           </div>

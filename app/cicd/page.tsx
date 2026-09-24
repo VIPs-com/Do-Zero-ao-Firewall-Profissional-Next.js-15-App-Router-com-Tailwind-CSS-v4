@@ -404,10 +404,14 @@ jobs:
         env:
           SSH_KEY: \${{ secrets.STAGING_SSH_KEY }}   # secret do environment 'staging'
           HOST: \${{ secrets.STAGING_HOST }}
+          # saída de "ssh-keyscan -H host" conferida UMA vez, guardada como secret
+          KNOWN_HOSTS: \${{ secrets.STAGING_KNOWN_HOSTS }}
         run: |
           echo "\$SSH_KEY" > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
-          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no deploy@\$HOST \\
+          mkdir -p ~/.ssh && echo "\$KNOWN_HOSTS" >> ~/.ssh/known_hosts
+          # NUNCA StrictHostKeyChecking=no: abriria espaço para MITM no deploy
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=yes deploy@\$HOST \\
             "cd /app && git pull && docker compose up -d --build"
 
   # Deploy manual para produção (requer aprovação)
@@ -424,10 +428,12 @@ jobs:
         env:
           SSH_KEY: \${{ secrets.PROD_SSH_KEY }}      # secret do environment 'production'
           HOST: \${{ secrets.PROD_HOST }}
+          KNOWN_HOSTS: \${{ secrets.PROD_KNOWN_HOSTS }}  # ssh-keyscan -H host
         run: |
           echo "\$SSH_KEY" > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
-          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no deploy@\$HOST \\
+          mkdir -p ~/.ssh && echo "\$KNOWN_HOSTS" >> ~/.ssh/known_hosts
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=yes deploy@\$HOST \\
             "cd /app && git pull origin main && docker compose up -d --no-build"
           rm -f /tmp/deploy_key`} />
         </section>

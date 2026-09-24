@@ -93,7 +93,7 @@ iptables -t nat -L DOCKER -n --line-numbers
 iptables -L DOCKER -n --line-numbers
 # ACCEPT  tcp  --  0.0.0.0  172.17.0.2  tcp dpt:80`;
 
-const IPTABLES_CHAINS = `# Docker cria e gerencia 4 chains principais automaticamente:
+const IPTABLES_CHAINS = `# Docker cria e gerencia 5 chains automaticamente (4 na filter + DOCKER na nat):
 
 # ── Tabela FILTER ─────────────────────────────────────────────────
 iptables -L -n --line-numbers
@@ -105,7 +105,7 @@ iptables -L -n --line-numbers
 # ── Tabela NAT ────────────────────────────────────────────────────
 iptables -t nat -L -n
 # DOCKER              → DNAT para port mappings
-# POSTROUTING         → MASQUERADE para tráfego de saída dos containers
+# POSTROUTING         → (chain nativa) MASQUERADE para tráfego de saída dos containers
 
 # ── Ver todas de uma vez ──────────────────────────────────────────
 iptables -L -n -v --line-numbers && echo "---NAT---" && iptables -t nat -L -n -v`;
@@ -118,7 +118,8 @@ const DOCKER_USER = `# ── DOCKER-USER: onde você coloca suas regras ──�
 iptables -I DOCKER-USER -p tcp --dport 80 -s 0.0.0.0/0 -j DROP
 iptables -I DOCKER-USER -p tcp --dport 80 -s 127.0.0.1 -j ACCEPT
 
-# Bloquear comunicação entre redes bridge (inter-container isolation)
+# Bloquear container↔container na MESMA bridge docker0 (requer br_netfilter)
+# (entre redes diferentes quem isola são as DOCKER-ISOLATION-STAGE-1/2)
 iptables -I DOCKER-USER -i docker0 -o docker0 -j DROP
 
 # Ver regras da DOCKER-USER
@@ -365,7 +366,7 @@ export default function DockerPage() {
                   <div className="w-10 h-10 rounded-lg bg-layer-4/10 flex items-center justify-center text-layer-4">
                     <Layers size={24} />
                   </div>
-                  <h2 className="text-2xl font-bold">As 4 Chains do Docker no iptables</h2>
+                  <h2 className="text-2xl font-bold">As 5 Chains do Docker no iptables</h2>
                 </div>
 
                 <CodeBlock code={IPTABLES_CHAINS} lang="bash" />
@@ -477,6 +478,10 @@ install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg |
   gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 chmod a+r /etc/apt/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \\
+  https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \\
+  > /etc/apt/sources.list.d/docker.list
+apt update
 apt install docker-ce docker-ce-cli containerd.io -y
 usermod -aG docker $USER
 
@@ -546,13 +551,14 @@ docker network create --internal backend-net
 docker run -d --name postgres --network backend-net \\
   -e POSTGRES_PASSWORD=senha postgres:alpine
 
-# App com acesso às duas redes
+# App: começa na rede interna e depois ganha uma 2ª rede com saída
 docker run -d --name app \\
   --network backend-net nginx:alpine
+docker network connect bridge app   # agora o app está nas duas redes
 
 # Verificar: postgres não tem rota para internet
-docker exec postgres ping -c 2 8.8.8.8  # deve falhar
-docker exec app ping -c 2 8.8.8.8       # funciona (app não é --internal)
+docker exec postgres ping -c 2 8.8.8.8  # deve falhar (só backend-net --internal)
+docker exec app ping -c 2 8.8.8.8       # funciona (saída pela rede bridge)
 
 docker stop postgres app && docker rm postgres app
 docker network rm backend-net`} />

@@ -39,7 +39,7 @@ export default function ComandosAvancadosPage() {
 
         {/* Hero */}
         <div className="mb-10">
-          <div className="section-label mb-3">Módulo F13 · Fundamentos Linux</div>
+          <div className="section-label mb-3">Módulo 14 · Fundamentos Linux</div>
           <h1 className="text-4xl font-bold mb-4">🔧 Comandos Avançados do SysAdmin</h1>
           <p className="text-text-2 text-lg mb-6">
             sed · dd · nc · ln · gzip/tar — a caixa de ferramentas que o mercado exige
@@ -625,7 +625,7 @@ jq '.[] | select(.active == true)' x.json     # filtra por condição
             },
             {
               err: 'ln: failed to create symbolic link: File exists',
-              fix: 'Link já existe. Para sobrescrever: ln -sf alvo link (flag -f força). Para verificar links existentes: ls -la | grep "->". Links quebrados (apontam para alvo inexistente) aparecem em vermelho no ls.',
+              fix: 'Link já existe. Para sobrescrever: ln -sf alvo link (flag -f força). Para verificar links existentes: ls -la | grep -- "->" (ou find . -type l). Links quebrados (apontam para alvo inexistente) aparecem em vermelho no ls.',
             },
           ].map(({ err, fix }) => (
             <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">
@@ -680,7 +680,7 @@ dd if=/etc/passwd of=/tmp/passwd-backup bs=1 status=progress
 
 # NetCat: testar se porta está aberta
 nc -zv localhost 22    # SSH deve estar aberta
-nc -zv localhost 80    # HTTP (403 se nginx parado)
+nc -zv localhost 80    # "succeeded" se o nginx estiver ativo; "Connection refused" se parado
 
 # Testar com timeout
 nc -zv -w 3 8.8.8.8 53   # DNS Google

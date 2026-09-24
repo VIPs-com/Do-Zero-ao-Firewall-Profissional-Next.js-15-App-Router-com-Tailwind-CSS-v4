@@ -158,7 +158,7 @@ Quando você instala o Docker, ele cria automaticamente uma interface de rede vi
 
 **O que acontece quando você executa \`docker run\`:**
 1. Docker cria um par de interfaces virtuais (veth pair): uma fica no namespace do container, outra na bridge docker0.
-2. O container recebe IP via DHCP interno (ex: 172.17.0.2).
+2. O container recebe um IP atribuído pelo IPAM do daemon Docker (ex: 172.17.0.2) — não há DHCP nas redes bridge.
 3. O kernel roteia tráfego entre container → docker0 → interface do host.
 
 **Como o port mapping funciona (é DNAT!):**
@@ -167,7 +167,7 @@ docker run -p 8080:80 nginx
 ↓
 iptables -t nat -A DOCKER ! -i docker0 -p tcp --dport 8080 -j DNAT --to-destination 172.17.0.2:80
 \`\`\`
-Docker injeta regras DNAT em \`/proc/sys/net/ipv4/ip_forward\` = 1 automaticamente.
+O Docker liga \`net.ipv4.ip_forward = 1\` e injeta as regras DNAT na tabela \`nat\` automaticamente.
 
 **Por que não editar a chain DOCKER?**
 - Docker regenera as regras DOCKER a cada reinicialização.
@@ -272,20 +272,22 @@ O error budget transforma um SLO abstrato em uma **quantidade concreta de falha 
 
 | SLO | Downtime/mês | Downtime/ano | Error budget (minutos/mês) |
 |-----|-------------|-------------|--------------------------|
-| 99% | 7h 18min | 3d 15h | 438 min |
+| 99% | 7h 12min | 3d 15h | 432 min |
 | 99.9% | 43 min | 8h 45min | 43.2 min |
 | 99.95% | 21 min | 4h 22min | 21.6 min |
 | 99.99% | 4.3 min | 52 min | 4.32 min |
 
+*Valores mensais calculados para um mês de 30 dias (43.200 min). Usando o mês médio de 30,44 dias (ano ÷ 12), o budget de 99.9% fica em ~43,8 min (43m 50s).*
+
 **Como o burn rate funciona:**
 
-Com SLO 99.9%, o budget mensal é 43.2 minutos. Se 5% das requests estão com erro:
-- Error rate = 0.05 → Taxa de consumo do budget = 5× mais rápido que o normal
-- **Burn rate = 5×** → Budget esgotado em 43.2 × (1/5) × 30 dias = ~8.6 dias
+Com SLO 99.9%, o budget é 0.1% das requests (43.2 minutos/mês). Se 5% das requests estão com erro:
+- Burn rate = error rate ÷ budget = 0.05 ÷ 0.001 → o budget é consumido **50× mais rápido** que o normal
+- **Burn rate = 50×** → Budget esgotado em 30 dias ÷ 50 = 0.6 dia ≈ **14.4 horas**
 
 Para alertas com alta precisão:
 \`\`\`
-burn_rate > 14.4 na última 1h → page imediato (5% do budget em 1h)
+burn_rate > 14.4 na última 1h → page imediato (2% do budget em 1h)
 burn_rate > 6 na última 6h   → ticket urgente
 burn_rate > 1 na última 3d   → revisão de sprint
 \`\`\`
@@ -457,7 +459,7 @@ resolver 1.1.1.1 8.8.8.8 valid=300s;
     content: `
 ### Por que o WireGuard é "absurdamente simples" — e isso é bom
 
-O código-fonte do WireGuard tem ~4.000 linhas. O OpenVPN tem ~600.000. Menos código = menos superfície de ataque.
+O código-fonte do WireGuard tem ~4.000 linhas (números aproximados). O OpenVPN tem ~70.000 e uma pilha IPSec (StrongSwan + XFRM do kernel) passa de ~400.000. Menos código = menos superfície de ataque.
 
 **As 3 primitivas criptográficas do WireGuard:**
 

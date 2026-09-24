@@ -216,7 +216,7 @@ services:
 
 # Para segredos reais (senhas, tokens), use Docker Secrets:
 # secrets/db_password.txt (permissão 600 — apenas root lê)
-echo "SenhaForteAqui123!" > secrets/db_password.txt
+echo "TROQUE-ME" > secrets/db_password.txt
 chmod 600 secrets/db_password.txt
 
 # docker-compose.yml com secrets
@@ -975,16 +975,41 @@ docker compose ps`} />
               <p className="font-bold text-sm mb-2">Lab 2 — Volumes e Persistência de Dados</p>
               <CodeBlock lang="bash" code={`cd /opt/lab-compose
 
-# Adicionar volume nomeado para o PostgreSQL
-cat >> docker-compose.yml << 'EOF'
+# Reescrever o compose: volume nomeado declarado E montado no serviço db
+cat > docker-compose.yml << 'EOF'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/usr/share/nginx/html:ro
+    networks:
+      - frontend
+
+  whoami:
+    image: traefik/whoami
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: segredo
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # dados no volume nomeado
+    networks:
+      - backend
+
+networks:
+  frontend:
+  backend:
+    internal: true
 
 volumes:
   pgdata:
 EOF
-
-# Recriar com volume (adicionar ao serviço db)
-# volumes:
-#   - pgdata:/var/lib/postgresql/data
 
 docker compose down
 docker compose up -d

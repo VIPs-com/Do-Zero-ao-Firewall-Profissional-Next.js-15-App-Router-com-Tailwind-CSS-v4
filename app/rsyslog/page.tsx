@@ -38,7 +38,7 @@ export default function RsyslogPage() {
 
         {/* Hero */}
         <div className="mb-10">
-          <div className="section-label mb-3">Módulo F14 · Fundamentos Linux</div>
+          <div className="section-label mb-3">Módulo 15 · Fundamentos Linux</div>
           <h1 className="text-4xl font-bold mb-4">📡 Logs Centralizados com Rsyslog</h1>
           <p className="text-text-2 text-lg mb-6">
             rsyslog · facilities · priorities · servidor central · logrotate — logs de produção do jeito certo
@@ -69,7 +69,7 @@ export default function RsyslogPage() {
                 <li>• Logs binários em <code>/run/log/journal</code></li>
                 <li>• Integrado ao systemd desde o boot</li>
                 <li>• Busca poderosa com <code>journalctl</code></li>
-                <li>• <strong>Não persiste por padrão</strong> (apenas RAM)</li>
+                <li>• <strong>Persistência depende da distro:</strong> com <code>Storage=auto</code>, grava em disco se <code>/var/log/journal</code> existir (padrão no Ubuntu); em outras distros pode ficar só em RAM</li>
                 <li>• Ideal para: debug local e troubleshooting</li>
               </ul>
             </div>
@@ -255,11 +255,13 @@ input(type="imtcp" port="514")
 module(load="imudp")
 input(type="imudp" port="514")
 
-# ── Template: separar logs por IP de origem ───────────
+# ── Template: separar logs por hostname de origem ─────
+# (para separar por IP, use %FROMHOST-IP% no lugar de %HOSTNAME%)
 $template RemoteLogs,"/var/log/remote/%HOSTNAME%/%PROGRAMNAME%.log"
-*.* ?RemoteLogs
+*.* ?RemoteLogs`} />
 
-# Salvar e reiniciar
+          <CodeBlock lang="bash" code={`# No terminal do SERVIDOR (fora do arquivo): validar e reiniciar
+sudo rsyslogd -N1
 sudo systemctl restart rsyslog`} />
 
           <WarnBox title="Firewall: abrir porta 514 apenas para IPs internos">
@@ -282,9 +284,10 @@ sudo iptables -A INPUT -p udp --dport 514 -j DROP`} />
 *.* @@192.168.1.100:514
 
 # Ou enviar apenas auth e daemon (seletivo):
-auth,daemon.* @@192.168.1.100:514
+auth,daemon.* @@192.168.1.100:514`} />
 
-# Salvar e reiniciar
+          <CodeBlock lang="bash" code={`# No terminal do CLIENTE (fora do arquivo): validar e reiniciar
+sudo rsyslogd -N1
 sudo systemctl restart rsyslog`} />
 
           <CodeBlock lang="bash" code={`# No SERVIDOR CENTRAL — verificar chegada dos logs
@@ -566,7 +569,7 @@ rate({job="varlogs"}[5m])                 # taxa de linhas de log por segundo`} 
             },
             {
               err: 'rsyslog para de receber após alguns dias — buffer cheio ou conexão perdida',
-              fix: 'Em modo TCP ($ActionQueueType LinkedList), o buffer pode encher se o servidor ficar offline. Configurar reenvio: $ActionResumeRetryCount -1 (infinito) e $ActionQueueSaveOnShutdown on. Para UDP: adicionar fallback local com & ~/. no final da regra de encaminhamento.',
+              fix: 'Em modo TCP ($ActionQueueType LinkedList), o buffer pode encher se o servidor ficar offline. Configurar reenvio: $ActionResumeRetryCount -1 (infinito) e $ActionQueueSaveOnShutdown on. Para guardar uma cópia local enquanto o servidor estiver fora: logo após a regra de encaminhamento, adicionar $ActionExecOnlyWhenPreviousIsSuspended on seguido de uma ação de arquivo (ex.: & /var/log/fallback-remoto.log). Isso depende de o rsyslog detectar a falha — funciona com TCP (@@); em UDP (@) o envio é “dispare e esqueça” e a falha não é detectada, por isso prefira TCP.',
             },
           ].map(({ err, fix }) => (
             <div key={err} className="border border-err/20 bg-err/5 rounded-xl p-5">

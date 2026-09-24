@@ -112,8 +112,8 @@ tail -f /var/log/fail2ban.log
 # Filtrar apenas bans e unbans
 grep -E "Ban|Unban" /var/log/fail2ban.log
 
-# Contar bans por IP (top 10 atacantes)
-grep "Ban" /var/log/fail2ban.log | \\
+# Contar bans por IP (top 10 atacantes) — " Ban " com espaços não casa "Unban"
+grep " Ban " /var/log/fail2ban.log | \\
   awk '{print $NF}' | sort | uniq -c | sort -rn | head -10`;
 
 export default function Fail2banPage() {
@@ -654,7 +654,14 @@ fail2ban-client status | grep "Jail list" | \\
 apt install fail2ban -y
 
 # Criar configuração local (nunca editar .conf diretamente)
-cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+# jail.local só com as chaves alteradas — o resto é herdado do jail.conf
+cat > /etc/fail2ban/jail.local << 'EOF'
+[DEFAULT]
+bantime  = 600
+findtime = 600
+maxretry = 5
+ignoreip = 127.0.0.1/8 ::1
+EOF
 
 # Configurar jail SSH
 cat > /etc/fail2ban/jail.d/sshd.local << 'EOF'

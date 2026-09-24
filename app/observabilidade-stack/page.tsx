@@ -150,6 +150,31 @@ export default function ObservabilidadeStackPage() {
             <li><strong>Loki</strong> — servidor de ingestão e query. Modo <em>monolithic</em> para começar; <em>microservices</em> (distributor, ingester, querier, compactor) para escalar.</li>
             <li><strong>Grafana</strong> — a UI única para métricas (Prometheus) <em>e</em> logs (Loki). Explore mostra histograma de volume + as linhas.</li>
           </ul>
+          <WarnBox title="Promtail foi descontinuado — o sucessor é o Grafana Alloy" className="mt-4">
+            A Grafana Labs <strong>descontinuou o Promtail</strong> (deprecated desde 2025, só com
+            correções de segurança até o fim do suporte) em favor do <strong>Grafana Alloy</strong>,
+            o coletor unificado (logs, métricas e traces). Os exemplos deste módulo usam Promtail
+            porque ainda são a forma mais didática de ver o fluxo — mas, numa instalação nova,
+            prefira o Alloy. O <code>alloy convert --source-format=promtail</code> traduz um
+            <code> promtail-config.yml</code> existente. Equivalente mínimo em Alloy:
+          </WarnBox>
+          <CodeBlock lang="text" title="config.alloy — equivalente ao Promtail lendo /var/log" code={`// Descobre os arquivos e anexa labels (como o scrape_configs do Promtail)
+local.file_match "varlog" {
+  path_targets = [{"__path__" = "/var/log/*.log", "job" = "varlogs", "host" = "servidor01"}]
+}
+
+// Lê os arquivos e encaminha as linhas
+loki.source.file "varlog" {
+  targets    = local.file_match.varlog.targets
+  forward_to = [loki.write.default.receiver]
+}
+
+// Empurra para o Loki
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}`} />
         </section>
 
         <section className="mb-12">

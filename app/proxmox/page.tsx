@@ -523,12 +523,12 @@ New-Cluster -Name "HVCluster" -Node Server1,Server2 \\
 # 3. Criar VM via CLI (equivalente ao New-VM do PowerShell):
 qm create 100 --name "Firewall" --memory 2048 \\
   --cores 2 --net0 virtio,bridge=vmbr0
-qm importdisk 100 ubuntu-22.04.iso local-lvm
-qm set 100 --ide2 local-lvm:iso/ubuntu.iso,media=cdrom
+qm set 100 --scsi0 local-lvm:20          # disco virtual de 20 GB (LVM-thin)
+qm set 100 --ide2 local:iso/ubuntu-22.04.iso,media=cdrom   # ISO como CD-ROM
 qm start 100
 
 # 4. Snapshot via CLI (equivalente ao Checkpoint-VM):
-qm snapshot 100 snap-base "Estado inicial"
+qm snapshot 100 snap-base --description "Estado inicial"
 qm listsnapshot 100
 qm rollback 100 snap-base
 
@@ -600,7 +600,7 @@ zpool status rpool                         # ver resultado do último scrub
           },
           {
             err: 'qm snapshot falha: you need to use the \'full clone\' feature',
-            fix: 'Storage ZFS não suporta snapshots de VMs com discos em formato raw. Converter disco para qcow2: qm importdisk 100 disco.raw local-lvm --format qcow2. Ou usar storage local (não LVM) que suporta snapshots qcow2 nativamente.',
+            fix: 'LVM não-thin (LVM "clássico") e discos .raw em storage de diretório não suportam snapshot. Usar LVM-thin (local-lvm), ZFS ou qcow2 em storage de diretório (local). Para converter: qm disk move 100 scsi0 local --format qcow2 (o local-lvm só aceita raw, mas já suporta snapshot por ser thin).',
           },
           {
             err: 'Cluster quorum perdido após falha de nó — VMs não iniciam em nenhum nó',

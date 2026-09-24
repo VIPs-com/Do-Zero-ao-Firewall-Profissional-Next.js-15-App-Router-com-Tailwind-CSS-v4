@@ -160,7 +160,7 @@ export default function LanProxyPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h5 className="font-bold text-xs mb-1">Transparente</h5>
-                  <p className="text-[10px] text-text-3">O usuário não sabe que está usando um proxy. O Firewall redireciona a porta 80 para a 3128 via iptables.</p>
+                  <p className="text-[10px] text-text-3">O usuário não sabe que está usando um proxy. O Firewall redireciona a porta 80 para a 3129 (porta <code>intercept</code> do Squid) via iptables.</p>
                 </div>
                 <div>
                   <h5 className="font-bold text-xs mb-1">Autenticado</h5>
@@ -415,8 +415,9 @@ acl negados dstdomain "/etc/squid/negados.txt"
             </h3>
             <div className="space-y-4">
               <CodeBlock title="Liberar DNS" code="iptables -A FORWARD -p udp --dport 53 -j ACCEPT" lang="bash" />
-              <CodeBlock title="Liberar Proxy" code="iptables -A INPUT -p tcp --dport 3128 -j ACCEPT" lang="bash" />
-              <CodeBlock title="Proxy Transparente" code="iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT --to-port 3128" lang="bash" />
+              <CodeBlock title="Liberar Proxy" code={`iptables -A INPUT -p tcp --dport 3128 -j ACCEPT   # proxy explícito
+iptables -A INPUT -p tcp --dport 3129 -j ACCEPT   # proxy transparente (intercept)`} lang="bash" />
+              <CodeBlock title="Proxy Transparente" code="iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 80 -j REDIRECT --to-port 3129" lang="bash" />
             </div>
           </div>
 

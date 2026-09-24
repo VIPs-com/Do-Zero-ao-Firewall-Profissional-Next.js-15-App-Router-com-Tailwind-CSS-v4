@@ -55,7 +55,7 @@ export default function PortKnockingPage() {
         steps={[
           { label: 'Bate :1000', sub: 'iptables recent add FASE1', icon: <Lock className="w-4 h-4" />, color: 'border-[var(--color-layer-4)]' },
           { label: 'Bate :2000', sub: 'verifica lista FASE1', icon: <Key className="w-4 h-4" />, color: 'border-accent/50' },
-          { label: 'Aguarda <30s', sub: 'janela de tempo', icon: <Shield className="w-4 h-4" />, color: 'border-[var(--color-layer-5)]' },
+          { label: 'Aguarda <10s', sub: 'janela de tempo', icon: <Shield className="w-4 h-4" />, color: 'border-[var(--color-layer-5)]' },
           { label: 'SSH Aberto!', sub: 'porta 22 liberada', icon: <Unlock className="w-4 h-4" />, color: 'border-ok/50' },
         ]}
       />
@@ -321,13 +321,13 @@ export default function PortKnockingPage() {
               
               <CodeBlock 
                 title="Passo 2: A segunda batida (Porta 2000)"
-                code={`iptables -A INPUT -p tcp --dport 2000 -m recent --rcheck --name FASE1 -m recent --set --name FASE2 -j DROP`} 
+                code={`iptables -A INPUT -p tcp --dport 2000 -m recent --rcheck --seconds 10 --name FASE1 -m recent --set --name FASE2 -j DROP`} 
                 lang="bash" 
               />
 
               <CodeBlock 
                 title="Passo 3: Liberar SSH (Porta 22)"
-                code={`iptables -A INPUT -p tcp --dport 22 -m recent --rcheck --name FASE2 -j ACCEPT`} 
+                code={`iptables -A INPUT -p tcp --dport 22 -m recent --rcheck --seconds 10 --name FASE2 -j ACCEPT`} 
                 lang="bash" 
               />
             </div>
@@ -357,7 +357,7 @@ export default function PortKnockingPage() {
 
             <HighlightBox title="💡 Pulo do Gato">
               <p className="text-sm text-text-2">
-                Use <strong>--seconds 30 --reap</strong> nas regras de timeout.
+                Use <strong>--seconds 10 --reap</strong> nas regras de timeout.
                 O <code className="text-xs">--reap</code> remove automaticamente entradas expiradas da lista <code className="text-xs">recent</code> no kernel.
                 Sem ele, a lista cresce indefinidamente na memória até o próximo reboot — potencial vetor de DoS em produção.
               </p>
@@ -428,7 +428,7 @@ export default function PortKnockingPage() {
                 title="Fluxo Completo do Admin — 4 Atos"
                 steps={[
                   { label: 'Porta Invisível', sub: "nmap vê 'filtered' — nem open nem closed. Bots desistem.", icon: <EyeOff size={16} />, color: 'text-text-3' },
-                  { label: 'Bate em :59991', sub: 'curl --max-time 1 192.168.57.250:59991 — kernel anota o IP com timestamp.', icon: <Key size={16} />, color: 'text-accent' },
+                  { label: 'Bate em :1000 → :2000', sub: 'curl --max-time 1 em 192.168.57.250:1000 e depois :2000 — kernel anota o IP (FASE1 → FASE2) com timestamp.', icon: <Key size={16} />, color: 'text-accent' },
                   { label: 'Janela 10s', sub: 'Porta 22 abre SOMENTE para aquele IP pelos próximos 10 segundos.', icon: <Zap size={16} />, color: 'text-warn' },
                   { label: 'SSH Conecta', sub: 'Sessão ESTABLISHED — independente do knock após conectar.', icon: <Unlock size={16} />, color: 'text-ok' },
                 ]}
@@ -436,9 +436,10 @@ export default function PortKnockingPage() {
             </div>
 
             <div className="space-y-4">
-              <CodeBlock code={`# Fluxo manual (3 linhas):
-curl --max-time 1 192.168.57.250:59991 2>/dev/null
-# ↑ trava ~1s — DROP silencioso (normal!)
+              <CodeBlock code={`# Fluxo manual (3 comandos):
+curl --max-time 1 192.168.57.250:1000 2>/dev/null
+curl --max-time 1 192.168.57.250:2000 2>/dev/null
+# ↑ cada um trava ~1s — DROP silencioso (normal!)
 ssh usuario@192.168.57.250
 # ↑ conectar nos próximos 10 segundos!
 
@@ -446,14 +447,14 @@ ssh usuario@192.168.57.250
 cat > ~/entrar.sh << 'EOF'
 #!/bin/bash
 HOST=\${1:-192.168.57.250}
-echo "Batendo na porta 59991..."
-curl --max-time 1 \$HOST:59991 2>/dev/null
-sleep 1
-echo "Conectando via SSH..."
+echo "Batendo na porta 1000..."
+curl --max-time 1 \$HOST:1000 2>/dev/null
+echo "Batendo na porta 2000..."
+curl --max-time 1 \$HOST:2000 2>/dev/null
+echo "Conectando via SSH (janela de 10s)..."
 ssh usuario@\$HOST
-# Após sair do SSH, fechar o acesso:
-curl --max-time 1 \$HOST:59992 2>/dev/null
-echo "Acesso fechado."
+# Não há passo de "fechar": a permissão expira sozinha
+# após 10s (--seconds 10). A sessão já ESTABLISHED continua.
 EOF
 chmod +x ~/entrar.sh
 ./entrar.sh`} />
@@ -750,16 +751,16 @@ iptables -A INPUT -p tcp --dport 7000 \\
 
 # Estado 2: segunda batida (porta 8000) após 7000
 iptables -A INPUT -p tcp --dport 8000 \\
-  -m recent --name KNOCK --rcheck \\
+  -m recent --name KNOCK --rcheck --seconds 10 \\
   -m recent --name KNOCK2 --set
 
-# Estado 3: terceira batida → abrir SSH por 30s
+# Estado 3: terceira batida → abrir SSH por 10s
 iptables -A INPUT -p tcp --dport 9000 \\
-  -m recent --name KNOCK2 --rcheck \\
+  -m recent --name KNOCK2 --rcheck --seconds 10 \\
   -m recent --name ABRE --set
 
 iptables -A INPUT -p tcp --dport 22 \\
-  -m recent --name ABRE --rcheck --seconds 30 \\
+  -m recent --name ABRE --rcheck --seconds 10 \\
   -j ACCEPT
 
 iptables -A INPUT -p tcp --dport 22 -j DROP

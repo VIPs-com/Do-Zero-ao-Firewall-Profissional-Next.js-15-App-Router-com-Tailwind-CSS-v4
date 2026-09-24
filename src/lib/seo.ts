@@ -96,7 +96,7 @@ export const ROUTE_SEO = {
   '/quiz': {
     title: 'Quiz de Certificação',
     description:
-      '326 questões sobre Linux, firewall, redes, servidores e infraestrutura — filtre por trilha e módulo. Teste seus conhecimentos e conquiste badges.',
+      '345 questões sobre Linux, firewall, redes, servidores e infraestrutura — filtre por trilha e módulo. Teste seus conhecimentos e conquiste badges.',
   },
   '/certificado': {
     title: 'Certificado de Conclusão',

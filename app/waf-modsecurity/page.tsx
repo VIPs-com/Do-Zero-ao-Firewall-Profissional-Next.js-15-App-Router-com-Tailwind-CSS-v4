@@ -141,13 +141,19 @@ sudo systemctl restart apache2
 
 # === Nginx (ModSecurity v3 + connector) ===
 sudo apt install -y libnginx-mod-http-modsecurity
-# carregar dinamicamente no nginx.conf:
+# O pacote já cria /etc/nginx/modules-enabled/*modsecurity*.conf com:
 #   load_module modules/ngx_http_modsecurity_module.so;
-sudo systemctl restart nginx
+# E é preciso ATIVAR o WAF no bloco http {} (ou server {}) —
+# sem estas duas linhas o módulo carrega mas nada é inspecionado:
+#   modsecurity on;
+#   modsecurity_rules_file /etc/modsecurity/main.conf;
+sudo nginx -t && sudo systemctl restart nginx
 
 # Conferir que o módulo carregou
-sudo apachectl -M | grep security2          # Apache
-nginx -V 2>&1 | tr ' ' '\\n' | grep -i modsec  # Nginx`} />
+sudo apachectl -M | grep security2                          # Apache
+# Nginx: módulo dinâmico NÃO aparece no "nginx -V" — confira o load_module
+# e as diretivas na config efetiva:
+sudo nginx -T 2>/dev/null | grep -iE 'load_module|modsecurity'`} />
         </section>
 
         <section className="mb-12">
@@ -353,12 +359,14 @@ SecAction \\
   setvar:tx.outbound_anomaly_score_threshold=4"
 
 # Paranoia Level — 1 (padrão) até 4 (máximo)
+# CRS 4.x: tx.blocking_paranoia_level (no CRS 3.x era tx.paranoia_level —
+# com o nome antigo o ajuste é IGNORADO no CRS 4)
 SecAction \\
  "id:900000,\\
   phase:1,\\
   pass,\\
   nolog,\\
-  setvar:tx.paranoia_level=1"`} />
+  setvar:tx.blocking_paranoia_level=1"`} />
           <InfoBox title="Paranoia Level — quanto mais alto, mais falsos positivos">
             <strong>PL1</strong> (padrão): regras com pouquíssimo falso positivo — produção
             comum. <strong>PL2</strong>: mais agressivo, exige tuning. <strong>PL3</strong>: muito
@@ -400,8 +408,8 @@ sudo apt install -y libnginx-mod-http-modsecurity \\
 SecRuleEngine DetectionOnly    # depois: On
 SecAuditEngine RelevantOnly
 SecAuditLog /var/log/modsec_audit.log
-# /etc/modsecurity/crs/crs-setup.conf
-setvar:tx.paranoia_level=1
+# /etc/modsecurity/crs/crs-setup.conf (CRS 4.x)
+setvar:tx.blocking_paranoia_level=1
 setvar:tx.inbound_anomaly_score_threshold=5
 sudo nginx -t && sudo systemctl reload nginx`}
           />
@@ -441,23 +449,35 @@ sudo nginx -t && sudo systemctl reload nginx`}
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6">11. Excluindo falsos positivos</h2>
           <p className="text-text-2 mb-4">
-            As exclusões vivem em um arquivo próprio (<code>REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf</code>{' '}
-            no CRS), <strong>antes</strong> das regras do CRS. Quatro padrões cobrem 95% dos casos:
+            As exclusões vivem em dois arquivos próprios do CRS, e a <strong>posição importa</strong>.
+            Diretivas como <code>SecRuleRemoveById</code>, <code>SecRuleUpdateTargetById</code> e{' '}
+            <code>SecRuleRemoveByTag</code> só agem sobre regras <em>já carregadas</em> — por isso vão
+            no <code>REQUEST-999-EXCLUSION-RULES-AFTER-CRS.conf</code>, <strong>depois</strong> do CRS.
+            No <code>REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf</code> (antes do CRS) ficam só as
+            exclusões <em>por requisição</em>, feitas em tempo de execução com a ação{' '}
+            <code>ctl:</code>. Quatro padrões cobrem 95% dos casos:
           </p>
-          <CodeBlock lang="apache" code={`# 1) Remover uma regra inteira (use com cuidado!)
-SecRuleRemoveById 942100
+          <CodeBlock lang="apache" code={`# ===== REQUEST-999-EXCLUSION-RULES-AFTER-CRS.conf (DEPOIS do CRS) =====
 
-# 2) Remover uma regra apenas para um URI específico
-<LocationMatch "^/wp-admin/post\\.php">
-    SecRuleRemoveById 941100 941160 941340
-</LocationMatch>
+# 1) Remover uma regra inteira (use com cuidado!)
+SecRuleRemoveById 942100
 
 # 3) Tirar UM parâmetro da inspeção de UMA regra
 SecRuleUpdateTargetById 942100 "!ARGS:content"
 SecRuleUpdateTargetById 942100 "!ARGS:descricao"
 
-# 4) Excluir por TAG (mais cirúrgico)
-SecRuleRemoveByTag "attack-xss"`} />
+# 4) Excluir por TAG (amplo — remove TODAS as regras com essa tag)
+SecRuleRemoveByTag "attack-xss"
+
+# ===== REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf (ANTES do CRS) =====
+
+# 2) Remover regras apenas para um URI específico (runtime, via ctl:)
+#    Funciona no Apache e no Nginx (<LocationMatch> é só do Apache)
+SecRule REQUEST_URI "@beginsWith /wp-admin/post.php" \\
+    "id:1000900,phase:1,pass,nolog,\\
+    ctl:ruleRemoveById=941100,\\
+    ctl:ruleRemoveById=941160,\\
+    ctl:ruleRemoveById=941340"`} />
           <WarnBox title="Nunca remova a regra 949110">
             A 949110 é a que <em>decide</em> o bloqueio baseado no score acumulado. Removê-la
             equivale a desligar todo o CRS — você fica com os logs, mas nada mais é bloqueado.
@@ -568,7 +588,7 @@ sudo nginx -t                           # ou: sudo apachectl configtest
 sudo systemctl reload nginx             # ou: apache2
 
 # Teste rapido com payload SQLi (em ambiente de homologação)
-curl -i "http://localhost/?id=1' OR 1=1--"
+curl -i -G --data-urlencode "id=1' OR 1=1--" http://localhost/
 # Esperado: HTTP/1.1 403 Forbidden
 
 # Monitorar primeiras 24h MUITO de perto
@@ -588,7 +608,7 @@ sudo tail -F /var/log/modsec_audit.log /var/log/nginx/error.log`} />
           <div className="space-y-3">
             {[
               { erro: 'Ligar SecRuleEngine On direto em produção', sol: 'O CRS recém-instalado bloqueia admin do WordPress, payloads JSON legítimos, file uploads e qualquer formulário com caractere especial. O fluxo correto é DetectionOnly por 1 semana, coletar o audit log, mapear exclusões com SecRuleRemoveById / SecRuleUpdateTargetById e só então mudar para On. Pular essa fase = incidente garantido no primeiro deploy.' },
-              { erro: 'WordPress admin bloqueado pelas regras de XSS (941xxx)', sol: 'O editor do WordPress envia HTML rico no body do POST (post.php), o que casa com várias regras 941xxx. Solução: bloco <LocationMatch "^/wp-admin/"> com SecRuleRemoveById para 941100, 941160, 941340 (os IDs aparecem no audit log). Não desabilite a faixa 941 inteira — quebra a proteção XSS do resto do site.' },
+              { erro: 'WordPress admin bloqueado pelas regras de XSS (941xxx)', sol: 'O editor do WordPress envia HTML rico no body do POST (post.php), o que casa com várias regras 941xxx. Solução: exclusão só para esse URI — uma SecRule com ctl:ruleRemoveById=941100 (e 941160, 941340 — os IDs aparecem no audit log) casando REQUEST_URI no arquivo BEFORE-CRS; funciona no Nginx e no Apache (<LocationMatch> é só do Apache). Não desabilite a faixa 941 inteira — quebra a proteção XSS do resto do site.' },
               { erro: 'API JSON tomando falso positivo de SQLi (942xxx)', sol: 'JSON com aspas duplas e chaves dispara o operador @detectSQLi em ARGS. Solução: identificar qual campo está sendo flagado (campo "content", "descricao", "query"?) e usar SecRuleUpdateTargetById 942100 "!ARGS:campo" para tirar só esse parâmetro da regra — preservando a proteção dos demais.' },
               { erro: 'Latência alta e CPU disparada com paranoia level 4', sol: 'PL4 carrega regras de detecção agressiva que rodam regex pesada em cada requisição — e ainda casam com tráfego legítimo (gerando logs gigantes). Em apps com volume real, PL1 é o normal; PL2/PL3 só com tuning maduro. Se a latência subir, baixe o PL, reduza SecRequestBodyLimit ou exclua regras 920xxx que sejam ruidosas para o seu workload.' },
             ].map((e, i) => (
@@ -629,7 +649,7 @@ grep ^SecRuleEngine /etc/modsecurity/modsecurity.conf
 sudo nginx -t && sudo systemctl reload nginx
 
 # Disparar SQLi (não bloqueia, só loga)
-curl -i "http://localhost/?id=1' UNION SELECT password FROM users--"
+curl -i -G --data-urlencode "id=1' UNION SELECT password FROM users--" http://localhost/
 
 # Achar o evento
 sudo tail -n 200 /var/log/modsec_audit.log | grep -E 'id|score|UNION'`} />
@@ -652,9 +672,11 @@ sudo grep -B2 -A 30 'id "941100"' /var/log/modsec_audit.log | less
 
 # Criar exclusão localizada (exemplo: WordPress admin)
 sudo tee -a /etc/modsecurity/crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf > /dev/null <<'EOF'
-<LocationMatch "^/wp-admin/post\\.php">
-    SecRuleRemoveById 941100 941160 941340
-</LocationMatch>
+SecRule REQUEST_URI "@beginsWith /wp-admin/post.php" \\
+    "id:1000900,phase:1,pass,nolog,\\
+    ctl:ruleRemoveById=941100,\\
+    ctl:ruleRemoveById=941160,\\
+    ctl:ruleRemoveById=941340"
 EOF
 
 sudo nginx -t && sudo systemctl reload nginx`} />
