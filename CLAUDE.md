@@ -154,13 +154,19 @@ NUNCA criar arquivos CSS separados — usar classes Tailwind diretamente no JSX.
 
 ## Fonts e Icones
 
-- Space Grotesk — fonte sans-serif do corpo (via `next/font/google`, self-hosted)
-- JetBrains Mono — fonte monospace e codigo (via `next/font/google`, self-hosted)
+- Space Grotesk — fonte sans-serif do corpo (via `next/font/local`, `app/fonts/`)
+- JetBrains Mono — fonte monospace e codigo (via `next/font/local`, `app/fonts/`)
 - Lucide React — todos os icones
 - motion/react (Framer Motion v12) — animacoes
 
 > **NUNCA** voltar a usar `@import url('fonts.googleapis.com/...')` em `globals.css`.
 > next/font self-hospeda, elimina layout shift e mantém conformidade LGPD/GDPR.
+>
+> As fontes são arquivos `.woff2` variáveis (subset latin) versionados em `app/fonts/`, com a licença SIL OFL ao lado.
+> **Não voltar para `next/font/google`:** em set/2026 o build no Turbopack passou a falhar
+> ("next/font/google queries have exactly one entry") sem mudança no código — o download no build
+> depende da rede e do formato de resposta do Google. Para atualizar uma fonte, baixar o novo `.woff2`
+> do subset latin em `fonts.googleapis.com/css2?family=...` e substituir o arquivo.
 
 ---
 

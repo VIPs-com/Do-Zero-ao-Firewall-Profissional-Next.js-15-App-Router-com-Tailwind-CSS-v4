@@ -1,29 +1,34 @@
 import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
-import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import { Providers } from './providers';
 import { ClientLayout } from '@/components/ClientLayout';
 import { SITE_CONFIG, buildMetadata } from '@/lib/seo';
 import './globals.css';
 
 /*
- * next/font self-hospeda as fontes (zero request a fonts.googleapis.com),
- * elimina layout shift via font-display: swap + size-adjust automático,
- * e fica em conformidade com LGPD/GDPR (sem expor IP do usuário ao Google).
+ * Fontes versionadas em app/fonts/ (variáveis, subset latin, licença SIL OFL 1.1).
+ * Antes vinham de next/font/google, que as baixava do Google no build —
+ * o build passou a falhar no Turbopack (18× "next/font/google queries have
+ * exactly one entry") sem nenhuma mudança no código. Com next/font/local o
+ * build não depende de rede nem de mudanças no Google Fonts.
+ *
+ * Continua igual: zero request ao Google no navegador (LGPD/GDPR),
+ * font-display: swap e fallback com size-adjust automático.
  *
  * As CSS variables (--font-space-grotesk, --font-jetbrains-mono) são
  * consumidas pelo @theme em globals.css.
  */
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+const spaceGrotesk = localFont({
+  src: './fonts/SpaceGrotesk-latin-var.woff2',
+  weight: '300 700',
   variable: '--font-space-grotesk',
   display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
+const jetbrainsMono = localFont({
+  src: './fonts/JetBrainsMono-latin-var.woff2',
+  weight: '100 800',
   variable: '--font-jetbrains-mono',
   display: 'swap',
 });
